@@ -1,0 +1,207 @@
+\documentclass{article}
+
+\newcommand{\assert}{\texttt{assert}}
+\newcommand{\assume}{\texttt{assume}}
+
+\begin{document}
+
+\emph{pure} : side-effect free
+
+\emph{behavior}: pair pre- and post-condition, assigns
+
+\section{Frama-C base level}
+
+\begin{itemize}
+\item logical expressions = pure C expressions. always defined
+  (2-valued logic). + \old, \result, \forall, \exists, ==>, <==>,
+  \old(e,label), let \tau x = e in e, if e then e else e, 
+\item C function behaviors
+\item statement annotations:
+  \begin{itemize}
+  \item \assert, \assume, label
+  \item loop invariants (+loop assigns ?)
+  \item block behaviors (normal termination only, no goto going
+    inside, no goto going outside) 
+  \end{itemize}
+\end{itemize}
+
+\begin{alltt}
+  fun-spec ::= (requires-clause | fun-behavior ) * variant-clause ?
+
+  requires-clause ::= "requires" predicate
+  variant-clause ::= "variant" term ("for" ident)?
+
+  fun-behavior ::= "behavior" ident ":" 
+             (assumes-clause | assigns-clause | 
+              ensures-clause | invariant-clause) *
+
+  assumes-clause ::= "assumes" predicate
+  assigns-clause ::= "assigns" (location (, location) * | "\nothing")
+  ensures-clause ::= "ensures" predicate
+  invariant-clause ::= "invariant" predicate
+
+  location ::= (see below)
+\end{alltt}
+
+semantics:
+ 
+  requires R_j
+  behavior x_i: assumes A_i ensures E_i invariant I_i
+
+
+ pre-condition : R_1 and R_2 and ... 
+ post-condition : (\old(A_1 and I_1) implies E_1 and I_1) and ...
+
+  
+  
+
+
+
+Questions: "reads" clause ?
+
+\subsection{syntax of assigns clauses}
+
+\begin{alltt}
+  location ::= 
+       var | location->id | location.id | *location 
+       | location[term ? .. term?] | location[term] 
+
+       |  (\all \tau) | (\all \tau x ; predicate) 
+       |  location + [ term? .. term? ] | location + term         
+\end{alltt}
+
+semantics:
+\begin{itemize}
+\item a "location" denotes a set of terms. 
+\item only location denoting a set of lvalues are valid as argument to
+  "assigns" clauses : constructs in the two first lines above denotes
+  lvalues, but not the two last lines
+\end{itemize}
+
+example:
+
+\begin{alltt}
+  assigns  (\all struct list *p ; reachable(root,p)) -> hd
+\end{alltt}
+
+\section{Constructions for valid pointer dereferencing, separation}
+
+\subsection{Memory blocks: physical adressing}
+
+\verb|\base_addr|
+\verb|\blocklength|
+
+
+\subsection{Memory blocks: logical adressing}
+
+a \emph{valid} pointer is a pointer such that *p is properly
+allocated.
+
+\offsetmin, \offsetmax : \alpha * \ra \N
+
+\verb|\offset_min(p)| : the minimum integer i such that (p+i) is a valid
+pointer
+
+\verb|\offset_max(p)|: the maximum integer i such that (p+i) is a valid
+pointer
+
+properties: 
+
+\[
+\offsetmin(p+i) = \offsetmin(p)-i
+\offsetmax(p+i) = \offsetmax(p)-i
+\]
+
+syntactic sugar:
+\[
+\validrange(p,i,j) := \offsetmin(p) <= i \land \offsetmax(p) >= j
+\valid(p) := \validrange(p,0,0)
+\]
+
+\subsection{Strings}
+
+\strlen
+
+\subsection{Separation}
+
+pointer separation :
+\[
+p \not\equiv q := \baseaddr |(char*)p - (char*)q| \geq \max(\sizeof(p),\sizeof(q))
+\]
+
+\separated(p1,..,p_n) : means that for if i<>j, p_i \not\equiv p_j
+
+\full_separated
+
+\bound_separated(p,n,q,m)
+
+\section{Termination}
+
+termination: loop variants, function variants for recursive
+  functions, for integer measures.
+
+\section{Logic specifications}
+
+\begin{itemize}
+\item logic specifications: introduction of new logic types,
+  constants, functions, predicates and axioms
+\item polymorphism
+\item higher-order functions: \lambda, \sum, \max, \num_of
+\item types enumerés
+\item types recursifs, definitions recursives (?)
+\item hybrid functions and predicates: take both C types and logic
+  types as arguments.
+\item model variables
+\end{itemize}
+
+\section{Allocation and deallocation}
+
+\fresh, \freed
+
+\section{Abnormal termination}
+
+\begin{itemize}
+\item C function \verb|exit(n)|. special behavior notation
+  \begin{alltt}
+    exit_behavior
+       assumes
+       assigns
+       ensures ... 
+  \end{alltt}
+    where in ensures clause, \result is bound to n
+\end{itemize}
+
+
+\section{Dependencies information}
+
+assigns Locs from Locs
+
+\section{Data invariants}
+
+
+\begin{itemize}
+\item Global invariants: invariants on global variables
+\item Type invariants: invariants on struct, union, typedef 
+\end{itemize}
+
+semantics
+
+an invariant is true when ... \cite{boogie}
+
+\section{Ghost variables and statements}
+
+
+
+
+
+
+
+
+
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
