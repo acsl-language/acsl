@@ -1,7 +1,32 @@
 \documentclass{article}
+\usepackage{alltt}
+\usepackage{amssymb}
 
 \newcommand{\assert}{\texttt{assert}}
 \newcommand{\assume}{\texttt{assume}}
+\newcommand{\baseaddr}{\texttt{{\textbackslash}baseaddr}}
+\newcommand{\boundseparated}{\texttt{{\textbackslash}bound\_separated}}
+\newcommand{\Exists}{\texttt{{\textbackslash}exists}}
+\newcommand{\Forall}{\texttt{{\textbackslash}forall}}
+\newcommand{\freed}{\texttt{{\textbackslash}freed}}
+\newcommand{\fresh}{\texttt{{\textbackslash}fresh}}
+\newcommand{\fullseparated}{\texttt{{\textbackslash}full\_separated}}
+\newcommand{\Max}{\texttt{max}}
+\newcommand{\nothing}{\texttt{{\textbackslash}nothing}}
+\newcommand{\numof}{\texttt{num\_of}}
+\newcommand{\offsetmin}{\texttt{{\textbackslash}offset\_min}}
+\newcommand{\offsetmax}{\texttt{{\textbackslash}offset\_max}}
+\newcommand{\old}{\texttt{{\textbackslash}old}}
+\newcommand{\result}{\texttt{{\textbackslash}result}}
+\newcommand{\separated}{\texttt{{\textbackslash}separated}}
+\newcommand{\sizeof}{\texttt{sizeof}}
+\newcommand{\strlen}{\texttt{{\textbackslash}str\_len}}
+\newcommand{\Sum}{\texttt{sum}}
+\newcommand{\valid}{\texttt{{\textbackslash}valid}}
+\newcommand{\validrange}{\texttt{{\textbackslash}valid\_range}}
+
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\ra}{\ensuremath{\rightarrow}}
 
 \begin{document}
 
@@ -13,15 +38,15 @@
 
 \begin{itemize}
 \item logical expressions = pure C expressions. always defined
-  (2-valued logic). + \old, \result, \forall, \exists, ==>, <==>,
-  \old(e,label), let \tau x = e in e, if e then e else e, 
+  (2-valued logic). + \old, \result, \Forall, \Exists, ==>, <==>,
+  \old(e,label), let $\tau$ x = e in e, if e then e else e,
 \item C function behaviors
 \item statement annotations:
   \begin{itemize}
   \item \assert, \assume, label
   \item loop invariants (+loop assigns ?)
   \item block behaviors (normal termination only, no goto going
-    inside, no goto going outside) 
+    inside, no goto going outside)
   \end{itemize}
 \end{itemize}
 
@@ -31,8 +56,8 @@
   requires-clause ::= "requires" predicate
   variant-clause ::= "variant" term ("for" ident)?
 
-  fun-behavior ::= "behavior" ident ":" 
-             (assumes-clause | assigns-clause | 
+  fun-behavior ::= "behavior" ident ":"
+             (assumes-clause | assigns-clause |
               ensures-clause | invariant-clause) *
 
   assumes-clause ::= "assumes" predicate
@@ -44,16 +69,17 @@
 \end{alltt}
 
 semantics:
- 
+
+\begin{alltt}
   requires R_j
   behavior x_i: assumes A_i ensures E_i invariant I_i
 
 
- pre-condition : R_1 and R_2 and ... 
+ pre-condition : R_1 and R_2 and ...
  post-condition : (\old(A_1 and I_1) implies E_1 and I_1) and ...
+\end{alltt}
 
-  
-  
+
 
 
 
@@ -62,17 +88,16 @@ Questions: "reads" clause ?
 \subsection{syntax of assigns clauses}
 
 \begin{alltt}
-  location ::= 
-       var | location->id | location.id | *location 
-       | location[term ? .. term?] | location[term] 
-
-       |  (\all \tau) | (\all \tau x ; predicate) 
-       |  location + [ term? .. term? ] | location + term         
+  location ::=
+       var | location->id | location.id | *location
+       | location[term ? .. term?] | location[term]
+       |  (\Forall \(\tau\)) | (\Forall \(\tau\) x ; predicate)
+       |  location + [ term? .. term? ] | location + term
 \end{alltt}
 
 semantics:
 \begin{itemize}
-\item a "location" denotes a set of terms. 
+\item a "location" denotes a set of terms.
 \item only location denoting a set of lvalues are valid as argument to
   "assigns" clauses : constructs in the two first lines above denotes
   lvalues, but not the two last lines
@@ -81,7 +106,7 @@ semantics:
 example:
 
 \begin{alltt}
-  assigns  (\all struct list *p ; reachable(root,p)) -> hd
+  assigns  (\Forall struct list *p ; reachable(root,p)) -> hd
 \end{alltt}
 
 \section{Constructions for valid pointer dereferencing, separation}
@@ -97,7 +122,7 @@ example:
 a \emph{valid} pointer is a pointer such that *p is properly
 allocated.
 
-\offsetmin, \offsetmax : \alpha * \ra \N
+\offsetmin, \offsetmax : $\alpha * \ra \N$
 
 \verb|\offset_min(p)| : the minimum integer i such that (p+i) is a valid
 pointer
@@ -105,7 +130,7 @@ pointer
 \verb|\offset_max(p)|: the maximum integer i such that (p+i) is a valid
 pointer
 
-properties: 
+properties:
 
 \[
 \offsetmin(p+i) = \offsetmin(p)-i
@@ -129,11 +154,11 @@ pointer separation :
 p \not\equiv q := \baseaddr |(char*)p - (char*)q| \geq \max(\sizeof(p),\sizeof(q))
 \]
 
-\separated(p1,..,p_n) : means that for if i<>j, p_i \not\equiv p_j
+$\separated(p1,..,p_n)$ : means that for if $i<>j, p_i \not\equiv p_j$
 
-\full_separated
+\fullseparated
 
-\bound_separated(p,n,q,m)
+\boundseparated(p,n,q,m)
 
 \section{Termination}
 
@@ -146,9 +171,9 @@ termination: loop variants, function variants for recursive
 \item logic specifications: introduction of new logic types,
   constants, functions, predicates and axioms
 \item polymorphism
-\item higher-order functions: \lambda, \sum, \max, \num_of
-\item types enumerés
-\item types recursifs, definitions recursives (?)
+\item higher-order functions: $\lambda$, \Sum, \Max, \numof
+\item {\tt enum}
+\item recursive types, recursive definitions
 \item hybrid functions and predicates: take both C types and logic
   types as arguments.
 \item model variables
@@ -166,7 +191,7 @@ termination: loop variants, function variants for recursive
     exit_behavior
        assumes
        assigns
-       ensures ... 
+       ensures ...
   \end{alltt}
     where in ensures clause, \result is bound to n
 \end{itemize}
@@ -174,14 +199,16 @@ termination: loop variants, function variants for recursive
 
 \section{Dependencies information}
 
+\begin{alltt}
 assigns Locs from Locs
+\end{alltt}
 
 \section{Data invariants}
 
 
 \begin{itemize}
 \item Global invariants: invariants on global variables
-\item Type invariants: invariants on struct, union, typedef 
+\item Type invariants: invariants on struct, union, typedef
 \end{itemize}
 
 semantics
@@ -190,18 +217,13 @@ an invariant is true when ... \cite{boogie}
 
 \section{Ghost variables and statements}
 
-
-
-
-
-
-
-
-
+\section{References}
+\bibliographystyle{plain}
+\bibliography{biblio}
 
 \end{document}
 
-%%% Local Variables: 
+%%% Local Variables:
 %%% mode: latex
 %%% TeX-master: t
-%%% End: 
+%%% End:
