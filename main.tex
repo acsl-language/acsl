@@ -1,13 +1,16 @@
 \documentclass{article}
-\usepackage{alltt}
+
 \usepackage{amssymb}
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+
 
 \newcommand{\assert}{\texttt{assert}}
 \newcommand{\assume}{\texttt{assume}}
 \newcommand{\baseaddr}{\texttt{{\textbackslash}baseaddr}}
 \newcommand{\boundseparated}{\texttt{{\textbackslash}bound\_separated}}
-\newcommand{\Exists}{\texttt{{\textbackslash}exists}}
-\newcommand{\Forall}{\texttt{{\textbackslash}forall}}
+\newcommand{\Exists}{\texttt{{\textbackslash}exists}~}
+\newcommand{\Forall}{\texttt{{\textbackslash}forall}~}
 \newcommand{\freed}{\texttt{{\textbackslash}freed}}
 \newcommand{\fresh}{\texttt{{\textbackslash}fresh}}
 \newcommand{\fullseparated}{\texttt{{\textbackslash}full\_separated}}
@@ -17,6 +20,12 @@
 \newcommand{\offsetmin}{\texttt{{\textbackslash}offset\_min}}
 \newcommand{\offsetmax}{\texttt{{\textbackslash}offset\_max}}
 \newcommand{\old}{\texttt{{\textbackslash}old}}
+\newcommand{\at}{\texttt{{\textbackslash}at}}
+\newcommand{\If}{\texttt{if}~}
+\newcommand{\Then}{~\texttt{then}~}
+\newcommand{\Else}{~\texttt{else}~}
+\newcommand{\Let}{\texttt{let}~}
+\newcommand{\In}{~\texttt{in}~}
 \newcommand{\result}{\texttt{{\textbackslash}result}}
 \newcommand{\separated}{\texttt{{\textbackslash}separated}}
 \newcommand{\sizeof}{\texttt{sizeof}}
@@ -34,12 +43,46 @@
 
 \emph{behavior}: pair pre- and post-condition, assigns
 
+Proposition de Claude: ce document doit etre illustré par des
+exemples. Toute construction qui ne serait pas illustrée par un
+exemple sera non-retenue
+
 \section{Frama-C base level}
 
 \begin{itemize}
-\item logical expressions = pure C expressions. always defined
-  (2-valued logic). + \old, \result, \Forall, \Exists, ==>, <==>,
-  \old(e,label), let $\tau$ x = e in e, if e then e else e,
+\item logical expressions = pure C expressions, without function
+  calls. always defined (2-valued logic). With additional constructs:
+  \begin{itemize}
+  \item values in preceedings states: \old(e) and \at(e,label).
+
+    construct \old{} is only valid in ensures clauses of function
+    specification. For loop invariants, one need to put some label and
+    use the \at{} construct.
+  \item returned value: \result
+
+    valid only in ensures clauses of function
+    specification.
+
+  \item quantifications:  $\Forall \tau x; e$ and $\Exists \tau x; e$
+  \item \verb|==>|, \verb|<==>|, 
+
+    Open question: \verb|=>| and \verb|<=>| instead of \verb|==>|,
+    \verb|<==>| ? 
+
+  \item $\Let \tau x = e \In e$ and $\If e \Then e \Else e$
+
+  \item nommage de formules, de termes
+
+  \end{itemize}
+
+on veut la logique equationnelle classique, cad que l'axiome 
+\[
+\forall x, x=x
+\]
+est valide. Donc on ne peut pas introduire de construction
+non-déterministe comme  $(\texttt{any} x \mid P)$
+
+
 \item C function behaviors
 \item statement annotations:
   \begin{itemize}
@@ -47,38 +90,45 @@
   \item loop invariants (+loop assigns ?)
   \item block behaviors (normal termination only, no goto going
     inside, no goto going outside)
+  \item proposition de Patrick: permettre de poser une assertion sur
+    la sortie de fonction quelque soit cette sortie. Doit pourvoir
+    parler des parametres, et eventuellement des variables locales
+    declarees en debut de fonction.
   \end{itemize}
 \end{itemize}
 
-\begin{alltt}
-  fun-spec ::= (requires-clause | fun-behavior ) * variant-clause ?
+Grammar:
 
-  requires-clause ::= "requires" predicate
-  variant-clause ::= "variant" term ("for" ident)?
-
-  fun-behavior ::= "behavior" ident ":"
+\begin{eqnarray*}
+  fun-spec &::=& (requires-clause | fun-behavior ) * variant-clause ? \\
+  requires-clause &::=& "requires" predicate \\
+  variant-clause &::=& "variant" term ("for" ident)? \\
+  fun-behavior &::=& "behavior" ident ":"
              (assumes-clause | assigns-clause |
-              ensures-clause | invariant-clause) *
-
-  assumes-clause ::= "assumes" predicate
-  assigns-clause ::= "assigns" (location (, location) * | "\nothing")
-  ensures-clause ::= "ensures" predicate
-  invariant-clause ::= "invariant" predicate
-
-  location ::= (see below)
-\end{alltt}
+              ensures-clause | invariant-clause) * \\
+  assumes-clause &::=& "assumes" predicate \\
+  assigns-clause &::=& "assigns" (location (, location) * |
+  "\nothing") \\
+  ensures-clause &::=& "ensures" predicate \\
+  invariant-clause &::=& "invariant" predicate \\
+  location &::=& (see below)
+\end{eqnarray*}
 
 semantics:
 
-\begin{alltt}
+\begin{verbatim}
   requires R_j
   behavior x_i: assumes A_i ensures E_i invariant I_i
 
 
  pre-condition : R_1 and R_2 and ...
  post-condition : (\old(A_1 and I_1) implies E_1 and I_1) and ...
-\end{alltt}
+\end{verbatim}
 
+
+Proposition de Yannick: des requires dans les behaviors:
+la semantique consiste a rajouter $(A_i \ra R_i)$ en conjonction de la
+precondition globale 
 
 
 
@@ -86,14 +136,15 @@ semantics:
 Questions: "reads" clause ?
 
 \subsection{syntax of assigns clauses}
+\label{sec:locations}
 
-\begin{alltt}
+\begin{verbatim}
   location ::=
        var | location->id | location.id | *location
        | location[term ? .. term?] | location[term]
        |  (\Forall \(\tau\)) | (\Forall \(\tau\) x ; predicate)
        |  location + [ term? .. term? ] | location + term
-\end{alltt}
+\end{verbatim}
 
 semantics:
 \begin{itemize}
@@ -105,9 +156,9 @@ semantics:
 
 example:
 
-\begin{alltt}
+\begin{verbatim}
   assigns  (\Forall struct list *p ; reachable(root,p)) -> hd
-\end{alltt}
+\end{verbatim}
 
 \section{Constructions for valid pointer dereferencing, separation}
 
@@ -147,30 +198,45 @@ syntactic sugar:
 
 \strlen
 
+Peut disparaitre
+
 \subsection{Separation}
 
 pointer separation :
 \[
-p \not\equiv q := \baseaddr |(char*)p - (char*)q| \geq \max(\sizeof(p),\sizeof(q))
+p \not\equiv q := \baseaddr(p) \neq \baseaddr(q) \lor |(char*)p - (char*)q| \geq \max(\sizeof(p),\sizeof(q))
 \]
 
 $\separated(p1,..,p_n)$ : means that for if $i<>j, p_i \not\equiv p_j$
 
-\fullseparated
+cette construction peut-etre etendue au cas ou les $p_i$ sont des
+ensembles de locations memoires, telles que definies a la section
+\ref{sec:locations}. 
 
-\boundseparated(p,n,q,m)
 
 \section{Termination}
 
 termination: loop variants, function variants for recursive
   functions, for integer measures.
 
+More general case of measures on other types: use the keyword for:
+
+\begin{eqnarray*}
+&& "variant" e "for" id
+\end{eqnarray*}
+where $e$ has type $\tau$ and $id$ is a logic predicate of type $\tau,\tau \ra
+prop$
+
+
 \section{Logic specifications}
 
 \begin{itemize}
 \item logic specifications: introduction of new logic types,
   constants, functions, predicates and axioms
-\item polymorphism
+\item polymorphism: for example
+\begin{verbatim}
+type 'a list
+\end{verbatim}
 \item higher-order functions: $\lambda$, \Sum, \Max, \numof
 \item {\tt enum}
 \item recursive types, recursive definitions
@@ -187,21 +253,29 @@ termination: loop variants, function variants for recursive
 
 \begin{itemize}
 \item C function \verb|exit(n)|. special behavior notation
-  \begin{alltt}
+  \begin{verbatim}
     exit_behavior
        assumes
        assigns
        ensures ...
-  \end{alltt}
+  \end{verbatim}
     where in ensures clause, \result is bound to n
 \end{itemize}
 
 
 \section{Dependencies information}
 
-\begin{alltt}
+\begin{verbatim}
 assigns Locs from Locs
-\end{alltt}
+\end{verbatim}
+
+\section{Functional expressions}
+
+trouver une syntaxe pour introduire les noms des fonctions implicites
+derriere la construction
+\begin{verbatim}
+assigns Locs from Locs
+\end{verbatim}
 
 \section{Data invariants}
 
@@ -211,11 +285,33 @@ assigns Locs from Locs
 \item Type invariants: invariants on struct, union, typedef
 \end{itemize}
 
-semantics
+semantics:
 
 an invariant is true when ... \cite{boogie}
 
 \section{Ghost variables and statements}
+
+\section{Annotations: in comments or in another file}
+
+in JML, parsing is done by just removing the $/*@$ and $*/$. this can
+completely modified the semantics: Example:
+\begin{verbatim}
+return x /*@ +1 */ ;
+\end{verbatim}
+
+The current option is to isolate the comments in a first step, and
+then parse a second time. But the same problem may appear:
+\begin{verbatim}
+if (c) //@ assert P
+   c=1;
+\end{verbatim}
+for the analyser, instruction \verb|c=1| is executed unconditionnaly. 
+
+
+
+\section{Module constructions}
+
+how to encapsulate several functions...
 
 \section{References}
 \bibliographystyle{plain}
