@@ -3,7 +3,7 @@
 \usepackage{amssymb}
 \usepackage[T1]{fontenc}
 \usepackage[latin1]{inputenc}
-
+\usepackage{alltt}
 
 \newcommand{\assert}{\texttt{assert}}
 \newcommand{\assume}{\texttt{assume}}
@@ -109,6 +109,7 @@ Types de la logique:
   \end{itemize}
 \end{itemize}
 
+
 Grammar:
 
 \begin{eqnarray*}
@@ -117,7 +118,7 @@ Grammar:
   variant-clause &::=& "variant" term ("for" ident)? \\
   fun-behavior &::=& "behavior" ident ":"
              (assumes-clause | assigns-clause |
-              ensures-clause | invariant-clause) * \\
+              ensures-clause ) * \\
   assumes-clause &::=& "assumes" predicate \\
   assigns-clause &::=& "assigns" (location (, location) * |
   "\nothing") \\
@@ -126,15 +127,17 @@ Grammar:
   location &::=& (see below)
 \end{eqnarray*}
 
+
+
 semantics:
 
 \begin{verbatim}
   requires R_j
-  behavior x_i: assumes A_i ensures E_i invariant I_i
+  behavior x_i: assumes A_i ensures E_i
 
 
  pre-condition : R_1 and R_2 and ...
- post-condition : (\old(A_1 and I_1) implies E_1 and I_1) and ...
+ post-condition : (\old(A_1 and I_1) implies E_1) and ...
 \end{verbatim}
 
 
@@ -144,19 +147,18 @@ precondition globale
 
 
 
-
 Questions: "reads" clause ?
 
 \subsection{syntax of assigns clauses}
 \label{sec:locations}
 
-\begin{verbatim}
+\begin{alltt}
   location ::=
        var | location->id | location.id | *location
        | location[term ? .. term?] | location[term]
        |  (\Forall \(\tau\)) | (\Forall \(\tau\) x ; predicate)
        |  location + [ term? .. term? ] | location + term
-\end{verbatim}
+\end{alltt}
 
 semantics:
 \begin{itemize}
@@ -168,9 +170,9 @@ semantics:
 
 example:
 
-\begin{verbatim}
+\begin{alltt}
   assigns  (\Forall struct list *p ; reachable(root,p)) -> hd
-\end{verbatim}
+\end{alltt}
 
 \section{Constructions for valid pointer dereferencing, separation}
 
