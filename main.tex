@@ -41,11 +41,17 @@
 
 \emph{pure} : side-effect free
 
-\emph{behavior}: pair pre- and post-condition, assigns
+\emph{behavior}: pair pre- and post-condition, assigns\\
 
 Proposition de Claude: ce document doit etre illustré par des
 exemples. Toute construction qui ne serait pas illustrée par un
-exemple sera non-retenue
+exemple sera non-retenue.\\
+
+Proposition de Patrick: utiliser en priorité les constructions de JML,
+ensuite les généraliser lorsque cela a un sens, et en dernier recours,
+en créer de nouvelles. Il y a peut-être des constructions
+du C++ ou C\# à utiliser ou à généraliser. 
+Idem avec les extensions de GCC.
 
 \section{Frama-C base level}
 
@@ -70,6 +76,21 @@ logical expressions = pure C expressions, without function
 
     Open question: \verb|=>| and \verb|<=>| instead of \verb|==>|,
     \verb|<==>| ? 
+\\
+   Remarque de Patrick : 
+   en C il existe le ou exclusif bit à bit (noté \verb|^|), mais pas
+   d'implication bit à bit, ni d'équivalence.
+   Coté contrôle (que l'on assimile facilement à la logique) il
+   n'existe pas en C d'équivalence (car c'est l'égalité qui joue ce
+   rôle), ni de ou exclusif. Ne désire-t'on pas avoir
+   quelque chose du genre :\\
+   \begin{tabular}{cc}
+    bit à bit & logique \\
+    \verb|&| & \verb|&&| \\
+    \verb|=>| & \verb|==>| \\
+    \verb|<=>| & \verb|<==>| \\
+    \verb|^| & \verb|^^| 
+  \end{tabular}
 
   \item $\Let \tau x = e \In e$ and $\If e \Then e \Else e$
 
@@ -103,9 +124,28 @@ Types de la logique:
   \item block behaviors (normal termination only, no goto going
     inside, no goto going outside)
   \item proposition de Patrick: permettre de poser une assertion sur
-    la sortie de fonction quelque soit cette sortie. Doit pourvoir
-    parler des parametres, et eventuellement des variables locales
-    declarees en debut de fonction.
+    la sortie de fonction quelque soit cette sortie, et d'y
+    parler des paramètres, et éventuellement des variables locales
+    déclarées en début de fonction.
+  \item remarque de Patrick: ces annotations peuvent être vues
+    comme des étiquettes indiquant le point de programme 
+    où la propriété porte. En C, toute instruction peut être
+    étiquettée. GCC étend cela aux accolades fermantes des blocs,
+    y compris celle fermant le corps de fonction.=On peut dire que
+    l'on fait de même lorsque l'on place des annotations juste avant
+    la fermerture d'un bloc.
+  \end{itemize}
+\item attribute annotations 
+  \begin{itemize}
+  \item sur proposition de Patrick afin permettre d'ajouter des attributs
+  partout où l'on peut écrire les qualifications habituelles du
+  langage C (const, volatile, restrict) pour les outils qui réalisent
+  de une vérification et/ou inférence de type comme dans
+  \verb|<http://www.cs.umd.edu/~jfoster/cqual>|, ou lors de l'inférence de
+  zones seravnt à identifier un modéle mémoire. Cela permet également de
+  proposer des types logiques pour les variables de la logique
+  associées à des variables du C qui soient différents des types
+  proposés par défaut.
   \end{itemize}
 \end{itemize}
 
@@ -246,7 +286,10 @@ prop$
 
 \begin{itemize}
 \item logic specifications: introduction of new logic types,
-  constants, functions, predicates and axioms
+  constants, functions, predicates and axioms\\
+
+Remarque de Patrick : \verb|list| est-il un mot clé du langage de
+spécification~?
 \item polymorphism: for example
 \begin{verbatim}
 type 'a list
@@ -305,6 +348,17 @@ an invariant is true when ... \cite{boogie}
 
 \section{Ghost variables and statements}
 
+Remarque de Patrick : les ``ghost statements'' correspondent à des
+instructions d'observations des variables du C. Ces instructions
+ne peuvent pas modifier les variables du C, mais que les ``ghost
+variables''. Cela permet d'écrire plus facilement l'observateur
+adéquat à la preuve des propriétés.\\
+
+Remarque de Patrick : Les propriétés peuvent porter à la fois sur les
+variables du C et les  ``ghost variables''. 
+
+
+
 \section{Annotations: in comments or in another file}
 
 in JML, parsing is done by just removing the $/*@$ and $*/$. this can
@@ -319,9 +373,17 @@ then parse a second time. But the same problem may appear:
 if (c) //@ assert P
    c=1;
 \end{verbatim}
-for the analyser, instruction \verb|c=1| is executed unconditionnaly. 
+for the analyser, instruction \verb|c=1| is executed unconditionnaly.\\
 
-
+Remarque de Patrick : ce n'est plus le cas dans Fram-C. 
+Les annotations sont maintenant, tout comme les étiquettes du C, 
+indissociable de l'instruction qui suit ; celle-ci pouvant être
+également annotée.
+Ensuite, tout comme avec GCC où il est possible de placer un étiquette
+juste avant de fermer un bloc, il est possible d'y placer autant
+d'annotations que désiré (avant cette éventuelle étiquette, sinon il y
+a beaucoup de confits ``shift/reduce'' et ``reduce/réduce'' à résoudre).
+ 
 
 \section{Module constructions}
 
@@ -335,9 +397,13 @@ quantification can be either on mathematical \verb|integer| or bounded
 types \verb|short|, \verb|char|, etc.
 
 we need macros \verb|\max_range|, \verb|min_range| taking a C integer
-type as argument, e.g. \verb|\max_range(unsigned char) = 255|
+type as argument, e.g. \verb|\max_range(unsigned char) = 255|\\
 
-
+Remarque de Patrick : Ces marcros, types et variables sont en principe
+définies dans des \verb|.h| que la norme spécifie en grande partie 
+(le nom l'est, le type peut y être contraint). 
+Il faudrait autant que possible se raprocher de ces noms.
+ 
 \bibliographystyle{plain}
 \bibliography{biblio}
 
