@@ -1,2 +1,4 @@
-*.aux *.log
+*.aux *.log *.toc
 *.bbl *.blg *.dvi *.pdf *.ps
+*.pp
+pp.ml

@@ -2,42 +2,22 @@
 
 \usepackage{amssymb}
 \usepackage[T1]{fontenc}
-\usepackage[latin1]{inputenc}
+%\usepackage[latin1]{inputenc}
 \usepackage{alltt}
 
-\newcommand{\assert}{\texttt{assert}}
-\newcommand{\assume}{\texttt{assume}}
-\newcommand{\baseaddr}{\texttt{{\textbackslash}baseaddr}}
-\newcommand{\boundseparated}{\texttt{{\textbackslash}bound\_separated}}
-\newcommand{\Exists}{\texttt{{\textbackslash}exists}~}
-\newcommand{\Forall}{\texttt{{\textbackslash}forall}~}
-\newcommand{\freed}{\texttt{{\textbackslash}freed}}
-\newcommand{\fresh}{\texttt{{\textbackslash}fresh}}
-\newcommand{\fullseparated}{\texttt{{\textbackslash}full\_separated}}
-\newcommand{\Max}{\texttt{max}}
-\newcommand{\nothing}{\texttt{{\textbackslash}nothing}}
-\newcommand{\numof}{\texttt{num\_of}}
-\newcommand{\offsetmin}{\texttt{{\textbackslash}offset\_min}}
-\newcommand{\offsetmax}{\texttt{{\textbackslash}offset\_max}}
-\newcommand{\old}{\texttt{{\textbackslash}old}}
-\newcommand{\at}{\texttt{{\textbackslash}at}}
-\newcommand{\If}{\texttt{if}~}
-\newcommand{\Then}{~\texttt{then}~}
-\newcommand{\Else}{~\texttt{else}~}
-\newcommand{\Let}{\texttt{let}~}
-\newcommand{\In}{~\texttt{in}~}
-\newcommand{\result}{\texttt{{\textbackslash}result}}
-\newcommand{\separated}{\texttt{{\textbackslash}separated}}
-\newcommand{\sizeof}{\texttt{sizeof}}
-\newcommand{\strlen}{\texttt{{\textbackslash}str\_len}}
-\newcommand{\Sum}{\texttt{sum}}
-\newcommand{\valid}{\texttt{{\textbackslash}valid}}
-\newcommand{\validrange}{\texttt{{\textbackslash}valid\_range}}
-
-\newcommand{\N}{\ensuremath{\mathbb{N}}}
-\newcommand{\ra}{\ensuremath{\rightarrow}}
+\input{macros}
 
 \begin{document}
+
+\title{The Frama-C specification language}
+
+\author{P.~Baudin, J.-C.~Filli\^atre, C.~March\'e, B.~Monate, Y.~Moy, V.~Prevosto} 
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction, glossary}
 
 \emph{pure} : side-effect free
 
@@ -53,10 +33,216 @@ en créer de nouvelles. Il y a peut-être des constructions
 du C++ ou C\# à utiliser ou à généraliser. 
 Idem avec les extensions de GCC.
 
-\section{Frama-C base level}
 
-\subsection{Expressions}
+\section{Annotations}
 
+In this document, we consider that annotations are given as comments
+written directly into C source files, so
+that source files remain compilable\footnote{Other means of attaching
+  annotations to source files, without modifying them, is left to user
+  tools}. Those comments must start by \verb|/*@| or \verb|//@|.
+
+\subsection{Kinds of annotations}
+
+\begin{itemize}
+\item Function behavior. Such an annotation is inserted just before
+  the declaration or the definition of a function.
+
+\item Statement annotation:
+  \begin{itemize}
+  \item \assert, logical label. These are allowed everywhere a C label
+    is allowed.\footnote{Remark about \assume clauses: current
+      discussion is that it is not considered as an element of
+      specification, so not present here. This should be part of proof
+      management done by tools}
+
+  \item loop annotation (invariant, variant, assign clauses) are
+    allowed immediately before loop statements: \For, \While,
+    \Do\ldots \While
+
+  \item statement behavior. Very similar to a function behavior.
+    Semantical condition must be checked (normal termination only, no goto going inside, no goto going outside)
+
+  \item ghost brackets for enclosing blocks
+
+  \item ghost code. See section~\ref{sec:ghost}
+
+  \item logical specifications: logic type introduction, introduction
+    or definition of logical function or predicates, axioms. Such an
+    annotation is placed at the global declarations level.
+
+  \item global invariant. This is allowed at the level of global declarations 
+
+  \item type invariant. This allows both structure or union invariants, and invariants on type names introduced by \typedef. See section~\ref{sec:invariants}.
+
+
+  \item proposition de Patrick: permettre de poser une assertion sur
+    la sortie de fonction quelque soit cette sortie, et d'y
+    parler des paramètres, et éventuellement des variables locales
+    déclarées en début de fonction.
+
+  \item remarque de Patrick: ces annotations peuvent être vues
+    comme des étiquettes indiquant le point de programme 
+    où la propriété porte. En C, toute instruction peut être
+    étiquettée. GCC étend cela aux accolades fermantes des blocs,
+    y compris celle fermant le corps de fonction.=On peut dire que
+    l'on fait de même lorsque l'on place des annotations juste avant
+    la fermerture d'un bloc.
+  \end{itemize}
+\item attribute annotations 
+  \begin{itemize}
+  \item sur proposition de Patrick afin permettre d'ajouter des attributs
+  partout où l'on peut écrire les qualifications habituelles du
+  langage C (const, volatile, restrict) pour les outils qui réalisent
+  de une vérification et/ou inférence de type comme dans
+  \verb|<http://www.cs.umd.edu/~jfoster/cqual>|, ou lors de l'inférence de
+  zones seravnt à identifier un modéle mémoire. Cela permet également de
+  proposer des types logiques pour les variables de la logique
+  associées à des variables du C qui soient différents des types
+  proposés par défaut.
+  \end{itemize}
+\end{itemize}
+
+\subsection{Parsing annotations in practice}
+
+In JML, parsing is done by just ignoring \verb|//@|, \verb|/*@| and \verb|*/| and the level of lexing. This technique can completely modify the semantics of the C code, for example:  
+\begin{verbatim}
+return x /*@ +1 */ ;
+\end{verbatim}
+
+In our language this has to be forbidden. Technically, current implementation of Frama-C isolate the comments in a first step of syntax analysis, and then parses a second time. Nevertheless, the grammar and the corresponding parser must be carefully designed to avoid interaction of annotations with the code. For example, in such a code: 
+\begin{verbatim}
+if (c) //@ assert P;
+   c=1;
+\end{verbatim}
+the statement \verb|c=1| must understood as the then branch of the if. This is ensured by the grammar below, saying that \verb|assert| annotations are not statement themselves, but attached to the statement that follows, like C labels. 
+ 
+is executed unconditionnaly.\\
+
+% Remarque de Patrick : ce n'est plus le cas dans Frama-C. 
+% Les annotations sont maintenant, tout comme les étiquettes du C, 
+% indissociable de l'instruction qui suit ; celle-ci pouvant être
+% également annotée.
+% Ensuite, tout comme avec GCC où il est possible de placer un étiquette
+% juste avant de fermer un bloc, il est possible d'y placer autant
+% d'annotations que désiré (avant cette éventuelle étiquette, sinon il y
+% a beaucoup de confits ``shift/reduce'' et ``reduce/réduce'' à résoudre).
+ 
+\subsection{About preprocessing}
+
+This document considers C source \emph{after} preprocessing. Tool must
+decide what to do for preprocessing phase: what to do with
+annotations, should macro substitution be performed or not, etc.
+
+\subsection{About logical expressions}
+
+Logical expressions are pure C expressions, without function
+calls. Semantics is given by the classical 2-valued logic. Additional constructs exist, given in Section~\ref{sec:expressions}
+
+
+\section{Function behavior}
+
+Grammar:
+
+\begin{eqnarray*}
+  fun-spec &::=& (requires-clause | fun-behavior ) * variant-clause ? \\
+  requires-clause &::=& \term{requires} predicate \\
+  variant-clause &::=& \term{variant} term (\term{for} ident)? \\
+  fun-behavior &::=& \term{behavior} ident \term{:}
+             (assumes-clause | assigns-clause |
+              ensures-clause ) * \\
+  assumes-clause &::=& \term{assumes} predicate \\
+  assigns-clause &::=& \term{assigns} (location (, location) * |
+  \term{\nothing}) \\
+  ensures-clause &::=& \term{ensures} predicate \\
+  invariant-clause &::=& \term{invariant} predicate \\
+  location &::=& (see below)
+\end{eqnarray*}
+
+
+
+semantics:
+
+\begin{verbatim}
+  requires R_j
+  behavior x_i: assumes A_i ensures E_i
+
+
+ pre-condition : R_1 and R_2 and ...
+ post-condition : (\old(A_1 and I_1) implies E_1) and ...
+\end{verbatim}
+
+
+Proposition de Yannick: des requires dans les behaviors:
+la semantique consiste a rajouter $(A_i \ra R_i)$ en conjonction de la
+precondition globale 
+
+
+
+Questions: "reads" clause ?
+
+\subsection{syntax of assigns clauses}
+\label{sec:locations}
+
+\begin{alltt}
+  location ::=
+       var | location->id | location.id | *location
+       | location[term ? .. term?] | location[term]
+       |  (\Forall \(\tau\)) | (\Forall \(\tau\) x ; predicate)
+       |  location + [ term? .. term? ] | location + term
+\end{alltt}
+
+semantics:
+\begin{itemize}
+\item a "location" denotes a set of terms.
+\item only location denoting a set of lvalues are valid as argument to
+  "assigns" clauses : constructs in the two first lines above denotes
+  lvalues, but not the two last lines
+\end{itemize}
+
+example:
+
+\begin{alltt}
+  assigns  (\Forall struct list *p ; reachable(root,p)) -> hd
+\end{alltt}
+
+\section{Statement annotation}
+
+  \begin{itemize}
+  \item \assert, \assume, label
+  \item loop invariants (+loop assigns ?)
+  \item block behaviors (normal termination only, no goto going
+    inside, no goto going outside)
+  \item proposition de Patrick: permettre de poser une assertion sur
+    la sortie de fonction quelque soit cette sortie, et d'y
+    parler des paramètres, et éventuellement des variables locales
+    déclarées en début de fonction.
+  \item remarque de Patrick: ces annotations peuvent être vues
+    comme des étiquettes indiquant le point de programme 
+    où la propriété porte. En C, toute instruction peut être
+    étiquettée. GCC étend cela aux accolades fermantes des blocs,
+    y compris celle fermant le corps de fonction.=On peut dire que
+    l'on fait de même lorsque l'on place des annotations juste avant
+    la fermerture d'un bloc.
+  \end{itemize}
+attribute annotations :
+  \begin{itemize}
+  \item sur proposition de Patrick afin permettre d'ajouter des attributs
+  partout où l'on peut écrire les qualifications habituelles du
+  langage C (const, volatile, restrict) pour les outils qui réalisent
+  de une vérification et/ou inférence de type comme dans
+  \verb|<http://www.cs.umd.edu/~jfoster/cqual>|, ou lors de l'inférence de
+  zones seravnt à identifier un modéle mémoire. Cela permet également de
+  proposer des types logiques pour les variables de la logique
+  associées à des variables du C qui soient différents des types
+  proposés par défaut.
+  \end{itemize}
+
+
+
+
+\section{Expressions}
+\label{sec:expressions}
 
 logical expressions = pure C expressions, without function
   calls. always defined (2-valued logic). With additional constructs:
@@ -112,107 +298,6 @@ Types de la logique:
 \item types du C
 \item types logiques introduits par l'utilisateur
 \end{itemize}
-
-\subsection{Annotations}
-
-\begin{itemize}
-\item C function behaviors
-\item statement annotations:
-  \begin{itemize}
-  \item \assert, \assume, label
-  \item loop invariants (+loop assigns ?)
-  \item block behaviors (normal termination only, no goto going
-    inside, no goto going outside)
-  \item proposition de Patrick: permettre de poser une assertion sur
-    la sortie de fonction quelque soit cette sortie, et d'y
-    parler des paramètres, et éventuellement des variables locales
-    déclarées en début de fonction.
-  \item remarque de Patrick: ces annotations peuvent être vues
-    comme des étiquettes indiquant le point de programme 
-    où la propriété porte. En C, toute instruction peut être
-    étiquettée. GCC étend cela aux accolades fermantes des blocs,
-    y compris celle fermant le corps de fonction.=On peut dire que
-    l'on fait de même lorsque l'on place des annotations juste avant
-    la fermerture d'un bloc.
-  \end{itemize}
-\item attribute annotations 
-  \begin{itemize}
-  \item sur proposition de Patrick afin permettre d'ajouter des attributs
-  partout où l'on peut écrire les qualifications habituelles du
-  langage C (const, volatile, restrict) pour les outils qui réalisent
-  de une vérification et/ou inférence de type comme dans
-  \verb|<http://www.cs.umd.edu/~jfoster/cqual>|, ou lors de l'inférence de
-  zones seravnt à identifier un modéle mémoire. Cela permet également de
-  proposer des types logiques pour les variables de la logique
-  associées à des variables du C qui soient différents des types
-  proposés par défaut.
-  \end{itemize}
-\end{itemize}
-
-
-Grammar:
-
-\begin{eqnarray*}
-  fun-spec &::=& (requires-clause | fun-behavior ) * variant-clause ? \\
-  requires-clause &::=& "requires" predicate \\
-  variant-clause &::=& "variant" term ("for" ident)? \\
-  fun-behavior &::=& "behavior" ident ":"
-             (assumes-clause | assigns-clause |
-              ensures-clause ) * \\
-  assumes-clause &::=& "assumes" predicate \\
-  assigns-clause &::=& "assigns" (location (, location) * |
-  "\nothing") \\
-  ensures-clause &::=& "ensures" predicate \\
-  invariant-clause &::=& "invariant" predicate \\
-  location &::=& (see below)
-\end{eqnarray*}
-
-
-
-semantics:
-
-\begin{verbatim}
-  requires R_j
-  behavior x_i: assumes A_i ensures E_i
-
-
- pre-condition : R_1 and R_2 and ...
- post-condition : (\old(A_1 and I_1) implies E_1) and ...
-\end{verbatim}
-
-
-Proposition de Yannick: des requires dans les behaviors:
-la semantique consiste a rajouter $(A_i \ra R_i)$ en conjonction de la
-precondition globale 
-
-
-
-Questions: "reads" clause ?
-
-\subsection{syntax of assigns clauses}
-\label{sec:locations}
-
-\begin{alltt}
-  location ::=
-       var | location->id | location.id | *location
-       | location[term ? .. term?] | location[term]
-       |  (\Forall \(\tau\)) | (\Forall \(\tau\) x ; predicate)
-       |  location + [ term? .. term? ] | location + term
-\end{alltt}
-
-semantics:
-\begin{itemize}
-\item a "location" denotes a set of terms.
-\item only location denoting a set of lvalues are valid as argument to
-  "assigns" clauses : constructs in the two first lines above denotes
-  lvalues, but not the two last lines
-\end{itemize}
-
-example:
-
-\begin{alltt}
-  assigns  (\Forall struct list *p ; reachable(root,p)) -> hd
-\end{alltt}
 
 \section{Constructions for valid pointer dereferencing, separation}
 
@@ -335,18 +420,23 @@ assigns Locs from Locs
 \end{verbatim}
 
 \section{Data invariants}
-
+\label{sec:invariants}
 
 \begin{itemize}
 \item Global invariants: invariants on global variables
 \item Type invariants: invariants on struct, union, typedef
 \end{itemize}
 
-semantics:
+Examples:
+\input{invariants.pp}
 
-an invariant is true when ... \cite{boogie}
+\subsection{Semantics}
+
+an invariant is true when ...\cite{barnett04jot}
+
 
 \section{Ghost variables and statements}
+\label{sec:ghost}
 
 Remarque de Patrick : les ``ghost statements'' correspondent à des
 instructions d'observations des variables du C. Ces instructions
@@ -358,32 +448,6 @@ Remarque de Patrick : Les propriétés peuvent porter à la fois sur les
 variables du C et les  ``ghost variables''. 
 
 
-
-\section{Annotations: in comments or in another file}
-
-in JML, parsing is done by just removing the $/*@$ and $*/$. this can
-completely modify the semantics: Example:
-\begin{verbatim}
-return x /*@ +1 */ ;
-\end{verbatim}
-
-The current option is to isolate the comments in a first step, and
-then parse a second time. But the same problem may appear:
-\begin{verbatim}
-if (c) //@ assert P
-   c=1;
-\end{verbatim}
-for the analyser, instruction \verb|c=1| is executed unconditionnaly.\\
-
-Remarque de Patrick : ce n'est plus le cas dans Fram-C. 
-Les annotations sont maintenant, tout comme les étiquettes du C, 
-indissociable de l'instruction qui suit ; celle-ci pouvant être
-également annotée.
-Ensuite, tout comme avec GCC où il est possible de placer un étiquette
-juste avant de fermer un bloc, il est possible d'y placer autant
-d'annotations que désiré (avant cette éventuelle étiquette, sinon il y
-a beaucoup de confits ``shift/reduce'' et ``reduce/réduce'' à résoudre).
- 
 
 \section{Module constructions}
 
@@ -405,7 +469,8 @@ définies dans des \verb|.h| que la norme spécifie en grande partie
 Il faudrait autant que possible se raprocher de ces noms.
  
 \bibliographystyle{plain}
-\bibliography{biblio}
+%\bibliography{biblio}
+\input{biblio-demons}
 
 \end{document}
 
