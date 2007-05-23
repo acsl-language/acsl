@@ -1,8 +1,8 @@
 
-all: invariants.pp 
+all: assigns.pp invariants.pp 
 
-%.pp: pp.ml %.tex 
-	ocaml $^ > $@
+%.pp: %.tex pp.ml
+	ocaml pp.ml -color $< > $@
 
 pp.ml: pp.mll
 	ocamllex pp.mll

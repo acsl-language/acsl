@@ -3,8 +3,7 @@
 \usepackage{amssymb}
 \usepackage[T1]{fontenc}
 \usepackage{times}
-%\usepackage[latin1]{inputenc}
-\usepackage{alltt}
+\usepackage{pst-node}
 
 \input{macros}
 
@@ -185,14 +184,14 @@ Questions: "reads" clause ?
 \subsection{syntax of assigns clauses}
 \label{sec:locations}
 
-\begin{alltt}
-  location ::=
-       var | location->id | location.id | *location
-       | location[term ? .. term?] | location[term]
-       |  (\Forall \(\tau\)) | (\Forall \(\tau\) x ; predicate)
+\begin{eqnarray*}
+  location &::=& 
+       var | location->id | location.id | *location \\
+       | location[term ? .. term?] | location[term] \\
+       |  (\Forall \tau) | (\Forall \tau x ; predicate) \\
        |  location + [ term? .. term? ] | location + term
-\end{alltt}
-
+     \end{eqnarray*}
+     
 semantics:
 \begin{itemize}
 \item a "location" denotes a set of terms.
@@ -202,10 +201,7 @@ semantics:
 \end{itemize}
 
 example:
-
-\begin{alltt}
-  assigns  (\Forall struct list *p ; reachable(root,p)) -> hd
-\end{alltt}
+\input{assigns}
 
 \section{Statement annotation}
 

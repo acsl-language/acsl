@@ -7,28 +7,6 @@
   let in_comment = ref false
   let in_slashshash = ref false
 
-  let ocaml_keywords = 
-    let h = Hashtbl.create 97 in
-    List.iter (fun s -> Hashtbl.add h s ())
-      [ 
-	"fun"; "match"; "with"; "begin"; 
-	"end"; "try"; "as"; "let"; "rec"; "in";
-	"function"; "if"; "private"; "then"; "else"; "sig"; "val"; 
-	"type"; "module";
-	"while"; "do"; "done"; "for"; "struct"; "to"; "raise"
-      ];
-    h
-
-  let coq_keywords = 
-    let h = Hashtbl.create 97 in
-    List.iter (fun s -> Hashtbl.add h s ())
-      [ 
-	"Inductive"; "Fixpoint" ; "Definition" ; "Lemma" ;
-	"forall" ; "exists" ; "match" ; "with" ; "end" ; "as" ;
-	"if" ; "then" ; "else" ;
-      ];
-    h
-
   let c_keywords = 
     let h = Hashtbl.create 97 in
     List.iter (fun s -> Hashtbl.add h s ())
@@ -65,8 +43,6 @@
       ];
     h
 
-  let is_ocaml_keyword s = Hashtbl.mem ocaml_keywords s
-  let is_coq_keyword s = Hashtbl.mem coq_keywords s
   let is_c_keyword s = Hashtbl.mem c_keywords s 
   let is_c_keytype s = Hashtbl.mem c_types s 
   let is_bs_keyword s = Hashtbl.mem bs_keywords s 
@@ -84,67 +60,67 @@ let ident = ['a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z' '_' '0'-'9']*
 let beamerspec = ['0'-'9' '-' ',']+
 let beameraction = "uncover" | "visible" | "invisible" | "only" | "onslide"
 
-rule ktt = parse
-  | '{'  { print_string "\\{"; ktt lexbuf }
-  | '}'  { print_string "\\}"; ktt lexbuf }
-  | '#'  { print_string "\\diese{}"; ktt lexbuf }
-  | '_'  { print_string "\\_{}"; ktt lexbuf }
-  | '&'  { print_string "\\&{}"; ktt lexbuf }
-  | '%'  { print_string "\\%{}"; ktt lexbuf }
+rule ctt = parse
+  | '{'  { print_string "\\{"; ctt lexbuf }
+  | '}'  { print_string "\\}"; ctt lexbuf }
+  | '#'  { print_string "\\diese{}"; ctt lexbuf }
+  | '_'  { print_string "\\_{}"; ctt lexbuf }
+  | '&'  { print_string "\\&{}"; ctt lexbuf }
+  | '%'  { print_string "\\%{}"; ctt lexbuf }
   | '\n' { if !in_slashshash then begin
 	     print_string "\\end{slshape}"; 
 	     in_slashshash := false ; in_comment := false
 	   end;
-	   print_string "~\\\\\n"; ktt lexbuf }
+	   print_string "~\\\\\n"; ctt lexbuf }
 (*
-  | ">=" { print_string "\\ensuremath{\\geq}"; ktt lexbuf }
-  | "<=" { print_string "\\ensuremath{\\leq}"; ktt lexbuf }
-  | ">" { print_string "\\ensuremath{>}"; ktt lexbuf }
-  | "<" { print_string "\\ensuremath{<}"; ktt lexbuf }
-  | "<>" { print_string "\\ensuremath{\\neq}"; ktt lexbuf }
-  | "==" { print_string "\\ensuremath{=}"; ktt lexbuf }
-  | "->" { print_string "\\ensuremath{\\rightarrow}"; ktt lexbuf }
-  | "==>" { print_string "\\ensuremath{\\Rightarrow}"; ktt lexbuf }
-  | "<==>" { print_string "\\ensuremath{\\Leftrightarrow}"; ktt lexbuf }
+  | ">=" { print_string "\\ensuremath{\\geq}"; ctt lexbuf }
+  | "<=" { print_string "\\ensuremath{\\leq}"; ctt lexbuf }
+  | ">" { print_string "\\ensuremath{>}"; ctt lexbuf }
+  | "<" { print_string "\\ensuremath{<}"; ctt lexbuf }
+  | "<>" { print_string "\\ensuremath{\\neq}"; ctt lexbuf }
+  | "==" { print_string "\\ensuremath{=}"; ctt lexbuf }
+  | "->" { print_string "\\ensuremath{\\rightarrow}"; ctt lexbuf }
+  | "==>" { print_string "\\ensuremath{\\Rightarrow}"; ctt lexbuf }
+  | "<==>" { print_string "\\ensuremath{\\Leftrightarrow}"; ctt lexbuf }
 *)
   | "\\end{c}" { () }
-  | "\\emph{" [^'}''\n']* '}' { print_string (lexeme lexbuf); ktt lexbuf }
+  | "\\emph{" [^'}''\n']* '}' { print_string (lexeme lexbuf); ctt lexbuf }
   | "\\" beameraction "<" beamerspec ">" 
-      { print_string (lexeme lexbuf); ktt lexbuf 
+      { print_string (lexeme lexbuf); ctt lexbuf 
       }
   | "/*@" 
       { print_string "\\begin{slshape}";
 	if !color then print_string "\\color{blue}";
 	print_string "/*@"; 
-	ktt lexbuf }
+	ctt lexbuf }
   | "/*" 
       { print_string "\\begin{slshape}\\rmfamily\\color{darkgreen}/*"; 
 	in_comment := true;
-	ktt lexbuf }
+	ctt lexbuf }
   | "*/" { print_string "*/\\end{slshape}"; 
 	   in_comment := false;
-	   ktt lexbuf }
+	   ctt lexbuf }
   | "//@" 
       { in_slashshash := true; 
 	print_string "\\begin{slshape}";
 	if !color then print_string "\\color{blue}";
 	print_string "/*@"; 
-	ktt lexbuf }
+	ctt lexbuf }
   | "//" 
       { in_comment := true; 
 	in_slashshash := true; 
 	print_string "//\\begin{slshape}\\rmfamily\\color{darkgreen}";
-	ktt lexbuf }
+	ctt lexbuf }
   | eof  { () }
-  | '-'  { print_string "$-$"; ktt lexbuf }
-  | "'a" { print_string "\\ensuremath{\\alpha}"; ktt lexbuf }
-  | "::" { print_string ":\\hspace*{-0.1em}:"; ktt lexbuf }
-  | " "  { print_string "~"; ktt lexbuf }
+  | '-'  { print_string "$-$"; ctt lexbuf }
+  | "'a" { print_string "\\ensuremath{\\alpha}"; ctt lexbuf }
+  | "::" { print_string ":\\hspace*{-0.1em}:"; ctt lexbuf }
+  | " "  { print_string "~"; ctt lexbuf }
   | "[" (ident as s) "]" 
       { if !in_comment then print_string "{\\ttfamily " else print_string "[";
 	print_ident s;
 	if !in_comment then print_string "}" else print_string "]";
-	ktt lexbuf
+	ctt lexbuf
       }
   | ident as s
 	{ if not !in_comment && is_c_keyword s then 
@@ -157,7 +133,7 @@ rule ktt = parse
 		  print_string "}"
 		  end else *)
               print_ident s;
-	  ktt lexbuf 
+	  ctt lexbuf 
 	}
   | "\\" (ident as s)
       { if not !in_comment && is_bs_keyword s then 
@@ -167,64 +143,15 @@ rule ktt = parse
 	    end 
 	else
             print_string (lexeme lexbuf);
-	ktt lexbuf 
+	ctt lexbuf 
       }
   | _   
-      { print_string (lexeme lexbuf); ktt lexbuf }
-
-and coqtt = parse
-  | "\\end{coq}" { () }
-  | '{'  { print_string "\\{"; coqtt lexbuf }
-  | '}'  { print_string "\\}"; coqtt lexbuf }
-  | '\n' { print_string "~\\\\\n"; coqtt lexbuf }
-  | ">=" { print_string "\\ensuremath{\\geq}"; coqtt lexbuf }
-  | "<=" { print_string "\\ensuremath{\\leq}"; coqtt lexbuf }
-  | ">" { print_string "\\ensuremath{>}"; coqtt lexbuf }
-  | "<" { print_string "\\ensuremath{<}"; coqtt lexbuf }
-  | "<>" { print_string "\\ensuremath{\\neq}"; coqtt lexbuf }
-  | "->" { print_string "\\ensuremath{\\rightarrow}"; coqtt lexbuf }
-  | "forall" { print_string "\\ensuremath{\\forall}"; coqtt lexbuf }
-  | "exists" { print_string "\\ensuremath{\\exists}"; coqtt lexbuf }
-  | "/\\" { print_string "\\ensuremath{\\land}"; coqtt lexbuf }
-  | "\\/" { print_string "\\ensuremath{\\lor}"; coqtt lexbuf }
-  | '_'  { print_string "\\_{}"; coqtt lexbuf }
-  | '|'  { print_string "\\textbf{|}"; coqtt lexbuf }
-  | "=>"  { print_string "\\ensuremath{\\Rightarrow}"; coqtt lexbuf }
-  | "Z"  { print_string "\\ensuremath{\\mathbb{Z}}"; coqtt lexbuf }
-  | "\\" beameraction "<" beamerspec ">" 
-      { print_string (lexeme lexbuf); coqtt lexbuf 
-      }
-  | "(*" 
-      { print_string "\\begin{slshape}\\color{darkgreen}(*"; 
-	in_comment := true;
-	coqtt lexbuf }
-  | "*)" { print_string "*)\\end{slshape}"; 
-	   in_comment := false;
-	   coqtt lexbuf }
-  | eof  { () }
-  | " "  { print_string "~"; coqtt lexbuf }
-  | "[" (ident as s) "]" 
-      { if !in_comment then print_string "{\\ttfamily ";
-	print_ident s;
-	if !in_comment then print_string "}";
-	coqtt lexbuf
-      }
-  | ident as s
-      { if not !in_comment && is_coq_keyword s then 
-	    begin
-	      print_string "\\textbf{"; print_ident s;
-	      print_string "}"
-	    end 
-	else 
-            print_ident s;
-	coqtt lexbuf 
-      }
-  | _   { print_string (lexeme lexbuf); coqtt lexbuf }
+      { print_string (lexeme lexbuf); ctt lexbuf }
 
 and pp = parse
   | "\\begin{c}" space* "\n" 
       { print_string "\\begin{flushleft}\\ttfamily\\parindent 0pt\n"; 
-	ktt lexbuf;
+	ctt lexbuf;
 	print_string "\\end{flushleft}";
 	pp lexbuf }
   | "é" { print_string "\\'e"; pp lexbuf }
@@ -244,9 +171,20 @@ and pp = parse
       { print_string (lexeme lexbuf); pp lexbuf }
 
 {
-  let f = Sys.argv.(1)
-  (*let () = slides := (String.length f > 6 && String.sub f 0 7 = "slides-")*)
-  let cin = open_in f
-  let lb = from_channel cin
-  let _ = pp lb
+  
+  let files = ref []
+
+  let () = Arg.parse 
+    [
+      "-color", Arg.Set color, "print in color"
+    ]
+    (fun f -> files := f :: !files)
+    "pp [options] file..."
+
+
+  let () = List.iter (fun f ->
+	       let cin = open_in f in
+	       let lb = from_channel cin in
+	       let _ = pp lb in ()) !files
+
 }
