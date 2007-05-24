@@ -1,21 +1,21 @@
 
 {
-  open Lexing 
+  open Lexing
 
   let color = ref false
-   
+
   let in_comment = ref false
   let in_slashshash = ref false
 
-  let c_keywords = 
+  let c_keywords =
     let h = Hashtbl.create 97 in
     List.iter (fun s -> Hashtbl.add h s ())
-      [ 
+      [
 	"auto"; "break"; "case"; "continue"; "new";
 	"default"; "do"; "else"; "for"; "goto"; "if";
-	"return"; "switch"; "while"; 
-	"class" ; "interface" ; 
-	"public" ; "private" ; "static" ; 
+	"return"; "switch"; "while";
+	"class" ; "interface" ;
+	"public" ; "private" ; "static" ;
 	"throws" ; "extends" ; "implements" ; "reads" ;
 	"requires"; "invariant"; "representation";
 	"ensures" ; "assigns"; "modifiable" ; "signals" ;
@@ -24,10 +24,10 @@
       ];
     h
 
-  let bs_keywords = 
+  let bs_keywords =
     let h = Hashtbl.create 97 in
     List.iter (fun s -> Hashtbl.add h s ())
-      [ 
+      [
 	"valid"; "forall"; "old" ; "fresh" ; "nothing" ; "result"
       ];
     h
@@ -35,7 +35,7 @@
   let c_types =
     let h = Hashtbl.create 97 in
     List.iter (fun s -> Hashtbl.add h s ())
-      [ 
+      [
 	"char"; "const"; "double"; "enum"; "extern";
 	"float"; "int"; "long"; "register";
 	"short"; "signed"; "static"; "struct";
@@ -43,12 +43,12 @@
       ];
     h
 
-  let is_c_keyword s = Hashtbl.mem c_keywords s 
-  let is_c_keytype s = Hashtbl.mem c_types s 
-  let is_bs_keyword s = Hashtbl.mem bs_keywords s 
+  let is_c_keyword s = Hashtbl.mem c_keywords s
+  let is_c_keytype s = Hashtbl.mem c_types s
+  let is_bs_keyword s = Hashtbl.mem bs_keywords s
 
   let print_ident =
-    let print_ident_char c = 
+    let print_ident_char c =
       if c = '_' then print_string "\\_{}" else print_char c
     in
     String.iter print_ident_char
@@ -68,7 +68,7 @@ rule ctt = parse
   | '&'  { print_string "\\&{}"; ctt lexbuf }
   | '%'  { print_string "\\%{}"; ctt lexbuf }
   | '\n' { if !in_slashshash then begin
-	     print_string "\\end{slshape}"; 
+	     print_string "\\end{slshape}";
 	     in_slashshash := false ; in_comment := false
 	   end;
 	   print_string "~\\\\\n"; ctt lexbuf }
@@ -85,30 +85,30 @@ rule ctt = parse
 *)
   | "\\end{c}" { () }
   | "\\emph{" [^'}''\n']* '}' { print_string (lexeme lexbuf); ctt lexbuf }
-  | "\\" beameraction "<" beamerspec ">" 
-      { print_string (lexeme lexbuf); ctt lexbuf 
+  | "\\" beameraction "<" beamerspec ">"
+      { print_string (lexeme lexbuf); ctt lexbuf
       }
-  | "/*@" 
+  | "/*@"
       { print_string "\\begin{slshape}";
 	if !color then print_string "\\color{blue}";
-	print_string "/*@"; 
+	print_string "/*@";
 	ctt lexbuf }
-  | "/*" 
-      { print_string "\\begin{slshape}\\rmfamily\\color{darkgreen}/*"; 
+  | "/*"
+      { print_string "\\begin{slshape}\\rmfamily\\color{darkgreen}/*";
 	in_comment := true;
 	ctt lexbuf }
-  | "*/" { print_string "*/\\end{slshape}"; 
+  | "*/" { print_string "*/\\end{slshape}";
 	   in_comment := false;
 	   ctt lexbuf }
-  | "//@" 
-      { in_slashshash := true; 
+  | "//@"
+      { in_slashshash := true;
 	print_string "\\begin{slshape}";
 	if !color then print_string "\\color{blue}";
-	print_string "/*@"; 
+	print_string "//@";
 	ctt lexbuf }
-  | "//" 
-      { in_comment := true; 
-	in_slashshash := true; 
+  | "//"
+      { in_comment := true;
+	in_slashshash := true;
 	print_string "//\\begin{slshape}\\rmfamily\\color{darkgreen}";
 	ctt lexbuf }
   | eof  { () }
@@ -116,41 +116,41 @@ rule ctt = parse
   | "'a" { print_string "\\ensuremath{\\alpha}"; ctt lexbuf }
   | "::" { print_string ":\\hspace*{-0.1em}:"; ctt lexbuf }
   | " "  { print_string "~"; ctt lexbuf }
-  | "[" (ident as s) "]" 
+  | "[" (ident as s) "]"
       { if !in_comment then print_string "{\\ttfamily " else print_string "[";
 	print_ident s;
 	if !in_comment then print_string "}" else print_string "]";
 	ctt lexbuf
       }
   | ident as s
-	{ if not !in_comment && is_c_keyword s then 
+	{ if not !in_comment && is_c_keyword s then
 	      begin
 		print_string "\\textbf{"; print_ident s;
 		print_string "}"
-	      end 
+	      end
 	  else (* if is_c_keytype s then begin
 		  print_string "{\\color{black}"; print_string s;
 		  print_string "}"
 		  end else *)
               print_ident s;
-	  ctt lexbuf 
+	  ctt lexbuf
 	}
   | "\\" (ident as s)
-      { if not !in_comment && is_bs_keyword s then 
+      { if not !in_comment && is_bs_keyword s then
 	    begin
 	      print_string "\\textbf{\\char'134 "; print_ident s;
 	      print_string "}"
-	    end 
+	    end
 	else
             print_string (lexeme lexbuf);
-	ctt lexbuf 
+	ctt lexbuf
       }
-  | _   
+  | _
       { print_string (lexeme lexbuf); ctt lexbuf }
 
 and pp = parse
-  | "\\begin{c}" space* "\n" 
-      { print_string "\\begin{flushleft}\\ttfamily\\parindent 0pt\n"; 
+  | "\\begin{c}" space* "\n"
+      { print_string "\\begin{flushleft}\\ttfamily\\parindent 0pt\n";
 	ctt lexbuf;
 	print_string "\\end{flushleft}";
 	pp lexbuf }
@@ -165,16 +165,16 @@ and pp = parse
   | "ù" { print_string "\\`u"; pp lexbuf }
   | "ö" { print_string "\\\"o"; pp lexbuf }
   | "ô" { print_string "\\^o"; pp lexbuf }
-  | eof 
+  | eof
       { () }
-  | _ 
+  | _
       { print_string (lexeme lexbuf); pp lexbuf }
 
 {
-  
+
   let files = ref []
 
-  let () = Arg.parse 
+  let () = Arg.parse
     [
       "-color", Arg.Set color, "print in color"
     ]

@@ -11,7 +11,7 @@
 
 \title{The Frama-C specification language}
 
-\author{P.~Baudin, J.-C.~Filli\^atre, C.~March\'e, B.~Monate, Y.~Moy, V.~Prevosto} 
+\author{P.~Baudin, J.-C.~Filli\^atre, C.~March\'e, B.~Monate, Y.~Moy, V.~Prevosto}
 
 \maketitle
 
@@ -30,7 +30,7 @@ exemple sera non-retenue.\\
 Proposition de Patrick: utiliser en priorité les constructions de JML,
 ensuite les généraliser lorsque cela a un sens, et en dernier recours,
 en créer de nouvelles. Il y a peut-être des constructions
-du C++ ou C\# à utiliser ou à généraliser. 
+du C++ ou C\# à utiliser ou à généraliser.
 Idem avec les extensions de GCC.
 
 
@@ -71,7 +71,7 @@ that source files remain compilable\footnote{Other means of attaching
     or definition of logical function or predicates, axioms. Such an
     annotation is placed at the global declarations level.
 
-  \item global invariant. This is allowed at the level of global declarations 
+  \item global invariant. This is allowed at the level of global declarations
 
   \item type invariant. This allows both structure or union invariants, and invariants on type names introduced by \typedef. See section~\ref{sec:invariants}.
 
@@ -82,14 +82,14 @@ that source files remain compilable\footnote{Other means of attaching
     déclarées en début de fonction.
 
   \item remarque de Patrick: ces annotations peuvent être vues
-    comme des étiquettes indiquant le point de programme 
+    comme des étiquettes indiquant le point de programme
     où la propriété porte. En C, toute instruction peut être
     étiquettée. GCC étend cela aux accolades fermantes des blocs,
     y compris celle fermant le corps de fonction.=On peut dire que
     l'on fait de même lorsque l'on place des annotations juste avant
     la fermerture d'un bloc.
   \end{itemize}
-\item attribute annotations 
+\item attribute annotations
   \begin{itemize}
   \item sur proposition de Patrick afin permettre d'ajouter des attributs
   partout où l'on peut écrire les qualifications habituelles du
@@ -105,29 +105,29 @@ that source files remain compilable\footnote{Other means of attaching
 
 \subsection{Parsing annotations in practice}
 
-In JML, parsing is done by just ignoring \verb|//@|, \verb|/*@| and \verb|*/| and the level of lexing. This technique can completely modify the semantics of the C code, for example:  
+In JML, parsing is done by just ignoring \verb|//@|, \verb|/*@| and \verb|*/| and the level of lexing. This technique can completely modify the semantics of the C code, for example:
 \begin{verbatim}
 return x /*@ +1 */ ;
 \end{verbatim}
 
-In our language this has to be forbidden. Technically, current implementation of Frama-C isolate the comments in a first step of syntax analysis, and then parses a second time. Nevertheless, the grammar and the corresponding parser must be carefully designed to avoid interaction of annotations with the code. For example, in such a code: 
+In our language this has to be forbidden. Technically, current implementation of Frama-C isolate the comments in a first step of syntax analysis, and then parses a second time. Nevertheless, the grammar and the corresponding parser must be carefully designed to avoid interaction of annotations with the code. For example, in such a code:
 \begin{verbatim}
 if (c) //@ assert P;
    c=1;
 \end{verbatim}
-the statement \verb|c=1| must understood as the then branch of the if. This is ensured by the grammar below, saying that \verb|assert| annotations are not statement themselves, but attached to the statement that follows, like C labels. 
- 
+the statement \verb|c=1| must understood as the then branch of the if. This is ensured by the grammar below, saying that \verb|assert| annotations are not statement themselves, but attached to the statement that follows, like C labels.
+
 is executed unconditionnaly.\\
 
-% Remarque de Patrick : ce n'est plus le cas dans Frama-C. 
-% Les annotations sont maintenant, tout comme les étiquettes du C, 
+% Remarque de Patrick : ce n'est plus le cas dans Frama-C.
+% Les annotations sont maintenant, tout comme les étiquettes du C,
 % indissociable de l'instruction qui suit ; celle-ci pouvant être
 % également annotée.
 % Ensuite, tout comme avec GCC où il est possible de placer un étiquette
 % juste avant de fermer un bloc, il est possible d'y placer autant
 % d'annotations que désiré (avant cette éventuelle étiquette, sinon il y
 % a beaucoup de confits ``shift/reduce'' et ``reduce/réduce'' à résoudre).
- 
+
 \subsection{About preprocessing}
 
 This document considers C source \emph{after} preprocessing. Tool must
@@ -169,13 +169,13 @@ semantics:
 
 
  pre-condition : R_1 and R_2 and ...
- post-condition : (\old(A_1 and I_1) implies E_1) and ...
+ post-condition : (\old(A_1) implies E_1) and ...
 \end{verbatim}
 
 
 Proposition de Yannick: des requires dans les behaviors:
 la semantique consiste a rajouter $(A_i \ra R_i)$ en conjonction de la
-precondition globale 
+precondition globale
 
 
 
@@ -185,13 +185,13 @@ Questions: "reads" clause ?
 \label{sec:locations}
 
 \begin{eqnarray*}
-  location &::=& 
+  location &::=&
        var | location->id | location.id | *location \\
        | location[term ? .. term?] | location[term] \\
        |  (\Forall \tau) | (\Forall \tau x ; predicate) \\
        |  location + [ term? .. term? ] | location + term
      \end{eqnarray*}
-     
+
 semantics:
 \begin{itemize}
 \item a "location" denotes a set of terms.
@@ -215,7 +215,7 @@ example:
     parler des paramètres, et éventuellement des variables locales
     déclarées en début de fonction.
   \item remarque de Patrick: ces annotations peuvent être vues
-    comme des étiquettes indiquant le point de programme 
+    comme des étiquettes indiquant le point de programme
     où la propriété porte. En C, toute instruction peut être
     étiquettée. GCC étend cela aux accolades fermantes des blocs,
     y compris celle fermant le corps de fonction.=On peut dire que
@@ -255,12 +255,12 @@ logical expressions = pure C expressions, without function
     specification.
 
   \item quantifications:  $\Forall \tau x; e$ and $\Exists \tau x; e$
-  \item \verb|==>|, \verb|<==>|, 
+  \item \verb|==>|, \verb|<==>|,
 
     Open question: \verb|=>| and \verb|<=>| instead of \verb|==>|,
-    \verb|<==>| ? 
+    \verb|<==>| ?
 \\
-   Remarque de Patrick : 
+   Remarque de Patrick :
    en C il existe le ou exclusif bit à bit (noté \verb|^|), mais pas
    d'implication bit à bit, ni d'équivalence.
    Coté contrôle (que l'on assimile facilement à la logique) il
@@ -272,7 +272,7 @@ logical expressions = pure C expressions, without function
     \verb|&| & \verb|&&| \\
     \verb|=>| & \verb|==>| \\
     \verb|<=>| & \verb|<==>| \\
-    \verb|^| & \verb|^^| 
+    \verb|^| & \verb|^^|
   \end{tabular}
 
   \item $\Let \tau x = e \In e$ and $\If e \Then e \Else e$
@@ -281,7 +281,7 @@ logical expressions = pure C expressions, without function
 
   \end{itemize}
 
-on veut la logique equationnelle classique, cad que l'axiome 
+on veut la logique equationnelle classique, cad que l'axiome
 \[
 \forall x, x=x
 \]
@@ -289,7 +289,7 @@ est valide. Donc on ne peut pas introduire de construction
 non-déterministe comme  $(\texttt{any} x \mid P)$
 
 
-Types de la logique: 
+Types de la logique:
 \begin{itemize}
 \item types mathematiques: real, integer, boolean
 \item types du C
@@ -347,7 +347,7 @@ $\separated(p1,..,p_n)$ : means that for if $i<>j, p_i \not\equiv p_j$
 
 cette construction peut-etre etendue au cas ou les $p_i$ sont des
 ensembles de locations memoires, telles que definies a la section
-\ref{sec:locations}. 
+\ref{sec:locations}.
 
 
 \section{Termination}
@@ -442,7 +442,7 @@ variables''. Cela permet d'écrire plus facilement l'observateur
 adéquat à la preuve des propriétés.\\
 
 Remarque de Patrick : Les propriétés peuvent porter à la fois sur les
-variables du C et les  ``ghost variables''. 
+variables du C et les  ``ghost variables''.
 
 
 
@@ -461,13 +461,13 @@ we need macros \verb|\max_range|, \verb|min_range| taking a C integer
 type as argument, e.g. \verb|\max_range(unsigned char) = 255|\\
 
 Remarque de Patrick : Ces marcros, types et variables sont en principe
-définies dans des \verb|.h| que la norme spécifie en grande partie 
-(le nom l'est, le type peut y être contraint). 
+définies dans des \verb|.h| que la norme spécifie en grande partie
+(le nom l'est, le type peut y être contraint).
 Il faudrait autant que possible se raprocher de ces noms.
- 
+
 \bibliographystyle{plain}
 %\bibliography{biblio}
-\input{biblio-demons}
+%\input{biblio-demons}
 
 \end{document}
 
