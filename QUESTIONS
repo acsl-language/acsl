@@ -1,0 +1,11 @@
+Q1) Une seule annotation par bloc de commentaire ?
+
+Veut-on autoriser :
+
+/*@ type invariant pt_validity(struct T t) { t.ok ==> \valid(t.pt) }
+  @ type invariant tab_nonnegative(T t) {
+  @    \forall int i; 0 <= i && i < 10 => t[i] >=0
+  @ }
+  @*/
+
+?
