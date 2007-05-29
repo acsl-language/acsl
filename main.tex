@@ -5,6 +5,7 @@
 \usepackage{times}
 \usepackage{pst-node}
 
+\usepackage{xspace}
 \input{macros}
 
 \begin{document}
@@ -16,22 +17,23 @@
 \maketitle
 
 \tableofcontents
-
+\newcommand{\remark}[2]{\textsl{\begin{itemize}\item \underline{remarque} de
+      {#1}~: {#2}\end{itemize}}}
 \section{Introduction, glossary}
 
 \emph{pure} : side-effect free
 
 \emph{behavior}: pair pre- and post-condition, assigns\\
 
-Proposition de Claude: ce document doit etre illustré par des
+\remark{Claude}{ce document doit etre illustré par des
 exemples. Toute construction qui ne serait pas illustrée par un
-exemple sera non-retenue.\\
+exemple sera non-retenue.}
 
-Proposition de Patrick: utiliser en priorité les constructions de JML,
+\remark{Patrick}{utiliser en priorité les constructions de JML,
 ensuite les généraliser lorsque cela a un sens, et en dernier recours,
 en créer de nouvelles. Il y a peut-être des constructions
 du C++ ou C\# à utiliser ou à généraliser.
-Idem avec les extensions de GCC.
+Idem avec les extensions de GCC.}
 
 \section{Annotations}
 
@@ -44,16 +46,43 @@ that source files remain compilable\footnote{Other means of attaching
 \subsection{Kinds of annotations}
 
 \begin{itemize}
-\item Function behavior. Such an annotation is inserted just before
-  the declaration or the definition of a function.
+\item Global annotation:
+  \begin{itemize}
+  \item Function behavior. Such an annotation is inserted just before
+    the declaration or the definition of a function.
+    See section~\ref{sec:fn-behavior}.
+
+
+  \item global invariant. This is allowed at the level of global declarations
+    See section~\ref{sec:invariants}.
+
+  \item type invariant. This allows both structure or union
+    invariants, and invariants on type names introduced by \typedef. 
+    See section~\ref{sec:invariants}.
+
+  \item logical specifications: logic type introduction, introduction
+    or definition of logical function or predicates, axioms. Such an
+    annotation is placed at the global declarations level.
+
+  \end{itemize}
 
 \item Statement annotation:
   \begin{itemize}
-  \item \assert, logical label. These are allowed everywhere a C label
-    is allowed.\footnote{Remark about \assume clauses: current
+  \item \assert,\footnote{Remark about \assume clauses: current
       discussion is that it is not considered as an element of
       specification, so not present here. This should be part of proof
       management done by tools}
+    logical label. These are allowed everywhere a C label
+    is allowed.
+    \remark{Patrick}{En C, seules les instructions peuvent être
+      étiquettées. GCC étend cela aux accolades fermantes des blocs,
+      y compris celle fermant le corps de fonction. On peut dire que
+      l'on fait de même lorsque l'on place des annotations juste avant
+      la fermerture d'un bloc.}
+    \remark{Patrick}{permettre de poser une assertion sur
+      la sortie de fonction quelque soit cette sortie, et d'y
+      parler des paramètres, et éventuellement des variables locales
+      déclarées en début de fonction.}
 
   \item loop annotation (invariant, variant, assign clauses) are
     allowed immediately before loop statements: \For, \While,
@@ -61,45 +90,33 @@ that source files remain compilable\footnote{Other means of attaching
 
   \item statement behavior. Very similar to a function behavior.
     Semantical condition must be checked (normal termination only, no goto going inside, no goto going outside)
+    \remark{Patrick}{as-t'on droit au \old dans le \ensures
+      de cette annotation~?}
 
   \item ghost brackets for enclosing blocks
+    \remark{Patrick}{on a besoin de ``ghost brackets'' pour
+      écrire du ``ghost code''. Dans ce cas on n'en fait pas un point
+      à part entière ici, on en parlera dans la section~\ref{sec:ghost}.
+      Par contre, on a besoin de ``logical brackets'' afin de créer un
+      ``logical statement'' auquel on désire associer un ``statement
+      behavior''. Faut'il en parler ici, comme on a parlé des
+      ``logical label'' plus haut~?}
 
   \item ghost code. See section~\ref{sec:ghost}
 
-  \item logical specifications: logic type introduction, introduction
-    or definition of logical function or predicates, axioms. Such an
-    annotation is placed at the global declarations level.
-
-  \item global invariant. This is allowed at the level of global declarations
-
-  \item type invariant. This allows both structure or union invariants, and invariants on type names introduced by \typedef. See section~\ref{sec:invariants}.
-
-
-  \item proposition de Patrick: permettre de poser une assertion sur
-    la sortie de fonction quelque soit cette sortie, et d'y
-    parler des paramètres, et éventuellement des variables locales
-    déclarées en début de fonction.
-
-  \item remarque de Patrick: ces annotations peuvent être vues
-    comme des étiquettes indiquant le point de programme
-    où la propriété porte. En C, toute instruction peut être
-    étiquettée. GCC étend cela aux accolades fermantes des blocs,
-    y compris celle fermant le corps de fonction.=On peut dire que
-    l'on fait de même lorsque l'on place des annotations juste avant
-    la fermerture d'un bloc.
   \end{itemize}
-\item attribute annotations
-  \begin{itemize}
-  \item sur proposition de Patrick afin permettre d'ajouter des attributs
+
+\item Attribute annotation:
+  \remark{Patrick}{annotation permettant d'ajouter des attributs
   partout où l'on peut écrire les qualifications habituelles du
   langage C (const, volatile, restrict) pour les outils qui réalisent
   de une vérification et/ou inférence de type comme dans
-  \verb|<http://www.cs.umd.edu/~jfoster/cqual>|, ou lors de l'inférence de
+  \texttt{<http://www.cs.umd.edu/\~~jfoster/cqual>}, ou lors de l'inférence de
   zones seravnt à identifier un modéle mémoire. Cela permet également de
   proposer des types logiques pour les variables de la logique
   associées à des variables du C qui soient différents des types
-  proposés par défaut.
-  \end{itemize}
+  proposés par défaut.}
+
 \end{itemize}
 
 \subsection{Parsing annotations in practice}
@@ -124,14 +141,14 @@ if. This is ensured by the grammar below, saying that \verb|assert|
 annotations are not statement themselves, but attached to the
 statement that follows, like C labels.
 
-% Remarque de Patrick : ce n'est plus le cas dans Frama-C.
+% \remark{Patrick}{ce n'est plus le cas dans Frama-C.
 % Les annotations sont maintenant, tout comme les étiquettes du C,
 % indissociable de l'instruction qui suit ; celle-ci pouvant être
 % également annotée.
 % Ensuite, tout comme avec GCC où il est possible de placer un étiquette
 % juste avant de fermer un bloc, il est possible d'y placer autant
 % d'annotations que désiré (avant cette éventuelle étiquette, sinon il y
-% a beaucoup de confits ``shift/reduce'' et ``reduce/réduce'' à résoudre).
+% a beaucoup de confits ``shift/reduce'' et ``reduce/réduce'' à résoudre).}
 
 \subsection{About preprocessing}
 
@@ -145,7 +162,7 @@ Logical expressions are pure C expressions, without function
 calls. Semantics is given by the classical 2-valued logic. Additional constructs exist, given in Section~\ref{sec:expressions}
 
 \section{Function behavior}
-
+\label{sec:fn-behavior}
 Grammar:
 
 \input{fn_behavior.bnf}
@@ -162,9 +179,9 @@ semantics:
 \end{verbatim}
 
 
-Proposition de Yannick: des requires dans les behaviors:
+\remark{Yannick}{des requires dans les behaviors:
 la semantique consiste a rajouter $(A_i \ra R_i)$ en conjonction de la
-precondition globale
+precondition globale}
 
 
 
@@ -193,33 +210,7 @@ example:
   \item loop invariants (+loop assigns ?)
   \item block behaviors (normal termination only, no goto going
     inside, no goto going outside)
-  \item proposition de Patrick: permettre de poser une assertion sur
-    la sortie de fonction quelque soit cette sortie, et d'y
-    parler des paramètres, et éventuellement des variables locales
-    déclarées en début de fonction.
-  \item remarque de Patrick: ces annotations peuvent être vues
-    comme des étiquettes indiquant le point de programme
-    où la propriété porte. En C, toute instruction peut être
-    étiquettée. GCC étend cela aux accolades fermantes des blocs,
-    y compris celle fermant le corps de fonction.=On peut dire que
-    l'on fait de même lorsque l'on place des annotations juste avant
-    la fermerture d'un bloc.
   \end{itemize}
-attribute annotations :
-  \begin{itemize}
-  \item sur proposition de Patrick afin permettre d'ajouter des attributs
-  partout où l'on peut écrire les qualifications habituelles du
-  langage C (const, volatile, restrict) pour les outils qui réalisent
-  de une vérification et/ou inférence de type comme dans
-  \verb|<http://www.cs.umd.edu/~jfoster/cqual>|, ou lors de l'inférence de
-  zones seravnt à identifier un modéle mémoire. Cela permet également de
-  proposer des types logiques pour les variables de la logique
-  associées à des variables du C qui soient différents des types
-  proposés par défaut.
-  \end{itemize}
-
-
-
 
 \section{Expressions}
 \label{sec:expressions}
@@ -240,23 +231,23 @@ logical expressions = pure C expressions, without function
   \item quantifications:  $\Forall \tau x; e$ and $\Exists \tau x; e$
   \item \verb|==>|, \verb|<==>|,
 
-    Open question: \verb|=>| and \verb|<=>| instead of \verb|==>|,
-    \verb|<==>| ?
-\\
-   Remarque de Patrick :
-   en C il existe le ou exclusif bit à bit (noté \verb|^|), mais pas
+   \remark{Clause}{Open question:}
+   \verb|=>| and \verb|<=>| instead of \verb|==>|, \verb|<==>| ?
+
+   \remark{Patrick}{
+   en C il existe le ou exclusif bit à bit (noté \texttt{\^}), mais pas
    d'implication bit à bit, ni d'équivalence.
    Coté contrôle (que l'on assimile facilement à la logique) il
    n'existe pas en C d'équivalence (car c'est l'égalité qui joue ce
    rôle), ni de ou exclusif. Ne désire-t'on pas avoir
-   quelque chose du genre :\\
+   quelque chose du genre :}
    \begin{tabular}{cc}
     bit à bit & logique \\
     \verb|&| & \verb|&&| \\
     \verb|=>| & \verb|==>| \\
     \verb|<=>| & \verb|<==>| \\
     \verb|^| & \verb|^^|
-  \end{tabular}
+    \end{tabular}
 
   \item $\Let \tau x = e \In e$ and $\If e \Then e \Else e$
 
@@ -351,10 +342,11 @@ prop$
 
 \begin{itemize}
 \item logic specifications: introduction of new logic types,
-  constants, functions, predicates and axioms\\
+  constants, functions, predicates and axioms.
 
-Remarque de Patrick : \verb|list| est-il un mot clé du langage de
-spécification~?
+\remark{Patrick}{\texttt{list} est-il un mot clé du langage de
+  spécification~?}
+
 \item polymorphism: for example
 \begin{verbatim}
 type 'a list
@@ -418,15 +410,13 @@ an invariant is true when ...\cite{barnett04jot}
 \section{Ghost variables and statements}
 \label{sec:ghost}
 
-Remarque de Patrick : les ``ghost statements'' correspondent à des
+\remark{Patrick}{les ``ghost statements'' correspondent à des
 instructions d'observations des variables du C. Ces instructions
 ne peuvent pas modifier les variables du C, mais que les ``ghost
 variables''. Cela permet d'écrire plus facilement l'observateur
-adéquat à la preuve des propriétés.\\
-
-Remarque de Patrick : Les propriétés peuvent porter à la fois sur les
-variables du C et les  ``ghost variables''.
-
+adéquat à la preuve des propriétés puisque les propriétés peuvent 
+porter à la fois sur les variables du C et les  ``ghost variables''.
+}
 
 
 \section{Module constructions}
@@ -443,10 +433,10 @@ types \verb|short|, \verb|char|, etc.
 we need macros \verb|\max_range|, \verb|min_range| taking a C integer
 type as argument, e.g. \verb|\max_range(unsigned char) = 255|\\
 
-Remarque de Patrick : Ces marcros, types et variables sont en principe
-définies dans des \verb|.h| que la norme spécifie en grande partie
+\remark{Patrick}{Ces marcros, types et variables sont en principe
+définies dans des \texttt{.h} que la norme spécifie en grande partie
 (le nom l'est, le type peut y être contraint).
-Il faudrait autant que possible se raprocher de ces noms.
+Il faudrait autant que possible se raprocher de ces noms.}
 
 \bibliographystyle{plain}
 \bibliography{biblio}
