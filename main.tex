@@ -167,25 +167,82 @@ Grammar:
 
 \input{fn_behavior.bnf}
 
+\remark{Patrick}{pourquoi seuls les ``behavior'' peuvent avoir un
+  nom~? Ne peut-t'on pas avoir le ``ident:'' optionnel pour chacune
+  des clauses~?}
+
 semantics:
 
 \begin{verbatim}
-  requires R_j
-  behavior x_i: assumes A_i ensures E_i
-
-
- pre-condition : R_1 and R_2 and ...
- post-condition : (\old(A_1) implies E_1) and ...
+  requires P_1
+  requires P_2
+  behavior x_1: assumes A_1 ensures E_1
+  behavior x_2: assumes A_2 ensures E_2
 \end{verbatim}
 
 
-\remark{Yannick}{des requires dans les behaviors:
-la semantique consiste a rajouter $(A_i \ra R_i)$ en conjonction de la
-precondition globale}
+\begin{verbatim}
+ pre-condition : P_1 and P_2
+ post-condition: (\old(A_1) implies E_1)
+             and (\old(A_2) implies E_2)
+\end{verbatim}
+
+\remark{Yannick}{JML propose deux modes de spécification des fonctions~: 
+ soit à base de ``requires'' et ``ensures'', soit à base de
+ ``behavior''. JML n'a pas de ``assumes'' dans les
+  ``behaviors'', mais des ``requires''. Dans le cas où les deux modes
+  peuvent se combiner, la sémantique est la suivante~:}
+
+\begin{verbatim}
+  requires P_1
+  requires P_2
+  ensures  Q_1
+  ensures  Q_2
+  behavior x_1: requires R_1 ensures E_1
+  behavior x_2: requires R_2 ensures E_2
+\end{verbatim}
 
 
+\begin{verbatim}
+ pre-condition : P_1 and P_2 
+             and (R_1 or R_2)
+ post-condition: Q_1 and Q_2 
+             and (\old(R_1) implies E_1) 
+             and (\old(R_2) implies E_2)
+\end{verbatim}
 
-Questions: "reads" clause ?
+\remark{Patrick}{les ``behavior'' de JML présente l'avantage de
+  pouvoir spécifier une fonction par cas (non exclusifs) 
+  et de vérifier que les cas d'appel sont spécifiés (sinon on ne peut
+  vérifier la pré-condition). 
+  Il semble important à Airbus de pouvoir s'assurer qu'ils ont
+  énoncé l'ensemble des cas.}  
+
+\remark{Yannick}{avoir ``requires'' en plus des ``assumes'' dans les
+  ``behaviors'' semble utile :
+la sémantique consiste à rajouter $(A_i \ra R_i)$ en conjonction de la
+précondition globale}
+
+\begin{verbatim}
+  requires P_1
+  requires P_2
+  ensures  Q_1
+  ensures  Q_2
+  behavior x_1: requires R_1 assumes A_1 ensures E_1
+  behavior x_2: requires R_2 assumes A_2 ensures E_2
+\end{verbatim}
+
+
+\begin{verbatim}
+ pre-condition : P_1 and P_2 
+             and (A_1 implies R_1) 
+             and (A_2 implies R_2)
+ post-condition: Q_1 and Q_2 
+             and (\old(A_1) implies E_1) 
+             and (\old(A_2) implies E_2)
+\end{verbatim}
+
+
 
 \subsection{syntax of assigns clauses}
 \label{sec:locations}
@@ -202,6 +259,10 @@ semantics:
 
 example:
 \input{assigns}
+
+\remark{Patrick}{ne faut-t'il pas étendre les clauses ``assigns'' aux
+  clauses ``from'' de CAVEAT prenant en comptes les locations lues, et les
+  expressions fonctionnelles~?}
 
 \section{Statement annotation}
 
