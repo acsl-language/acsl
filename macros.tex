@@ -39,8 +39,21 @@
 
 % BNF grammar
 
-\newcommand{\term}[1]{\textsl{#1}}
-
+\newif\ifspace
+\newcommand{\addspace}{\ifspace \; \spacefalse \fi}
+\newcommand{\term}[1]{\addspace\hbox{\textbf{\textsl{#1}}} \spacetrue}
+\newcommand{\nonterm}[1]{\addspace\hbox{#1}\spacetrue}
+\newcommand{\repet}{*\spacetrue}
+\newcommand{\lparen}{\addspace(}
+\newcommand{\rparen}{)}
+\newcommand{\orelse}{\addspace\mid\spacetrue}
+\newcommand{\sep}{ \\[2mm] \spacefalse}
+\newcommand{\alt}{ \\ & & \spacefalse}
+\newcommand{\is}{ & ::= &}
+\newenvironment{syntax}{$$\begin{array}{rrl}\spacefalse}{\end{array}$$}
+\newcommand{\synt}[1]{$\spacefalse#1$}
+\newcommand{\emptystring}{\epsilon}
+\newcommand{\below}{See\; below}
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "main"

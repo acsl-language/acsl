@@ -33,7 +33,6 @@ en créer de nouvelles. Il y a peut-être des constructions
 du C++ ou C\# à utiliser ou à généraliser.
 Idem avec les extensions de GCC.
 
-
 \section{Annotations}
 
 In this document, we consider that annotations are given as comments
@@ -110,14 +109,20 @@ In JML, parsing is done by just ignoring \verb|//@|, \verb|/*@| and \verb|*/| an
 return x /*@ +1 */ ;
 \end{verbatim}
 
-In our language this has to be forbidden. Technically, current implementation of Frama-C isolate the comments in a first step of syntax analysis, and then parses a second time. Nevertheless, the grammar and the corresponding parser must be carefully designed to avoid interaction of annotations with the code. For example, in such a code:
+In our language this has to be forbidden. Technically, current
+implementation of Frama-C isolate the comments in a first step of
+syntax analysis, and then parses a second time. Nevertheless, the
+grammar and the corresponding parser must be carefully designed to
+avoid interaction of annotations with the code. For example, in such a
+code:
 \begin{verbatim}
 if (c) //@ assert P;
    c=1;
 \end{verbatim}
-the statement \verb|c=1| must understood as the then branch of the if. This is ensured by the grammar below, saying that \verb|assert| annotations are not statement themselves, but attached to the statement that follows, like C labels.
-
-is executed unconditionnaly.\\
+the statement \verb|c=1| must be understood as the then branch of the
+if. This is ensured by the grammar below, saying that \verb|assert|
+annotations are not statement themselves, but attached to the
+statement that follows, like C labels.
 
 % Remarque de Patrick : ce n'est plus le cas dans Frama-C.
 % Les annotations sont maintenant, tout comme les étiquettes du C,
@@ -139,27 +144,11 @@ annotations, should macro substitution be performed or not, etc.
 Logical expressions are pure C expressions, without function
 calls. Semantics is given by the classical 2-valued logic. Additional constructs exist, given in Section~\ref{sec:expressions}
 
-
 \section{Function behavior}
 
 Grammar:
 
-\begin{eqnarray*}
-  fun-spec &::=& (requires-clause | fun-behavior ) * variant-clause ? \\
-  requires-clause &::=& \term{requires} predicate \\
-  variant-clause &::=& \term{variant} term (\term{for} ident)? \\
-  fun-behavior &::=& \term{behavior} ident \term{:}
-             (assumes-clause | assigns-clause |
-              ensures-clause ) * \\
-  assumes-clause &::=& \term{assumes} predicate \\
-  assigns-clause &::=& \term{assigns} (location (, location) * |
-  \term{\nothing}) \\
-  ensures-clause &::=& \term{ensures} predicate \\
-  invariant-clause &::=& \term{invariant} predicate \\
-  location &::=& (see below)
-\end{eqnarray*}
-
-
+\input{fn_behavior.bnf}
 
 semantics:
 
@@ -184,13 +173,7 @@ Questions: "reads" clause ?
 \subsection{syntax of assigns clauses}
 \label{sec:locations}
 
-\begin{eqnarray*}
-  location &::=&
-       var | location->id | location.id | *location \\
-       | location[term ? .. term?] | location[term] \\
-       |  (\Forall \tau) | (\Forall \tau x ; predicate) \\
-       |  location + [ term? .. term? ] | location + term
-     \end{eqnarray*}
+\input{loc.bnf}
 
 semantics:
 \begin{itemize}
@@ -357,9 +340,9 @@ termination: loop variants, function variants for recursive
 
 More general case of measures on other types: use the keyword for:
 
-\begin{eqnarray*}
-&& "variant" e "for" id
-\end{eqnarray*}
+\begin{syntax}
+variant ::= "variant" e "for" id
+\end{syntax}
 where $e$ has type $\tau$ and $id$ is a logic predicate of type $\tau,\tau \ra
 prop$
 

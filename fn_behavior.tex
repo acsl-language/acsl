@@ -1,0 +1,14 @@
+\begin{syntax}
+  fun-spec ::= (requires-clause | fun-behavior ) * variant-clause ? \\
+  requires-clause ::= "requires" predicate \\
+  variant-clause ::= "variant" term ("for" ident)? \\
+  fun-behavior ::= "behavior" ident ":" ;
+             (assumes-clause | assigns-clause |
+              ensures-clause ) * \\
+  assumes-clause ::= "assumes" predicate \\
+  assigns-clause ::= "assigns" (location ("," location) * |
+  "\nothing") \\
+  ensures-clause ::= "ensures" predicate \\
+  invariant-clause ::= "invariant" predicate \\
+  location ::= below
+\end{syntax}

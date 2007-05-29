@@ -2,3 +2,6 @@
 *.bbl *.blg *.dvi *.pdf *.ps
 *.pp
 pp.ml
+*.cm?
+transf transf.ml
+*.bnf

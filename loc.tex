@@ -1,0 +1,6 @@
+\begin{syntax}
+  location ::= var | location"->"id | location"."id | "*"location ;
+       | location"["term ? ".." term?] | location"["term"]" ;
+       |  "(""\Forall" \tau")" | "(""\Forall" \tau x ";" predicate")" ;
+       |  location "+" "[" term? ".." term? "]" | location "+" term
+\end{syntax}

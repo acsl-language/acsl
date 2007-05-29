@@ -1,0 +1,8 @@
+Utilitaires pour syntaxe:
+- pp.ml pour pretty-printer via latex un fichier C:
+  Usage du Makefile: .tex -> .pp
+  Usage general: ocaml pp.ml -color file.tex > file.pp
+
+- transf pour pretty-printer une BNF via latex
+  Usage du Makefile: .tex -> .synt
+  Usage general: ./transf < file.tex > file.synt
