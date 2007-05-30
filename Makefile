@@ -1,5 +1,5 @@
 
-all: assigns.pp invariants.pp fn_behavior.bnf loc.bnf
+all: assigns.pp invariants.pp fn_behavior.bnf loc.bnf term.bnf moreterm.bnf
 
 %.pp: %.tex pp.ml
 	ocaml pp.ml -color $< > $@

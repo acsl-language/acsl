@@ -1,9 +1,13 @@
+\newcommand{\remark}[2]{\textsl{\begin{itemize}\item \underline{remarque} de
+      {#1}~: {#2}\end{itemize}}}
+
 \newcommand{\keyword}[1]{\texttt{#1}\xspace}
 
 \newcommand{\ensures}{\keyword{ensures}}
 \newcommand{\assert}{\keyword{assert}}
 \newcommand{\assume}{\keyword{assume}}
-\newcommand{\baseaddr}{\keyword{{\textbackslash}baseaddr}}
+\newcommand{\assigns}{\keyword{assigns}}
+\newcommand{\reads}{\keyword{reads}}
 \newcommand{\boundseparated}{\keyword{{\textbackslash}bound\_separated}}
 \newcommand{\Exists}{\keyword{{\textbackslash}exists}~}
 \newcommand{\Forall}{\keyword{{\textbackslash}forall}~}
@@ -37,6 +41,9 @@
 \newcommand{\Sum}{\keyword{sum}}
 \newcommand{\valid}{\keyword{{\textbackslash}valid}}
 \newcommand{\validrange}{\keyword{{\textbackslash}valid\_range}}
+\newcommand{\blocklength}{\keyword{{\textbackslash}block\_length}}
+\newcommand{\baseaddr}{\keyword{{\textbackslash}base\_addr}}
+\newcommand{\comparable}{\keyword{{\textbackslash}comparable}}
 
 \newcommand{\N}{\ensuremath{\mathbb{N}}}
 \newcommand{\ra}{\ensuremath{\rightarrow}}
@@ -46,19 +53,24 @@
 
 \newif\ifspace
 \newcommand{\addspace}{\ifspace \; \spacefalse \fi}
-\newcommand{\term}[1]{\addspace\hbox{\textbf{\textsl{#1}}} \spacetrue}
+\newcommand{\term}[1]{\addspace\hbox{\texttt{#1}} \spacetrue}
 \newcommand{\nonterm}[1]{\addspace\hbox{#1}\spacetrue}
-\newcommand{\repet}{*\spacetrue}
+\newcommand{\repet}{^*\spacetrue}
 \newcommand{\lparen}{\addspace(}
 \newcommand{\rparen}{)}
 \newcommand{\orelse}{\addspace\mid\spacetrue}
 \newcommand{\sep}{ \\[2mm] \spacefalse}
 \newcommand{\alt}{ \\ & & \spacefalse}
 \newcommand{\is}{ & ::= &}
-\newenvironment{syntax}{$$\begin{array}{rrl}\spacefalse}{\end{array}$$}
+\newenvironment{syntax}{$$\begin{array}{rrll}\spacefalse}{\end{array}$$}
 \newcommand{\synt}[1]{$\spacefalse#1$}
 \newcommand{\emptystring}{\epsilon}
 \newcommand{\below}{See\; below}
+
+% colors
+
+\newrgbcolor{darkgreen}{0 0.4 0}
+
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "main"
