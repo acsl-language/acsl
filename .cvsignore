@@ -5,3 +5,4 @@ pp.ml
 *.cm?
 transf transf.ml
 *.bnf
+*.idx *.ilg *.ind

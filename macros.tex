@@ -52,16 +52,18 @@
 % BNF grammar
 
 \newif\ifspace
+\newif\ifnewentry
 \newcommand{\addspace}{\ifspace \; \spacefalse \fi}
 \newcommand{\term}[1]{\addspace\hbox{\texttt{#1}} \spacetrue}
-\newcommand{\nonterm}[1]{\addspace\hbox{#1}\spacetrue}
+\newcommand{\nonterm}[1]{%
+\addspace\hbox{#1\ifnewentry\index{#1}\fi}\spacetrue}
 \newcommand{\repet}{^*\spacetrue}
 \newcommand{\lparen}{\addspace(}
 \newcommand{\rparen}{)}
 \newcommand{\orelse}{\addspace\mid\spacetrue}
-\newcommand{\sep}{ \\[2mm] \spacefalse}
+\newcommand{\sep}{ \\[2mm] \spacefalse\newentrytrue}
 \newcommand{\alt}{ \\ & & \spacefalse}
-\newcommand{\is}{ & ::= &}
+\newcommand{\is}{ & ::= & \newentryfalse}
 \newenvironment{syntax}{$$\begin{array}{rrll}\spacefalse}{\end{array}$$}
 \newcommand{\synt}[1]{$\spacefalse#1$}
 \newcommand{\emptystring}{\epsilon}

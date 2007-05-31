@@ -7,6 +7,8 @@
 \usepackage{pst-node}
 
 \usepackage{xspace}
+\usepackage{makeidx}
+\makeindex
 \input{macros}
 
 \begin{document}
@@ -56,7 +58,7 @@ that source files remain compilable\footnote{Other means of attaching
     See section~\ref{sec:invariants}.
 
   \item type invariant. This allows both structure or union
-    invariants, and invariants on type names introduced by \typedef. 
+    invariants, and invariants on type names introduced by \typedef.
     See section~\ref{sec:invariants}.
 
   \item logical specifications: logic type introduction, introduction
@@ -186,7 +188,7 @@ semantics:
              and (\old(A_2) implies E_2)
 \end{verbatim}
 
-\remark{Yannick}{JML propose deux modes de spécification des fonctions~: 
+\remark{Yannick}{JML propose deux modes de spécification des fonctions~:
  soit à base de ``requires'' et ``ensures'', soit à base de
  ``behavior''. JML n'a pas de ``assumes'' dans les
   ``behaviors'', mais des ``requires''. Dans le cas où les deux modes
@@ -203,19 +205,19 @@ semantics:
 
 
 \begin{verbatim}
- pre-condition : P_1 and P_2 
+ pre-condition : P_1 and P_2
              and (R_1 or R_2)
- post-condition: Q_1 and Q_2 
-             and (\old(R_1) implies E_1) 
+ post-condition: Q_1 and Q_2
+             and (\old(R_1) implies E_1)
              and (\old(R_2) implies E_2)
 \end{verbatim}
 
 \remark{Patrick}{les ``behavior'' de JML présente l'avantage de
-  pouvoir spécifier une fonction par cas (non exclusifs) 
+  pouvoir spécifier une fonction par cas (non exclusifs)
   et de vérifier que les cas d'appel sont spécifiés (sinon on ne peut
-  vérifier la pré-condition). 
+  vérifier la pré-condition).
   Il semble important à Airbus de pouvoir s'assurer qu'ils ont
-  énoncé l'ensemble des cas.}  
+  énoncé l'ensemble des cas.}
 
 \remark{Yannick}{avoir ``requires'' en plus des ``assumes'' dans les
   ``behaviors'' semble utile :
@@ -233,11 +235,11 @@ précondition globale}
 
 
 \begin{verbatim}
- pre-condition : P_1 and P_2 
-             and (A_1 implies R_1) 
+ pre-condition : P_1 and P_2
+             and (A_1 implies R_1)
              and (A_2 implies R_2)
- post-condition: Q_1 and Q_2 
-             and (\old(A_1) implies E_1) 
+ post-condition: Q_1 and Q_2
+             and (\old(A_1) implies E_1)
              and (\old(A_2) implies E_2)
 \end{verbatim}
 
@@ -259,15 +261,15 @@ The semantics is given as follows, where $s$ denotes any tset:
 \item s.id denotes the set of x.id for each x in s
 \item *s denotes the set of *x for each x in s
 \item $s_1[s_2]$ denotes the set of $x_1[x_2]$ for each $x_1 \in s_1$ and $x_2 \in s_2$
-\item t1 .. t2 denotes the set of integers between t1 and t2, included. 
+\item t1 .. t2 denotes the set of integers between t1 and t2, included.
 \item $s_1,s_2$ denotes the union of $s_1$ and $s_2$
 \item $s_1+s_2$ denotes the set of $x_1+x_2$ for each $x_1 in s_1$ and $x_2 in s_2$
 \item (s) denotes the same set as s
 \item $\{ s \mid b ; P \}$ denotes set comprehension: set of term denoted by s foreach values of binders satisfying predicvate P. Binders b are bound in s and P.
 \end{itemize}
 
-A \emph{location} is any set of terms denoting a set of lvalues. 
-Only locations are valid as argument to \assigns{} clauses 
+A \emph{location} is any set of terms denoting a set of lvalues.
+Only locations are valid as argument to \assigns{} clauses
 
 Examples:
 \input{assigns.pp}
@@ -278,7 +280,7 @@ Examples:
 
 \subsection{Typing rules}
 
-Two judgements: 
+Two judgements:
 \begin{itemize}
 \item $\Gamma,\Lambda \vdash e : loc \tau$ means e is a set of location of type
   $tau$
@@ -311,9 +313,9 @@ idem for $loc \tau$
 Notes:
 \begin{itemize}
 \item Quantification can be be made over any type (both C and
-  logic types). 
+  logic types).
 \item Quantification over pointers, structures, union, etc.
-  are possible too. TODO: the meaning must be carefully defined. 
+  are possible too. TODO: the meaning must be carefully defined.
 \end{itemize}
 
 \section{Statement annotation}
@@ -392,7 +394,7 @@ Types de la logique:
 
 \subsection{Memory blocks: physical adressing}
 
-\baseaddr{} base address of an allocated pointer 
+\baseaddr{} base address of an allocated pointer
 
 \blocklength{} length of the allocated block of a pointer
 
@@ -539,7 +541,7 @@ an invariant is true when ...\cite{barnett04jot}
 instructions d'observations des variables du C. Ces instructions
 ne peuvent pas modifier les variables du C, mais que les ``ghost
 variables''. Cela permet d'écrire plus facilement l'observateur
-adéquat à la preuve des propriétés puisque les propriétés peuvent 
+adéquat à la preuve des propriétés puisque les propriétés peuvent
 porter à la fois sur les variables du C et les  ``ghost variables''.
 }
 
@@ -566,7 +568,6 @@ Il faudrait autant que possible se raprocher de ces noms.}
 \bibliographystyle{plain}
 \bibliography{biblio}
 %\input{biblio-demons}
-
 \tableofcontents
 
 \clearpage
@@ -577,6 +578,8 @@ Il faudrait autant que possible se raprocher de ces noms.}
 
 TODO by Benjamin
 
+
+\printindex
 \end{document}
 
 %%% Local Variables:

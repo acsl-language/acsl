@@ -21,6 +21,12 @@ transfmain.cmo: transf.cmo
 transf.ml: transf.mll
 	ocamllex transf.mll
 
+.PHONY: clean rubber
+
 clean:
 	rm -rf *~ *.aux *.log *.nav *.out *.snm *.toc *.pp *.bnf \
                transf trans.ml *.cm?
+
+# see http://www.pps.jussieu.fr/~beffara/soft/rubber/ for details on rubber.
+rubber:
+	rubber -d main.tex
