@@ -1,5 +1,17 @@
 
-all: assigns.pp invariants.pp fn_behavior.bnf loc.bnf term.bnf moreterm.bnf
+DEPS=assigns.pp invariants.pp fn_behavior.bnf loc.bnf term.bnf moreterm.bnf
+
+all: main.dvi
+
+main.ps: main.dvi
+	dvips $^ -o $@
+
+main.dvi: main.tex $(DEPS)
+	latex main
+	makeindex main
+	bibtex main
+	latex main
+	latex main
 
 %.pp: %.tex pp.ml
 	ocaml pp.ml -color $< > $@
