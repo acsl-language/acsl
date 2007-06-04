@@ -1,9 +1,9 @@
 \begin{syntax}
-  fun-spec ::= (requires-clause | fun-behavior ) * variant-clause ? \\
+  fun-spec ::= requires-clause * (fun-behavior * | behavior-body )variant-clause ? \\
   requires-clause ::= "requires" predicate \\
   variant-clause ::= "variant" term ("for" ident)? \\
-  fun-behavior ::= "behavior" ident ":" ;
-             (assumes-clause | assigns-clause |
+  fun-behavior ::= "behavior" ident ":" behavior-body \\
+  behavior-body ::= (assumes-clause | assigns-clause |
               ensures-clause ) * \\
   assumes-clause ::= "assumes" predicate \\
   assigns-clause ::= "assigns" (location ("," location) * |
