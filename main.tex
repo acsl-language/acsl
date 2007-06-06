@@ -162,6 +162,13 @@ annotations, should macro substitution be performed or not, etc.
 Logical expressions are pure C expressions, without function
 calls. Semantics is given by the classical 2-valued logic. Additional constructs exist, given in Section~\ref{sec:expressions}
 
+\subsection{About keywords}
+
+additional keyword of the specification language start with a
+backslash, if they are used in position of a term or a predicate. But
+they are not otherwise, like \ensures{}.
+
+
 \section{Function behavior}
 \label{sec:fn-behavior}
 Grammar:
@@ -544,6 +551,9 @@ variables''. Cela permet d'écrire plus facilement l'observateur
 adéquat à la preuve des propriétés puisque les propriétés peuvent
 porter à la fois sur les variables du C et les  ``ghost variables''.
 }
+
+
+\input{ghost.bnf}
 
 
 \section{Module constructions}
