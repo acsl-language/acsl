@@ -1,4 +1,4 @@
-\documentclass[a4paper]{article}
+\documentclass[a4paper]{report}
 
 \usepackage{fullpage}
 \usepackage{amssymb}
@@ -20,7 +20,18 @@
 
 \maketitle
 
-\section{Introduction, glossary}
+\chapter{Introduction}
+
+This document is a reference manual for ACSL (ANSI C Specification Language), a language proposed by the CAT project and implemented in the Frama-C platform.
+
+In this chapter we first introduce some definitions and vocabulary, and give generalities about this specification language.
+
+Chapter~\ref{chap:base} presents the specification language itself.
+
+Chapter~\ref{chap:base} presents the specification language itself.
+
+
+\section{Glossary}
 
 \emph{pure} : side-effect free
 
@@ -168,6 +179,7 @@ additional keyword of the specification language start with a
 backslash, if they are used in position of a term or a predicate. But
 they are not otherwise, like \ensures{}.
 
+\chapter{Specification language}
 
 \section{Function behavior}
 \label{sec:fn-behavior}
@@ -397,49 +409,45 @@ Types de la logique:
 
 \input{term.bnf}
 
-\section{Constructions for valid pointer dereferencing, separation}
+\section{Pointers and physical adressing}
 
-\subsection{Memory blocks: physical adressing}
+\subsection{Memory blocks and pointer dereferencing}
 
-\baseaddr{} base address of an allocated pointer
-
-\blocklength{} length of the allocated block of a pointer
-
-\comparable{} (checks whether two pointers are comparable as defined in the ANSI standard: TODO)
-
-\remark{Claude}{veut-on aussi offset ? decalage entre un pointer et son adresse de base}
-
-\subsection{Memory blocks: logical adressing}
-
-Definition: a \emph{valid} pointer is a pointer such that *p is properly
-allocated.
-
-\offsetmin, \offsetmax : $\alpha * \ra \N$
-
-$\offsetmin(p)$: the minimum integer $i$ such that $(p+i)$ is a valid
-pointer
-
-$\offsetmax(p)$: the maximum integer $i$ such that $(p+i)$ is a valid
-pointer
-
-properties:
-
+\begin{itemize}
+\item \baseaddr{} base address of an allocated pointer
 \[
-\offsetmin(p+i) = \offsetmin(p)-i
-\offsetmax(p+i) = \offsetmax(p)-i
+\baseaddr{} : \alpha {\tt *} \ra {\tt char *} 
+\]
+\item \blocklength{} length of the allocated block of a pointer
+\[
+\blocklength{} : \alpha {\tt *} \ra {\tt size_t} 
 \]
 
-syntactic sugar:
+\end{itemize}
+
+Shortcuts:
+\begin{itemize}
+\item offset(p) returns the offset between p ans its base address
+
+  \begin{eqnarray*}
+    offset &:& \alpha {\tt *} \ra {\tt size\_t}  \\
+    offset(p) &=& (char*)p - \baseaddr(p)
+  \end{eqnarray*}
+
+\item valid(p) tells whether dereferencing p is safe  
+
+  \begin{eqnarray*}
+    valid : \alpha {\tt *} \ra {\tt boolean} \\ 
+    valid(p) = offset(p) \geq 0 \land offset(p) + sizeof(*p) \leq \blocklength(p)
+  \end{eqnarray*}
+
+\item \comparable{} (checks whether two pointers are comparable as defined
+  in the ANSI standard: TODO by benjamin)
 \[
-\validrange(p,i,j) := \offsetmin(p) <= i \land \offsetmax(p) >= j
-\valid(p) := \validrange(p,0,0)
+\comparable{} : \alpha {\tt *} \ra \beta {\tt *} \ra {\tt boolean}
 \]
+\end{itemize}
 
-\subsection{Strings}
-
-\strlen
-
-Peut disparaitre
 
 \subsection{Separation}
 
@@ -448,15 +456,15 @@ pointer separation :
 p \not\equiv q := \baseaddr(p) \neq \baseaddr(q) \lor |(char*)p - (char*)q| \geq \max(\sizeof(p),\sizeof(q))
 \]
 
-$\separated(p1,..,p_n)$ : means that for if $i<>j, p_i \not\equiv p_j$
+$\separated(loc1,..,loc_n)$ : means that for if $i\neq j$, if $x\in loc_i$ and $y \in loc_j$ then $\&x \not\equiv \& y$
 
-cette construction peut-etre etendue au cas ou les $p_i$ sont des
-ensembles de locations memoires, telles que definies a la section
-\ref{sec:locations}.
+where each $loc_i$ is a set of memory location as defined in Section~\ref{sec:locations}. 
 
-\subsection{Grammar}
+\subsection{Allocation and deallocation}
 
-\input{moreterm.bnf}
+{\Huge on s'est arret\'e la le 6 juin}
+
+\fresh, \freed
 
 \section{Termination}
 
@@ -493,9 +501,6 @@ type 'a list
 \item model variables
 \end{itemize}
 
-\section{Allocation and deallocation}
-
-\fresh, \freed
 
 \section{Abnormal termination}
 
@@ -575,19 +580,53 @@ définies dans des \texttt{.h} que la norme spécifie en grande partie
 (le nom l'est, le type peut y être contraint).
 Il faudrait autant que possible se raprocher de ces noms.}
 
-\bibliographystyle{plain}
-\bibliography{./biblio}
-%\input{biblio-demons}
-\tableofcontents
 
-\clearpage
+\chapter{Librairies}
 
-\appendix
+\section{Jessie library: logical adressing of memory blocks}
 
-\section{Quick reference card}
+Definition: a \emph{valid} pointer is a pointer such that *p is properly
+allocated.
+
+\offsetmin, \offsetmax : $\alpha * \ra \N$
+
+$\offsetmin(p)$: the minimum integer $i$ such that $(p+i)$ is a valid
+pointer
+
+$\offsetmax(p)$: the maximum integer $i$ such that $(p+i)$ is a valid
+pointer
+
+properties:
+
+\[
+\offsetmin(p+i) = \offsetmin(p)-i
+\offsetmax(p+i) = \offsetmax(p)-i
+\]
+
+syntactic sugar:
+\[
+\validrange(p,i,j) := \offsetmin(p) <= i \land \offsetmax(p) >= j
+\valid(p) := \validrange(p,0,0)
+\]
+
+\remark{Benjamin}{propose plutot les noms ``indexmin'' et ``indexmax'' a la place de offsetmin et offsetmax}
+  
+\subsection{Strings}
+
+\strlen
+
+Peut disparaitre
+
+\chapter{Quick reference card}
 
 TODO by Benjamin
 
+
+\bibliographystyle{plain}
+\bibliography{./biblio}
+%\input{biblio-demons}
+
+\tableofcontents
 
 \printindex
 \end{document}

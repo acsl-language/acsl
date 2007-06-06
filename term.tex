@@ -6,6 +6,10 @@
        | term "[" term "]" ;
        | id "(" term ("," term)* ")" ; function application
        | "(" term ")" ;
+       | "sizeof" "(" term ")" ;
+       | "sizeof" "(" \tau ")" ;
+       | "offsetof" "(" ... ")" ;
+       | "alignof" "(" \tau ")" ;
        | term "?" term ":" term ;
        | "\old" "(" term ")" | "\at" "(" term "," label ")" ;
        | "\result" ;

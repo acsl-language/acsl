@@ -1,33 +1,6 @@
 \begin{syntax}
-  term ::= id | uop term | term bop term ;  
-       | term "->" id | term "." id  ;
-       | "let" id "=" term "in" term ;
-       | "(" \tau ")" term  ; cast 
-       | term "[" term "]" ;
-       | id "(" term ("," term)* ")" ; function application
-       | "(" term ")" ;
-       | term "?" term ":" term ;
-       | "\old" "(" term ")" | "\at" "(" term "," label ")" ;
-       | "\result" ;
-       \\
-  bop ::= "+" | "-" | "*" | "/" | "%" ;
-       | "==" | "!=" | "<=" | ">=" | ">" | "<" ;
-       | "&" | "|" | "=>" | "<=>" ; bitwise operations 
-       \\
-  uop ::= "-" | "*" | "&" \\
-  rop ::= "==" | "!=" | "<=" | ">=" | ">" | "<" \\
-  pred ::= "\true" | "\false" ;
-       | term (rop term)* ;
-       | "\let" id "=" term ";" pred ;
-       | id "(" term ("," term)* ")" ; predicate application
-       | "(" pred ")" ;
-       | pred "&&" pred | pred "||" pred ;
-       | pred "==>" pred | pred "<==>" pred ;
-       | "!" pred ;
-       | pred "?" pred ":" pred ;
-       | "\forall" binders ";" pred ;
-       | "\exists" binders ";" pred ;
-       | "\old" "(" pred ")" | "\at" "(" pred "," label ")" ;
+  statement ::= ghoststatements statement \\
+  ghoststatements ::= "/*@" "ghost" statement+ "*/"
 \end{syntax}
 
 %%% Local Variables:

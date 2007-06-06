@@ -1,5 +1,6 @@
 
-DEPS=assigns.pp invariants.pp fn_behavior.bnf loc.bnf term.bnf moreterm.bnf
+DEPS=assigns.pp invariants.pp \
+	fn_behavior.bnf loc.bnf term.bnf moreterm.bnf ghost.bnf
 
 all: main.dvi
 
