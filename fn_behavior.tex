@@ -1,7 +1,7 @@
 \begin{syntax}
   fun-spec ::= requires-clause * (fun-behavior * | behavior-body )variant-clause ? \\
   requires-clause ::= "requires" predicate \\
-  variant-clause ::= "variant" term ("for" ident)? \\
+  variant-clause ::= "decreases" term ("for" ident)? \\
   fun-behavior ::= "behavior" ident ":" behavior-body \\
   behavior-body ::= (assumes-clause | assigns-clause |
               ensures-clause ) * \\

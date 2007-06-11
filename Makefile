@@ -41,5 +41,5 @@ clean:
                transf trans.ml *.cm?
 
 # see http://www.pps.jussieu.fr/~beffara/soft/rubber/ for details on rubber.
-rubber:
+rubber: $(DEPS)
 	rubber -d main.tex

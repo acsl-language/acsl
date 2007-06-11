@@ -191,6 +191,10 @@ Grammar:
   nom~? Ne peut-t'on pas avoir le ``ident:'' optionnel pour chacune
   des clauses~?}
 
+\remark{Virgile}{Changement du mot-clé des variants pour éviter un
+  conflit avec les variants de boucle. Le choix du mot-clé exact reste
+  à débattre}
+
 semantics:
 
 \begin{verbatim}
@@ -416,11 +420,11 @@ Types de la logique:
 \begin{itemize}
 \item \baseaddr{} base address of an allocated pointer
 \[
-\baseaddr{} : \alpha {\tt *} \ra {\tt char *} 
+\baseaddr{} : \alpha {\tt *} \ra {\tt char *}
 \]
 \item \blocklength{} length of the allocated block of a pointer
 \[
-\blocklength{} : \alpha {\tt *} \ra {\tt size\_t} 
+\blocklength{} : \alpha {\tt *} \ra {\tt size\_t}
 \]
 
 \end{itemize}
@@ -434,10 +438,10 @@ Shortcuts:
     offset(p) &=& (char*)p - \baseaddr(p)
   \end{eqnarray*}
 
-\item valid(p) tells whether dereferencing p is safe  
+\item valid(p) tells whether dereferencing p is safe
 
   \begin{eqnarray*}
-    valid : \alpha {\tt *} \ra {\tt boolean} \\ 
+    valid : \alpha {\tt *} \ra {\tt boolean} \\
     valid(p) = offset(p) \geq 0 \land offset(p) + sizeof(*p) \leq \blocklength(p)
   \end{eqnarray*}
 
@@ -458,7 +462,7 @@ p \not\equiv q := \baseaddr(p) \neq \baseaddr(q) \lor |(char*)p - (char*)q| \geq
 
 $\separated(loc1,..,loc_n)$ : means that for if $i\neq j$, if $x\in loc_i$ and $y \in loc_j$ then $\&x \not\equiv \& y$
 
-where each $loc_i$ is a set of memory location as defined in Section~\ref{sec:locations}. 
+where each $loc_i$ is a set of memory location as defined in Section~\ref{sec:locations}.
 
 \subsection{Allocation and deallocation}
 
@@ -610,7 +614,7 @@ syntactic sugar:
 \]
 
 \remark{Benjamin}{propose plutot les noms ``indexmin'' et ``indexmax'' a la place de offsetmin et offsetmax}
-  
+
 \subsection{Strings}
 
 \strlen
