@@ -26,6 +26,8 @@ This document is a reference manual for ACSL (ANSI C Specification Language), a 
 
 In this chapter we first introduce some definitions and vocabulary, and give generalities about this specification language.
 
+Some features in this document are considered ``experimental'', meaning that their syntax and semantics is still under discussion. We also consider them as ``advanced features'' which are not supposed to be useful for a basic use of that specification language
+
 Chapter~\ref{chap:base} presents the specification language itself.
 
 Chapter~\ref{chap:base} presents the specification language itself.
@@ -349,6 +351,17 @@ Notes:
     inside, no goto going outside)
   \end{itemize}
 
+\subsection{Loop annotations}
+
+semantics of loop invariants: in particular for {\tt for} loops
+
+\begin{syntax}
+  invariant-clause ::= "loop invariant" predicate \\
+\end{syntax}
+
+loop assigns: semantics?
+
+
 \section{Expressions}
 \label{sec:expressions}
 
@@ -400,7 +413,7 @@ est valide. Donc on ne peut pas introduire de construction
 non-déterministe comme  $(\texttt{any} x \mid P)$
 
 
-Types de la logique:
+Types de la logique (see Section~\ref{sec:logicspec}:
 \begin{itemize}
 \item types mathematiques: real, integer, boolean
 \item types du C
@@ -465,40 +478,80 @@ where each $loc_i$ is a set of memory location as defined in Section~\ref{sec:lo
 
 \subsection{Allocation and deallocation}
 
-{\Huge on s'est arret\'e la le 6 juin}
+\experimental
 
-\fresh, \freed
+\begin{itemize}
+\item built-in predicate \fresh, specifying in a post-condition that a
+  pointer was not allocated in the pre-state.
+ 
+\item built-in predicate \freed, specifying in a post-condition that a
+  pointer was allocated in the pre-state but not anymore.
+\end{itemize}
 
 \section{Termination}
 
-termination: loop variants, function variants for recursive
-  functions, for integer measures.
+Property of termination concerns both loops and recursive function calls. 
+For that purpose, loops can be annotated with \emph{loop variants}\index{loop variant}, and functions can be annotated with such variants too.
+
+\subsection{integer measures}
+
+For loops:
+\begin{syntax}
+variant_clause ::= "loop variant" e 
+\end{syntax}
+
+For functions:
+\begin{syntax}
+decreases_clause ::= "decreases" e 
+\end{syntax}
+where $e$ has type integer
+
+\subsection{general measures}
 
 More general case of measures on other types: use the keyword for:
 
 \begin{syntax}
-variant ::= "variant" e "for" id
+variant_clause ::= "loop variant" e "for" id
+decreases_clause ::= "decreases" e "for" id
 \end{syntax}
+
 where $e$ has type $\tau$ and $id$ is a logic predicate of type $\tau,\tau \ra
-prop$
+prop$ (see Section~\ref{sec:logicspec}
 
 
 \section{Logic specifications}
+\label{sec:logicspec}
 
 \begin{itemize}
 \item logic specifications: introduction of new logic types,
   constants, functions, predicates and axioms.
 
-\remark{Patrick}{\texttt{list} est-il un mot clé du langage de
-  spécification~?}
-
-\item polymorphism: for example
-\begin{verbatim}
+logic types can be polymorphic: for example
+\begin{c}
 type 'a list
-\end{verbatim}
+\end{c}
+
+\input{logic.bnf}
+
+\item recursive definitions: are allowed in logic function and predicate definitions. Example:  
+  \begin{c}
+    logic int max_index(int t[],int n) {
+      (n==0) ? 0 :
+      (t[n-1]==0) ? n : max_index(t, n-1)
+    }
+  \end{c}
+
+mutual recursion
+
+\item predefined logic specifications can be provided as libraries (see section~\ref{sec:speclibraries}, and imported using
+\begin{c}
+//@ import <specfile>
+\end{c}
+
 \item higher-order functions: $\lambda$, \Sum, \Max, \numof
-\item {\tt enum}
-\item recursive types, recursive definitions
+\item {\tt enum}, recursive types
+
+
 \item hybrid functions and predicates: take both C types and logic
   types as arguments.
 \item model variables
@@ -620,10 +673,38 @@ syntactic sugar:
 
 Peut disparaitre
 
+\section{Memory leaks}
+
+\experimental
+
+Verification of absence of memory leak is outside the scope of the
+specification language. On the other hand, various models could be set
+up, using for example ghost variables.
+
+
 \chapter{Quick reference card}
 
 TODO by Benjamin
 
+\section{Libraries of logic specifications}
+
+\subsection{Library list}
+
+\begin{verbatim}
+type 'a list = ...
+\end{verbatim}
+
+\chapter{Comparison with JML}
+
+TODO by Yannick
+
+\begin{verbatim}
+  JML                  Frama-C
+
+  loop_invariant       loop invariant 
+  decreases            loop variant
+
+\end{verbatim}
 
 \bibliographystyle{plain}
 \bibliography{./biblio}

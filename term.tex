@@ -1,7 +1,7 @@
 \begin{syntax}
   term ::= id | uop term | term bop term ;  
        | term "->" id | term "." id  ;
-       | "let" id "=" term "in" term ;
+       | "\let" id "=" term ";" term ;
        | "(" \tau ")" term  ; cast 
        | term "[" term "]" ;
        | id "(" term ("," term)* ")" ; function application
@@ -13,6 +13,8 @@
        | term "?" term ":" term ;
        | "\old" "(" term ")" | "\at" "(" term "," label ")" ;
        | "\result" ;
+       | "(" term ("," term)+ ")" ; tuples
+       | "\let" "(" id (, id)+ ")" "=" term ";" term ; \experimental
        \\
   bop ::= "+" | "-" | "*" | "/" | "%" ;
        | "==" | "!=" | "<=" | ">=" | ">" | "<" ;
