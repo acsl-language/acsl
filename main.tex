@@ -535,9 +535,9 @@ type 'a list
 
 \item recursive definitions: are allowed in logic function and predicate definitions. Example:  
   \begin{c}
-    logic int max_index(int t[],int n) {
+    logic int max\_index(int t[],int n) {
       (n==0) ? 0 :
-      (t[n-1]==0) ? n : max_index(t, n-1)
+      (t[n-1]==0) ? n : max\_index(t, n-1)
     }
   \end{c}
 
