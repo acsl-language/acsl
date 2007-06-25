@@ -1,5 +1,5 @@
 
-DEPS=assigns.pp invariants.pp \
+DEPS=intro.pp assigns.pp invariants.pp \
 	fn_behavior.bnf loc.bnf term.bnf moreterm.bnf ghost.bnf \
 	logic.bnf
 

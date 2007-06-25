@@ -53,6 +53,11 @@
     in
     String.iter print_ident_char
 
+  let begin_tt () =
+    print_string "\\begin{flushleft}\\ttfamily\\parindent 0pt\n"
+
+  let end_tt () = print_string "\\end{flushleft}"
+
 }
 
 let space = [' ' '\t']
@@ -150,10 +155,7 @@ rule ctt = parse
 
 and pp = parse
   | "\\begin{c}" space* "\n"
-      { print_string "\\begin{flushleft}\\ttfamily\\parindent 0pt\n";
-	ctt lexbuf;
-	print_string "\\end{flushleft}";
-	pp lexbuf }
+      { begin_tt (); ctt lexbuf; end_tt (); pp lexbuf }
   | "é" { print_string "\\'e"; pp lexbuf }
   | "è" { print_string "\\`e"; pp lexbuf }
   | "à" { print_string "\\`a"; pp lexbuf }
@@ -172,19 +174,32 @@ and pp = parse
 
 {
 
-  let files = ref []
+  let tex_files = ref []
+  let c_files = ref []
 
   let () = Arg.parse
     [
-      "-color", Arg.Set color, "print in color"
+      "-color", Arg.Set color, "print in color" ;
+      "-c", Arg.String (fun f -> 
+			      c_files := f :: !c_files), "read C file <f>" ;
     ]
-    (fun f -> files := f :: !files)
+    (fun f -> tex_files := f :: !tex_files)
     "pp [options] file..."
 
 
-  let () = List.iter (fun f ->
-	       let cin = open_in f in
-	       let lb = from_channel cin in
-	       let _ = pp lb in ()) !files
+  let () = 
+    List.iter (fun f ->
+		 let cin = open_in f in
+		 let lb = from_channel cin in
+		 pp lb; close_in cin) 
+      !tex_files;
+    List.iter (fun f ->
+		 let cin = open_in f in
+		 let lb = from_channel cin in
+		 begin_tt ();
+		 ctt lb;
+		 end_tt ();
+		 close_in cin) 
+      !c_files
 
 }
