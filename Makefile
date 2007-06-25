@@ -18,6 +18,9 @@ main.dvi: main.tex $(DEPS)
 %.pp: %.tex pp.ml
 	ocaml pp.ml -color $< > $@
 
+%.pp: %.c pp.ml
+	ocaml pp.ml -color -c $< > $@
+
 %.bnf: %.tex transf
 	./transf < $< > $@
 
