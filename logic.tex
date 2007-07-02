@@ -1,42 +1,42 @@
 \begin{syntax}
-  logic_decl ::= logic_type_decl ;
-          | logic_const_decl | logic_const_def ;
-          | logic_predicate_decl | logic_predicate_def ;
-          | logic_function_decl | logic_function_def ;
-          | axiom_def
+  logic-decl ::= logic-type-decl ;
+          | logic-const-decl | logic-const-def ;
+          | logic-predicate-decl | logic-predicate-def ;
+          | logic-function-decl | logic-function-def ;
+          | axiom-def
   \\
-  logic_type_decl ::= "logic" "type" logic_type ( = logic_type_def)? ";" ; ``typedef'' au lieu de ``type'' ?
+  logic-type-decl ::= "logic" "type" logic-type ( = logic-type-def)? ";" ; ``typedef'' au lieu de ``type'' ?
   \\
-  logic_type ::= id | type_var id ;
-                 | "(" type_var (, type_var)* ")" id 
+  logic-type ::= id | type-var id ;
+                 | "(" type-var (, type-var)* ")" id
                  \\
-  type_var ::= "'" id 
+  type-var ::= "'" id
   \\
-  logic_type_def ::= TODO by Claude 
+  logic-type-def ::= TODO by Claude
   \\
-  logic_predicate_decl ::= "predicate" id fun_parameters ("reads" locations)? ";"
+  logic-predicate-decl ::= "predicate" id fun-parameters ("reads" locations)? ";"
   \\
-  logic_predicate_def ::= "predicate" id fun_parameters "{" pred "}"
+  logic-predicate-def ::= "predicate" id fun-parameters "{" pred "}"
   \\
-  logic_function_decl ::= "logic" type_expr id fun_parameters ("reads" locations)? ";"
+  logic-function-decl ::= "logic" type-expr id fun-parameters ("reads" locations)? ";"
   \\
-  logic_function_def ::= "logic" type_expr id fun_parameters "{" pred "}"
+  logic-function-def ::= "logic" type-expr id fun-parameters "{" pred "}"
   \\
-  type_expr ::= logic_type_expr | C_type_expr
+  type-expr ::= logic-type-expr | C-type-expr
   \\
-  logic_type_expr ::= built_in_logic_type | id | type_expr id ;
-                 | "(" type_expr (, type_expr)* ")" id 
-                 | logic_type_expr ("*" logic_type_expr)+  ; product type 
+  logic-type-expr ::= built-in-logic-type | id | type-expr id ;
+                 | "(" type-expr (, type-expr)* ")" id
+                 | logic-type-expr ("*" logic-type-expr)+  ; product type
   \\
-  built_in_logic_type ::= "boolean" | "integer" | "real" 
+  built-in-logic-type ::= "boolean" | "integer" | "real"
   \\
-  fun_parameters ::= "(" parameter (, parameter)* ")"
+  fun-parameters ::= "(" parameter (, parameter)* ")"
   \\
-  parameter ::= type_expr | type_expr id | parameter "[]" | ... ; TODO: faire comme en C
+  parameter ::= type-expr | type-expr id | parameter "[]" | ... ; TODO: faire comme en C
   \\
-  logic_const_decl ::= "logic" type_expr id 
+  logic-const-decl ::= "logic" type-expr id
   \\
-  logic_const_def ::= "logic" type_expr id "=" term
+  logic-const-def ::= "logic" type-expr id "=" term
   \\
-axiom_def ::= "axiom" id ":" pred ";"
+axiom-def ::= "axiom" id ":" pred ";"
 \end{syntax}
