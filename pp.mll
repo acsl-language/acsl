@@ -28,7 +28,8 @@
     let h = Hashtbl.create 97 in
     List.iter (fun s -> Hashtbl.add h s ())
       [
-	"valid"; "forall"; "old" ; "fresh" ; "nothing" ; "result"
+	"valid"; "valid_range"; 
+	"forall"; "old" ; "fresh" ; "nothing" ; "result"
       ];
     h
 

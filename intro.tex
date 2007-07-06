@@ -1,21 +1,43 @@
 \chapter{Introduction}
 
-This document is a reference manual for ACSL (ANSI C Specification Language), a language proposed by the CAT project and implemented in the Frama-C platform.
+This document is a reference manual for ACSL, an acronym for ``ANSI C
+Specification Language''. This is a specification language proposed by
+the CAT project, implemented in the Frama-C platform, which aims at
+specifying behavioral properties of C source code. The main
+inspiration for this language comes from the \emph{Java Modeling
+  Language} (JML) which aims at the same goals for Java source code,
+which itself is inspired from the \emph{design-by-contract} principle
+proposed by Bertrand Meyer\footnote{Who indeed took its own
+  inspiration from the concepts of preconditions and postconditions on
+  a routine, go back at least to Dijkstra, Floyd and Hoare in the late
+  60's and early 70's} and originally implemented in the Eiffel
+language.
 
-In this chapter we first introduce some definitions and vocabulary, and give generalities about this specification language.
+In this preliminary chapter we introduce some definitions and
+vocabulary, and discuss generalities about this specification language.
 
-Some features in this document are considered ``experimental'', meaning that their syntax and semantics is still under discussion. We also consider them as ``advanced features'' which are not supposed to be useful for a basic use of that specification language
+Some features in this document are considered ``experimental'',
+meaning that their syntax and semantics is still under discussion. We
+also consider them as ``advanced features'' which are not supposed to
+be useful for a basic use of that specification language.
 
 Chapter~\ref{chap:base} presents the specification language itself.
 
-Chapter~\ref{chap:base} presents the specification language itself.
+Chapter~\ref{chap:lib} presents additional informations about
+\emph{libraries} of specifications.
 
 
 \section{Glossary}
 
-\emph{pure} : side-effect free
+An expression is called \emph{pure} if it has no side-effect.
 
-\emph{behavior}: pair pre- and post-condition, assigns\\
+A \emph{contract} is a specification of a function, consisting of the combination of a pre-condition and a collection of \emph{behaviors}.
+
+A \emph{behavior} is mainly a post-condition, possibly associated with
+an \emph{frame clause} (called also an \emph{assigns clause} in the
+following) specifying side-effects, and possible an assumption on the
+pre-state om which the function is called.
+
 
 \remark{Claude}{ce document doit etre illustré par des
 exemples. Toute construction qui ne serait pas illustrée par un
@@ -38,9 +60,9 @@ that source files remain compilable\footnote{Other means of attaching
 \subsection{Kinds of annotations}
 
 \begin{itemize}
-\item Global annotation:
+\item Global annotations:
   \begin{itemize}
-  \item Function behavior. Such an annotation is inserted just before
+  \item Function contract. Such an annotation is inserted just before
     the declaration or the definition of a function.
     See section~\ref{sec:fn-behavior}.
 
@@ -58,7 +80,7 @@ that source files remain compilable\footnote{Other means of attaching
 
   \end{itemize}
 
-\item Statement annotation:
+\item Statement annotations:
   \begin{itemize}
   \item \assert,\footnote{Remark about \assume clauses: current
       discussion is that it is not considered as an element of
@@ -80,10 +102,11 @@ that source files remain compilable\footnote{Other means of attaching
     allowed immediately before loop statements: \For, \While,
     \Do\ldots \While
 
-  \item statement behavior. Very similar to a function behavior.
-    Semantical condition must be checked (normal termination only, no goto going inside, no goto going outside)
-    \remark{Patrick}{as-t'on droit au \old dans le \ensures
-      de cette annotation~?}
+  \item statement contract. Very similar to a function contract.
+    Semantical condition must be checked (normal termination only, no
+    goto going inside, no goto going outside) \remark{Patrick}{as-t'on
+      droit au \old dans le \ensures de cette annotation~? Oui, pour
+      refer a l'etat avant le statement consider\'er}
 
   \item ghost brackets for enclosing blocks
     \remark{Patrick}{on a besoin de ``ghost brackets'' pour
@@ -98,7 +121,7 @@ that source files remain compilable\footnote{Other means of attaching
 
   \end{itemize}
 
-\item Attribute annotation:
+\item Attribute annotations:
   \remark{Patrick}{annotation permettant d'ajouter des attributs
   partout où l'on peut écrire les qualifications habituelles du
   langage C (const, volatile, restrict) pour les outils qui réalisent
@@ -128,36 +151,29 @@ code:
 if (c) //@ assert P;
    c=1;
 \end{c}
-the statement \verb|c=1| must be understood as the then branch of the
-if. This is ensured by the grammar below, saying that \verb|assert|
+the statement \verb|c=1| must be understood as the \texttt{then} branch of the
+\texttt{if}. This is ensured by the grammar below, saying that \verb|assert|
 annotations are not statement themselves, but attached to the
 statement that follows, like C labels.
 
-% \remark{Patrick}{ce n'est plus le cas dans Frama-C.
-% Les annotations sont maintenant, tout comme les étiquettes du C,
-% indissociable de l'instruction qui suit ; celle-ci pouvant être
-% également annotée.
-% Ensuite, tout comme avec GCC où il est possible de placer un étiquette
-% juste avant de fermer un bloc, il est possible d'y placer autant
-% d'annotations que désiré (avant cette éventuelle étiquette, sinon il y
-% a beaucoup de confits ``shift/reduce'' et ``reduce/réduce'' à résoudre).}
-
 \subsection{About preprocessing}
 
-This document considers C source \emph{after} preprocessing. Tool must
+This document considers C source \emph{after} preprocessing. Tools must
 decide what to do for preprocessing phase: what to do with
 annotations, should macro substitution be performed or not, etc.
 
 \subsection{About logical expressions}
 
-Logical expressions are pure C expressions, without function
-calls. Semantics is given by the classical 2-valued logic. Additional constructs exist, given in Section~\ref{sec:expressions}
+Logical expressions are pure C expressions, without function calls.
+Semantics is given by the classical 2-valued logic. Additional
+constructs exist, given in Section~\ref{sec:expressions}
 
 \subsection{About keywords}
 
-additional keyword of the specification language start with a
-backslash, if they are used in position of a term or a predicate. But
-they are not otherwise, like \ensures{}.
+Additional keywords of the specification language start with a
+backslash, if they are used in position of a term or a predicate. Otherwise
+they do not start with a backslash, like \ensures{}.
+
 
 
 %%% Local Variables:

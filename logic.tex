@@ -4,39 +4,39 @@
           | logic-predicate-decl | logic-predicate-def ;
           | logic-function-decl | logic-function-def ;
           | axiom-def
-  \\
+  \
   logic-type-decl ::= "logic" "type" logic-type ( = logic-type-def)? ";" ; ``typedef'' au lieu de ``type'' ?
-  \\
+  \
   logic-type ::= id | type-var id ;
                  | "(" type-var (, type-var)* ")" id
-                 \\
+                 \
   type-var ::= "'" id
-  \\
+  \
   logic-type-def ::= TODO by Claude
-  \\
+  \
   logic-predicate-decl ::= "predicate" id fun-parameters ("reads" locations)? ";"
-  \\
+  \
   logic-predicate-def ::= "predicate" id fun-parameters "{" pred "}"
-  \\
+  \
   logic-function-decl ::= "logic" type-expr id fun-parameters ("reads" locations)? ";"
-  \\
+  \
   logic-function-def ::= "logic" type-expr id fun-parameters "{" pred "}"
-  \\
+  \
   type-expr ::= logic-type-expr | C-type-expr
-  \\
+  \
   logic-type-expr ::= built-in-logic-type | id | type-expr id ;
-                 | "(" type-expr (, type-expr)* ")" id
+                 | "(" type-expr (, type-expr)* ")" id ;
                  | logic-type-expr ("*" logic-type-expr)+  ; product type
-  \\
+  \
   built-in-logic-type ::= "boolean" | "integer" | "real"
-  \\
+  \
   fun-parameters ::= "(" parameter (, parameter)* ")"
-  \\
+  \
   parameter ::= type-expr | type-expr id | parameter "[]" | ... ; TODO: faire comme en C
-  \\
+  \
   logic-const-decl ::= "logic" type-expr id
-  \\
+  \
   logic-const-def ::= "logic" type-expr id "=" term
-  \\
+  \
 axiom-def ::= "axiom" id ":" pred ";"
 \end{syntax}

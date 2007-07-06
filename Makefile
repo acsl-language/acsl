@@ -1,5 +1,7 @@
 
-DEPS=intro.pp assigns.pp invariants.pp \
+DEPS=intro.pp speclang.bnf assigns.pp invariants.pp \
+	max.pp max_index.pp cond_assigns.pp bsearch.pp \
+	listdecl.pp import.pp \
 	fn_behavior.bnf loc.bnf term.bnf moreterm.bnf ghost.bnf \
 	logic.bnf
 
