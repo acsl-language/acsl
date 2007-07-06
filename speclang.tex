@@ -2,6 +2,90 @@
 \chapter{Specification language}
 \label{chap:base}
 
+\section{Logic expressions}
+\label{sec:expressions}
+
+This first section presents the language of expressions one can use in
+the annotations. These are called below \emph{logic expressions}. They
+corresponds more or less to pure C expressions, without function
+calls, with additional constructs that we introduce one at a time.
+
+\begin{figure}[t]
+  \fbox{\begin{minipage}{0.97\textwidth} \input{term.bnf}
+    \end{minipage}}
+  \caption{Grammar of terms and predicates}
+\label{fig:gram:term}
+\end{figure}
+
+Figure~\ref{fig:gram:term} presents the grammar for logic expressions.
+In that grammar, we distinguish between \emph{predicates} and
+\emph{terms}, fllowing the usual distinction between propositions and
+terms in classical multi-sorted first-order logic.
+
+
+
+
+Additional constructs:
+  \begin{itemize}
+  \item values in preceedings states: \old(e) and \at(e,label).
+
+    construct \old{} is only valid in ensures clauses of function
+    specification. For loop invariants, one need to put some label and
+    use the \at{} construct.
+  \item returned value: \result
+
+    valid only in ensures clauses of function
+    specification.
+
+  \item quantifications:  $\Forall \tau x; e$ and $\Exists \tau x; e$
+  \item \verb|==>|, \verb|<==>|,
+
+   \remark{Clause}{Open question:}
+   \verb|=>| and \verb|<=>| instead of \verb|==>|, \verb|<==>| ?
+
+   \remark{Patrick}{
+   en C il existe le ou exclusif bit à bit (noté \texttt{\^}), mais pas
+   d'implication bit à bit, ni d'équivalence.
+   Coté contrôle (que l'on assimile facilement à la logique) il
+   n'existe pas en C d'équivalence (car c'est l'égalité qui joue ce
+   rôle), ni de ou exclusif. Ne désire-t'on pas avoir
+   quelque chose du genre :}
+   \begin{tabular}{cc}
+    bit à bit & logique \\
+    \verb|&| & \verb|&&| \\
+    \verb|=>| & \verb|==>| \\
+    \verb|<=>| & \verb|<==>| \\
+    \verb|^| & \verb|^^|
+    \end{tabular}
+
+  \item $\Let \tau x = e \In e$ and $\If e \Then e \Else e$
+
+  \item nommage de formules, de termes
+
+  \item a rel-op b rel-op c shortcut for a rel-op b \&\& b rel-op c
+  \end{itemize}
+
+\subsection{Semantics and typing}
+
+always defined (2-valued logic). 
+
+on veut la logique equationnelle classique, cad que l'axiome
+\[
+\forall x, x=xes
+\]
+est valide. Donc on ne peut pas introduire de construction
+non-déterministe comme  $(\texttt{any} x \mid P)$
+
+
+Types de la logique (see Section~\ref{sec:logicspec}:
+\begin{itemize}
+\item types mathematiques: real, integer, boolean
+\item types du C
+\item types logiques introduits par l'utilisateur
+\end{itemize}
+
+Typing rules: TODO
+
 \section{Function contracts}
 \label{sec:fn-behavior}
 
@@ -32,6 +116,8 @@ contracts. The grammars for non-terminals term, predicate and
 locations are given later. Informally, term denotes pure C
 expressions, predicate denotes pure C boolean expressions, and
 locations denotes C l-values.
+
+\subsection{Semantics and typing}
 
 Generally speaking, a function contract as the following
 form (restricted to two behaviors for readability):
@@ -88,17 +174,21 @@ equivalent to the following simplified one:
 
 \subsubsection{Example 1: max of two ints}
 
-\input{max.pp}
-
+\begin{cadre}
+  \input{max.pp}
+\end{cadre}
 \subsubsection{Example 2: conditional assignment}
 
-\input{cond_assigns.pp}
-
+\begin{cadre}
+  \input{cond_assigns.pp}
+\end{cadre}
 \subsubsection{Example 3: binary search}
 
-\input{bsearch.pp}
+\begin{cadre}
+  \input{bsearch.pp}
+\end{cadre}
 
-see~\ref{sec:loop_invariant} for the body of bsearch
+See~\ref{sec:loop_invariant} for the body of bsearch
 
 \subsubsection{Remarks}
 
@@ -286,74 +376,6 @@ semantics of loop invariants: in particular for {\tt for} loops
 loop assigns: semantics?
 
 
-\section{Expressions}
-\label{sec:expressions}
-
-logical expressions = pure C expressions, without function
-  calls. always defined (2-valued logic). With additional constructs:
-  \begin{itemize}
-  \item values in preceedings states: \old(e) and \at(e,label).
-
-    construct \old{} is only valid in ensures clauses of function
-    specification. For loop invariants, one need to put some label and
-    use the \at{} construct.
-  \item returned value: \result
-
-    valid only in ensures clauses of function
-    specification.
-
-  \item quantifications:  $\Forall \tau x; e$ and $\Exists \tau x; e$
-  \item \verb|==>|, \verb|<==>|,
-
-   \remark{Clause}{Open question:}
-   \verb|=>| and \verb|<=>| instead of \verb|==>|, \verb|<==>| ?
-
-   \remark{Patrick}{
-   en C il existe le ou exclusif bit à bit (noté \texttt{\^}), mais pas
-   d'implication bit à bit, ni d'équivalence.
-   Coté contrôle (que l'on assimile facilement à la logique) il
-   n'existe pas en C d'équivalence (car c'est l'égalité qui joue ce
-   rôle), ni de ou exclusif. Ne désire-t'on pas avoir
-   quelque chose du genre :}
-   \begin{tabular}{cc}
-    bit à bit & logique \\
-    \verb|&| & \verb|&&| \\
-    \verb|=>| & \verb|==>| \\
-    \verb|<=>| & \verb|<==>| \\
-    \verb|^| & \verb|^^|
-    \end{tabular}
-
-  \item $\Let \tau x = e \In e$ and $\If e \Then e \Else e$
-
-  \item nommage de formules, de termes
-
-  \end{itemize}
-
-on veut la logique equationnelle classique, cad que l'axiome
-\[
-\forall x, x=x
-\]
-est valide. Donc on ne peut pas introduire de construction
-non-déterministe comme  $(\texttt{any} x \mid P)$
-
-
-Types de la logique (see Section~\ref{sec:logicspec}:
-\begin{itemize}
-\item types mathematiques: real, integer, boolean
-\item types du C
-\item types logiques introduits par l'utilisateur
-\end{itemize}
-
-
-\subsection{Grammar of logical expressions}
-
-\begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\textwidth} \input{term.bnf}
-    \end{minipage}}
-  \caption{Grammar of terms and predicates}
-\label{fig:gram:term}
-\end{figure}
-
 \section{Pointers and physical adressing}
 
 \subsection{Memory blocks and pointer dereferencing}
@@ -499,11 +521,15 @@ mutual recursion
 
 \section{Dependencies information}
 
+\experimental
+
 \begin{verbatim}
 assigns Locs from Locs
 \end{verbatim}
 
 \section{Functional expressions}
+
+\experimental
 
 trouver une syntaxe pour introduire les noms des fonctions implicites
 derriere la construction
@@ -513,6 +539,8 @@ assigns Locs from Locs
 
 \section{Data invariants}
 \label{sec:invariants}
+
+\experimental
 
 \begin{itemize}
 \item Global invariants: invariants on global variables
@@ -532,6 +560,8 @@ an invariant is true when ...\cite{barnett04jot}
 \section{Ghost variables and statements}
 \label{sec:ghost}
 
+\experimental
+
 \remark{Patrick}{les ``ghost statements'' correspondent à des
 instructions d'observations des variables du C. Ces instructions
 ne peuvent pas modifier les variables du C, mais que les ``ghost
@@ -546,11 +576,11 @@ porter à la fois sur les variables du C et les  ``ghost variables''.
 
 \section{Module constructions}
 
+\experimental
+
 how to encapsulate several functions...
 
-
 \section{Arithmetic, Overflow}
-
 
 quantification can be either on mathematical \verb|integer| or bounded
 types \verb|short|, \verb|char|, etc.
@@ -558,7 +588,7 @@ types \verb|short|, \verb|char|, etc.
 we need macros \verb|\max_range|, \verb|min_range| taking a C integer
 type as argument, e.g. \verb|\max_range(unsigned char) = 255|\\
 
-\remark{Patrick}{Ces marcros, types et variables sont en principe
+\remark{Patrick}{Ces macros, types et variables sont en principe
 définies dans des \texttt{.h} que la norme spécifie en grande partie
 (le nom l'est, le type peut y être contraint).
 Il faudrait autant que possible se raprocher de ces noms.}

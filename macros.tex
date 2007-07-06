@@ -1,5 +1,10 @@
 \newcommand{\experimental}{EXPERIMENTAL FEATURE}
 
+\newsavebox{\fmbox}
+\newenvironment{cadre}
+     {\begin{lrbox}{\fmbox}\begin{minipage}{0.98\textwidth}}
+     {\end{minipage}\end{lrbox}\fbox{\usebox{\fmbox}}}
+
 \newcommand{\remark}[2]{\textsl{\begin{itemize}\item \underline{remarque} de
       {#1}~: {#2}\end{itemize}}}
 
