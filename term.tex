@@ -1,5 +1,5 @@
 \begin{syntax}
-  term ::= id | uop term | term bop term ;  
+  term ::= id | unary-op term | term bin-op term ;  
        | term "->" id | term "." id  ;
        | "\let" id "=" term ";" term ;
        | "(" \tau ")" term  ; cast 
@@ -16,14 +16,14 @@
        | "(" term ("," term)+ ")" ; tuples
        | "\let" "(" id (, id)+ ")" "=" term ";" term ; \experimental
        \
-  bop ::= "+" | "-" | "*" | "/" | "%" ;
+  bin-op ::= "+" | "-" | "*" | "/" | "%" ;
        | "==" | "!=" | "<=" | ">=" | ">" | "<" ;
        | "&" | "|" | "=>" | "<=>" ; bitwise operations 
        \
-  uop ::= "-" | "*" | "&" \
-  rop ::= "==" | "!=" | "<=" | ">=" | ">" | "<" \
+  unary-op ::= "-" | "*" | "&" \\
+  rel-op ::= "==" | "!=" | "<=" | ">=" | ">" | "<" \\
   pred ::= "\true" | "\false" ;
-       | term (rop term)* ;
+       | term (rel-op term)* ;
        | "\let" id "=" term ";" pred ;
        | id "(" term ("," term)* ")" ; predicate application
        | "(" pred ")" ;
