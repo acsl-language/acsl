@@ -1,39 +1,51 @@
 \begin{syntax}
-  term ::= id | unary-op term | term bin-op term ;  
-       | term "->" id | term "." id  ;
-       | "\let" id "=" term ";" term ;
+  bin-op ::= "+" | "-" | "*" | "/" | "%" ; 
+       | "==" | "!=" | "<=" | ">=" | ">" | "<" ;
+       | "&" | "|" | "=>" | "<=>" | "^"; bitwise operations 
+       \
+  unary-op ::= "+" | "-" ; unary plus and minus
+       | "*" ; C pointer dereferencing
+       | "&" ; C address operator
+       \
+  term ::= id ;
+       | unary-op term ;
+       | term bin-op term ;  
+       | term "." id  ; structure field access
+       | term "->" id ; 
+       | "\let" \tau? id "=" term ";" term ; local naming
        | "(" \tau ")" term  ; cast 
-       | term "[" term "]" ;
+       | term "[" term "]" ; array access
        | id "(" term ("," term)* ")" ; function application
-       | "(" term ")" ;
-       | "sizeof" "(" term ")" ;
+       | "(" term ")" ; parentheses
+       | term "?" term ":" term ;
+       | "sizeof" "(" term ")" ; 
        | "sizeof" "(" \tau ")" ;
        | "offsetof" "(" ... ")" ;
        | "alignof" "(" \tau ")" ;
-       | term "?" term ":" term ;
-       | "\old" "(" term ")" | "\at" "(" term "," label ")" ;
-       | "\result" ;
+       | "\old" "(" term ")" ; TODO: introduire plus tard
+       | "\at" "(" term "," label ")" ;
+       | "\result" ; idem
        | "(" term ("," term)+ ")" ; tuples
        | "\let" "(" id (, id)+ ")" "=" term ";" term ; \experimental
        \
-  bin-op ::= "+" | "-" | "*" | "/" | "%" ;
-       | "==" | "!=" | "<=" | ">=" | ">" | "<" ;
-       | "&" | "|" | "=>" | "<=>" ; bitwise operations 
+  rel-op ::= "==" | "!=" | "<=" | ">=" | ">" | "<" 
        \
-  unary-op ::= "-" | "*" | "&" \\
-  rel-op ::= "==" | "!=" | "<=" | ">=" | ">" | "<" \\
   pred ::= "\true" | "\false" ;
-       | term (rel-op term)* ;
-       | "\let" id "=" term ";" pred ;
+       | term (rel-op term)* ; comparisons, see remark below
        | id "(" term ("," term)* ")" ; predicate application
-       | "(" pred ")" ;
-       | pred "&&" pred | pred "||" pred ;
-       | pred "==>" pred | pred "<==>" pred ;
-       | "!" pred ;
+       | "\let" \tau? id "=" term ";" pred ; local naming
+       | "(" pred ")" ; parentheses
+       | pred "&&" pred ; conjunction
+       | pred "||" pred ; disjunction
+       | pred "==>" pred ; implication
+       | pred "<==>" pred ; equivalence
+       | "!" pred ; negation
+       | pred "^^" ; exclusive or
        | pred "?" pred ":" pred ;
-       | "\forall" binders ";" pred ;
-       | "\exists" binders ";" pred ;
-       | "\old" "(" pred ")" | "\at" "(" pred "," label ")" ;
+       | "\forall" binders ";" pred ; universal quantification
+       | "\exists" binders ";" pred ; existential quantification
+       | "\old" "(" pred ")" ; TODO: introduire plus tard
+       | "\at" "(" pred "," label ")" ; idem
 \end{syntax}
 
 %%% Local Variables:

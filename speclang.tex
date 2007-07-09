@@ -19,13 +19,10 @@ calls, with additional constructs that we introduce one at a time.
 
 Figure~\ref{fig:gram:term} presents the grammar for logic expressions.
 In that grammar, we distinguish between \emph{predicates} and
-\emph{terms}, fllowing the usual distinction between propositions and
+\emph{terms}, following the usual distinction between propositions and
 terms in classical multi-sorted first-order logic.
 
 
-
-
-Additional constructs:
   \begin{itemize}
   \item values in preceedings states: \old(e) and \at(e,label).
 
@@ -38,40 +35,25 @@ Additional constructs:
     specification.
 
   \item quantifications:  $\Forall \tau x; e$ and $\Exists \tau x; e$
-  \item \verb|==>|, \verb|<==>|,
+  \item \verb|==>|, \verb|<==>|, \verb|^^|
 
-   \remark{Clause}{Open question:}
-   \verb|=>| and \verb|<=>| instead of \verb|==>|, \verb|<==>| ?
-
-   \remark{Patrick}{
-   en C il existe le ou exclusif bit à bit (noté \texttt{\^}), mais pas
-   d'implication bit à bit, ni d'équivalence.
-   Coté contrôle (que l'on assimile facilement à la logique) il
-   n'existe pas en C d'équivalence (car c'est l'égalité qui joue ce
-   rôle), ni de ou exclusif. Ne désire-t'on pas avoir
-   quelque chose du genre :}
-   \begin{tabular}{cc}
-    bit à bit & logique \\
-    \verb|&| & \verb|&&| \\
-    \verb|=>| & \verb|==>| \\
-    \verb|<=>| & \verb|<==>| \\
-    \verb|^| & \verb|^^|
-    \end{tabular}
-
-  \item $\Let \tau x = e \In e$ and $\If e \Then e \Else e$
+  \item $(\Let \tau x = e \In e$ and $\If e \Then e \Else e$
 
   \item nommage de formules, de termes
 
-  \item a rel-op b rel-op c shortcut for a rel-op b \&\& b rel-op c
+  \item $t_1~relop_1~t_2~relop_2~t_3$ is a shortcut for
+    $t_1~relop_1~t_2 \&\& t_2~relop_2~t_3$ 
   \end{itemize}
 
-\subsection{Semantics and typing}
+\subsection{Semantics, typing}
 
-always defined (2-valued logic). 
+always defined (2-valued logic). Distinction entre booleens et
+predicats.  TODO: referer aux travaux de P Chalin ? 
+Donner des examples
 
 on veut la logique equationnelle classique, cad que l'axiome
 \[
-\forall x, x=xes
+\forall x, x=x
 \]
 est valide. Donc on ne peut pas introduire de construction
 non-déterministe comme  $(\texttt{any} x \mid P)$
