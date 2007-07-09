@@ -1,14 +1,17 @@
 \begin{syntax}
-  fun-contract ::= (named-behavior * | behavior-body ) decreases-clause ? 
+  fun-contract ::= simple-behavior named-behavior * decreases-clause ? 
+  \
+  simple-behavior ::= (requires-clause | assigns-clause |
+  ensures-clause ) * 
   \
   named-behavior ::= "behavior" ident ":" behavior-body 
   \
-  behavior-body ::= (requires-clause | assumes-clause | assigns-clause |
+  behavior-body ::= (assumes-clause | requires-clause | assigns-clause |
               ensures-clause ) * 
               \
-  requires-clause ::= "requires" predicate ";"
-  \
   assumes-clause ::= "assumes" predicate ";"
+  \
+  requires-clause ::= "requires" predicate ";"
   \
   assigns-clause ::= "assigns" (location ("," location) * |
   "\nothing") ";"

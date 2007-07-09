@@ -124,13 +124,11 @@ They both can be used only in \ensures{} clauses.
 
 \subsection{Simple function contracts}
 
-A simple function contract, having no named behavior, as the following
+A simple function contract, having no named behavior, has the following
 form:
 \begin{flushleft}\ttfamily
 /*@ requires $P_1$; \\
 ~~@ requires $P_2$; \\
-~~@ assumes $A_1$; \\
-~~@ assumes $A_2$; \\
 ~~@ assigns $L_1$; \\
 ~~@ assigns $L_2$; \\
 ~~@ ensures $E_1$; \\
@@ -142,27 +140,25 @@ form:
 The semantics of such a contract is as follows:
 \begin{itemize}
 \item The caller of the function must guarantee that it is called in a
-  state where the property $P_1 \verb|&&| P_2$ holds.
+  state where the property $P_1 \verb|&&| P_2$ holds. 
 \item The called function returns a state where the property
-  $\old(A_1) \verb|&&| \old(A_2) \verb|==>| E_1 \verb|&&| E_2$ holds. 
-\item If the function is called in a pre-state where
-  $A_1 \verb|&&| A_2$ holds, then all memory locations of that
-  pre-state that do not belong to the set $L_1 \cup L_2$ remain allocated
-  and are left unchanged in the post-state.
+  $E_1 \verb|&&| E_2$ holds. 
+\item All memory locations of the pre-state that do not belong to the
+  set $L_1 \cup L_2$ remain allocated and are left unchanged in the
+  post-state.
 \item If the decreases clause is present, the function can call only
   functions (including itself) which have also a decreases clause with
   the same relation $R$, which are called in a state for which the
   measure expression $m$ is smaller.
 \end{itemize}
 
-Notice that the \assumes{} clauses, and the multiplicity of clauses in
-general, are proposed mainly to improve readibility (and to avoid \old and
-some duplications of formulas), since the contract above is equivalent
-to the following simplified one:
+Notice that the multiplicity of clauses are proposed mainly to improve
+readibility since the contract above is equivalent to the following
+simplified one:
 \begin{flushleft}\ttfamily
 /*@ requires $P_1 \verb|&&| P_2$; \\
 ~~@ assigns $L_1,L_2$; \\
-~~@ ensures $\old(A_1) \verb|&&| \old(A_2) \verb|==>| E_1 \verb|&&| E_2$; \\
+~~@ ensures $E_1 \verb|&&| E_2$; \\
 ~~@ decreases $m$ for $R$; \\
 ~~@*/ 
 \end{flushleft}
@@ -187,7 +183,6 @@ modifies only the value pointed by $p$, and more precisely it
 increments it by one.
 \end{example}
 
-
 \subsection{Contracts with named behaviors}
 
 More generally, a function contract as the following form with named
@@ -195,13 +190,13 @@ behaviors (restricted to two behaviors for readability):
 \begin{flushleft}\ttfamily
 /*@ requires $P$; \\
 ~~@ behavior $b_1$: \\
-~~@ ~~requires $R_1$; \\
 ~~@ ~~assumes $A_1$; \\
+~~@ ~~requires $R_1$; \\
 ~~@ ~~assigns $L_1$; \\
 ~~@ ~~ensures $E_1$; \\
 ~~@ behavior $b_2$:  \\
-~~@ ~~requires $R_2$;  \\
 ~~@ ~~assumes $A_2$; \\
+~~@ ~~requires $R_2$;  \\
 ~~@ ~~assigns $L_2$; \\
 ~~@ ~~ensures $E_2$; \\
 ~~@ decreases $m$ for $R$; \\
@@ -211,38 +206,39 @@ behaviors (restricted to two behaviors for readability):
 The semantics of such a contract is as follows:
 \begin{itemize}
 \item The caller of the function must guarantee that it is called in a
-  state where the property $P \verb|&&| (R_1 \verb+||+ R_2)$
-  holds.
+  state where the property $P \verb|&&| (A_1 \verb|==>| R_1) \verb|&&|
+  (A_2 \verb|==>| R_2)$ holds.
 \item The called function returns a state where the properties
-  $\old(R_i) \verb|&&| \old(A_i) \verb|==>| E_i$ hold for each $i$.
-\item for each $i$, if the function is called in a pre-state where
-  $R_i \verb|&&| A_i$ holds, then all memory locations of that
+  $\old(A_i) \verb|==>| E_i$ hold for each $i$.
+\item For each $i$, if the function is called in a pre-state where
+  $A_i$ holds, then all memory locations of that
   pre-state that do not belong to the set $L_i$ remain allocated
   are left unchanged in the post-state.
-\item If the decreases clause is present, the function can call only
-  functions (including itself) which has also a decreases clause with
-  the same relation $R$, which are called in a state for which the
-  measure expression $m$ is smaller.
 \end{itemize}
 
-Notice that the assumes clauses and the requires clause in the
-behaviors are proposed mainly to improve readibility (to avoid \old
-and some duplications of formulas), since the contract above is
-equivalent to the following simplified one:
+Notice that the \requires{} clauses in the behaviors are proposed
+mainly to improve readibility (to avoid some duplications of
+formulas), since the contract above is equivalent to the following
+simplified one:
 \begin{flushleft}\ttfamily
-/*@ requires $P_1$ \&\& $P_2$ \&\& ($R_1$ || $R_2$); \\
+/*@ requires $P \verb|&&| (A_1 \verb|==>| R_1) \verb|&&| (A_2 \verb|==>| R_2)$; \\
 ~~@ behavior $b_1$: \\
+~~@ ~~assumes $A_1$; \\
 ~~@ ~~assigns $L_1$; \\
-~~@ ~~ensures \old($R_1$) \&\& \old($A_1$) ==> $E_1$ \\
+~~@ ~~ensures $E_1$; \\
 ~~@ behavior $b_2$:  \\ 
+~~@ ~~assumes $A_2$; \\
 ~~@ ~~assigns $L_2$; \\
-~~@ ~~ensures \old($R_2$) \&\& \old($A_2$) ==> $E_2$; \\
+~~@ ~~ensures $E_2$; \\
 ~~@ decreases $m$ for $R$; \\
 ~~@*/ 
 \end{flushleft}
-
+Moreover, in some context one might want to guarantee that the
+disjunction of \assumes{} clauses is true, meaning informally that all
+behaviors are covered.
 
 \begin{example}
+\label{ex:bsearch}.
 In the following, \texttt{bsearch($t,n,v$)} searches for element $v$ in array $t$ between index $0$ and $n-1$.
 \input{bsearch.pp}
 
@@ -328,7 +324,7 @@ précondition globale}
 \subsection{Memory locations}
 \label{sec:locations}
 
-There are several places where one needs to describe a set of memory locations: \assigns{} clauses, \reads{} clauses.
+There are several places where one needs to describe a set of memory locations:  in the above \assigns{} clauses of functions' contracts, or in the \reads{} clauses of Section~\ref{sec:logicspec}. 
 
 \begin{figure}
   \fbox{\begin{minipage}{0.97\textwidth}
@@ -426,9 +422,13 @@ Notes:
   | "assert" pred ";" ;
   | "assert" id ":" pred ";" ;
   | "assert" "for" id ":" pred ";" ;
+  \
+  term ::= "\at" "(" term "," id ")" ;
 \end{syntax}
 
-The \texttt{label} id annotation simply allows one to refer to the value of some expression $e$ in the state before the statement, in further annotations, using the constructs \at(e,id)
+The \texttt{label} id annotation simply allows one to refer to the
+value of some expression $e$ in the state before the statement, in
+further annotations, using the constructs $\at(e,id)$
 
 The \texttt{assert} p clause means that p must hold in the state
 before the statement.
@@ -446,10 +446,6 @@ only for the considered behavior.
 TODO: $\at(e,label)$
 
 
-\subsection{Statement contracts}
-
-TODO
-
 \subsection{Loop annotations}
 \label{sec:loop_invariant}
 
@@ -463,6 +459,18 @@ semantics of loop invariants: in particular for {\tt for} loops
 
 loop assigns: semantics?
 
+
+\begin{example}
+
+Here is a continuation of example~\ref{ex:bsearch}.
+
+\input{bsearch2.pp}
+  
+\end{example}
+
+\subsection{Statement contracts}
+
+TODO
 
 \section{Pointers and physical adressing}
 \label{sec:pointers}

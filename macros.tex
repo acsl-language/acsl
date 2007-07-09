@@ -5,13 +5,18 @@
      {\begin{lrbox}{\fmbox}\begin{minipage}{0.98\textwidth}}
      {\end{minipage}\end{lrbox}\fbox{\usebox{\fmbox}}}
 
-\newcommand{\remark}[2]{\textsl{\begin{itemize}\item \underline{remarque} de
-      {#1}~: {#2}\end{itemize}}}
+\newcommand{\remark}[2]{\begin{quote}\itshape 
+    \begin{tabular}{||p{0.8\textwidth}}
+Remarque de
+      {#1}~: {#2}
+    \end{tabular}
+\end{quote}}
 
 \newcommand{\keyword}[1]{\texttt{#1}\xspace}
 
 \newcommand{\assert}{\keyword{assert}}
 \newcommand{\assume}{\keyword{assume}}
+\newcommand{\requires}{\keyword{requires}}
 \newcommand{\ensures}{\keyword{ensures}}
 \newcommand{\assumes}{\keyword{assumes}}
 \newcommand{\assigns}{\keyword{assigns}}
