@@ -1,4 +1,4 @@
-(* $Id: transf.mll,v 1.2 2007-05-30 09:59:38 uid525 Exp $ *)
+(* $Id: transf.mll,v 1.3 2007-07-09 14:27:38 uid525 Exp $ *)
 
 { open Lexing;; }
 
@@ -18,10 +18,15 @@ and syntax = parse
     "\\end{syntax}" {
       print_string "\\end{syntax}";
       main lexbuf }
-  | ";" ([^ '\n']* as s) '\n' {
+  | ";" ([^ '\n']* as s) '\n' [' ''\t']* '|' {
       print_string "& \\textsl{";
       print_string s;
       print_string "} \\alt{}";
+      syntax lexbuf }
+  | ";" ([^ '\n']* as s) '\n' {
+      print_string "& \\textsl{";
+      print_string s;
+      print_string "} ";
       syntax lexbuf }
   | "@" {
       print_string "}";

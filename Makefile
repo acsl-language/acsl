@@ -2,8 +2,10 @@
 DEPS=annot1.pp annot2.pp speclang.bnf assigns.pp invariants.pp \
 	isqrt.pp incrstar.pp \
 	max.pp max_index.pp cond_assigns.pp bsearch.pp bsearch2.pp \
+	assigns_array.pp assigns_list.pp \
 	listdecl.pp import.pp \
-	term.bnf fn_behavior.bnf oldandresult.bnf loc.bnf moreterm.bnf ghost.bnf \
+	term.bnf fn_behavior.bnf oldandresult.bnf loc.bnf \
+	assertions.bnf moreterm.bnf ghost.bnf \
 	logic.bnf
 
 all: main.dvi

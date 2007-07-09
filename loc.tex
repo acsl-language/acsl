@@ -1,9 +1,14 @@
 \begin{syntax}
-  tset ::= term | tset "->" id | tset "." id  ;
-       | "*" tset | tset "[" tset "]" | term? ".." term? ; 
-       | tset "," tset | tset "+" tset
-       | "(" tset ")"
-       | "{" tset "|" binders (";" predicate)? "}"
+  tset ::= term ;
+       | tset "->" id ;
+       | tset "." id  ;
+       | "*" tset ;
+       | tset "[" tset "]" ;
+       | term? ".." term? ; range
+       | tset "," tset ;
+       | tset "+" tset ;  
+       | "(" tset ")" ;
+       | "{" tset "|" binders (";" predicate)? "}" ; set comprehension
 \end{syntax}
 
 %%% Local Variables:

@@ -68,7 +68,6 @@ on veut la logique equationnelle classique, cad que l'axiome
 est valide. Donc on ne peut pas introduire de construction
 non-déterministe comme  $(\texttt{any} x \mid P)$
 
-
 Types de la logique (see Section~\ref{sec:logicspec}:
 \begin{itemize}
 \item types mathematiques: real, integer, boolean
@@ -76,7 +75,9 @@ Types de la logique (see Section~\ref{sec:logicspec}:
 \item types logiques introduits par l'utilisateur
 \end{itemize}
 
-Typing rules: TODO
+\subsection*{Typing rules for terms}
+
+TODO
 
 \section{Function contracts}
 \label{sec:fn-behavior}
@@ -346,24 +347,47 @@ The semantics is given as follows, where $s$ denotes any tset:
 \item $s_1[s_2]$ denotes the set of $x_1[x_2]$ for each $x_1 \in s_1$
   and $x_2 \in s_2$
 \item $t_1 .. t_2$ denotes the set of integers between $t_1$ and
-  $t_2$, included
+  $t_2$, included.
 \item $s_1,s_2$ denotes the union of $s_1$ and $s_2$
 \item $s_1+s_2$ denotes the set of $x_1+x_2$ for each $x_1 in s_1$ and $x_2 in s_2$
 \item $(s)$ denotes the same set as $s$
-\item $\{ s \mid b ; P \}$ denotes set comprehension: set of term denoted by $s$ for each values of binders satisfying predicate $P$. Binders $b$ are bound in $s$ and $P$
+\item $\{ s \mid b ; P \}$ denotes set comprehension: set of term
+  denoted by $s$ for each values of binders satisfying predicate $P$.
+  Binders $b$ are bound in $s$ and $P$
 \end{itemize}
 
-A \emph{location} is any set of terms denoting a set of lvalues.
+A \emph{location} is any set of terms denoting a set of l-values.
 Only locations are valid as argument to \assigns{} clauses
 
-Examples:
-\input{assigns.pp}
+\begin{example}
+  The following function sets to 0 each cell of an array.
+
+  \input{assigns_array.pp} 
+
+  It is annotated with three equivalent \assigns{} clauses, each one 
+  specifying that only the set of cells $\{t[0],\ldots,t[n-1]\}$ are modified. 
+\end{example}
+
+\begin{example}
+  The following function increments each values stored in a linked
+  list.  
+
+  \input{assigns_list.pp} 
+
+  The \assigns{} clause specifies that the set of modified memory
+  locations is the set of fields $p\verb|->hd|$ for each pointer $p$
+  reachable from \verb|root| following \verb|next| fields. See
+  Section~\ref{sec:logicspec} for details about the declaration of the
+  logic predicate \texttt{reachable}.
+
+
+\end{example}
 
 \remark{Patrick}{ne faut-t'il pas étendre les clauses ``assigns'' aux
   clauses ``from'' de CAVEAT prenant en comptes les locations lues, et les
   expressions fonctionnelles~?}
 
-\subsection{Typing rules}
+\subsection*{Typing rules for locations}
 
 Two judgements:
 \begin{itemize}
@@ -405,45 +429,44 @@ Notes:
 
 \section{Statement annotations}
 
+Annotations on C statements are of three kinds:
+\begin{itemize}
+\item Assertions and logic labels; allowed before any C statement or
+  at end of blocks.
+\item Loop annotations: invariant, assigns clause, variant; allowed
+  before any loop statement: \verb|while|, \verb|for|, and
+  \verb|do...while|.
+\item Statement contracts; allowed before any C statement, specifying
+  their behavior in a similar manner as C functions.
+\end{itemize}
 
-  \begin{itemize}
-  \item \assert, label
-    \remark{claude}{permettre de nommer les asserts}
-  \item loop invariants (+loop assigns ?)
-  \item block behaviors (normal termination only, no goto going
-    inside, no goto going outside)
-  \end{itemize}
+\subsection{Assertions and logic labels} 
 
-\subsection{Assertions and logical labels} 
+\begin{figure}[t]
+  \begin{cadre}
+    \input{assertions.bnf}
+  \end{cadre}
+  \caption{Grammar for assertions}
+  \label{fig:gram:assertions}
+\end{figure}
 
-\begin{syntax}
-  statement ::= "/*@" logical-label "*/" statement \
-  logical-label ::= "label" id: ;
-  | "assert" pred ";" ;
-  | "assert" id ":" pred ";" ;
-  | "assert" "for" id ":" pred ";" ;
-  \
-  term ::= "\at" "(" term "," id ")" ;
-\end{syntax}
+The syntax of those annotations is given Figure~\ref{fig:gram:assertions} under the form of a addition to the grammar of C statements. The grammar for terms is also completed with the built-in $\at$ construct.
 
-The \texttt{label} id annotation simply allows one to refer to the
+The $\texttt{label}~id$ annotation simply allows one to refer to the
 value of some expression $e$ in the state before the statement, in
-further annotations, using the constructs $\at(e,id)$
+further annotations, using the construct $\at(e,id)$
 
-The \texttt{assert} p clause means that p must hold in the state
+The $\texttt{assert}~p$ clause means that $p$ must hold in the state
 before the statement.
 
 The last two constructs allows to give a name to the assertion. In the
-case \texttt{assert for} id, id must be a behavior identifier for the
+case $\texttt{assert for}~id$, $id$ must be a behavior identifier for the
 current function. It means that this assertion is meant to be valid
 only for the considered behavior.
 
 \remark{Claude}{unifier les 2 derniers cas? car a-t-on besoin de
   nommer un assert en dehors d'un behavior de la fonction?}
 
-
-
-TODO: $\at(e,label)$
 
 
 \subsection{Loop annotations}
