@@ -5,7 +5,7 @@ DEPS=annot1.pp annot2.pp speclang.bnf assigns.pp invariants.pp \
 	assigns_array.pp assigns_list.pp \
 	listdecl.pp import.pp \
 	term.bnf fn_behavior.bnf oldandresult.bnf loc.bnf \
-	assertions.bnf moreterm.bnf ghost.bnf \
+	assertions.bnf loops.bnf st_contracts.bnf moreterm.bnf ghost.bnf \
 	logic.bnf
 
 all: main.dvi

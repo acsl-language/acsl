@@ -452,18 +452,19 @@ Annotations on C statements are of three kinds:
 
 The syntax of those annotations is given Figure~\ref{fig:gram:assertions} under the form of a addition to the grammar of C statements. The grammar for terms is also completed with the built-in $\at$ construct.
 
-The $\texttt{label}~id$ annotation simply allows one to refer to the
-value of some expression $e$ in the state before the statement, in
-further annotations, using the construct $\at(e,id)$
+\begin{itemize}
+\item The $\texttt{label}~id$ annotation simply allows one to refer to
+  the value of some expression $e$ in the state before the statement,
+  in further annotations, using the construct $\at(e,id)$
 
-The $\texttt{assert}~p$ clause means that $p$ must hold in the state
-before the statement.
+\item  The $\texttt{assert}~p$ clause means that $p$ must hold in the state
+  before the statement.
 
-The last two constructs allows to give a name to the assertion. In the
-case $\texttt{assert for}~id$, $id$ must be a behavior identifier for the
-current function. It means that this assertion is meant to be valid
-only for the considered behavior.
-
+\item  The last two constructs allows to give a name to the assertion. In
+  the case $\texttt{assert for}~id$, $id$ must be a behavior
+  identifier for the current function. It means that this assertion is
+  meant to be valid only for the considered behavior.
+\end{itemize}
 \remark{Claude}{unifier les 2 derniers cas? car a-t-on besoin de
   nommer un assert en dehors d'un behavior de la fonction?}
 
@@ -472,16 +473,59 @@ only for the considered behavior.
 \subsection{Loop annotations}
 \label{sec:loop_invariant}
 
-TODO
 
-semantics of loop invariants: in particular for {\tt for} loops
+\begin{figure}[t]
+  \begin{cadre}
+    \input{loops.bnf}
+  \end{cadre}
+  \caption{Grammar for loop annotations}
+  \label{fig:gram:loops}
+\end{figure}
 
-\begin{syntax}
-  invariant-clause ::= "loop" "invariant" predicate \
-\end{syntax}
+The syntax of loop annotations is given Figure~\ref{fig:gram:loops}
+under the form of a addition to the grammar of C statements.
 
-loop assigns: semantics?
+The semantics of loop invariants is defined as follows: a loop
+annotation of the form
+\begin{flushleft}\ttfamily
+/*@ loop invariant $I$; \\
+~~@ loop assigns $L$; \\
+~~@ loop variant $m$ for $R$; \\
+~~@*/ \\
+...
+\end{flushleft}
+specifies that
+\begin{itemize}
+\item The predicate $I$ is initially true, that is true in the state
+  before entering the loop (more precisely, in the case of a
+  \verb|for| loop: after the initialization expression).
+\item The predicate $I$ is an inductive invariant, that is if $I$ is
+  assumed true in some state where the condition $c$ is also true, and
+  if execution of the loop body in that state ends normally at the end
+  of the body or with a \texttt{continue} statement, $I$ is true in
+  the resulting state. Notice that if the loop condition has side
+  effects, these are included in the loop body in a suitable way:
+  \begin{itemize}
+  \item for a $\verb|while| (c) s$ loop, $I$ must be preserved by the side-effects of $c$ followed by $s$
+  \item for a $\verb|for|(init;c;step) s$ loop, $I$ must be preserved by the side-effects of $c$ followed by $s$ followed by step
+  \item for a  $\verb|do| s \verb|while| (c);$ loop, TODO
+  \end{itemize}
+\item At any loop iteration, any location that was allocated before
+  entering the loop, and is not member of $L$ in the current state,
+  must be remain allocated and have to same value as before entering
+  the loop.
+\item For each loop iteration that terminates normally or with
+  \texttt{continue}, the value of $m$ at end of the iteration must be
+  smaller that its value at the beginning of the iteration, with
+  respect to relation $R$.
+\end{itemize}
 
+Remarks:
+\begin{itemize}
+\item The $\old$ construct is not allowed in loop annotations
+\item When a loop exists with \texttt{break} or \texttt{return}, it is
+  not required that the loop invariant holds.
+\end{itemize}
 
 \begin{example}
 
@@ -491,9 +535,96 @@ Here is a continuation of example~\ref{ex:bsearch}.
   
 \end{example}
 
+\subsection*{More about termination}
+
+Property of termination concerns both loops and recursive function
+calls.  For that purpose, loops can be annotated with \emph{loop
+  variants}\index{loop variant}, and functions can be annotated with
+such variants too.
+
+\subsubsection*{integer measures}
+
+For loops:
+\begin{syntax}
+variant-clause ::= "loop variant" e 
+\end{syntax}
+
+For functions:
+\begin{syntax}
+decreases-clause ::= "decreases" e 
+\end{syntax}
+where $e$ has type integer.
+
+\subsubsection*{general measures}
+
+More general case of measures on other types: use the keyword for:
+
+\begin{syntax}
+variant-clause ::= "loop variant" e "for" id \
+decreases-clause ::= "decreases" e "for" id
+\end{syntax}
+
+where $e$ has type $\tau$ and $id$ is a logic predicate of type $\tau,\tau \ra
+prop$ (see Section~\ref{sec:logicspec}.
+
+
+
 \subsection{Statement contracts}
 
-TODO
+
+
+\begin{figure}[t]
+  \begin{cadre}
+    \input{st_contracts.bnf}
+  \end{cadre}
+  \caption{Grammar for statement contracts}
+  \label{fig:gram:stcontracts}
+\end{figure}
+
+
+The grammar for statement contracts is given
+Figure~\ref{fig:gram:stcontracts}. It is similar to function
+behaviors, limited to \assigns{} and \ensures{} clauses. The notation
+for named behaviors is of the form \texttt{behavior for $id$} where
+$id$ is the name of some behavior of the current function. Named
+statement are meant to be valid only for the corresponding function
+behavior, in particular only under the corresponding \assumes{}
+clause.
+
+\section{Logic specifications}
+\label{sec:logicspec}
+
+\begin{figure}[t]
+  \fbox{\begin{minipage}{0.97\linewidth} \input{logic.bnf}
+    \end{minipage}}  
+  \caption{Grammar for logic declarations}
+\label{fig:gram:logic}
+\end{figure}
+
+\begin{itemize}
+\item logic specifications: introduction of new logic types,
+  constants, functions, predicates and axioms.
+
+logic types can be polymorphic: for example
+\input{listdecl.pp}
+
+\item recursive definitions: are allowed in logic function and predicate definitions. Example:  
+  \input{max_index.pp}
+
+mutual recursion
+
+\item predefined logic specifications can be provided as libraries (see section~\ref{sec:speclibraries}, and imported using
+\input{import.pp}
+
+\item higher-order functions: $\lambda$, \Sum, \Max, \numof
+\item {\tt enum}, recursive types
+
+
+\item hybrid functions and predicates: take both C types and logic
+  types as arguments.
+\item model variables
+\end{itemize}
+
 
 \section{Pointers and physical adressing}
 \label{sec:pointers}
@@ -558,72 +689,6 @@ where each $loc_i$ is a set of memory location as defined in Section~\ref{sec:lo
 \item built-in predicate \freed, specifying in a post-condition that a
   pointer was allocated in the pre-state but not anymore.
 \end{itemize}
-
-\section{Termination}
-
-Property of termination concerns both loops and recursive function calls. 
-For that purpose, loops can be annotated with \emph{loop variants}\index{loop variant}, and functions can be annotated with such variants too.
-
-\subsection{integer measures}
-
-For loops:
-\begin{syntax}
-variant-clause ::= "loop variant" e 
-\end{syntax}
-
-For functions:
-\begin{syntax}
-decreases-clause ::= "decreases" e 
-\end{syntax}
-where $e$ has type integer
-
-\subsection{general measures}
-
-More general case of measures on other types: use the keyword for:
-
-\begin{syntax}
-variant-clause ::= "loop variant" e "for" id \
-decreases-clause ::= "decreases" e "for" id
-\end{syntax}
-
-where $e$ has type $\tau$ and $id$ is a logic predicate of type $\tau,\tau \ra
-prop$ (see Section~\ref{sec:logicspec}
-
-
-\section{Logic specifications}
-\label{sec:logicspec}
-
-\begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\linewidth} \input{logic.bnf}
-    \end{minipage}}  
-  \caption{Grammar for logic declarations}
-\label{fig:gram:logic}
-\end{figure}
-
-\begin{itemize}
-\item logic specifications: introduction of new logic types,
-  constants, functions, predicates and axioms.
-
-logic types can be polymorphic: for example
-\input{listdecl.pp}
-
-\item recursive definitions: are allowed in logic function and predicate definitions. Example:  
-  \input{max_index.pp}
-
-mutual recursion
-
-\item predefined logic specifications can be provided as libraries (see section~\ref{sec:speclibraries}, and imported using
-\input{import.pp}
-
-\item higher-order functions: $\lambda$, \Sum, \Max, \numof
-\item {\tt enum}, recursive types
-
-
-\item hybrid functions and predicates: take both C types and logic
-  types as arguments.
-\item model variables
-\end{itemize}
-
 
 \section{Abnormal termination}
 

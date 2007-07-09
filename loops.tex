@@ -1,0 +1,17 @@
+\begin{syntax}
+  statement ::= "/*@" loop-annot "*/" "while" "(" expr ")" statement ;
+  | "/*@" loop-annot "*/" "for" "(" expr ";" expr ";" expr ")" statement ;
+  | "/*@" loop-annot "*/" "do" statement "while" "(" expr ")" ";" ;
+  \
+  loop-annot ::= (loop-invariant | loop-assigns | loop-variant)*
+  \
+  loop-invariant ::= "loop" "invariant" pred ";" ;
+  | "loop" "invariant" "for" id ":" pred ";" ; invariant for behavior $id$
+  \
+  loop-assigns ::= "loop" "assigns" locations ";" ;
+  | "loop" "assigns" "for" id ":" locations ";" ; assigns for behavior $id$
+  \
+  loop-variant ::= "loop" "variant" term ";" ;
+  | "loop" "variant" term "for" id ";" ; variant for relation $id$
+  \
+\end{syntax}

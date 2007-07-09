@@ -1,0 +1,9 @@
+\begin{syntax}
+  statement ::= "/*@" statement-contract "*/" statement
+  \
+  statement-contract ::= statement-behavior named-statement-behavior*  
+  \
+  statement-behavior ::= (assigns-clause | ensures-clause ) * 
+  \
+  named-statement-behavior ::= "behavior" "for" ident ":" statement-behavior
+\end{syntax}

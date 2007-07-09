@@ -13,8 +13,9 @@
   \
   requires-clause ::= "requires" predicate ";"
   \
-  assigns-clause ::= "assigns" (location ("," location) * |
-  "\nothing") ";"
+  assigns-clause ::= "assigns" locations ";"
+  \
+  locations ::= location ("," location) * | "\nothing" 
   \
   ensures-clause ::= "ensures" predicate ";"
   \
