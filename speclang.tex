@@ -10,7 +10,7 @@ the annotations. These are called below \emph{logic expressions}. They
 corresponds more or less to pure C expressions, without function
 calls, with additional constructs that we introduce one at a time.
 
-\begin{figure}[t]
+\begin{figure}[p]
   \fbox{\begin{minipage}{0.97\textwidth} \input{term.bnf}
     \end{minipage}}
   \caption{Grammar of terms and predicates}
@@ -23,27 +23,37 @@ In that grammar, we distinguish between \emph{predicates} and
 terms in classical multi-sorted first-order logic.
 
 
-  \begin{itemize}
-  \item values in preceedings states: \old(e) and \at(e,label).
+The additional constructs are as follows:
+\begin{itemize}
+\item C operators \verb|&&|, \verb+||+ and \verb|!| are used as
+  logical connectives. There are additional connectives \verb|==>| for
+  implication, \verb|<==>| for equivalence, \verb|^^| for exclusive
+  or.
 
-    construct \old{} is only valid in ensures clauses of function
-    specification. For loop invariants, one need to put some label and
-    use the \at{} construct.
-  \item returned value: \result
+\item Quantifications: universal $\Forall \tau x; e$ and existential
+  $\Exists \tau x; e$
 
-    valid only in ensures clauses of function
-    specification.
+\item Local naming $\Let x = e_1 ; e_2$ introduce the name $x$ for
+  expression $e_1$ which can be used in expression $e_2$.
 
-  \item quantifications:  $\Forall \tau x; e$ and $\Exists \tau x; e$
-  \item \verb|==>|, \verb|<==>|, \verb|^^|
+\item conditional $\If c \Then e_1 \Else e_2$. There is a subtlety
+  here: the condition may be either a boolean term or a predicate.  In
+  case of a predicate, the two branches must be also predicates, so
+  that this construct acts as a connective with the following
+  semantics: $\If c \Then e_1 \Else e_2$ is equivalent to $(c
+  \verb|==>| e_1) \verb|&&| (\verb|!| c \verb|==>| e_2)$
 
-  \item $(\Let \tau x = e \In e$ and $\If e \Then e \Else e$
+\item syntactic naming: $id \verb|::| e$ is a term or a predicate
+  equivalent to $e$. It is different from local naming with $\Let$:
+  the name cannot be reused in other terms of predicates. It is only
+  for tools purposes.
 
-  \item nommage de formules, de termes
+\item The construct $t_1~relop_1~t_2~relop_2~t_3 \cdots t_k$ is a
+  shortcut for $t_1~relop_1~t_2 ~\verb|&&|~ t_2~relop_2~t_3
+  ~\verb|&&|~ \cdots $.
 
-  \item $t_1~relop_1~t_2~relop_2~t_3$ is a shortcut for
-    $t_1~relop_1~t_2 \&\& t_2~relop_2~t_3$ 
-  \end{itemize}
+\item Function and predicate application are not applications of C functions, but of logic functions or predicates: see Section~\ref{sec:logicspec}
+\end{itemize}
 
 \subsection{Semantics, typing}
 
@@ -81,6 +91,29 @@ Typing rules: TODO
   \label{fig:gram:contracts}
 \end{figure}
 
+\begin{figure}[t]
+  \fbox{\begin{minipage}{0.97\textwidth}
+      \input{oldandresult.bnf}
+    \end{minipage}}
+    \caption{\old and \result in terms}
+  \label{fig:gram:oldandresult}
+\end{figure}
+
+
+
+The Figure~\ref{fig:gram:contracts} show a grammar for the function
+contracts. The grammars for non-terminal locations is given later,
+informally, they denotes C l-values. We also introduce additional constructs 
+for terms as given on figure~\ref{fig:gram:oldandresult}. These are the following:
+\begin{itemize}
+\item $\old(e)$ denotes the value of $e$ in the pre-state of the function. 
+\item \result{} denotes the returned value of the function.
+\end{itemize}
+
+
+They both can be used only in \ensures{} clauses.
+
+
 \remark{Patrick}{pourquoi seuls les ``behavior'' peuvent avoir un
   nom~? Ne peut-t'on pas avoir le ``ident:'' optionnel pour chacune
   des clauses~? Claude: parce que le nommage de behavior doit servir
@@ -89,23 +122,78 @@ Typing rules: TODO
   de nommer des predicate ou terms, p. ex. avec la notation Caduceus
   (id :: f) }
 
-\remark{Virgile}{Changement du mot-clé des variants pour éviter un
-  conflit avec les variants de boucle. Le choix du mot-clé exact reste
-  à débattre}
+\subsection{Simple function contracts}
 
-The Figure~\ref{fig:gram:contracts} show a grammar for the function
-contracts. The grammars for non-terminals term, predicate and
-locations are given later. Informally, term denotes pure C
-expressions, predicate denotes pure C boolean expressions, and
-locations denotes C l-values.
-
-\subsection{Semantics and typing}
-
-Generally speaking, a function contract as the following
-form (restricted to two behaviors for readability):
+A simple function contract, having no named behavior, as the following
+form:
 \begin{flushleft}\ttfamily
 /*@ requires $P_1$; \\
 ~~@ requires $P_2$; \\
+~~@ assumes $A_1$; \\
+~~@ assumes $A_2$; \\
+~~@ assigns $L_1$; \\
+~~@ assigns $L_2$; \\
+~~@ ensures $E_1$; \\
+~~@ ensures $E_2$; \\
+~~@ decreases $m$ for $R$; \\
+~~@r*/
+\end{flushleft}
+
+The semantics of such a contract is as follows:
+\begin{itemize}
+\item The caller of the function must guarantee that it is called in a
+  state where the property $P_1 \verb|&&| P_2$ holds.
+\item The called function returns a state where the property
+  $\old(A_1) \verb|&&| \old(A_2) \verb|==>| E_1 \verb|&&| E_2$ holds. 
+\item If the function is called in a pre-state where
+  $A_1 \verb|&&| A_2$ holds, then all memory locations of that
+  pre-state that do not belong to the set $L_1 \cup L_2$ remain allocated
+  and are left unchanged in the post-state.
+\item If the decreases clause is present, the function can call only
+  functions (including itself) which have also a decreases clause with
+  the same relation $R$, which are called in a state for which the
+  measure expression $m$ is smaller.
+\end{itemize}
+
+Notice that the \assumes{} clauses, and the multiplicity of clauses in
+general, are proposed mainly to improve readibility (and to avoid \old and
+some duplications of formulas), since the contract above is equivalent
+to the following simplified one:
+\begin{flushleft}\ttfamily
+/*@ requires $P_1 \verb|&&| P_2$; \\
+~~@ assigns $L_1,L_2$; \\
+~~@ ensures $\old(A_1) \verb|&&| \old(A_2) \verb|==>| E_1 \verb|&&| E_2$; \\
+~~@ decreases $m$ for $R$; \\
+~~@*/ 
+\end{flushleft}
+
+\begin{example}
+The following function is given a simple contract for computation of integer square root, rounded to the floor.
+\input{isqrt.pp}
+
+The contract means that the function must not be called with a
+negative argument, and in return the result satisfies the conjunction
+of the three predicates given in \ensures{} clauses.
+\end{example}
+
+\begin{example}
+The following function is given a contract to specify it increments the value pointed by the pointer given as argument.
+\input{incrstar.pp}
+
+The contract means that the function must be called with a pointer $p$
+that points to a safely allocated memory location (See
+Section~\ref{sec:pointers} for details on $\valid$ built-in predicate). It
+modifies only the value pointed by $p$, and more precisely it
+increments it by one.
+\end{example}
+
+
+\subsection{Contracts with named behaviors}
+
+More generally, a function contract as the following form with named
+behaviors (restricted to two behaviors for readability):
+\begin{flushleft}\ttfamily
+/*@ requires $P$; \\
 ~~@ behavior $b_1$: \\
 ~~@ ~~requires $R_1$; \\
 ~~@ ~~assumes $A_1$; \\
@@ -123,12 +211,12 @@ form (restricted to two behaviors for readability):
 The semantics of such a contract is as follows:
 \begin{itemize}
 \item The caller of the function must guarantee that it is called in a
-  state where the property \texttt{$P_1$ \&\& $P_2$ \&\& ($R_1$ || $R_2$)}
+  state where the property $P \verb|&&| (R_1 \verb+||+ R_2)$
   holds.
 \item The called function returns a state where the properties
-  \texttt{\old($R_i$) \&\& \old($A_i$) ==> $E_i$} hold for each $i$.
+  $\old(R_i) \verb|&&| \old(A_i) \verb|==>| E_i$ hold for each $i$.
 \item for each $i$, if the function is called in a pre-state where
-  \texttt{$R_i$ \&\& $A_i$} holds, then all memory locations of that
+  $R_i \verb|&&| A_i$ holds, then all memory locations of that
   pre-state that do not belong to the set $L_i$ remain allocated
   are left unchanged in the post-state.
 \item If the decreases clause is present, the function can call only
@@ -154,25 +242,33 @@ equivalent to the following simplified one:
 \end{flushleft}
 
 
-\subsubsection{Example 1: max of two ints}
+\begin{example}
+In the following, \texttt{bsearch($t,n,v$)} searches for element $v$ in array $t$ between index $0$ and $n-1$.
+\input{bsearch.pp}
 
-\begin{cadre}
-  \input{max.pp}
-\end{cadre}
-\subsubsection{Example 2: conditional assignment}
+The intention is to perform a binary search, which requires that the
+array $t$ is sorted in increasing order: this is the purpose of the
+predicate named \texttt{t\_is\_sorted} in the precondition. The
+remaining of the precondition is to require that the array is safely
+allocated for at least the index from $0$ to $n-1$. The two named
+behaviors correspond respectively to the succesful behavior and the
+failing behavior.
 
-\begin{cadre}
-  \input{cond_assigns.pp}
-\end{cadre}
-\subsubsection{Example 3: binary search}
+See~\ref{sec:loop_invariant} for a continuation of this example.
+\end{example}
 
-\begin{cadre}
-  \input{bsearch.pp}
-\end{cadre}
+\begin{example}
+  The following function illustrates the importance of different
+  \assigns{} clauses for each behavior.  
 
-See~\ref{sec:loop_invariant} for the body of bsearch
+  \input{cond_assigns.pp} 
 
-\subsubsection{Remarks}
+  Its contract means that it assigns values pointed by $p$ or by $q$,
+  conditionally on the sign of $n$.
+\end{example}
+
+
+\subsection{Remarks}
 
 \remark{Yannick}{JML propose deux modes de spécification des fonctions~:
  soit à base de ``requires'' et ``ensures'', soit à base de
@@ -342,12 +438,22 @@ case \texttt{assert for} id, id must be a behavior identifier for the
 current function. It means that this assertion is meant to be valid
 only for the considered behavior.
 
-\remark{Claude}{unifier les 2 derniers cas? car a-t-on besoin de nommer un assert en dehors d'une behvior de la fonction?}
+\remark{Claude}{unifier les 2 derniers cas? car a-t-on besoin de
+  nommer un assert en dehors d'un behavior de la fonction?}
+
+
+
+TODO: $\at(e,label)$
+
 
 \subsection{Statement contracts}
 
+TODO
 
 \subsection{Loop annotations}
+\label{sec:loop_invariant}
+
+TODO
 
 semantics of loop invariants: in particular for {\tt for} loops
 
@@ -359,6 +465,7 @@ loop assigns: semantics?
 
 
 \section{Pointers and physical adressing}
+\label{sec:pointers}
 
 \subsection{Memory blocks and pointer dereferencing}
 

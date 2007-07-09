@@ -1,8 +1,9 @@
 
-DEPS=intro.pp speclang.bnf assigns.pp invariants.pp \
+DEPS=annot1.pp annot2.pp speclang.bnf assigns.pp invariants.pp \
+	isqrt.pp incrstar.pp \
 	max.pp max_index.pp cond_assigns.pp bsearch.pp \
 	listdecl.pp import.pp \
-	fn_behavior.bnf loc.bnf term.bnf moreterm.bnf ghost.bnf \
+	term.bnf fn_behavior.bnf oldandresult.bnf loc.bnf moreterm.bnf ghost.bnf \
 	logic.bnf
 
 all: main.dvi

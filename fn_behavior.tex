@@ -1,12 +1,19 @@
 \begin{syntax}
-  fun-contract ::= requires-clause * (named-behavior * | behavior-body )variant-clause ? \
-  requires-clause ::= "requires" predicate ";"\
-  variant-clause ::= "decreases" term ("for" ident)? ";"\
-  named-behavior ::= "behavior" ident ":" behavior-body \
-  behavior-body ::= (assumes-clause | assigns-clause |
-              ensures-clause ) * \
-  assumes-clause ::= "assumes" predicate ";"\
+  fun-contract ::= (named-behavior * | behavior-body ) decreases-clause ? 
+  \
+  named-behavior ::= "behavior" ident ":" behavior-body 
+  \
+  behavior-body ::= (requires-clause | assumes-clause | assigns-clause |
+              ensures-clause ) * 
+              \
+  requires-clause ::= "requires" predicate ";"
+  \
+  assumes-clause ::= "assumes" predicate ";"
+  \
   assigns-clause ::= "assigns" (location ("," location) * |
-  "\nothing") ";"\
+  "\nothing") ";"
+  \
   ensures-clause ::= "ensures" predicate ";"
+  \
+  decreases-clause ::= "decreases" term ("for" ident)? ";"
 \end{syntax}

@@ -10,9 +10,10 @@
 
 \newcommand{\keyword}[1]{\texttt{#1}\xspace}
 
-\newcommand{\ensures}{\keyword{ensures}}
 \newcommand{\assert}{\keyword{assert}}
 \newcommand{\assume}{\keyword{assume}}
+\newcommand{\ensures}{\keyword{ensures}}
+\newcommand{\assumes}{\keyword{assumes}}
 \newcommand{\assigns}{\keyword{assigns}}
 \newcommand{\reads}{\keyword{reads}}
 \newcommand{\boundseparated}{\keyword{{\textbackslash}bound\_separated}}
@@ -35,8 +36,7 @@
 \newcommand{\For}{\keyword{for}~}
 \newcommand{\While}{~\keyword{while}~}
 \newcommand{\Do}{~\keyword{do}~}
-\newcommand{\Let}{\keyword{let}~}
-\newcommand{\In}{~\keyword{in}~}
+\newcommand{\Let}{\keyword{\textbackslash{}let}~}
 
 \newcommand{\struct}{\keyword{struct}}
 \newcommand{\union}{\keyword{union}}
@@ -79,6 +79,10 @@
 % colors
 
 \newrgbcolor{darkgreen}{0 0.4 0}
+
+% theorems
+
+\newtheorem{example}{Example}[chapter]
 
 %%% Local Variables:
 %%% mode: latex

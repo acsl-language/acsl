@@ -2,32 +2,46 @@
 
 This document is a reference manual for ACSL, an acronym for ``ANSI C
 Specification Language''. This is a specification language proposed by
-the CAT project, implemented in the Frama-C platform, which aims at
+the CAT
+project\footnote{\url{http://www.rntl.org/projet/resume2005/cat.htm},
+  TODO: referer a une page publique en anglais dont la creation a ete
+  decide}, implemented in the \textsc{Frama-C} platform, which aims at
 specifying behavioral properties of C source code. The main
-inspiration for this language comes from the \emph{Java Modeling
-  Language} (JML) which aims at the same goals for Java source code,
-which itself is inspired from the \emph{design-by-contract} principle
-proposed by Bertrand Meyer\footnote{Who indeed took its own
-  inspiration from the concepts of preconditions and postconditions on
-  a routine, go back at least to Dijkstra, Floyd and Hoare in the late
-  60's and early 70's} and originally implemented in the Eiffel
-language.
+inspiration for this language comes from the specification language of
+the \textsc{Caduceus} tool~\cite{filliatre04icfem,filliatre07cav} for
+deductive verification of behavioral properties of C programs. It is
+itself inspired from the \emph{Java Modeling Language} (JML) which
+aims at similar goals for Java source code: indeed it aims both
+\emph{runtime assertion checking} and \emph{static verification} using
+the \textsc{ESC/Java2} tool~\cite{ESCJava2}.
+
+Going back further in history, JML design was guided by the general
+\emph{design-by-contract} principle proposed by Bertrand Meyer, who
+indeed took its own inspiration from the concepts of preconditions and
+postconditions on a routine, go back at least to Dijkstra, Floyd and
+Hoare in the late 60's and early 70's, and originally implemented in
+the \textsc{Eiffel} language.
+
+\section{Organization of this document}
 
 In this preliminary chapter we introduce some definitions and
 vocabulary, and discuss generalities about this specification language.
-
-Some features in this document are considered ``experimental'',
-meaning that their syntax and semantics is still under discussion. We
-also consider them as ``advanced features'' which are not supposed to
-be useful for a basic use of that specification language.
 
 Chapter~\ref{chap:base} presents the specification language itself.
 
 Chapter~\ref{chap:lib} presents additional informations about
 \emph{libraries} of specifications.
 
+Some features in this document are considered ``experimental'',
+meaning that their syntax and semantics is still under discussion. We
+also consider them as ``advanced features'' which are not supposed to
+be useful for a basic use of that specification language.
+
+A detailed table of contents is given on page~\pageref{chap:contents}
 
 \section{Glossary}
+
+TODO: \emph{l-value}
 
 An expression is called \emph{pure} if it has no side-effect.
 
@@ -49,7 +63,7 @@ en créer de nouvelles. Il y a peut-être des constructions
 du C++ ou C\# à utiliser ou à généraliser.
 Idem avec les extensions de GCC.}
 
-\section{Annotations}
+\section{Generalities about Annotations}
 
 In this document, we consider that annotations are given as comments
 written directly into C source files, so
@@ -82,7 +96,7 @@ that source files remain compilable\footnote{Other means of attaching
 
 \item Statement annotations:
   \begin{itemize}
-  \item \assert,\footnote{Remark about \assume clauses: current
+  \item \assert,\footnote{Remark about \assume{} clauses: current
       discussion is that it is not considered as an element of
       specification, so not present here. This should be part of proof
       management done by tools}
@@ -137,9 +151,7 @@ that source files remain compilable\footnote{Other means of attaching
 \subsection{Parsing annotations in practice}
 
 In JML, parsing is done by just ignoring \verb|//@|, \verb|/*@| and \verb|*/| and the level of lexing. This technique can completely modify the semantics of the C code, for example:
-\begin{c}
-return x /*@ +1 */ ;
-\end{c}
+\input{annot1.pp}
 
 In our language this has to be forbidden. Technically, current
 implementation of Frama-C isolate the comments in a first step of
@@ -147,10 +159,7 @@ syntax analysis, and then parses a second time. Nevertheless, the
 grammar and the corresponding parser must be carefully designed to
 avoid interaction of annotations with the code. For example, in such a
 code:
-\begin{c}
-if (c) //@ assert P;
-   c=1;
-\end{c}
+\input{annot2.pp}
 the statement \verb|c=1| must be understood as the \texttt{then} branch of the
 \texttt{if}. This is ensured by the grammar below, saying that \verb|assert|
 annotations are not statement themselves, but attached to the

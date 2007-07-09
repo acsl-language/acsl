@@ -1,9 +1,10 @@
 \documentclass[a4paper]{report}
 
 \usepackage{fullpage}
-\usepackage{amssymb}
+\usepackage{url,amssymb}
 \usepackage[T1]{fontenc}
 \usepackage{times}
+
 \usepackage{pst-node}
 \usepackage{pstcol}
 
@@ -25,7 +26,7 @@
 
 \maketitle
 
-\input{intro.pp}
+\input{intro.tex}
 
 \input{speclang.bnf}
 
@@ -77,6 +78,7 @@ up, using for example ghost variables.
 
 
 \section{Libraries of logic specifications}
+\label{sec:speclibraries}
 
 \subsection{Library list}
 
@@ -101,13 +103,15 @@ TODO by Yannick
 \end{verbatim}
 
 \bibliographystyle{plain}
-\bibliography{./biblio}
-%\input{biblio-demons}
+\IfFileExists{biblio-demons.tex}%
+{\input{biblio-demons.tex}}{\bibliography{./biblio}}
 
+\clearpage
+\label{chap:contents}
 \tableofcontents
 \listoffigures
-
 \printindex
+
 \end{document}
 
 %%% Local Variables:
