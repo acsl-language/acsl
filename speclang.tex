@@ -60,7 +60,7 @@ TODO: operator priorities
 \subsection{Semantics, typing}
 
 always defined (2-valued logic). Distinction entre booleens et
-predicats.  TODO: referer aux travaux de P Chalin ? 
+predicats.  TODO: referer aux travaux de P Chalin ?
 Donner des examples
 
 on veut la logique equationnelle classique, cad que l'axiome
@@ -106,10 +106,10 @@ TODO
 
 The Figure~\ref{fig:gram:contracts} show a grammar for the function
 contracts. The grammars for non-terminal locations is given later,
-informally, they denotes C l-values. We also introduce additional constructs 
+informally, they denotes C l-values. We also introduce additional constructs
 for terms as given on figure~\ref{fig:gram:oldandresult}. These are the following:
 \begin{itemize}
-\item $\old(e)$ denotes the value of $e$ in the pre-state of the function. 
+\item $\old(e)$ denotes the value of $e$ in the pre-state of the function.
 \item \result{} denotes the returned value of the function.
 \end{itemize}
 
@@ -143,9 +143,9 @@ form:
 The semantics of such a contract is as follows:
 \begin{itemize}
 \item The caller of the function must guarantee that it is called in a
-  state where the property $P_1 \verb|&&| P_2$ holds. 
+  state where the property $P_1 \verb|&&| P_2$ holds.
 \item The called function returns a state where the property
-  $E_1 \verb|&&| E_2$ holds. 
+  $E_1 \verb|&&| E_2$ holds.
 \item All memory locations of the pre-state that do not belong to the
   set $L_1 \cup L_2$ remain allocated and are left unchanged in the
   post-state.
@@ -163,7 +163,7 @@ simplified one:
 ~~@ assigns $L_1,L_2$; \\
 ~~@ ensures $E_1 \verb|&&| E_2$; \\
 ~~@ decreases $m$ for $R$; \\
-~~@*/ 
+~~@*/
 \end{flushleft}
 
 \begin{example}
@@ -229,12 +229,12 @@ simplified one:
 ~~@ ~~assumes $A_1$; \\
 ~~@ ~~assigns $L_1$; \\
 ~~@ ~~ensures $E_1$; \\
-~~@ behavior $b_2$:  \\ 
+~~@ behavior $b_2$:  \\
 ~~@ ~~assumes $A_2$; \\
 ~~@ ~~assigns $L_2$; \\
 ~~@ ~~ensures $E_2$; \\
 ~~@ decreases $m$ for $R$; \\
-~~@*/ 
+~~@*/
 \end{flushleft}
 Moreover, in some context one might want to guarantee that the
 disjunction of \assumes{} clauses is true, meaning informally that all
@@ -258,9 +258,9 @@ See~\ref{sec:loop_invariant} for a continuation of this example.
 
 \begin{example}
   The following function illustrates the importance of different
-  \assigns{} clauses for each behavior.  
+  \assigns{} clauses for each behavior.
 
-  \input{cond_assigns.pp} 
+  \input{cond_assigns.pp}
 
   Its contract means that it assigns values pointed by $p$ or by $q$,
   conditionally on the sign of $n$.
@@ -276,12 +276,12 @@ See~\ref{sec:loop_invariant} for a continuation of this example.
   peuvent se combiner, la sémantique est la suivante~:}
 
 \begin{verbatim}
-  requires P_1
-  requires P_2
-  ensures  Q_1
-  ensures  Q_2
-  behavior x_1: requires R_1 ensures E_1
-  behavior x_2: requires R_2 ensures E_2
+  requires P_1;
+  requires P_2;
+  ensures  Q_1;
+  ensures  Q_2;
+  behavior x_1: requires R_1; ensures E_1;
+  behavior x_2: requires R_2; ensures E_2;
 \end{verbatim}
 
 
@@ -306,12 +306,12 @@ la sémantique consiste à rajouter $(A_i \ra R_i)$ en conjonction de la
 précondition globale}
 
 \begin{verbatim}
-  requires P_1
-  requires P_2
-  ensures  Q_1
-  ensures  Q_2
-  behavior x_1: requires R_1 assumes A_1 ensures E_1
-  behavior x_2: requires R_2 assumes A_2 ensures E_2
+  requires P_1;
+  requires P_2;
+  ensures  Q_1;
+  ensures  Q_2;
+  behavior x_1: requires R_1; assumes A_1; ensures E_1;
+  behavior x_2: requires R_2; assumes A_2; ensures E_2;
 \end{verbatim}
 
 
@@ -327,11 +327,11 @@ précondition globale}
 \subsection{Memory locations}
 \label{sec:locations}
 
-There are several places where one needs to describe a set of memory locations:  in the above \assigns{} clauses of functions' contracts, or in the \reads{} clauses of Section~\ref{sec:logicspec}. 
+There are several places where one needs to describe a set of memory locations:  in the above \assigns{} clauses of functions' contracts, or in the \reads{} clauses of Section~\ref{sec:logicspec}.
 
 \begin{figure}
   \fbox{\begin{minipage}{0.97\textwidth}
-      \input{loc.bnf}  
+      \input{loc.bnf}
     \end{minipage}}
   \caption{Grammar for memory locations}
 \label{fig:gram:locations}
@@ -364,17 +364,17 @@ Only locations are valid as argument to \assigns{} clauses
 \begin{example}
   The following function sets to 0 each cell of an array.
 
-  \input{assigns_array.pp} 
+  \input{assigns_array.pp}
 
-  It is annotated with three equivalent \assigns{} clauses, each one 
-  specifying that only the set of cells $\{t[0],\ldots,t[n-1]\}$ are modified. 
+  It is annotated with three equivalent \assigns{} clauses, each one
+  specifying that only the set of cells $\{t[0],\ldots,t[n-1]\}$ are modified.
 \end{example}
 
 \begin{example}
   The following function increments each values stored in a linked
-  list.  
+  list.
 
-  \input{assigns_list.pp} 
+  \input{assigns_list.pp}
 
   The \assigns{} clause specifies that the set of modified memory
   locations is the set of fields $p\verb|->hd|$ for each pointer $p$
@@ -442,7 +442,7 @@ Annotations on C statements are of three kinds:
   their behavior in a similar manner as C functions.
 \end{itemize}
 
-\subsection{Assertions and logic labels} 
+\subsection{Assertions and logic labels}
 
 \begin{figure}[t]
   \begin{cadre}
@@ -534,7 +534,7 @@ Remarks:
 Here is a continuation of example~\ref{ex:bsearch}.
 
 \input{bsearch2.pp}
-  
+
 \end{example}
 
 \subsection*{More about termination}
@@ -548,12 +548,12 @@ such variants too.
 
 For loops:
 \begin{syntax}
-variant-clause ::= "loop variant" e 
+variant-clause ::= "loop variant" e ";"
 \end{syntax}
 
 For functions:
 \begin{syntax}
-decreases-clause ::= "decreases" e 
+decreases-clause ::= "decreases" e ";"
 \end{syntax}
 where $e$ has type integer.
 
@@ -562,8 +562,8 @@ where $e$ has type integer.
 More general case of measures on other types: use the keyword for:
 
 \begin{syntax}
-variant-clause ::= "loop variant" e "for" id \
-decreases-clause ::= "decreases" e "for" id
+variant-clause ::= "loop variant" e "for" id ";" \
+decreases-clause ::= "decreases" e "for" id ";"
 \end{syntax}
 
 where $e$ has type $\tau$ and $id$ is a logic predicate of type $\tau,\tau \ra
@@ -598,7 +598,7 @@ clause.
 
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth} \input{logic.bnf}
-    \end{minipage}}  
+    \end{minipage}}
   \caption{Grammar for logic declarations}
 \label{fig:gram:logic}
 \end{figure}
@@ -626,11 +626,11 @@ example list of integers (\texttt{integer list}), list of pointers
 
 The explicit definitions of logic functions and predicates can be
 recursive or mutually recursive.
-  
-\begin{example}
-  The following logic declaration 
 
-  \input{max_index.pp} 
+\begin{example}
+  The following logic declaration
+
+  \input{max_index.pp}
 
   defines a logic function which returns the maximal index $i$ between
   $0$ and $n-1$ such that $t[i]=0$.
@@ -645,9 +645,9 @@ Higher-order functions: $\lambda$, \Sum, \Max, \numof
 \subsection{Concrete logic types}
 
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\linewidth} 
+  \fbox{\begin{minipage}{0.97\linewidth}
       \input{logictypedecl.bnf}
-    \end{minipage}}  
+    \end{minipage}}
   \caption{Grammar for concrete logic types and pattern-matching}
 \label{fig:gram:logictype}
 \end{figure}
@@ -669,7 +669,7 @@ With record types, the field access notation $t.id$ can be used, and for sum typ
 \subsection{Hybrid functions and predicates}
 
 These are functions or predicates which take both C types and logic
-types as arguments. 
+types as arguments.
 
 \begin{example}
   TODO
@@ -693,7 +693,7 @@ usually mandatory.
 \subsection{Libraries of algebraic specifications}
 
 Predefined algebraic specifications can be provided as libraries (see
-section~\ref{sec:speclibraries}, and imported using 
+section~\ref{sec:speclibraries}, and imported using
 
 \input{import.pp}
 
@@ -756,7 +756,7 @@ where each $loc_i$ is a set of memory location as defined in Section~\ref{sec:lo
 \begin{itemize}
 \item built-in predicate \fresh, specifying in a post-condition that a
   pointer was not allocated in the pre-state.
- 
+
 \item built-in predicate \freed, specifying in a post-condition that a
   pointer was allocated in the pre-state but not anymore.
 \end{itemize}
