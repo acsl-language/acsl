@@ -1,4 +1,4 @@
-(* $Id: transf.mll,v 1.3 2007-07-09 14:27:38 uid525 Exp $ *)
+(* $Id: transf.mll,v 1.4 2007-07-10 08:27:10 uid525 Exp $ *)
 
 { open Lexing;; }
 
@@ -50,7 +50,9 @@ and syntax = parse
   | ['_' '^'] _ {
       print_string (lexeme lexbuf);
       syntax lexbuf }
-  | "*" { print_string "\\repet{}"; syntax lexbuf }
+  | "*" { print_string "\\repetstar{}"; syntax lexbuf }
+  | "+" { print_string "\\repetplus{}"; syntax lexbuf }
+  | "?" { print_string "\\repetone{}"; syntax lexbuf }
   | "(" { print_string "\\lparen{}"; syntax lexbuf }
   | ")" { print_string "\\rparen{}"; syntax lexbuf }
   | "::=" { print_string "\\is{}"; syntax lexbuf }
