@@ -60,65 +60,11 @@
 \label{chap:contents}
 \tableofcontents
 
-\input{intro.tex}
+\include{intro}
 
-\input{speclang.tex}
+\include{speclang}
 
-
-\chapter{Librairies}
-\label{chap:lib}
-
-\section{Jessie library: logical adressing of memory blocks}
-
-Definition: a \emph{valid} pointer is a pointer such that *p is properly
-allocated.
-
-\offsetmin, \offsetmax : $\alpha * \ra \N$
-
-$\offsetmin(p)$: the minimum integer $i$ such that $(p+i)$ is a valid
-pointer
-
-$\offsetmax(p)$: the maximum integer $i$ such that $(p+i)$ is a valid
-pointer
-
-properties:
-
-\[
-\offsetmin(p+i) = \offsetmin(p)-i
-\offsetmax(p+i) = \offsetmax(p)-i
-\]
-
-syntactic sugar:
-\[
-\validrange(p,i,j) := \offsetmin(p) <= i \land \offsetmax(p) >= j
-\valid(p) := \validrange(p,0,0)
-\]
-
-\remark{Benjamin}{propose plutot les noms ``indexmin'' et ``indexmax'' a la place de offsetmin et offsetmax}
-
-\subsection{Strings}
-
-\strlen
-
-Peut disparaitre
-
-\section{Memory leaks}
-
-\experimental
-
-Verification of absence of memory leak is outside the scope of the
-specification language. On the other hand, various models could be set
-up, using for example ghost variables.
-
-
-\section{Libraries of logic specifications}
-\label{sec:speclibraries}
-
-\subsection{Library list}
-
-\begin{verbatim}
-type 'a list = ...
-\end{verbatim}
+\include{libraries}
 
 \appendix
 
