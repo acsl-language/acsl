@@ -8,7 +8,8 @@
   | "'" id ; type variable
   | type-expr id ; polymorphic type                 
   | "(" type-expr (, type-expr)* ")" id ; polymorphic type
-  | logic-type-expr ("*" logic-type-expr)+  ; \experimental product type 
+  | logic-type-expr ("*" logic-type-expr)+  ; \experimental 
+  ; product type 
   \
   built-in-logic-type ::= "boolean" | "integer" | "real" 
   \

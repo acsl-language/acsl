@@ -6,6 +6,7 @@
   @ behavior success:
   @   ensures \result >= 0 ==> t[\result] == v;
   @ behavior failure:
-  @   ensures \result == -1 ==> \forall short k; 0 <= k < n => t[k] != v;
+  @   ensures \result == -1 ==> 
+  @     \forall short k; 0 <= k < n => t[k] != v;
   @*/
 short bsearch(int t[], short n, int v);

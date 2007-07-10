@@ -15,7 +15,7 @@
 	"default"; "do"; "else"; "for"; "goto"; "if";
 	"return"; "switch"; "while";
 	"class" ; "interface" ;
-	"public" ; "private" ; "static" ;
+	"public" ; "private" ; "static" ; "struct" ;
 	"throws" ; "extends" ; "implements" ; "reads" ;
 	"requires"; "invariant"; "representation";
 	"ensures" ; "assigns"; "modifiable" ; "signals" ;
@@ -115,7 +115,7 @@ rule ctt = parse
   | "//"
       { in_comment := true;
 	in_slashshash := true;
-	print_string "//\\begin{slshape}\\rmfamily\\color{darkgreen}";
+	print_string "\\begin{slshape}\\rmfamily\\color{darkgreen}//";
 	ctt lexbuf }
   | eof  { () }
   | '-'  { print_string "$-$"; ctt lexbuf }
