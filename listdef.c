@@ -1,1 +1,1 @@
-//@ type 'a list = Nil | Cons of 'a * 'a list;
+//@ logic type 'a list = Nil | Cons of 'a * 'a list;

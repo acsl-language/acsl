@@ -8,7 +8,7 @@
 This first section presents the language of expressions one can use in
 the annotations. These are called below \emph{logic expressions}. They
 corresponds more or less to pure C expressions, without function
-calls, with additional constructs that we introduce one at a time.
+calls, with additional constructs that we will introduce progressively.
 
 \begin{figure}[p]
   \fbox{\begin{minipage}{0.97\textwidth} \input{term.bnf}
@@ -17,51 +17,105 @@ calls, with additional constructs that we introduce one at a time.
 \label{fig:gram:term}
 \end{figure}
 
-Figure~\ref{fig:gram:term} presents the grammar for logic expressions.
-In that grammar, we distinguish between \emph{predicates} and
-\emph{terms}, following the usual distinction between propositions and
-terms in classical multi-sorted first-order logic.
+Figure~\ref{fig:gram:term} presents the grammar for the basic
+constructions of logic expressions.  In that grammar, we distinguish
+between \emph{predicates} and \emph{terms}, following the usual
+distinction between propositions and terms in classical first-order
+logic.  The grammar for binders and type expression is given
+separately Figure~\ref{fig:gram:binders}.
 
-
-The additional constructs are as follows:
+Remarks:
 \begin{itemize}
-\item C operators \verb|&&|, \verb+||+ and \verb|!| are used as
+\item The construct $t_1~relop_1~t_2~relop_2~t_3 \cdots t_k$ with
+  several consecutive comparison operators is a shortcut for
+  $t_1~relop_1~t_2 ~\verb|&&|~ t_2~relop_2~t_3 ~\verb|&&|~ \cdots $.
+
+\item Function and predicate application are not applications of C
+  functions, but of logic functions or predicates: see
+  Section~\ref{sec:logicspec} for detail.
+\end{itemize}
+
+
+With respect to C pure expressions, the additional constructs are as follows:
+\begin{description}
+\item[Additional connectives]
+  C operators \verb|&&|, \verb+||+ and \verb|!| are used as
   logical connectives. There are additional connectives \verb|==>| for
   implication, \verb|<==>| for equivalence, \verb|^^| for exclusive
   or.
 
-\item Quantifications: universal $\Forall \tau x; e$ and existential
-  $\Exists \tau x; e$
+\item[Quantification] Universal quantification is denoted by $\Forall
+  \tau x_1,\ldots,x_n; e$ and existential quantification by $\Exists
+  \tau x_1,\ldots,x_n; e$.  
 
-\item Local naming $\Let x = e_1 ; e_2$ introduce the name $x$ for
+\begin{figure}[t]
+  \fbox{\begin{minipage}{0.97\textwidth} \input{binders.bnf}
+    \end{minipage}}
+  \caption{Grammar of binders and type expressions}
+\label{fig:gram:binders}
+\end{figure}
+
+\item[Local naming] $\Let x = e_1 ; e_2$ introduce the name $x$ for
   expression $e_1$ which can be used in expression $e_2$.
 
-\item conditional $\If c \Then e_1 \Else e_2$. There is a subtlety
+\item[Conditional] $\If c \Then e_1 \Else e_2$. There is a subtlety
   here: the condition may be either a boolean term or a predicate.  In
   case of a predicate, the two branches must be also predicates, so
   that this construct acts as a connective with the following
   semantics: $\If c \Then e_1 \Else e_2$ is equivalent to $(c
   \verb|==>| e_1) \verb|&&| (\verb|!| c \verb|==>| e_2)$
 
-\item syntactic naming: $id \verb|::| e$ is a term or a predicate
+\item[Syntactic naming] $id \verb|::| e$ is a term or a predicate
   equivalent to $e$. It is different from local naming with $\Let$:
   the name cannot be reused in other terms of predicates. It is only
-  for tools purposes.
+  for readibility purposes.
+\end{description}
 
-\item The construct $t_1~relop_1~t_2~relop_2~t_3 \cdots t_k$ is a
-  shortcut for $t_1~relop_1~t_2 ~\verb|&&|~ t_2~relop_2~t_3
-  ~\verb|&&|~ \cdots $.
+\subsection{Operator precedence}
 
-\item Function and predicate application are not applications of C functions, but of logic functions or predicates: see Section~\ref{sec:logicspec}
-\end{itemize}
+The precedence of C operators is conservatively extended with additional operators, as shown Figure~\ref{fig:precedence}. In this table, operators are sorted from highest to lowest priority. Operators of same priority are presented on the same line. 
 
-TODO: operator priorities
+
+\begin{figure}[t]
+  \begin{center}
+    \begin{tabular}{|l|l|l|}
+      \hline
+      class 	& associativity & operators \\
+      \hline
+      selection & left & $\verb|[|\cdots\verb|]|$ \verb|->| \verb|.| \\
+      unary 	& right & \verb|!| \verb|~| \verb|+| \verb|-| \verb|*| \verb|&| (cast) \verb|sizeof| \\
+      multiplicative & left & \verb|*| \verb|/|  \verb|%| \\
+      additive & left & \verb|+| \verb|-| \\
+      shift 	& left & \verb|<<| \verb|>>| \\
+      comparison & left & \verb|<| \verb|<=| \verb|>| \verb|>=| \\
+      comparison & left & \verb|==| \verb|!=| \\
+      bitwise and & left & \verb|&| \\
+      bitwise xor & left & \verb|^| \\
+      bitwise or & left & \verb+|+ \\
+      bitwise implies & left & \verb+=>+ \\
+      bitwise equiv & left & \verb+<=>+ \\
+      connective and     & left & \verb|&&| \\
+      connective xor & left & \verb+^^+ \\
+      connective or & left & \verb+||+ \\
+      ternary connective & right & $\cdots\verb|?|\cdots\verb|:|\cdots$ \\
+      connective implies & right & \verb|==>| \\
+      connective equiv & left & \verb|<==>| \\
+      quantification & left & \Forall{} \Exists{} \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption{Operator precedence}
+\label{fig:precedence}
+\end{figure}
+
+\remark{Claude}{Pourquoi le if ternaire a une precedence superieure a l'implication? C'est un choix de Caduceus, que l'on pourrait discuter}
 
 \subsection{Semantics, typing}
+\label{sec:twovaluedlogic}
 
 always defined (2-valued logic). Distinction entre booleens et
-predicats.  TODO: referer aux travaux de P Chalin ?
-Donner des examples
+predicats.  TODO: referer aux travaux de P Chalin ? 
+Donner des examples, exemples de term unspecified
 
 on veut la logique equationnelle classique, cad que l'axiome
 \[
@@ -462,13 +516,14 @@ The syntax of those annotations is given Figure~\ref{fig:gram:assertions} under 
 \item  The $\texttt{assert}~p$ clause means that $p$ must hold in the state
   before the statement.
 
-\item  The last two constructs allows to give a name to the assertion. In
-  the case $\texttt{assert for}~id$, $id$ must be a behavior
-  identifier for the current function. It means that this assertion is
-  meant to be valid only for the considered behavior.
+\item The $\texttt{assert for}~id:~p$ variant associates the assertion
+  to the name $id$ which must be a behavior identifier for the current
+  function.  It means that this assertion is meant to be valid only
+  for the considered behavior.
 \end{itemize}
-\remark{Claude}{unifier les 2 derniers cas? car a-t-on besoin de
-  nommer un assert en dehors d'un behavior de la fonction?}
+
+\oldremark{Claude}{unifier les 2 derniers cas? car a-t-on besoin de
+  nommer un assert en dehors d'un behavior de la fonction? Surtout que l'on peut deja ecrire assert (id :: p)}
 
 
 
@@ -508,10 +563,12 @@ specifies that
   the resulting state. Notice that if the loop condition has side
   effects, these are included in the loop body in a suitable way:
   \begin{itemize}
-  \item for a $\verb|while| (c) s$ loop, $I$ must be preserved by the side-effects of $c$ followed by $s$
-  \item for a $\verb|for|(init;c;step) s$ loop, $I$ must be preserved by the side-effects of $c$ followed by $s$ followed by step
-  \item for a  $\verb|do| s \verb|while| (c);$ loop, TODO
+  \item for a $\verb|while|~(c)~s$ loop, $I$ must be preserved by the side-effects of $c$ followed by $s$
+  \item for a $\verb|for|(init;c;step)~s$ loop, $I$ must be preserved by the side-effects of $c$ followed by $s$ followed by step
+  \item for a $\verb|do|~s~\verb|while|~(c);$ loop, $I$ must be preserved by $s$ followed by the side-effects of $c$
+\remark{Claude}{J'ai mis la semantique actuelle de Caduceus, qui n'est pas forcement la meilleure. On pourrait envisager une semantique ou l'invariant est vrai entre $s$ et $c$. d'ailleurs, la syntaxe pourrait mettre ca en avant si on pouvait poser syntaxiquement l'invariant juste avant le mot-clef while}
   \end{itemize}
+\remark{Claude}{De facon generale, on pourrait autoriser de poser un invariant de boucle n'importe ou dans le corps de boucle, la semantique etant plus ou moins celle d'une assert}
 \item At any loop iteration, any location that was allocated before
   entering the loop, and is not member of $L$ in the current state,
   must be remain allocated and have to same value as before entering
@@ -530,7 +587,7 @@ Remarks:
 \end{itemize}
 
 \begin{example}
-
+\label{ex:bsearch2}
 Here is a continuation of example~\ref{ex:bsearch}.
 
 \input{bsearch2.pp}
@@ -542,32 +599,45 @@ Here is a continuation of example~\ref{ex:bsearch}.
 Property of termination concerns both loops and recursive function
 calls.  For that purpose, loops can be annotated with \emph{loop
   variants}\index{loop variant}, and functions can be annotated with
-such variants too.
+such variants too, with the \decreases{} clause.
 
-\subsubsection*{integer measures}
+\subsubsection*{Integer measures}
 
-For loops:
-\begin{syntax}
-variant-clause ::= "loop variant" e ";"
-\end{syntax}
+Function are annotated with integer measure with the form
+\begin{flushleft}\ttfamily
+//@ decreases $e$ ;
+\end{flushleft}
+and loops are annotated similarly with the form
+\begin{flushleft}\ttfamily
+//@ loop variant $e$; 
+\end{flushleft}
+where the logic expression $e$ has type \verb|integer|. For recursive calls, or for loops, this expression must decrease for the relation $R$ defined by
+\[
+R(x,y) ::= x > y ~\verb|&&|~ x \geq 0
+\]
+In other words, the measure must be a sequence of integers which decreases and remain non-negative, except possible for the last value of the sequence.
 
-For functions:
-\begin{syntax}
-decreases-clause ::= "decreases" e ";"
-\end{syntax}
-where $e$ has type integer.
+\begin{example}
+  In example~\ref{ex:bsearch2}, the loop variant \verb|u-l| decreases
+  at each iteration, and remains non-negative, except at the last
+  iteration where it may become negative.
+\end{example}
 
-\subsubsection*{general measures}
+\subsubsection*{General measures}
 
-More general case of measures on other types: use the keyword for:
-
-\begin{syntax}
-variant-clause ::= "loop variant" e "for" id ";" \
-decreases-clause ::= "decreases" e "for" id ";"
-\end{syntax}
-
-where $e$ has type $\tau$ and $id$ is a logic predicate of type $\tau,\tau \ra
-prop$ (see Section~\ref{sec:logicspec}.
+More general measures on other types can be provided, using the keyword \verb|for|. For function it becomes
+\begin{flushleft}\ttfamily
+//@ decreases $e$ for $R$;
+\end{flushleft}
+and for loops:
+\begin{flushleft}\ttfamily
+//@ loop variant $e$ for $R$; 
+\end{flushleft}
+In those cases, the logic expression $e$ has some type $\tau$ and $R$ must be relation on $\tau$, that is a logic binary predicate declared by the form
+\begin{flushleft}\ttfamily
+//@ predicate $R(\tau~x,\tau~y) \cdots$
+\end{flushleft}
+(see Section~\ref{sec:logicspec} for details). Of course, to guarantee termination, it must be proved that $R$ is a well-founded relation.
 
 
 
@@ -593,6 +663,9 @@ statement are meant to be valid only for the corresponding function
 behavior, in particular only under the corresponding \assumes{}
 clause.
 
+\begin{example}
+  TODO
+\end{example}
 \section{Logic specifications}
 \label{sec:logicspec}
 
@@ -640,7 +713,44 @@ TODO: syntax for mutual recursion
 
 \subsection{Higher-order logic constructions}
 
-Higher-order functions: $\lambda$, \Sum, \Max, \numof
+\experimental
+
+\begin{figure}[t]
+  \fbox{\begin{minipage}{0.97\linewidth} 
+      \input{higherorder.bnf}
+    \end{minipage}}  
+  \caption{Grammar for higher-order constructs}
+\label{fig:gram:higherorder}
+\end{figure}
+
+Figure~\ref{fig:gram:higherorder} introduces new term constructs for
+higher-order logic.
+\begin{description}
+\item[Abstraction] The term $\verb|\lambda| \tau~x_1,\ldots,x_n ; t$ denotes the $n$-ary logic function which maps $x_1,\ldots,x_n$ to $t$.
+\item[Extended quantifiers] Terms $quant(t_1,t_2,t_3)$ where $quant$
+  is max, min, sum, product,or \verb|num_of|, are extended
+  quantifications. $t_1$ and $t_2$ must have type \verb|integer|, and
+  $t_3$ must be a unary function with an integer argument, and a
+  numeric value (integer or real) except for \verb|\num_of| for which
+  it should have a boolean value. Their meanings are given as follows:
+  \begin{eqnarray*}
+    \verb|\max|(i,j,f) &=& \max \{ f(i),f(i+1), \ldots, f(j) \} \\
+    \verb|\min|(i,j,f) &=& \min \{ f(i),f(i+1), \ldots, f(j) \} \\
+    \verb|\sum|(i,j,f) &=& f(i)+f(i+1)+\cdots+f(j) \\
+    \verb|\product|(i,j,f) &=& f(i)\times f(i+1) \times \cdots \times f(j) \\
+    \verb|\num_of|(i,j,f) &=& \# \{ k \mid i \leq k \leq j ~\verb|&&|~ f(k) \} \\
+&=& \verb|\sum|(i,j,\verb|\lambda|~\verb|integer|~k ; f(k) ? 1 : 0)
+  \end{eqnarray*}
+  If $i>j$ then \verb|\sum| and \verb|num_of| above are 0,
+  \verb|\product| is 1, and \verb|\max| and \verb|\min| are
+  unspecified (see Section~\ref{sec:twovaluedlogic}).
+\end{description}
+
+
+\begin{example}
+  Function that sums the element of an array of doubles.
+  \input{sum.pp}
+\end{example}
 
 \subsection{Concrete logic types}
 
@@ -693,7 +803,7 @@ usually mandatory.
 \subsection{Libraries of algebraic specifications}
 
 Predefined algebraic specifications can be provided as libraries (see
-section~\ref{sec:speclibraries}, and imported using
+section~\ref{sec:speclibraries}), and imported using 
 
 \input{import.pp}
 
@@ -852,5 +962,6 @@ Il faudrait autant que possible se raprocher de ces noms.}
 
 %%% Local Variables:
 %%% mode: latex
+%%% TeX-PDF-mode: t
 %%% TeX-master: "main"
 %%% End:

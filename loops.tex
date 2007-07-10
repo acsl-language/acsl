@@ -2,6 +2,7 @@
   statement ::= "/*@" loop-annot "*/" "while" "(" expr ")" statement ;
   | "/*@" loop-annot "*/" "for" "(" expr ";" expr ";" expr ")" statement ;
   | "/*@" loop-annot "*/" "do" statement "while" "(" expr ")" ";" ;
+  | "do" statement "/*@" loop-annot "*/" "while" "(" expr ")" ";" ; \experimental
   \
   loop-annot ::= (loop-invariant | loop-assigns)* loop-variant?
   \

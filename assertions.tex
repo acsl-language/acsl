@@ -2,7 +2,6 @@
   statement ::= "/*@" logical-label "*/" statement \
   logical-label ::= "label" id: ;
   | "assert" pred ";" ;
-  | "assert" id ":" pred ";" ;
   | "assert" "for" id ":" pred ";" ;
   \
   term ::= "\at" "(" term "," id ")" 

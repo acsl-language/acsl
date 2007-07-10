@@ -13,19 +13,19 @@
        | term bin-op term ;  
        | term "." id  ; structure field access
        | term "->" id ; 
-       | "(" \tau ")" term  ; cast 
+       | "(" type-expr ")" term  ; cast 
        | term "[" term "]" ; array access
        | id "(" term ("," term)* ")" ; function application
        | "(" term ")" ; parentheses
        | term "?" term ":" term ; 
        | "\let" id "=" term ";" term ; local naming
        | "sizeof" "(" term ")" ; 
-       | "sizeof" "(" \tau ")" ;
-       | "offsetof" "(" ... ")" ;
-       | "alignof" "(" \tau ")" ;
+       | "sizeof" "(" C-type-expr ")" ;
        | id "::" term ; syntactic naming 
        | "(" term ("," term)+ ")" ; tuples
        | "\let" "(" id (, id)+ ")" "=" term ";" term ; \experimental
+       | "offsetof" "(" ... ")" ; \experimental
+       | "alignof" "(" C-type-expr ")" ; \experimental
        \
   rel-op ::= "==" | "!=" | "<=" | ">=" | ">" | "<" 
        \
@@ -45,8 +45,6 @@
        | "\forall" binders ";" pred ; universal quantification
        | "\exists" binders ";" pred ; existential quantification
        | id "::" pred ; syntactic naming 
-       \
-  binders ::= TODO
 \end{syntax}
 
 %%% Local Variables:

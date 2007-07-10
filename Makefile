@@ -2,11 +2,11 @@
 DEPS=annot1.pp annot2.pp assigns.pp invariants.pp \
 	isqrt.pp incrstar.pp \
 	max.pp max_index.pp cond_assigns.pp bsearch.pp bsearch2.pp \
-	assigns_array.pp assigns_list.pp \
+	assigns_array.pp assigns_list.pp sum.pp \
 	listdecl.pp listdef.pp listlengthdef.pp import.pp \
-	term.bnf fn_behavior.bnf oldandresult.bnf loc.bnf \
+	term.bnf binders.bnf fn_behavior.bnf oldandresult.bnf loc.bnf \
 	assertions.bnf loops.bnf st_contracts.bnf moreterm.bnf ghost.bnf \
-	logic.bnf logictypedecl.bnf 
+	logic.bnf logictypedecl.bnf higherorder.bnf 
 
 all: main.dvi
 

@@ -1,9 +1,8 @@
-\documentclass[a4paper]{report}
+\documentclass[a4paper,11pt,twoside,openright]{report}
 
-\usepackage{fullpage}
-\usepackage{url,amssymb}
 \usepackage[T1]{fontenc}
 \usepackage{times}
+\usepackage{url,amssymb}
 \usepackage{graphicx}
 \usepackage{color}
 \usepackage{xspace}
@@ -11,31 +10,55 @@
 \makeindex
 \input{./macros}
 
+\setlength{\textheight}{240mm}
+\setlength{\topmargin}{-10mm}
+\setlength{\textwidth}{160mm}
+\setlength{\oddsidemargin}{0mm}
+\setlength{\evensidemargin}{0mm}
+
 \renewcommand{\textfraction}{0.01}
 \renewcommand{\topfraction}{0.99}
 \renewcommand{\bottomfraction}{0.99}
 
+\usepackage{fancyheadings}
+\pagestyle{fancyplain}
+\renewcommand{\footrulewidth}{0.4pt}
+\addtolength{\headheight}{2pt}
+\addtolength{\headwidth}{1cm}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+\lhead[\fancyplain{}{\bfseries\thepage}]{\fancyplain{}{\bfseries\rightmark}}
+\chead{}
+\rhead[\fancyplain{}{\bfseries\leftmark}]{\fancyplain{}{\bfseries\thepage}}
+\lfoot{\fancyplain{}{ANSI C Specification Language}}
+\cfoot{}
+\rfoot{\fancyplain{}{CAT RNTL project}}
+
 \begin{document}
 
-\begin{center}
 
+\begin{titlepage}
+\begin{center}
 ~\vfill
 
 \includegraphics{../logocat.png}
 
-\bigskip
+\vspace{20mm}
 
 {\Huge\bfseries ACSL: ANSI C Specification Language}
 
-\bigskip
+\vspace{20mm}
 
 {P.~Baudin, J.-C.~Filli\^atre, Th.~Hubert,
   C.~March\'e, B.~Monate, Y.~Moy, V.~Prevosto}
 
 \vfill ~
 \end{center}
+\end{titlepage}
 
 \clearpage
+\label{chap:contents}
+\tableofcontents
 
 \input{intro.tex}
 
@@ -97,11 +120,15 @@ up, using for example ghost variables.
 type 'a list = ...
 \end{verbatim}
 
-\chapter{Quick reference card}
+\appendix
+
+\chapter{Appendices}
+
+\section{Quick reference card}
 
 TODO by Benjamin
 
-\chapter{Comparison with JML}
+\section{Comparison with JML}
 
 TODO by Yannick
 
@@ -113,14 +140,19 @@ TODO by Yannick
 
 \end{verbatim}
 
+\cleardoublepage
+\addcontentsline{toc}{chapter}{\bibname}
 \bibliographystyle{plain}
-\IfFileExists{biblio-demons.tex}%
-{\input{biblio-demons.tex}}{\bibliography{./biblio}}
+\IfFileExists{biblio-demons.tex}{%
+\input{biblio-demons.tex}
+}{\bibliography{./biblio}}
 
-\clearpage
-\label{chap:contents}
-\tableofcontents
+\cleardoublepage
+\addcontentsline{toc}{chapter}{\listfigurename}
 \listoffigures
+
+\cleardoublepage
+\addcontentsline{toc}{chapter}{\indexname}
 \printindex
 
 \end{document}

@@ -18,9 +18,12 @@ the \textsc{ESC/Java2} tool~\cite{ESCJava2}.
 Going back further in history, JML design was guided by the general
 \emph{design-by-contract} principle proposed by Bertrand Meyer, who
 indeed took its own inspiration from the concepts of preconditions and
-postconditions on a routine, go back at least to Dijkstra, Floyd and
+postconditions on a routine, going back at least to Dijkstra, Floyd and
 Hoare in the late 60's and early 70's, and originally implemented in
 the \textsc{Eiffel} language.
+
+In this document, we assume that the reader has a good knowledge of
+ANSI C programming language~\cite{KR88}.
 
 \section{Organization of this document}
 
@@ -32,12 +35,13 @@ Chapter~\ref{chap:base} presents the specification language itself.
 Chapter~\ref{chap:lib} presents additional informations about
 \emph{libraries} of specifications.
 
+A detailed table of contents is given on page~\pageref{chap:contents}
+
 Some features in this document are considered ``experimental'',
 meaning that their syntax and semantics is still under discussion. We
 also consider them as ``advanced features'' which are not supposed to
 be useful for a basic use of that specification language.
 
-A detailed table of contents is given on page~\pageref{chap:contents}
 
 \section{Glossary}
 
@@ -185,8 +189,11 @@ they do not start with a backslash, like \ensures{}.
 
 \subsection{Notations for grammar}
 
-In this document, grammar rules are given in BNF form. Extra notation
-for repetition * and + and ?... TODO
+In this document, grammar rules are given in BNF form. In grammar
+rules, we use extra notations $e^*$ to denote repetition of zero, one
+or more occurrences of $e$, $e^+$ for repetition of one or more
+occurrences of $e$, $e^?$ for zero or one occurrence of $e$.
+
 
 
 %%% Local Variables:

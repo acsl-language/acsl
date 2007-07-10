@@ -27,17 +27,6 @@
   \
   reads-clause ::= "reads" locations
   \
-  type-expr ::= logic-type-expr | C-type-expr
-  \
-  logic-type-expr ::= built-in-logic-type 
-  | id ; type identifier
-  | "'" id ; type variable
-  | type-expr id ; polymorphic type                 
-  | "(" type-expr (, type-expr)* ")" id ; polymorphic type
-  | logic-type-expr ("*" logic-type-expr)+  ; product type 
-  \
-  built-in-logic-type ::= "boolean" | "integer" | "real" 
-  \
   parameters ::= "(" parameter (, parameter)* ")"
   \
   parameter ::= type-expr | type-expr id | parameter "[]" | ... ; TODO: faire comme en C
