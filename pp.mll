@@ -119,7 +119,6 @@ rule ctt = parse
 	ctt lexbuf }
   | eof  { () }
   | '-'  { print_string "$-$"; ctt lexbuf }
-  | "'a" { print_string "\\ensuremath{\\alpha}"; ctt lexbuf }
   | "::" { print_string ":\\hspace*{-0.1em}:"; ctt lexbuf }
   | " "  { print_string "~"; ctt lexbuf }
   | "[" (ident as s) "]"

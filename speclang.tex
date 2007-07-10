@@ -55,6 +55,8 @@ The additional constructs are as follows:
 \item Function and predicate application are not applications of C functions, but of logic functions or predicates: see Section~\ref{sec:logicspec}
 \end{itemize}
 
+TODO: operator priorities
+
 \subsection{Semantics, typing}
 
 always defined (2-valued logic). Distinction entre booleens et
@@ -601,30 +603,99 @@ clause.
 \label{fig:gram:logic}
 \end{figure}
 
-\begin{itemize}
-\item logic specifications: introduction of new logic types,
-  constants, functions, predicates and axioms.
+The language of logic expressions used in annotations can be extended
+by declaration of new logic types, and new constants, logic functions
+and predicates. These declarations follows the classical setting of
+\emph{algebraic specifications}, in particular new functions and
+predicates may be either \emph{defined} by explicit expressions, or
+\emph{axiomatized} by a set of axioms. The grammer for these declarations is given Figure~\ref{fig:gram:logic}.
 
-logic types can be polymorphic: for example
-\input{listdecl.pp}
+\remark{Claude}{``logic typedef'' au lieu de ``logic type'' ?}
 
-\item recursive definitions: are allowed in logic function and predicate definitions. Example:  
-  \input{max_index.pp}
+\subsection{Polymorphic logic types}
 
-mutual recursion
+We consider here a algebraic specification setting based on
+multi-sorted logic, where types can be \emph{polymorphic} that is
+parameterized by other types. For example, one may declare the type of
+polymorphic lists as \input{listdecl.pp} and then can consider for
+example list of integers (\texttt{integer list}), list of pointers
+(e.g. \texttt{char* list}), list of list of reals (\texttt{real list
+  list}), etc.
 
-\item predefined logic specifications can be provided as libraries (see section~\ref{sec:speclibraries}, and imported using
+\subsection{Recursive logic definitions}
+
+The explicit definitions of logic functions and predicates can be
+recursive or mutually recursive.
+  
+\begin{example}
+  The following logic declaration 
+
+  \input{max_index.pp} 
+
+  defines a logic function which returns the maximal index $i$ between
+  $0$ and $n-1$ such that $t[i]=0$.
+\end{example}
+
+TODO: syntax for mutual recursion
+
+\subsection{Higher-order logic constructions}
+
+Higher-order functions: $\lambda$, \Sum, \Max, \numof
+
+\subsection{Concrete logic types}
+
+\begin{figure}[t]
+  \fbox{\begin{minipage}{0.97\linewidth} 
+      \input{logictypedecl.bnf}
+    \end{minipage}}  
+  \caption{Grammar for concrete logic types and pattern-matching}
+\label{fig:gram:logictype}
+\end{figure}
+
+\experimental
+
+Logic types may not only be declared but also defined concretely, either under thr form of record types, or of sum types. These definitions may be recursive.
+With record types, the field access notation $t.id$ can be used, and for sum types, a pattern-matching construction is available. The grammar rules for these additional constructions are given Figure~\ref{fig:gram:logictype}
+
+\begin{example}
+  The declaration
+  \input{listdef.pp}
+  introduce a concrete definition of finite lists. The logic definition
+  \input{listlengthdef.pp}
+  defines the length of a list by recursion and pattern-matching.
+\end{example}
+
+
+\subsection{Hybrid functions and predicates}
+
+These are functions or predicates which take both C types and logic
+types as arguments. 
+
+\begin{example}
+  TODO
+\end{example}
+
+In case of a declaration without definition, a \reads{} clause is
+usually mandatory.
+
+\begin{example}
+  TODO
+\end{example}
+
+\subsection{Model variables and fields}
+
+\experimental
+
+\begin{example}
+  TODO
+\end{example}
+
+\subsection{Libraries of algebraic specifications}
+
+Predefined algebraic specifications can be provided as libraries (see
+section~\ref{sec:speclibraries}, and imported using 
+
 \input{import.pp}
-
-\item higher-order functions: $\lambda$, \Sum, \Max, \numof
-\item {\tt enum}, recursive types
-
-
-\item hybrid functions and predicates: take both C types and logic
-  types as arguments.
-\item model variables
-\end{itemize}
-
 
 \section{Pointers and physical adressing}
 \label{sec:pointers}

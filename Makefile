@@ -1,12 +1,12 @@
 
-DEPS=annot1.pp annot2.pp speclang.bnf assigns.pp invariants.pp \
+DEPS=annot1.pp annot2.pp assigns.pp invariants.pp \
 	isqrt.pp incrstar.pp \
 	max.pp max_index.pp cond_assigns.pp bsearch.pp bsearch2.pp \
 	assigns_array.pp assigns_list.pp \
-	listdecl.pp import.pp \
+	listdecl.pp listdef.pp listlengthdef.pp import.pp \
 	term.bnf fn_behavior.bnf oldandresult.bnf loc.bnf \
 	assertions.bnf loops.bnf st_contracts.bnf moreterm.bnf ghost.bnf \
-	logic.bnf
+	logic.bnf logictypedecl.bnf 
 
 all: main.dvi
 
@@ -14,11 +14,11 @@ main.ps: main.dvi
 	dvips $^ -o $@
 
 main.dvi: main.tex $(DEPS)
-	latex main
+	pdflatex main
 	makeindex main
 	bibtex main
-	latex main
-	latex main
+	pdflatex main
+	pdflatex main
 
 %.pp: %.tex pp.ml
 	ocaml pp.ml -color $< > $@

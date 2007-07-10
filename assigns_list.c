@@ -3,7 +3,7 @@ struct list {
   struct list *next;
 }
 
-//@ logic reachable(list from, list to) reads from->next;
+//@ logic reachable(struct list from, struct list to) reads from->next;
 
 //@ assigns { p->hd | struct list *p ; reachable(root,p) } ;
 void incr_list(struct list *p) {

@@ -4,6 +4,7 @@
 \usepackage{url,amssymb}
 \usepackage[T1]{fontenc}
 \usepackage{times}
+\usepackage{graphicx}
 
 \usepackage{pst-node}
 \usepackage{pstcol}
@@ -19,16 +20,29 @@
 
 \begin{document}
 
-\title{ACSL: ANSI C Specification Language}
+\begin{center}
 
-\author{P.~Baudin \and J.-C.~Filli\^atre \and Th.~Hubert \and
-  C.~March\'e \and B.~Monate \and Y.~Moy \and V.~Prevosto}
+~\vfill
 
-\maketitle
+\includegraphics{../logocat.png}
+
+\bigskip
+
+{\Huge\bfseries ACSL: ANSI C Specification Language}
+
+\bigskip
+
+{P.~Baudin, J.-C.~Filli\^atre, Th.~Hubert,
+  C.~March\'e, B.~Monate, Y.~Moy, V.~Prevosto}
+
+\vfill ~
+\end{center}
+
+\clearpage
 
 \input{intro.tex}
 
-\input{speclang.bnf}
+\input{speclang.tex}
 
 
 \chapter{Librairies}
@@ -116,5 +130,6 @@ TODO by Yannick
 
 %%% Local Variables:
 %%% mode: latex
+%%% TeX-PDF-mode: t
 %%% TeX-master: t
 %%% End:

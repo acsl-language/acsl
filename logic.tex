@@ -5,38 +5,42 @@
           | logic-function-decl | logic-function-def ;
           | axiom-def
   \
-  logic-type-decl ::= "logic" "type" logic-type ( = logic-type-def)? ";" ; ``typedef'' au lieu de ``type'' ?
+  logic-type-decl ::= "logic" "type" logic-type ";" ; 
   \
-  logic-type ::= id | type-var id ;
-                 | "(" type-var (, type-var)* ")" id 
-                 \
+  logic-type ::= id ;
+  | type-var id ; polymorphic type
+  | "(" type-var (, type-var)* ")" id ; polymorphic type
+  \
   type-var ::= "'" id 
   \
-  logic-type-def ::= TODO by Claude 
+  logic-const-def ::= "logic" type-expr id "=" term
   \
-  logic-predicate-decl ::= "predicate" id fun-parameters ("reads" locations)? ";"
+  logic-function-def ::= "logic" type-expr id parameters "{" term "}"
   \
-  logic-predicate-def ::= "predicate" id fun-parameters "{" pred "}"
-  \
-  logic-function-decl ::= "logic" type-expr id fun-parameters ("reads" locations)? ";"
-  \
-  logic-function-def ::= "logic" type-expr id fun-parameters "{" pred "}"
-  \
-  type-expr ::= logic-type-expr | C-type-expr
-  \
-  logic-type-expr ::= built-in-logic-type | id | type-expr id ;
-                 | "(" type-expr (, type-expr)* ")" id ; polymorphic type
-                 | logic-type-expr ("*" logic-type-expr)+  ; product type 
-  \
-  built-in-logic-type ::= "boolean" | "integer" | "real" 
-  \
-  fun-parameters ::= "(" parameter (, parameter)* ")"
-  \
-  parameter ::= type-expr | type-expr id | parameter "[]" | ... ; TODO: faire comme en C
+  logic-predicate-def ::= "predicate" id parameters "{" pred "}"
   \
   logic-const-decl ::= "logic" type-expr id 
   \
-  logic-const-def ::= "logic" type-expr id "=" term
+  logic-function-decl ::= "logic" type-expr id parameters reads-clause? ";"
+  \
+  logic-predicate-decl ::= "predicate" id parameters reads-clause? ";"
+  \
+  reads-clause ::= "reads" locations
+  \
+  type-expr ::= logic-type-expr | C-type-expr
+  \
+  logic-type-expr ::= built-in-logic-type 
+  | id ; type identifier
+  | "'" id ; type variable
+  | type-expr id ; polymorphic type                 
+  | "(" type-expr (, type-expr)* ")" id ; polymorphic type
+  | logic-type-expr ("*" logic-type-expr)+  ; product type 
+  \
+  built-in-logic-type ::= "boolean" | "integer" | "real" 
+  \
+  parameters ::= "(" parameter (, parameter)* ")"
+  \
+  parameter ::= type-expr | type-expr id | parameter "[]" | ... ; TODO: faire comme en C
   \
   axiom-def ::= "axiom" id ":" pred ";"
 \end{syntax}

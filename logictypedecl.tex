@@ -1,0 +1,21 @@
+\begin{syntax}
+  logic-type-decl ::= "logic" "type" logic-type = logic-type-def ";"  
+  \
+  logic-type-def ::= record-type | sum-type ; 
+  \
+  record-type ::= "{" type-expr id ( ";" type-expr id)* ";"? "}" 
+  \
+  sum-type ::= "|"? constructor ( "|" constructor)* 
+  \
+  constructor ::= id ;
+  | id "of" type-expr ;
+  \
+  term ::= term "." id ; field access
+  | "match" term "with" match-cases ; pattern-matching
+  \
+  match-cases ::= "|"? match-case ("|" match-case)* 
+  \
+  match-case ::= pattern "->" term
+  \
+  pattern ::= term ; see semantic conditions
+\end{syntax}

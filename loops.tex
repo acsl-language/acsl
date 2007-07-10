@@ -3,7 +3,7 @@
   | "/*@" loop-annot "*/" "for" "(" expr ";" expr ";" expr ")" statement ;
   | "/*@" loop-annot "*/" "do" statement "while" "(" expr ")" ";" ;
   \
-  loop-annot ::= (loop-invariant | loop-assigns | loop-variant)*
+  loop-annot ::= (loop-invariant | loop-assigns)* loop-variant?
   \
   loop-invariant ::= "loop" "invariant" pred ";" ;
   | "loop" "invariant" "for" id ":" pred ";" ; invariant for behavior $id$
