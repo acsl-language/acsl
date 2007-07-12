@@ -41,7 +41,7 @@
 \begin{center}
 ~\vfill
 
-\includegraphics{../logocat.png}
+\fbox{LOGO FRAMA-C}
 
 \vspace{20mm}
 
@@ -52,7 +52,11 @@
 {P.~Baudin, J.-C.~Filli\^atre, Th.~Hubert,
   C.~March\'e, B.~Monate, Y.~Moy, V.~Prevosto}
 
-\vfill ~
+
+\vfill 
+
+\fbox{LOGO CEA} \hfill \fbox{LOGO INRIA}
+
 \end{center}
 \end{titlepage}
 
@@ -72,11 +76,11 @@
 
 \section{Quick reference card}
 
-TODO by Benjamin
+\todo{by Benjamin}
 
 \section{Comparison with JML}
 
-TODO by Yannick
+\todo{by Yannick}
 
 \begin{verbatim}
   JML                  Frama-C
@@ -84,6 +88,55 @@ TODO by Yannick
   loop_invariant       loop invariant 
   decreases            loop variant
 
+\end{verbatim}
+
+\remark{Yannick}{JML propose deux modes de spécification des fonctions~:
+ soit à base de ``requires'' et ``ensures'', soit à base de
+ ``behavior''. JML n'a pas de ``assumes'' dans les
+  ``behaviors'', mais des ``requires''. Dans le cas où les deux modes
+  peuvent se combiner, la sémantique est la suivante~:}
+
+\begin{verbatim}
+  requires P_1;
+  requires P_2;
+  ensures  Q_1;
+  ensures  Q_2;
+  behavior x_1: requires R_1; ensures E_1;
+  behavior x_2: requires R_2; ensures E_2;
+\end{verbatim}
+
+
+\begin{verbatim}
+ pre-condition : P_1 and P_2
+             and (R_1 or R_2)
+ post-condition: Q_1 and Q_2
+             and (\old(R_1) implies E_1)
+             and (\old(R_2) implies E_2)
+\end{verbatim}
+
+
+\remark{Yannick}{avoir ``requires'' en plus des ``assumes'' dans les
+  ``behaviors'' semble utile :
+la sémantique consiste à rajouter $(A_i \ra R_i)$ en conjonction de la
+précondition globale}
+
+\begin{verbatim}
+  requires P_1;
+  requires P_2;
+  ensures  Q_1;
+  ensures  Q_2;
+  behavior x_1: requires R_1; assumes A_1; ensures E_1;
+  behavior x_2: requires R_2; assumes A_2; ensures E_2;
+\end{verbatim}
+
+
+\begin{verbatim}
+ pre-condition : P_1 and P_2
+             and (A_1 implies R_1)
+             and (A_2 implies R_2)
+ post-condition: Q_1 and Q_2
+             and (\old(A_1) implies E_1)
+             and (\old(A_2) implies E_2)
 \end{verbatim}
 
 \cleardoublepage

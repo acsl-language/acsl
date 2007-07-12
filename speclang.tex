@@ -55,7 +55,7 @@ With respect to C pure expressions, the additional constructs are as follows:
 \label{fig:gram:binders}
 \end{figure}
 
-\item[Local naming] $\Let x = e_1 ; e_2$ introduce the name $x$ for
+\item[Local binding] $\Let x = e_1 ; e_2$ introduce the name $x$ for
   expression $e_1$ which can be used in expression $e_2$.
 
 \item[Conditional] $\If c \Then e_1 \Else e_2$. There is a subtlety
@@ -65,7 +65,7 @@ With respect to C pure expressions, the additional constructs are as follows:
   semantics: $\If c \Then e_1 \Else e_2$ is equivalent to $(c
   \verb|==>| e_1) \verb|&&| (\verb|!| c \verb|==>| e_2)$
 
-\item[Syntactic naming] $id \verb|::| e$ is a term or a predicate
+\item[Syntactic naming] $id \verb|:| e$ is a term or a predicate
   equivalent to $e$. It is different from local naming with $\Let$:
   the name cannot be reused in other terms of predicates. It is only
   for readibility purposes.
@@ -92,14 +92,14 @@ The precedence of C operators is conservatively extended with additional operato
       bitwise and & left & \verb|&| \\
       bitwise xor & left & \verb|^| \\
       bitwise or & left & \verb+|+ \\
-      bitwise implies & left & \verb+=>+ \\
-      bitwise equiv & left & \verb+<=>+ \\
+      bitwise implies & left & \verb+-->+ \\
+      bitwise equiv & left & \verb+<-->+ \\
       connective and     & left & \verb|&&| \\
       connective xor & left & \verb+^^+ \\
       connective or & left & \verb+||+ \\
-      ternary connective & right & $\cdots\verb|?|\cdots\verb|:|\cdots$ \\
       connective implies & right & \verb|==>| \\
       connective equiv & left & \verb|<==>| \\
+      ternary connective & right & $\cdots\verb|?|\cdots\verb|:|\cdots$ \\
       quantification & left & \Forall{} \Exists{} \\
       \hline
     \end{tabular}
@@ -108,32 +108,99 @@ The precedence of C operators is conservatively extended with additional operato
 \label{fig:precedence}
 \end{figure}
 
-\remark{Claude}{Pourquoi le if ternaire a une precedence superieure a l'implication? C'est un choix de Caduceus, que l'on pourrait discuter}
+\remark{Claude}{Le if ternaire a une precedence inferieure a
+  l'equivalence, comme en JML, et contrairement a Caduceus, ou il est
+  entre le ou et l'implication. Choix a valider, en particulier par
+  Jean-Christophe}
 
-\subsection{Semantics, typing}
+\subsection{Semantics}
 \label{sec:twovaluedlogic}
 
-always defined (2-valued logic). Distinction entre booleens et
-predicats.  TODO: referer aux travaux de P Chalin ? 
-Donner des examples, exemples de term unspecified
+The semantics of the logic expressions in ACSL is, as in classical
+first-order logic, a 2-valued logic with only total functions, hence
+expressions are never ``undefined''.
 
-on veut la logique equationnelle classique, cad que l'axiome
-\[
-\forall x, x=x
-\]
-est valide. Donc on ne peut pas introduire de construction
-non-déterministe comme  $(\texttt{any} x \mid P)$
+This design choice has to be emphasized because it is not
+straightforward, and specification writer should be aware of that. The
+issues are shared with specification languages with similar purposes,
+like JML. A comprehensive list of issues has been compiled by Patrice
+Chalin~\cite{chalin05ftfjp,chalin07icse}.
 
-Types de la logique (see Section~\ref{sec:logicspec}:
+The choice of having only total functions allows to write for example
+the term \verb|1/0|, or \verb|*p| when p is null (or more generally
+when it points to a non-properly allocated memory cell). In
+particular, the predicates
+\begin{eqnarray*}
+  1/0 &\verb|==|& 1/0 \\
+  *p &\verb|==|& *p
+\end{eqnarray*}
+are true, since they are instances of the general axiom $\forall x,
+x\verb|==|x$ of first-order logic.
+\oldremark{Anonyme}{Donc on ne peut pas introduire de construction
+non-déterministe comme  $(\texttt{any} x \mid P)$}
+
+So, it is up to the writer of specification to take care of writing
+consistent assertions. For example, one might want to pose the lemma
+(see Section~\ref{sec:logicspec}):
+
+\input{div_lemma.pp}
+
+where care is taken to have a premise requiring \verb|y| not zero.
+
+\todo{Distinction entre booleens et predicats. Est-ce que $x<y$ retourne un boolean et pas un entier. }
+
+\subsection{Typing}
+
+The language of logic expression is typed. Logic types are:
 \begin{itemize}
-\item types mathematiques: real, integer, boolean
-\item types du C
-\item types logiques introduits par l'utilisateur
+\item ``Mathematical'' types: \verb|integer| for unbounded,
+  mathematical integers; \verb|real| for real numbers, \verb|boolean|
+  for booleans $\{ \verb|true|, \verb|false| \}$.
+\item C types
+\item Logic types introduced by specification writer (see
+  Section~\ref{sec:logicspec}.
+\end{itemize}
+
+There are implicit coercions for numeric types:
+\begin{itemize}
+\item C integer-like type \verb|char|, \verb|short|, \verb|int| and \verb|long|, signed or unsigned, are also of type \verb|integer|
+\item \verb|integer| is itself a subtype of \verb|real|
+\item \verb|float| and \verb|double| are also of type \verb|real|
 \end{itemize}
 
 \subsection*{Typing rules for terms}
 
-TODO
+\[
+\frac{}{\Gamma \vdash id : \tau} \mbox{ if $id:\tau\in\Gamma$}
+\]
+\[
+\frac{\Gamma \vdash t : \integer}{\Gamma \vdash op~t : \integer} \mbox{ if $op\in \{+,-,\tilde\}$}
+\]
+\[
+\frac{\Gamma \vdash t : \boolean}{\Gamma \vdash !~t : \boolean} 
+\]
+\[
+\frac{\Gamma \vdash t : \tau*}{\Gamma \vdash *t : \tau} 
+\]
+\[
+\frac{\Gamma \vdash t : \tau}{\Gamma \vdash \&t : \tau*} 
+\]
+\[
+\frac{\Gamma \vdash t_1 : \integer\qquad\Gamma \vdash t_2 : \integer}{\Gamma \vdash t_1~op~t_2 : \integer} \mbox{ if $op\in \{+,-,*,/,\%\}$}
+\]
+\[
+\frac{\Gamma \vdash t_1 : \real\qquad\Gamma \vdash t_2 : \real}{\Gamma \vdash t_1~op~t_2 : \real} \mbox{ if $op\in \{+,-,*,/\}$}
+\]
+\[
+\frac{\Gamma \vdash t_1 : \integer\qquad\Gamma \vdash t_2 : \integer}{\Gamma \vdash t_1~op~t_2 : \boolean} \mbox{ if $op\in \{==,!=,<=,<,>=,>\}$}
+\]
+\[
+\frac{\Gamma \vdash t_1 : \real\qquad\Gamma \vdash t_2 : \real}{\Gamma \vdash t_1~op~t_2 : \boolean} \mbox{ if $op\in \{==,!=,<=,<,>=,>\}$}
+\]
+\[
+\frac{\Gamma \vdash t_1 : \tau*\qquad\Gamma \vdash t_2 : \tau*}{\Gamma \vdash t_1~op~t_2 : \boolean} \mbox{ if $op\in \{==,!=,<=,<,>=,>\}$}
+\]
+\todo{Continuer}
 
 \section{Function contracts}
 \label{sec:fn-behavior}
@@ -171,13 +238,13 @@ for terms as given on figure~\ref{fig:gram:oldandresult}. These are the followin
 They both can be used only in \ensures{} clauses.
 
 
-\remark{Patrick}{pourquoi seuls les ``behavior'' peuvent avoir un
+\oldremark{Patrick}{pourquoi seuls les ``behavior'' peuvent avoir un
   nom~? Ne peut-t'on pas avoir le ``ident:'' optionnel pour chacune
   des clauses~? Claude: parce que le nommage de behavior doit servir
   pour les associer a des clauses du corps de la fonction, p. ex.
   assert ou lopp invariant. Mais on peut aussi proposer par ailleurs
   de nommer des predicate ou terms, p. ex. avec la notation Caduceus
-  (id :: f) }
+  (id : f) }
 
 \subsection{Simple function contracts}
 
@@ -191,7 +258,7 @@ form:
 ~~@ ensures $E_1$; \\
 ~~@ ensures $E_2$; \\
 ~~@ decreases $m$ for $R$; \\
-~~@r*/
+~~@*/
 \end{flushleft}
 
 The semantics of such a contract is as follows:
@@ -219,25 +286,32 @@ simplified one:
 ~~@ decreases $m$ for $R$; \\
 ~~@*/
 \end{flushleft}
+Also, if no clause \requires is given, it defaults to requiring
+`true', and similarly for \ensures clause. No clause \assigns means
+potentially assigns ``everything''.
 
 \begin{example}
-The following function is given a simple contract for computation of integer square root, rounded to the floor.
-\input{isqrt.pp}
+  The following function is given a simple contract for computation of
+  integer square root, rounded to the floor.  
 
-The contract means that the function must not be called with a
-negative argument, and in return the result satisfies the conjunction
-of the three predicates given in \ensures{} clauses.
+  \input{isqrt.pp}
+
+  The contract means that the function must not be called with a
+  negative argument, and in return the result satisfies the
+  conjunction of the three predicates given in \ensures{} clauses.
 \end{example}
 
 \begin{example}
-The following function is given a contract to specify it increments the value pointed by the pointer given as argument.
-\input{incrstar.pp}
+  The following function is given a contract to specify it increments
+  the value pointed by the pointer given as argument.
 
-The contract means that the function must be called with a pointer $p$
-that points to a safely allocated memory location (See
-Section~\ref{sec:pointers} for details on $\valid$ built-in predicate). It
-modifies only the value pointed by $p$, and more precisely it
-increments it by one.
+  \input{incrstar.pp}
+
+  The contract means that the function must be called with a pointer
+  $p$ that points to a safely allocated memory location (See
+  Section~\ref{sec:pointers} for details on $\valid$ built-in
+  predicate). It modifies only the value pointed by $p$, and more
+  precisely it increments it by one.
 \end{example}
 
 \subsection{Contracts with named behaviors}
@@ -246,6 +320,8 @@ More generally, a function contract as the following form with named
 behaviors (restricted to two behaviors for readability):
 \begin{flushleft}\ttfamily
 /*@ requires $P$; \\
+~~@ assigns $L$; \\
+~~@ ensures $E$; \\
 ~~@ behavior $b_1$: \\
 ~~@ ~~assumes $A_1$; \\
 ~~@ ~~requires $R_1$; \\
@@ -265,12 +341,12 @@ The semantics of such a contract is as follows:
 \item The caller of the function must guarantee that it is called in a
   state where the property $P \verb|&&| (A_1 \verb|==>| R_1) \verb|&&|
   (A_2 \verb|==>| R_2)$ holds.
-\item The called function returns a state where the properties
-  $\old(A_i) \verb|==>| E_i$ hold for each $i$.
+\item The called function returns a state where the property $E$ holds
+  and the properties $\old(A_i) \verb|==>| E_i$ hold for each $i$.
 \item For each $i$, if the function is called in a pre-state where
-  $A_i$ holds, then all memory locations of that
-  pre-state that do not belong to the set $L_i$ remain allocated
-  are left unchanged in the post-state.
+  $A_i$ holds, then all memory locations of that pre-state that do not
+  belong to the set $L \cup L_i$ remain allocated are left unchanged
+  in the post-state. In any case, locations of $L$ are unchanged.
 \end{itemize}
 
 Notice that the \requires{} clauses in the behaviors are proposed
@@ -279,6 +355,8 @@ formulas), since the contract above is equivalent to the following
 simplified one:
 \begin{flushleft}\ttfamily
 /*@ requires $P \verb|&&| (A_1 \verb|==>| R_1) \verb|&&| (A_2 \verb|==>| R_2)$; \\
+~~@ assigns $L$; \\
+~~@ ensures $E$; \\
 ~~@ behavior $b_1$: \\
 ~~@ ~~assumes $A_1$; \\
 ~~@ ~~assigns $L_1$; \\
@@ -290,9 +368,10 @@ simplified one:
 ~~@ decreases $m$ for $R$; \\
 ~~@*/
 \end{flushleft}
-Moreover, in some context one might want to guarantee that the
-disjunction of \assumes{} clauses is true, meaning informally that all
-behaviors are covered.
+
+Notice that the contract does not impose that the disjunction of the
+$A_i$ is true, that is it is not mandatory to provide a ``complete''
+set of behaviors\footnote{Although, some tools might provide a way to check such a completeness}.
 
 \begin{example}
 \label{ex:bsearch}.
@@ -321,62 +400,6 @@ See~\ref{sec:loop_invariant} for a continuation of this example.
 \end{example}
 
 
-\subsection{Remarks}
-
-\remark{Yannick}{JML propose deux modes de spécification des fonctions~:
- soit à base de ``requires'' et ``ensures'', soit à base de
- ``behavior''. JML n'a pas de ``assumes'' dans les
-  ``behaviors'', mais des ``requires''. Dans le cas où les deux modes
-  peuvent se combiner, la sémantique est la suivante~:}
-
-\begin{verbatim}
-  requires P_1;
-  requires P_2;
-  ensures  Q_1;
-  ensures  Q_2;
-  behavior x_1: requires R_1; ensures E_1;
-  behavior x_2: requires R_2; ensures E_2;
-\end{verbatim}
-
-
-\begin{verbatim}
- pre-condition : P_1 and P_2
-             and (R_1 or R_2)
- post-condition: Q_1 and Q_2
-             and (\old(R_1) implies E_1)
-             and (\old(R_2) implies E_2)
-\end{verbatim}
-
-\remark{Patrick}{les ``behavior'' de JML présente l'avantage de
-  pouvoir spécifier une fonction par cas (non exclusifs)
-  et de vérifier que les cas d'appel sont spécifiés (sinon on ne peut
-  vérifier la pré-condition).
-  Il semble important à Airbus de pouvoir s'assurer qu'ils ont
-  énoncé l'ensemble des cas.}
-
-\remark{Yannick}{avoir ``requires'' en plus des ``assumes'' dans les
-  ``behaviors'' semble utile :
-la sémantique consiste à rajouter $(A_i \ra R_i)$ en conjonction de la
-précondition globale}
-
-\begin{verbatim}
-  requires P_1;
-  requires P_2;
-  ensures  Q_1;
-  ensures  Q_2;
-  behavior x_1: requires R_1; assumes A_1; ensures E_1;
-  behavior x_2: requires R_2; assumes A_2; ensures E_2;
-\end{verbatim}
-
-
-\begin{verbatim}
- pre-condition : P_1 and P_2
-             and (A_1 implies R_1)
-             and (A_2 implies R_2)
- post-condition: Q_1 and Q_2
-             and (\old(A_1) implies E_1)
-             and (\old(A_2) implies E_2)
-\end{verbatim}
 
 \subsection{Memory locations}
 \label{sec:locations}
@@ -480,7 +503,7 @@ Notes:
 \item Quantification can be be made over any type (both C and
   logic types).
 \item Quantification over pointers, structures, union, etc.
-  are possible too. TODO: the meaning must be carefully defined.
+  are possible too. \todo{the meaning must be carefully defined.}
 \end{itemize}
 
 \section{Statement annotations}
@@ -523,7 +546,7 @@ The syntax of those annotations is given Figure~\ref{fig:gram:assertions} under 
 \end{itemize}
 
 \oldremark{Claude}{unifier les 2 derniers cas? car a-t-on besoin de
-  nommer un assert en dehors d'un behavior de la fonction? Surtout que l'on peut deja ecrire assert (id :: p)}
+  nommer un assert en dehors d'un behavior de la fonction? Surtout que l'on peut deja ecrire assert (id : p)}
 
 
 
@@ -664,7 +687,7 @@ behavior, in particular only under the corresponding \assumes{}
 clause.
 
 \begin{example}
-  TODO
+  \todo{example}
 \end{example}
 \section{Logic specifications}
 \label{sec:logicspec}
@@ -709,7 +732,7 @@ recursive or mutually recursive.
   $0$ and $n-1$ such that $t[i]=0$.
 \end{example}
 
-TODO: syntax for mutual recursion
+\todo{syntax for mutual recursion}
 
 \subsection{Higher-order logic constructions}
 
@@ -782,14 +805,14 @@ These are functions or predicates which take both C types and logic
 types as arguments.
 
 \begin{example}
-  TODO
+  \todo{example}
 \end{example}
 
 In case of a declaration without definition, a \reads{} clause is
 usually mandatory.
 
 \begin{example}
-  TODO
+  \todo{example}
 \end{example}
 
 \subsection{Model variables and fields}
@@ -797,7 +820,7 @@ usually mandatory.
 \experimental
 
 \begin{example}
-  TODO
+  \todo{example}
 \end{example}
 
 \subsection{Libraries of algebraic specifications}
@@ -841,7 +864,7 @@ Shortcuts:
   \end{eqnarray*}
 
 \item \comparable{} (checks whether two pointers are comparable as defined
-  in the ANSI standard: TODO by benjamin)
+  in the ANSI standard: \todo{by benjamin})
 \[
 \comparable{} : \alpha {\tt *} \ra \beta {\tt *} \ra {\tt boolean}
 \]

@@ -1,6 +1,6 @@
 
 DEPS=intro.tex speclang.tex libraries.tex \
-	annot1.pp annot2.pp assigns.pp invariants.pp \
+	div_lemma.pp annot1.pp annot2.pp assigns.pp invariants.pp \
 	isqrt.pp incrstar.pp \
 	max.pp max_index.pp cond_assigns.pp bsearch.pp bsearch2.pp \
 	assigns_array.pp assigns_list.pp sum.pp \

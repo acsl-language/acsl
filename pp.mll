@@ -17,7 +17,7 @@
 	"class" ; "interface" ;
 	"public" ; "private" ; "static" ; "struct" ;
 	"throws" ; "extends" ; "implements" ; "reads" ;
-	"requires"; "invariant"; "representation";
+	"requires"; "assumes" ; "invariant"; "representation";
 	"ensures" ; "assigns"; "modifiable" ; "signals" ;
 	"logic" ; "type" ; "predicate" ; "axiom";
 	"normal_behavior" ; "behavior" ; "model";

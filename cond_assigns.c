@@ -1,9 +1,11 @@
 /*@ behavior p_changed:
   @   assumes n > 0; 
+  @   requires \valid(p);
   @   assigns *p;
   @   ensures *p == n;
   @ behavior q_changed:
   @   assumes n <= 0;
+  @   requires \valid(q);
   @   assigns *q;
   @   ensures *q == n;
   @*/

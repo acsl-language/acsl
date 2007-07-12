@@ -1,7 +1,7 @@
 \begin{syntax}
   bin-op ::= "+" | "-" | "*" | "/" | "%" ; 
        | "==" | "!=" | "<=" | ">=" | ">" | "<" ;
-       | "&" | "|" | "=>" | "<=>" | "^"; bitwise operations 
+       | "&" | "|" | "-->" | "<-->" | "^"; bitwise operations 
        \
   unary-op ::= "+" | "-" ; unary plus and minus
        | "!" | "~" ;  
@@ -18,14 +18,12 @@
        | id "(" term ("," term)* ")" ; function application
        | "(" term ")" ; parentheses
        | term "?" term ":" term ; 
-       | "\let" id "=" term ";" term ; local naming
+       | "\let" id "=" term ";" term ; local binding
        | "sizeof" "(" term ")" ; 
        | "sizeof" "(" C-type-expr ")" ;
-       | id "::" term ; syntactic naming 
+       | id ":" term ; syntactic naming 
        | "(" term ("," term)+ ")" ; tuples
        | "\let" "(" id (, id)+ ")" "=" term ";" term ; \experimental
-       | "offsetof" "(" ... ")" ; \experimental
-       | "alignof" "(" C-type-expr ")" ; \experimental
        \
   rel-op ::= "==" | "!=" | "<=" | ">=" | ">" | "<" 
        \
@@ -41,10 +39,10 @@
        | pred "^^" pred ; exclusive or
        | term "?" pred ":" pred ;
        | pred "?" pred ":" pred ; 
-       | "\let" id "=" term ";" pred ; local naming
+       | "\let" id "=" term ";" pred ; local binding
        | "\forall" binders ";" pred ; universal quantification
        | "\exists" binders ";" pred ; existential quantification
-       | id "::" pred ; syntactic naming 
+       | id ":" pred ; syntactic naming 
 \end{syntax}
 
 %%% Local Variables:
