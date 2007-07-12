@@ -149,6 +149,14 @@ where care is taken to have a premise requiring \verb|y| not zero.
 
 \todo{Distinction entre booleens et predicats. Est-ce que $x<y$ retourne un boolean et pas un entier. }
 
+Notes:
+\begin{itemize}
+\item Quantification can be be made over any type (both C and
+  logic types).
+\item Quantification over pointers, structures, union, etc.
+  are possible too. \todo{the meaning must be carefully defined: this is not only the allocated structures.}
+\end{itemize}
+
 \subsection{Typing}
 
 The language of logic expression is typed. Logic types are:
@@ -422,13 +430,13 @@ The semantics is given as follows, where $s$ denotes any tset:
 \item a simple term denotes a singleton
 \item $s\ra id$ denotes the set of $x\ra id$ for each $x \in s$
 \item $s.id$ denotes the set of $x.id$ for each $x \in s$
-\item $*s$ denotes the set of $*x$ for each x in s
+\item $*s$ denotes the set of $*x$ for each $x \in s$
 \item $s_1[s_2]$ denotes the set of $x_1[x_2]$ for each $x_1 \in s_1$
   and $x_2 \in s_2$
 \item $t_1 .. t_2$ denotes the set of integers between $t_1$ and
   $t_2$, included.
 \item $s_1,s_2$ denotes the union of $s_1$ and $s_2$
-\item $s_1+s_2$ denotes the set of $x_1+x_2$ for each $x_1 in s_1$ and $x_2 in s_2$
+\item $s_1+s_2$ denotes the set of $x_1+x_2$ for each $x_1 \in s_1$ and $x_2 \in s_2$
 \item $(s)$ denotes the same set as $s$
 \item $\{ s \mid b ; P \}$ denotes set comprehension: set of term
   denoted by $s$ for each values of binders satisfying predicate $P$.
@@ -454,17 +462,13 @@ Only locations are valid as argument to \assigns{} clauses
   \input{assigns_list.pp}
 
   The \assigns{} clause specifies that the set of modified memory
-  locations is the set of fields $p\verb|->hd|$ for each pointer $p$
-  reachable from \verb|root| following \verb|next| fields. See
+  locations is the set of fields $q\verb|->hd|$ for each pointer $q$
+  reachable from \verb|p| following \verb|next| fields. See
   Section~\ref{sec:logicspec} for details about the declaration of the
   logic predicate \texttt{reachable}.
 
 
 \end{example}
-
-\remark{Patrick}{ne faut-t'il pas étendre les clauses ``assigns'' aux
-  clauses ``from'' de CAVEAT prenant en comptes les locations lues, et les
-  expressions fonctionnelles~?}
 
 \subsection*{Typing rules for locations}
 
@@ -498,57 +502,19 @@ Rules:
 \]
 idem for $loc \tau$
 
-Notes:
-\begin{itemize}
-\item Quantification can be be made over any type (both C and
-  logic types).
-\item Quantification over pointers, structures, union, etc.
-  are possible too. \todo{the meaning must be carefully defined.}
-\end{itemize}
 
 \section{Statement annotations}
 
 Annotations on C statements are of three kinds:
 \begin{itemize}
-\item Assertions and logic labels; allowed before any C statement or
-  at end of blocks.
 \item Loop annotations: invariant, assigns clause, variant; allowed
   before any loop statement: \verb|while|, \verb|for|, and
   \verb|do...while|.
+\item Assertions and logic labels; allowed before any C statement or
+  at end of blocks.
 \item Statement contracts; allowed before any C statement, specifying
   their behavior in a similar manner as C functions.
 \end{itemize}
-
-\subsection{Assertions and logic labels}
-
-\begin{figure}[t]
-  \begin{cadre}
-    \input{assertions.bnf}
-  \end{cadre}
-  \caption{Grammar for assertions}
-  \label{fig:gram:assertions}
-\end{figure}
-
-The syntax of those annotations is given Figure~\ref{fig:gram:assertions} under the form of a addition to the grammar of C statements. The grammar for terms is also completed with the built-in $\at$ construct.
-
-\begin{itemize}
-\item The $\texttt{label}~id$ annotation simply allows one to refer to
-  the value of some expression $e$ in the state before the statement,
-  in further annotations, using the construct $\at(e,id)$
-
-\item  The $\texttt{assert}~p$ clause means that $p$ must hold in the state
-  before the statement.
-
-\item The $\texttt{assert for}~id:~p$ variant associates the assertion
-  to the name $id$ which must be a behavior identifier for the current
-  function.  It means that this assertion is meant to be valid only
-  for the considered behavior.
-\end{itemize}
-
-\oldremark{Claude}{unifier les 2 derniers cas? car a-t-on besoin de
-  nommer un assert en dehors d'un behavior de la fonction? Surtout que l'on peut deja ecrire assert (id : p)}
-
-
 
 \subsection{Loop annotations}
 \label{sec:loop_invariant}
@@ -589,9 +555,7 @@ specifies that
   \item for a $\verb|while|~(c)~s$ loop, $I$ must be preserved by the side-effects of $c$ followed by $s$
   \item for a $\verb|for|(init;c;step)~s$ loop, $I$ must be preserved by the side-effects of $c$ followed by $s$ followed by step
   \item for a $\verb|do|~s~\verb|while|~(c);$ loop, $I$ must be preserved by $s$ followed by the side-effects of $c$
-\remark{Claude}{J'ai mis la semantique actuelle de Caduceus, qui n'est pas forcement la meilleure. On pourrait envisager une semantique ou l'invariant est vrai entre $s$ et $c$. d'ailleurs, la syntaxe pourrait mettre ca en avant si on pouvait poser syntaxiquement l'invariant juste avant le mot-clef while}
-  \end{itemize}
-\remark{Claude}{De facon generale, on pourrait autoriser de poser un invariant de boucle n'importe ou dans le corps de boucle, la semantique etant plus ou moins celle d'une assert}
+
 \item At any loop iteration, any location that was allocated before
   entering the loop, and is not member of $L$ in the current state,
   must be remain allocated and have to same value as before entering
@@ -604,9 +568,9 @@ specifies that
 
 Remarks:
 \begin{itemize}
-\item The $\old$ construct is not allowed in loop annotations
-\item When a loop exists with \texttt{break} or \texttt{return}, it is
-  not required that the loop invariant holds.
+\item The $\old$ construct is not allowed in loop annotations. The \verb|at| form should be used to refer to another state.
+\item When a loop exists with \texttt{break} or \texttt{return} or
+  \texttt{goto}, it is not required that the loop invariant holds.
 \end{itemize}
 
 \begin{example}
@@ -616,6 +580,14 @@ Here is a continuation of example~\ref{ex:bsearch}.
 \input{bsearch2.pp}
 
 \end{example}
+
+\subsection*{Advanced loop invariants}
+
+\experimental
+
+\remark{Claude}{J'ai mis la semantique actuelle de Caduceus, qui n'est pas forcement la meilleure. On pourrait envisager une semantique ou l'invariant est vrai entre $s$ et $c$. d'ailleurs, la syntaxe pourrait mettre ca en avant si on pouvait poser syntaxiquement l'invariant juste avant le mot-clef while}
+  \end{itemize}
+\remark{Claude}{De facon generale, on pourrait autoriser de poser un invariant de boucle n'importe ou dans le corps de boucle, la semantique etant plus ou moins celle d'une assert}
 
 \subsection*{More about termination}
 
@@ -664,6 +636,40 @@ In those cases, the logic expression $e$ has some type $\tau$ and $R$ must be re
 
 
 
+\subsection{Assertions and logic labels}
+
+\begin{figure}[t]
+  \begin{cadre}
+    \input{assertions.bnf}
+  \end{cadre}
+  \caption{Grammar for assertions}
+  \label{fig:gram:assertions}
+\end{figure}
+
+The syntax of those annotations is given Figure~\ref{fig:gram:assertions} under the form of a addition to the grammar of C statements. The grammar for terms is also completed with the built-in $\at$ construct.
+
+\begin{itemize}
+\item The $\texttt{label}~id$ annotation simply allows one to refer to
+  the value of some expression $e$ in the state before the statement,
+  in further annotations, using the construct $\at(e,id)$
+  
+  \todo{Inclure dans les ghosts statement ? Mais ce n'est pas un statement...}
+
+\item  The $\texttt{assert}~p$ clause means that $p$ must hold in the state
+  before the statement.
+
+\item The form $\texttt{for} id_1,\ldots,id_k:~\texttt{assert}~p$
+  variant associates the assertion to the named behaviors $id_i$ which
+  must be a behavior identifiers for the current function.  It means
+  that this assertion is meant to be valid only for the considered
+  behaviors.
+\end{itemize}
+
+\oldremark{Claude}{unifier les 2 derniers cas? car a-t-on besoin de
+  nommer un assert en dehors d'un behavior de la fonction? Surtout que l'on peut deja ecrire assert (id : p)}
+
+
+
 \subsection{Statement contracts}
 
 
@@ -678,17 +684,17 @@ In those cases, the logic expression $e$ has some type $\tau$ and $R$ must be re
 
 
 The grammar for statement contracts is given
-Figure~\ref{fig:gram:stcontracts}. It is similar to function
-behaviors, limited to \assigns{} and \ensures{} clauses. The notation
-for named behaviors is of the form \texttt{behavior for $id$} where
-$id$ is the name of some behavior of the current function. Named
-statement are meant to be valid only for the corresponding function
-behavior, in particular only under the corresponding \assumes{}
-clause.
+Figure~\ref{fig:gram:stcontracts}. It is very similar to function
+behaviors, but without \decreases{} clause. Additionally, behavior can
+refer to enclosing named behaviors, with the form \texttt{for $id$ :
+  \ldots}. Such behaviors are meant to be valid only for the
+corresponding function behavior, in particular only under the
+corresponding \assumes{} clause.
 
 \begin{example}
   \todo{example}
 \end{example}
+
 \section{Logic specifications}
 \label{sec:logicspec}
 
@@ -845,31 +851,34 @@ section~\ref{sec:speclibraries}), and imported using
 \blocklength{} : \alpha {\tt *} \ra {\tt size\_t}
 \]
 
+\item $\valid$ is a built-in predicate which applies to a set of terms
+  of some pointer type. $\valid(s)$ is true whenever dereferencing any
+  $p\in s$ is safe. 
+
 \end{itemize}
 
 Shortcuts:
 \begin{itemize}
-\item offset(p) returns the offset between p ans its base address
+\item $\verb|\null|$ is an extra notation for the NULL pointer
+\item $\offset(p)$ returns the offset between p and its base address
 
   \begin{eqnarray*}
-    offset &:& \alpha {\tt *} \ra {\tt size\_t}  \\
-    offset(p) &=& (char*)p - \baseaddr(p)
+    \offset &:& \alpha {\tt *} \ra \verb|size_t|  \\
+    \offset(p) &=& (\verb|char|*)p - \baseaddr(p)
   \end{eqnarray*}
-
-\item valid(p) tells whether dereferencing p is safe
-
-  \begin{eqnarray*}
-    valid : \alpha {\tt *} \ra {\tt boolean} \\
-    valid(p) = offset(p) \geq 0 \land offset(p) + sizeof(*p) \leq \blocklength(p)
-  \end{eqnarray*}
+  the following property holds: for any set of pointers $s$, $\valid(s)$ if and only if for all $p\in s$:
+  \[
+    \offset(p) \geq 0 \land \offset(p) + \verb|sizeof|(*p) \leq \blocklength(p)
+\]
 
 \item \comparable{} (checks whether two pointers are comparable as defined
   in the ANSI standard: \todo{by benjamin})
 \[
-\comparable{} : \alpha {\tt *} \ra \beta {\tt *} \ra {\tt boolean}
+\comparable{} : \alpha {\tt *} \ra \beta {\tt *} \ra \boolean
 \]
-\end{itemize}
 
+ 
+\end{itemize}
 
 \subsection{Separation}
 
@@ -878,9 +887,11 @@ pointer separation :
 p \not\equiv q := \baseaddr(p) \neq \baseaddr(q) \lor |(char*)p - (char*)q| \geq \max(\sizeof(p),\sizeof(q))
 \]
 
-$\separated(loc1,..,loc_n)$ : means that for if $i\neq j$, if $x\in loc_i$ and $y \in loc_j$ then $\&x \not\equiv \& y$
+$\separated(loc1,..,loc_n)$ : means that for if $i\neq j$, if $x\in
+loc_i$ and $y \in loc_j$ then $\&x \not\equiv \& y$
 
-where each $loc_i$ is a set of memory location as defined in Section~\ref{sec:locations}.
+where each $loc_i$ is a set of terms as defined in
+Section~\ref{sec:locations}.
 
 \subsection{Allocation and deallocation}
 
@@ -909,6 +920,10 @@ where each $loc_i$ is a set of memory location as defined in Section~\ref{sec:lo
 
 
 \section{Dependencies information}
+
+\remark{Patrick}{ne faut-t'il pas étendre les clauses ``assigns'' aux
+  clauses ``from'' de CAVEAT prenant en comptes les locations lues, et les
+  expressions fonctionnelles~?}
 
 \experimental
 

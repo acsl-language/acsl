@@ -1,8 +1,8 @@
 \begin{syntax}
-  statement ::= "/*@" logical-label "*/" statement \
-  logical-label ::= "label" id: ;
+  statement ::= "/*@" assertion "*/" statement \
+  assertion ::= "label" id ":" ;
   | "assert" pred ";" ;
-  | "assert" "for" id ":" pred ";" ;
+  | "for" id ("," id)* ":" "assert" pred ";" ;
   \
   term ::= "\at" "(" term "," id ")" 
   \

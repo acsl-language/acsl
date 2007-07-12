@@ -3,11 +3,13 @@ struct list {
   struct list *next;
 }
 
-/*@ logic reachable(struct list *from, struct list *to) 
-  @   reads from->next;
+// reachability in NULL-terminated lists
+/*@ predicate reachable(struct list *from, struct list *to) {
+  @   from == to || from != NULL && reachable(from->next,to)
+  @ }
   @*/
 
-//@ assigns { p->hd | struct list *p ; reachable(root,p) } ;
+//@ assigns { q->hd | struct list *q ; reachable(p,q) } ;
 void incr_list(struct list *p) {
   while (p != null) { p->hd++ ; p = p->next }
 }

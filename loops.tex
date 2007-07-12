@@ -13,10 +13,10 @@
   loop-variant?
   \
   loop-invariant ::= "loop" "invariant" pred ";" ;
-  | "loop" "invariant" "for" id ":" pred ";" ; invariant for behavior $id$
+  | "for" id ("," id)* ":" "loop" "invariant" pred ";" ; invariant for behavior $id$
   \
   loop-assigns ::= "loop" "assigns" locations ";" ;
-  | "loop" "assigns" "for" id ":" locations ";" ; assigns for behavior $id$
+  | "for" id ("," id)* ":" "loop" "assigns" locations ";" ; assigns for behavior $id$
   \
   loop-variant ::= "loop" "variant" term ";" ;
   | "loop" "variant" term "for" id ";" ; variant for relation $id$

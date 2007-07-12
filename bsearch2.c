@@ -12,7 +12,7 @@
 short bsearch(int t[], short n, int v) {
   short l = 0, u = n-1;
   /*@ loop invariant 0 <= l && u <= n-1;   
-    @ loop invariant for failure: 
+    @ for failure: loop invariant  
     @   \forall short k; 0 <= k < n => t[k] == v => l <= k <= u;
     @ loop variant u-l; 
     @*/
