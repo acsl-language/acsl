@@ -394,7 +394,7 @@ allocated for at least the index from $0$ to $n-1$. The two named
 behaviors correspond respectively to the succesful behavior and the
 failing behavior.
 
-See~\ref{sec:loop_invariant} for a continuation of this example.
+See~\ref{sec:loop_annot} for a continuation of this example.
 \end{example}
 
 \begin{example}
@@ -517,7 +517,7 @@ Annotations on C statements are of three kinds:
 \end{itemize}
 
 \subsection{Loop annotations}
-\label{sec:loop_invariant}
+\label{sec:loop_annot}
 
 
 \begin{figure}[t]
@@ -668,10 +668,17 @@ The syntax of those annotations is given Figure~\ref{fig:gram:assertions} under 
 \oldremark{Claude}{unifier les 2 derniers cas? car a-t-on besoin de
   nommer un assert en dehors d'un behavior de la fonction? Surtout que l'on peut deja ecrire assert (id : p)}
 
+\subsection*{Assertions on return}
+
+\experimental
+
+These allows to pose an assertion on function's state just before it
+returns, (whatever way that return occurs) where it is still possible
+to refer to local variables.
 
 
 \subsection{Statement contracts}
-
+\label{sec:statement_contract}
 
 
 \begin{figure}[t]
@@ -997,6 +1004,21 @@ définies dans des \texttt{.h} que la norme spécifie en grande partie
 (le nom l'est, le type peut y être contraint).
 Il faudrait autant que possible se raprocher de ces noms.}
 
+section{Attribute annotations}
+\label{sec:attribute_annot}
+
+\experimental
+
+These are annotations allowing to add attributes on variables, like regular C attributes (const, volatile, restrict).
+
+The purpose of these are various:
+\begin{itemize}
+\item specific verifications, like \url{http://www.cs.umd.edu/~jfoster/cqual}
+\item specific analyses, like region 
+  analyses~\cite{hubert07hav} a la Cyclone~\cite{grossman02pldi}.
+\item allowing to attach model variables/fields to types that are not
+  structures~\cite{filliatr07queens}.
+\end{itemize}
 
 %%% Local Variables:
 %%% mode: latex

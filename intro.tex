@@ -23,7 +23,7 @@ Hoare in the late 60's and early 70's, and originally implemented in
 the \textsc{Eiffel} language.
 
 In this document, we assume that the reader has a good knowledge of
-ANSI C programming language~\cite{KR88}.
+the ANSI C programming language~\cite{KR88}.
 
 \section{Organization of this document}
 
@@ -37,31 +37,61 @@ Chapter~\ref{chap:lib} presents additional informations about
 
 A detailed table of contents is given on page~\pageref{chap:contents}
 
-Some features in this document are considered ``experimental'',
-meaning that their syntax and semantics is still under discussion. We
-also consider them as ``advanced features'' which are not supposed to
-be useful for a basic use of that specification language. \todo{mettre en avant ce paragraphe}
+\subsection*{Experimental features}
+
+Some features in this document are considered \emph{experimental},
+meaning that their syntax and semantics is still under discussion.
+These features are marked with \experimental.
+
+They must also be considered as ``advanced features'' which are not
+supposed to be useful for a basic use of that specification language.
 
 
 \section{Glossary}
 
-\todo{l-value, pre-state, post-state}
+\begin{description}
+\item[pure expressions] \index{pure expression} A C expression is
+  called \emph{pure} if it has no side-effect: no assignments, no
+  incrementation operator \verb|++| or \verb|--|. Moreover it should
+  not contain any function call, even if the called function has no
+  side-effect itself.
 
-An expression is called \emph{pure} if it has no side-effect.
+\item[memory locations and left-values] \index{memory location}
+  \index{left value}\index{l-value} A \emph{memory location} is an
+  expression which denotes some place in the memory during program
+  execution, either on the stack, on the heap, or in the static data
+  segment. It can be either a variable identifier or an expression of
+  the form $*e$, $e[e]$, $e\verb|.|id$ or $e\verb|->|id$.
 
-A \emph{contract} is a specification of a function, consisting of the combination of a pre-condition and a collection of \emph{behaviors}.
+  A \emph{left value}, or \emph{l-value} for short, is a memory
+  location allowed in the left part of an assignment, that is a
+  non-constant memory location.
+ 
+\item[pre-state and post-state]
+    \index{pre-state}\index{post-state}
+    
+    For a given function call, the \emph{pre-state} denotes the
+    program's state at the beginning of the call, including the
+    current values for the function parameters. the \emph{post-state}
+    denotes the program's state at the return of the call.
 
-A \emph{behavior} is mainly a post-condition, possibly associated with
-an \emph{frame clause} (called also an \emph{assigns clause} in the
-following) specifying side-effects, and possible an assumption on the
-pre-state om which the function is called.
+\item[function behavior] \index{function behavior} \index{behavior}
 
+  A \emph{function behavior} is a set of properties relating the
+  pre-state and the post-state for any call to that function.
 
-\remark{Claude}{ce document doit etre illustré par des
+\item[contract] \index{contract} A \emph{contract} forms a
+  specification of a function, consisting of the combination of a
+  pre-condition (an assumption about the pre-state) and a collection
+  of behaviors.
+
+\end{description}
+
+\oldremark{Claude}{ce document doit etre illustré par des
 exemples. Toute construction qui ne serait pas illustrée par un
 exemple sera non-retenue.}
 
-\remark{Patrick}{utiliser en priorité les constructions de JML,
+\oldremark{Patrick}{utiliser en priorité les constructions de JML,
 ensuite les généraliser lorsque cela a un sens, et en dernier recours,
 en créer de nouvelles. Il y a peut-être des constructions
 du C++ ou C\# à utiliser ou à généraliser.
@@ -92,63 +122,56 @@ that source files remain compilable\footnote{Other means of attaching
     invariants, and invariants on type names introduced by \typedef.
     See section~\ref{sec:invariants}.
 
-  \item logical specifications: logic type introduction, introduction
-    or definition of logical function or predicates, axioms. Such an
+  \item logic specifications: logic type introduction, introduction
+    or definition of logic functions or predicates, axioms. Such an
     annotation is placed at the global declarations level.
 
   \end{itemize}
 
 \item Statement annotations:
   \begin{itemize}
-  \item \assert,\footnote{Remark about \assume{} clauses: current
+  \item \assert,\oldremark{Claude}{about \assume{} clauses: current
       discussion is that it is not considered as an element of
       specification, so not present here. This should be part of proof
       management done by tools}
-    logical label. These are allowed everywhere a C label
-    is allowed.
-    \remark{Patrick}{En C, seules les instructions peuvent être
+    logic label. These are allowed everywhere a C label
+    is allowed, or exceptionally just before a block closing brace.
+    \oldremark{Patrick}{En C, seules les instructions peuvent être
       étiquettées. GCC étend cela aux accolades fermantes des blocs,
       y compris celle fermant le corps de fonction. On peut dire que
       l'on fait de même lorsque l'on place des annotations juste avant
       la fermerture d'un bloc.}
-    \remark{Patrick}{permettre de poser une assertion sur
-      la sortie de fonction quelque soit cette sortie, et d'y
-      parler des paramètres, et éventuellement des variables locales
-      déclarées en début de fonction.}
 
-  \item loop annotation (invariant, variant, assign clauses) are
-    allowed immediately before loop statements: \For, \While,
-    \Do\ldots \While
+  \item loop annotation (invariant, variant, assign clauses) is
+    allowed immediately before a loop statement: \For, \While,
+    \Do\ldots \While. See Section~\ref{sec:loop_annot}
 
   \item statement contract. Very similar to a function contract.
     Semantical condition must be checked (normal termination only, no
-    goto going inside, no goto going outside) \remark{Patrick}{as-t'on
+    goto going inside, no goto going outside) \oldremark{Patrick}{as-t'on
       droit au \old dans le \ensures de cette annotation~? Oui, pour
-      refer a l'etat avant le statement consider\'er}
+      refer a l'etat avant le statement consider\'e}
+See Section~\ref{sec:statement_contract}
 
-  \item ghost brackets for enclosing blocks
-    \remark{Patrick}{on a besoin de ``ghost brackets'' pour
+
+  \item ghost code: is regular C-code, only visible from the
+    specification, that is only allowed to modify ghost variables. See
+    section~\ref{sec:ghost}.
+
+  \item ghost braces for enclosing blocks
+    \remark{Patrick}{on a besoin de ``ghost braces'' pour
       écrire du ``ghost code''. Dans ce cas on n'en fait pas un point
       à part entière ici, on en parlera dans la section~\ref{sec:ghost}.
-      Par contre, on a besoin de ``logical brackets'' afin de créer un
-      ``logical statement'' auquel on désire associer un ``statement
+      Par contre, on a besoin de ``logic braces'' afin de créer un
+      ``logic statement'' auquel on désire associer un ``statement
       behavior''. Faut'il en parler ici, comme on a parlé des
-      ``logical label'' plus haut~?}
+      ``logic label'' plus haut~?}
 
-  \item ghost code. See section~\ref{sec:ghost}
 
   \end{itemize}
 
-\item Attribute annotations:
-  \remark{Patrick}{annotation permettant d'ajouter des attributs
-  partout où l'on peut écrire les qualifications habituelles du
-  langage C (const, volatile, restrict) pour les outils qui réalisent
-  de une vérification et/ou inférence de type comme dans
-  \texttt{<http://www.cs.umd.edu/\~~jfoster/cqual>}, ou lors de l'inférence de
-  zones seravnt à identifier un modéle mémoire. Cela permet également de
-  proposer des types logiques pour les variables de la logique
-  associées à des variables du C qui soient différents des types
-  proposés par défaut.}
+\item Attribute annotations: \experimental. See Section~\ref{sec:attribute_annot}.
+
 
 \end{itemize}
 
@@ -198,5 +221,6 @@ occurrences of $e$, $e^?$ for zero or one occurrence of $e$.
 
 %%% Local Variables:
 %%% mode: latex
+%%% TeX-PDF-mode: t
 %%% TeX-master: "main"
 %%% End:
