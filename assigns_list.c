@@ -5,7 +5,7 @@ struct list {
 
 // reachability in NULL-terminated lists
 /*@ predicate reachable(struct list *from, struct list *to) {
-  @   from == to || from != NULL && reachable(from->next,to)
+  @   from == to || from != \null && reachable(from->next,to)
   @ }
   @*/
 

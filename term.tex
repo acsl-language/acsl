@@ -1,20 +1,22 @@
 \begin{syntax}
   bin-op ::= "+" | "-" | "*" | "/" | "%" ; 
        | "==" | "!=" | "<=" | ">=" | ">" | "<" ;
-       | "&" | "|" | "-->" | "<-->" | "^"; bitwise operations 
+       | "&&" | "||" |   ; boolean operations 
+       | "&" | "|" | "--->" | "<--->" | "^"; bitwise operations 
        \
   unary-op ::= "+" | "-" ; unary plus and minus
-       | "!" | "~" ;  
-       | "*" ; C pointer dereferencing
-       | "&" ; C address operator
+       | "!" ; boolean negation
+       | "~" ;  bitwise complementation
+       | "*" ; pointer dereferencing
+       | "&" ; address operator
        \
   term ::= id ;
        | unary-op term ;
        | term bin-op term ;  
+       | term "[" term "]" ; array access
        | term "." id  ; structure field access
        | term "->" id ; 
        | "(" type-expr ")" term  ; cast 
-       | term "[" term "]" ; array access
        | id "(" term ("," term)* ")" ; function application
        | "(" term ")" ; parentheses
        | term "?" term ":" term ; 
@@ -22,8 +24,6 @@
        | "sizeof" "(" term ")" ; 
        | "sizeof" "(" C-type-expr ")" ;
        | id ":" term ; syntactic naming 
-       | "(" term ("," term)+ ")" ; tuples
-       | "\let" "(" id (, id)+ ")" "=" term ";" term ; \experimental
        \
   rel-op ::= "==" | "!=" | "<=" | ">=" | ">" | "<" 
        \

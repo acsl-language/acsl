@@ -859,7 +859,10 @@ section~\ref{sec:speclibraries}), and imported using
 
 Shortcuts:
 \begin{itemize}
-\item $\verb|\null|$ is an extra notation for the NULL pointer
+\item $\verb|\null|$ is an extra notation for the NULL pointer. It is
+  a shorcut to \verb|(void*)0| \footnote{or to \texttt{NULL}, if
+    annotations are pre-processed are the appropriate inclusion of
+    \texttt{stddef.h} is added}
 \item $\offset(p)$ returns the offset between p and its base address
 
   \begin{eqnarray*}
@@ -974,8 +977,17 @@ adéquat à la preuve des propriétés puisque les propriétés peuvent
 porter à la fois sur les variables du C et les  ``ghost variables''.
 }
 
+  \remark{Patrick}{on a besoin de ``ghost braces'' pour
+      écrire du ``ghost code''. Dans ce cas on n'en fait pas un point
+      à part entière ici, on en parlera dans la section~\ref{sec:ghost}.
+      Par contre, on a besoin de ``logic braces'' afin de créer un
+      ``logic statement'' auquel on désire associer un ``statement
+      behavior''. Faut'il en parler ici, comme on a parlé des
+      ``logic label'' plus haut~?}
 
 \input{ghost.bnf}
+
+
 
 
 \section{Module constructions}

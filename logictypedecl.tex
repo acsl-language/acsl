@@ -7,15 +7,19 @@
   \
   sum-type ::= "|"? constructor ( "|" constructor)* 
   \
-  constructor ::= id ;
-  | id "of" type-expr ;
+  constructor ::= id ; constant constructor
+  | id "of" type-expr ; non-constant constructor
   \
-  term ::= term "." id ; field access
-  | "match" term "with" match-cases ; pattern-matching
+  type-expr ::= type-expr ("*" type-expr)+ ; product type 
+  \
+  term ::= term "." id ; record field access
+  | "\match" term ";" match-cases ; pattern-matching
+  | "(" term ("," term)+ ")" ; tuples
+  | "\let" "(" id (, id)+ ")" "=" term ";" term ; \experimental
   \
   match-cases ::= "|"? match-case ("|" match-case)* 
   \
-  match-case ::= pattern "->" term
+  match-case ::= pattern ":" term
   \
   pattern ::= term ; see semantic conditions
 \end{syntax}

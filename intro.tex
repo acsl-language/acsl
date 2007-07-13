@@ -130,87 +130,74 @@ that source files remain compilable\footnote{Other means of attaching
 
 \item Statement annotations:
   \begin{itemize}
-  \item \assert,\oldremark{Claude}{about \assume{} clauses: current
+  \item \assert clause, logic label. These are allowed
+    everywhere a C label is allowed, or exceptionally just before a
+    block closing brace.  
+    \oldremark{Claude}{about \assume{} clauses: current
       discussion is that it is not considered as an element of
       specification, so not present here. This should be part of proof
-      management done by tools}
-    logic label. These are allowed everywhere a C label
-    is allowed, or exceptionally just before a block closing brace.
-    \oldremark{Patrick}{En C, seules les instructions peuvent être
-      étiquettées. GCC étend cela aux accolades fermantes des blocs,
-      y compris celle fermant le corps de fonction. On peut dire que
-      l'on fait de même lorsque l'on place des annotations juste avant
-      la fermerture d'un bloc.}
-
+      management done by tools} 
+    \oldremark{Patrick}{En C, seules les
+      instructions peuvent être étiquettées. GCC étend cela aux
+      accolades fermantes des blocs, y compris celle fermant le corps
+      de fonction. On peut dire que l'on fait de même lorsque l'on
+      place des annotations juste avant la fermerture d'un bloc.}
+    
   \item loop annotation (invariant, variant, assign clauses) is
     allowed immediately before a loop statement: \For, \While,
     \Do\ldots \While. See Section~\ref{sec:loop_annot}
 
   \item statement contract. Very similar to a function contract.
     Semantical condition must be checked (normal termination only, no
-    goto going inside, no goto going outside) \oldremark{Patrick}{as-t'on
-      droit au \old dans le \ensures de cette annotation~? Oui, pour
-      refer a l'etat avant le statement consider\'e}
-See Section~\ref{sec:statement_contract}
-
-
+    goto going inside, no goto going outside).  See
+    Section~\ref{sec:statement_contract}
+    \oldremark{Patrick}{as-t'on droit au \old dans le \ensures de
+      cette annotation~? Oui, pour refer a l'etat avant le statement
+      consider\'e}
+    
   \item ghost code: is regular C-code, only visible from the
     specification, that is only allowed to modify ghost variables. See
-    section~\ref{sec:ghost}.
-
-  \item ghost braces for enclosing blocks
-    \remark{Patrick}{on a besoin de ``ghost braces'' pour
-      écrire du ``ghost code''. Dans ce cas on n'en fait pas un point
-      à part entière ici, on en parlera dans la section~\ref{sec:ghost}.
-      Par contre, on a besoin de ``logic braces'' afin de créer un
-      ``logic statement'' auquel on désire associer un ``statement
-      behavior''. Faut'il en parler ici, comme on a parlé des
-      ``logic label'' plus haut~?}
-
+    section~\ref{sec:ghost}. Ghost braces for enclosing blocks.
 
   \end{itemize}
 
-\item Attribute annotations: \experimental. See Section~\ref{sec:attribute_annot}.
-
+\item Attribute annotations: \experimental. See
+  Section~\ref{sec:attribute_annot}.
 
 \end{itemize}
 
 \subsection{Parsing annotations in practice}
 
-In JML, parsing is done by just ignoring \verb|//@|, \verb|/*@| and \verb|*/| and the level of lexing. This technique can completely modify the semantics of the C code, for example:
-\input{annot1.pp}
+In JML, parsing is done by just ignoring \verb|//@|, \verb|/*@| and
+\verb|*/| and the level of lexing. This technique can completely
+modify the semantics of the C code, for example: \input{annot1.pp}
 
 In our language this has to be forbidden. Technically, current
 implementation of Frama-C isolate the comments in a first step of
 syntax analysis, and then parses a second time. Nevertheless, the
 grammar and the corresponding parser must be carefully designed to
 avoid interaction of annotations with the code. For example, in such a
-code:
-\input{annot2.pp}
-the statement \verb|c=1| must be understood as the \texttt{then} branch of the
-\texttt{if}. This is ensured by the grammar below, saying that \verb|assert|
-annotations are not statement themselves, but attached to the
-statement that follows, like C labels.
+code: 
+\input{annot2.pp} 
+the statement \verb|c=1| must be understood as the \texttt{then}
+branch of the \texttt{if}. This is ensured by the grammar below,
+saying that \verb|assert| annotations are not statement themselves,
+but attached to the statement that follows, like C labels.
 
 \subsection{About preprocessing}
 
-This document considers C source \emph{after} preprocessing. Tools must
-decide what to do for preprocessing phase: what to do with
+This document considers C source \emph{after} preprocessing. Tools
+must decide what to do for preprocessing phase: what to do with
 annotations, should macro substitution be performed or not, etc.
-
-\subsection{About logical expressions}
-
-Logical expressions are pure C expressions, without function calls.
-Semantics is given by the classical 2-valued logic. Additional
-constructs exist, given in Section~\ref{sec:expressions}
 
 \subsection{About keywords}
 
 Additional keywords of the specification language start with a
-backslash, if they are used in position of a term or a predicate. Otherwise
-they do not start with a backslash, like \ensures{}.
+backslash, if they are used in position of a term or a predicate.
+Otherwise they do not start with a backslash, like \ensures{}.
 
-\subsection{Notations for grammar}
+
+\section{Notations for grammars}
 
 In this document, grammar rules are given in BNF form. In grammar
 rules, we use extra notations $e^*$ to denote repetition of zero, one
