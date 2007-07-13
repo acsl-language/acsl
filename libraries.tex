@@ -1,40 +1,68 @@
 \chapter{Librairies}
 \label{chap:lib}
 
+This chapter is devoted to librairies of specification, built upon the ACSL specification language.
+
+Section~\ref{sec:jessie} describes additional predicates propose by the Jessie plugin of Frama-C, to propose a slightly higher level of annotation.
+
+\todo{describe other sections}
+
 \section{Jessie library: logical adressing of memory blocks}
+\label{sec:jessie}
 
-Definition: a \emph{valid} pointer is a pointer such that *p is properly
-allocated.
+Jessie is a plugin of the Frama-C platform, which connects to the
+corresponding jessie tool of the Why platform~\cite{filliatre07cav}
+for deductive verification of behavioral properties of programs.
 
-\offsetmin, \offsetmax : $\alpha * \ra \N$
+\subsection{Abstract level of pointer validity}
 
-$\offsetmin(p)$: the minimum integer $i$ such that $(p+i)$ is a valid
-pointer
+The Jessie plugin currently assumes the input source code free from
+architecture-dependent features. In particular it currently completely
+disallow pointer casts or unions (although there is ongoing work to
+support some of them~\cite{moy07ccpp}). As a consequence a valid
+pointer of some type $\tau*$ necessarily points to a memory block
+which contains values of type $\tau$. To model that, the jessie library introduce new logic functions:
+\begin{flushleft}
+\integer ~ \offsetmin('a *p); \\
+\integer ~ \offsetmax('a *p);
+\end{flushleft}
 
-$\offsetmax(p)$: the maximum integer $i$ such that $(p+i)$ is a valid
-pointer
+\begin{itemize}
+\item $\offsetmin(p)$ is the minimum integer $i$ such that $(p+i)$ is a
+  valid pointer.
 
-properties:
-
+\item $\offsetmax(p)$: the maximum integer $i$ such that $(p+i)$ is a
+  valid pointer
+\end{itemize}
+The following properties hold:
 \begin{eqnarray*}
 \offsetmin(p+i) &=& \offsetmin(p)-i \\
 \offsetmax(p+i) &=& \offsetmax(p)-i
 \end{eqnarray*}
-
-syntactic sugar:
-
+It also introduce syntactic sugar:
 \begin{eqnarray*}
-\validrange(p,i,j) &:=& \offsetmin(p) <= i \land \offsetmax(p) >= j \\
-\valid(p) &:=& \validrange(p,0,0) 
+\validrange(p,i,j) &:=& \offsetmin(p) <= i \land \offsetmax(p) >= j 
 \end{eqnarray*}
-
-\remark{Benjamin}{propose plutot les noms ``indexmin'' et ``indexmax'' a la place de offsetmin et offsetmax}
+and the ACSL built-in predicate $\valid(p)$ is now equivalent to
+$\validrange(p,0,0)$.
 
 \subsection{Strings}
 
-\strlen
+\experimental
 
-\remark{Yannick}{Peut disparaitre}
+The predicate 
+\[
+\integer~\strlen(\verb|char*|p)
+\]
+denotes the length of a 0-terminated C string. It is total function,
+whose value is non-negative if and only if the poiner in argument is
+really a string.
+
+\begin{example}
+  Here is a contract for the \verb|strcpy| function:
+  \input{strcpyspec.pp}
+
+\end{example}
 
 \subsection{Field structures}
 
@@ -49,7 +77,6 @@ syntactic sugar:
 Verification of absence of memory leak is outside the scope of the
 specification language. On the other hand, various models could be set
 up, using for example ghost variables.
-
 
 \section{Libraries of logic specifications}
 \label{sec:speclibraries}
