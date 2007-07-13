@@ -472,30 +472,23 @@ Only locations are valid as argument to \assigns{} clauses
 
 \subsection*{Typing rules for locations}
 
-Two judgements:
-\begin{itemize}
-\item $\Gamma,\Lambda \vdash e : loc \tau$ means e is a set of location of type
-  $tau$
-\item $\Gamma,\Lambda \vdash e : tset \tau$ means e is a set of terms of type
-  $tau$
-\end{itemize}
+We consider the typing judgement $\Gamma,\Lambda \vdash s : \tau,b$
+meaning that $s$ is a set of terms of type $tau$, which is moreover a
+set of locations if the boolean $b$ is true.
 $\Gamma$ is the C environment and $\Lambda$ is the logic environment.
 
 Rules:
 \[
-\frac{\vdash e:loc \tau}{\vdash e: tset \tau}
+\frac{}{\Gamma \vdash id : \tau,true} \mbox{ if $id:\tau in \Gamma$}
 \]
 \[
-\frac{\tau x \in \Gamma}{\vdash x: loc \tau}
+\frac{\Gamma\vdash s:\tau*,b}{\vdash *s: \tau,true}
 \]
 \[
-\frac{e:tset \tau*}{\vdash *e: loc \tau}
+\frac{\Gamma\vdash e_1:\tau_1,b_1 \quad e_2:\tau_2,b_2}{\vdash e_1,e_2: ???}
 \]
 \[
-\frac{e_1:tset \tau \quad e_2:tset \tau}{\vdash e_1,e_2: \tau}
-\]
-\[
-\frac{e: tset struct S* \quad e_2:tset \tau}{\vdash e->f : loc \tau}
+\frac{e: struct S* \quad e_2:tset \tau}{\vdash s->id : \tau}
 \]
 \[
 \frac{b\cup \Lambda \vdash e: tset \tau}{\vdash \{ e \mid b ; P \} : tset \tau }
