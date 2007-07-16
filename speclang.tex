@@ -6,8 +6,8 @@
 \label{sec:expressions}
 
 This first section presents the language of expressions one can use in
-the annotations. These are called below \emph{logic expressions}. They
-corresponds more or less to pure C expressions, without function
+annotations. These are called below \emph{logic expressions}. They
+correspond more or less to pure C expressions, without function
 calls, with additional constructs that we will introduce progressively.
 
 \begin{figure}[p]
@@ -18,7 +18,7 @@ calls, with additional constructs that we will introduce progressively.
 \end{figure}
 
 Figure~\ref{fig:gram:term} presents the grammar for the basic
-constructions of logic expressions.  In that grammar, we distinguish
+construction of logic expressions.  In that grammar, we distinguish
 between \emph{predicates} and \emph{terms}, following the usual
 distinction between propositions and terms in classical first-order
 logic.  The grammar for binders and type expression is given
@@ -41,8 +41,11 @@ With respect to C pure expressions, the additional constructs are as follows:
 \item[Additional connectives]
   C operators \verb|&&|, \verb+||+ and \verb|!| are used as
   logical connectives. There are additional connectives \verb|==>| for
-  implication, \verb|<==>| for equivalence, \verb|^^| for exclusive
-  or.
+  implication, \verb|<==>| for equivalence and \verb|^^| for exclusive
+  or. These logical connectives all have a bitwise counterpart, either
+  C ones like \verb|&|, \verb+|+, \verb|~| and \verb|^|, or additional
+  ones like the bitwise implication \verb|-->| and the bitwise
+  equivalence \verb|<-->|.
 
 \item[Quantification] Universal quantification is denoted by $\Forall
   \tau x_1,\ldots,x_n; e$ and existential quantification by $\Exists
@@ -55,7 +58,7 @@ With respect to C pure expressions, the additional constructs are as follows:
 \label{fig:gram:binders}
 \end{figure}
 
-\item[Local binding] $\Let x = e_1 ; e_2$ introduce the name $x$ for
+\item[Local binding] $\Let x = e_1 ; e_2$ introduces the name $x$ for
   expression $e_1$ which can be used in expression $e_2$.
 
 \item[Conditional] $\If c \Then e_1 \Else e_2$. There is a subtlety
@@ -151,7 +154,7 @@ where care is taken to have a premise requiring \verb|y| not zero.
 
 Notes:
 \begin{itemize}
-\item Quantification can be be made over any type (both C and
+\item Quantification can be made over any type (both C and
   logic types).
 \item Quantification over pointers, structures, union, etc.
   are possible too. \todo{the meaning must be carefully defined: this is not only the allocated structures.}
@@ -159,21 +162,22 @@ Notes:
 
 \subsection{Typing}
 
-The language of logic expression is typed. Logic types are:
+The language of logic expressions is typed. Logic types are:
 \begin{itemize}
 \item ``Mathematical'' types: \verb|integer| for unbounded,
   mathematical integers; \verb|real| for real numbers, \verb|boolean|
   for booleans $\{ \verb|true|, \verb|false| \}$.
 \item C types
 \item Logic types introduced by specification writer (see
-  Section~\ref{sec:logicspec}.
+  Section~\ref{sec:logicspec}).
 \end{itemize}
 
 There are implicit coercions for numeric types:
 \begin{itemize}
-\item C integer-like type \verb|char|, \verb|short|, \verb|int| and \verb|long|, signed or unsigned, are also of type \verb|integer|
-\item \verb|integer| is itself a subtype of \verb|real|
-\item \verb|float| and \verb|double| are also of type \verb|real|
+\item C integer-like types \verb|char|, \verb|short|, \verb|int| and
+  \verb|long|, signed or unsigned, are all subtypes of type \verb|integer|,
+\item \verb|integer| is itself a subtype of type \verb|real|,
+\item C types \verb|float| and \verb|double| are subtypes of type \verb|real|.
 \end{itemize}
 
 \subsection*{Typing rules for terms}
@@ -248,7 +252,7 @@ Il faudrait autant que possible se raprocher de ces noms.}
 
 The Figure~\ref{fig:gram:contracts} show a grammar for the function
 contracts. The grammars for non-terminal locations is given later,
-informally, they denotes C l-values. We also introduce additional constructs
+informally, they denotes C lvalues. We also introduce additional constructs
 for terms as given on figure~\ref{fig:gram:oldandresult}. These are the following:
 \begin{itemize}
 \item $\old(e)$ denotes the value of $e$ in the pre-state of the function.
@@ -337,7 +341,7 @@ potentially assigns ``everything''.
 
 \subsection{Contracts with named behaviors}
 
-More generally, a function contract as the following form with named
+More generally, a function contract has the following form with named
 behaviors (restricted to two behaviors for readability):
 \begin{flushleft}\ttfamily
 /*@ requires $P$; \\
@@ -354,7 +358,7 @@ behaviors (restricted to two behaviors for readability):
 ~~@ ~~assigns $L_2$; \\
 ~~@ ~~ensures $E_2$; \\
 ~~@ decreases $m$ for $R$; \\
-~~@r*/
+~~@*/
 \end{flushleft}
 
 The semantics of such a contract is as follows:
@@ -366,12 +370,12 @@ The semantics of such a contract is as follows:
   and the properties $\old(A_i) \verb|==>| E_i$ hold for each $i$.
 \item For each $i$, if the function is called in a pre-state where
   $A_i$ holds, then all memory locations of that pre-state that do not
-  belong to the set $L \cup L_i$ remain allocated are left unchanged
+  belong to the set $L \cup L_i$ remain allocated and are left unchanged
   in the post-state. In any case, locations of $L$ are unchanged.
 \end{itemize}
 
 Notice that the \requires{} clauses in the behaviors are proposed
-mainly to improve readibility (to avoid some duplications of
+mainly to improve readibility (to avoid some duplication of
 formulas), since the contract above is equivalent to the following
 simplified one:
 \begin{flushleft}\ttfamily
@@ -395,8 +399,8 @@ $A_i$ is true, that is it is not mandatory to provide a ``complete''
 set of behaviors\footnote{Although, some tools might provide a way to check such a completeness}.
 
 \begin{example}
-\label{ex:bsearch}.
-In the following, \texttt{bsearch($t,n,v$)} searches for element $v$ in array $t$ between index $0$ and $n-1$.
+\label{ex:bsearch}
+In the following, \texttt{bsearch($t,n,v$)} searches for element $v$ in array $t$ between indices $0$ and $n-1$.
 \input{bsearch.pp}
 
 The intention is to perform a binary search, which requires that the
@@ -456,7 +460,7 @@ The semantics is given as follows, where $s$ denotes any tset:
   Binders $b$ are bound in $s$ and $P$
 \end{itemize}
 
-A \emph{location} is any set of terms denoting a set of l-values.
+A \emph{location} is any set of terms denoting a set of lvalues.
 Only locations are valid as argument to \assigns{} clauses
 
 \begin{example}
@@ -535,7 +539,7 @@ Annotations on C statements are of three kinds:
 \end{figure}
 
 The syntax of loop annotations is given Figure~\ref{fig:gram:loops}
-under the form of a addition to the grammar of C statements.
+under the form of an addition to the grammar of C statements.
 
 The semantics of loop invariants is defined as follows: a loop
 annotation of the form
@@ -604,7 +608,7 @@ such variants too, with the \decreases{} clause.
 
 \subsubsection*{Integer measures}
 
-Function are annotated with integer measure with the form
+Functions are annotated with integer measures with the form
 \begin{flushleft}\ttfamily
 //@ decreases $e$ ;
 \end{flushleft}
@@ -729,7 +733,7 @@ predicates may be either \emph{defined} by explicit expressions, or
 
 \subsection{Polymorphic logic types}
 
-We consider here a algebraic specification setting based on
+We consider here an algebraic specification setting based on
 multi-sorted logic, where types can be \emph{polymorphic} that is
 parameterized by other types. For example, one may declare the type of
 polymorphic lists as \input{listdecl.pp} and then can consider for

@@ -11,13 +11,14 @@ inspiration for this language comes from the specification language of
 the \textsc{Caduceus} tool~\cite{filliatre04icfem,filliatre07cav} for
 deductive verification of behavioral properties of C programs. It is
 itself inspired from the \emph{Java Modeling Language} (JML) which
-aims at similar goals for Java source code: indeed it aims both
+aims at similar goals for Java source code: indeed it aims both at
 \emph{runtime assertion checking} and \emph{static verification} using
-the \textsc{ESC/Java2} tool~\cite{ESCJava2}.
+the \textsc{ESC/Java2} tool~\cite{ESCJava2}, where we aim at 
+\emph{static verification} and \emph{deductive verification}.
 
 Going back further in history, JML design was guided by the general
 \emph{design-by-contract} principle proposed by Bertrand Meyer, who
-indeed took its own inspiration from the concepts of preconditions and
+took his own inspiration from the concepts of preconditions and
 postconditions on a routine, going back at least to Dijkstra, Floyd and
 Hoare in the late 60's and early 70's, and originally implemented in
 the \textsc{Eiffel} language.
@@ -82,7 +83,7 @@ supposed to be useful for a basic use of that specification language.
 
 \item[contract] \index{contract} A \emph{contract} forms a
   specification of a function, consisting of the combination of a
-  pre-condition (an assumption about the pre-state) and a collection
+  precondition (an assumption about the pre-state) and a collection
   of behaviors.
 
 \end{description}
@@ -102,20 +103,19 @@ Idem avec les extensions de GCC.}
 In this document, we consider that annotations are given as comments
 written directly into C source files, so
 that source files remain compilable\footnote{Other means of attaching
-  annotations to source files, without modifying them, is left to user
-  tools}. Those comments must start by \verb|/*@| or \verb|//@|.
+  annotations to source files, without modifying them, are left to user
+  tools.}. Those comments must start by \verb|/*@| or \verb|//@|.
 
 \subsection{Kinds of annotations}
 
 \begin{itemize}
 \item Global annotations:
   \begin{itemize}
-  \item Function contract. Such an annotation is inserted just before
+  \item function contract. Such an annotation is inserted just before
     the declaration or the definition of a function.
     See section~\ref{sec:fn-behavior}.
 
-
-  \item global invariant. This is allowed at the level of global declarations
+  \item global invariant. This is allowed at the level of global declarations.
     See section~\ref{sec:invariants}.
 
   \item type invariant. This allows both structure or union
@@ -133,10 +133,10 @@ that source files remain compilable\footnote{Other means of attaching
   \item \assert clause, logic label. These are allowed
     everywhere a C label is allowed, or exceptionally just before a
     block closing brace.  
-    \oldremark{Claude}{about \assume{} clauses: current
+    \oldremark{Claude}{About \assume{} clauses: current
       discussion is that it is not considered as an element of
       specification, so not present here. This should be part of proof
-      management done by tools} 
+      management done by tools.} 
     \oldremark{Patrick}{En C, seules les
       instructions peuvent être étiquettées. GCC étend cela aux
       accolades fermantes des blocs, y compris celle fermant le corps
@@ -172,8 +172,8 @@ In JML, parsing is done by just ignoring \verb|//@|, \verb|/*@| and
 \verb|*/| and the level of lexing. This technique can completely
 modify the semantics of the C code, for example: \input{annot1.pp}
 
-In our language this has to be forbidden. Technically, current
-implementation of Frama-C isolate the comments in a first step of
+In our language this is forbidden. Technically, the current
+implementation of Frama-C isolates the comments in a first step of
 syntax analysis, and then parses a second time. Nevertheless, the
 grammar and the corresponding parser must be carefully designed to
 avoid interaction of annotations with the code. For example, in such a
@@ -193,7 +193,8 @@ annotations, should macro substitution be performed or not, etc.
 \subsection{About keywords}
 
 Additional keywords of the specification language start with a
-backslash, if they are used in position of a term or a predicate.
+backslash, if they are used in position of a term or a predicate
+(which are defined in the following).
 Otherwise they do not start with a backslash, like \ensures{}.
 
 
