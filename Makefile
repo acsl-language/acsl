@@ -1,5 +1,5 @@
 
-DEPS=intro.tex speclang.tex libraries.tex \
+DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
 	div_lemma.pp annot1.pp annot2.pp assigns.pp invariants.pp \
 	isqrt.pp incrstar.pp \
 	max.pp max_index.pp cond_assigns.pp bsearch.pp bsearch2.pp \

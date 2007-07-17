@@ -1,0 +1,324 @@
+\section{Comparison with JML}
+
+Although we took our inspiration in the Java Modeling Language (aka
+JML~\cite{jmlhomepage}), our behavioral interface specification
+language (BISL for short) ACSL is notably different from JML in
+crucial ways. ACSL and JML differ mostly in two aspects:
+
+\begin{itemize}
+\item ACSL is a BISL for C, a low-level structured language, while JML
+  is a BISL for JAVA, an object-oriented inheritance-based
+  language. Not only the language features are not the same but the
+  programming styles and idioms are very different, which makes for
+  different ways of specifying behaviors. In particular, C has no
+  inheritance nor exceptions, and no language support for the simplest
+  properties on memory (e.g., the size of an allocated block).
+\item JML relies on runtime assertion checking (RAC) when typing,
+  static analysis and automatic deductive verification fail. The
+  example of CCured~\cite{necula02ccured,condit03ccured}, that adds
+  strong typing to C by relying on RAC too, shows it is not possible
+  in a modular way. Indeed, it is necessary to modify the layout of
+  data structures for RAC, which is not modular. The follow-up project
+  Deputy~\cite{condit07deputy} thus reduces the checking power of
+  annotations in order to preserve modularity.  On the contrary, we
+  choose not to restrein the power of annotations (e.g., all first
+  order logic formulas are allowed). To that end, we rely on manual
+  deductive verification using an interactive theorem prover (e.g.,
+  Coq) when every other thing failed.
+\end{itemize}
+
+\noindent
+In the following, we further describe a few important consequences of
+these differences.
+
+\subsection{Low-level language vs. inheritance-based one}
+
+\subsubsection*{No inherited specifications}
+
+JML has a core notion of inheritance of specifications, that duplicates
+in specifications the inheritance feature of JAVA.  Inheritance
+combined with visibility and modularity account for a number of
+complex features in JML (e.g., \verb|spec_public| modifier, data
+groups, represents clauses, etc), that are necessary to express the
+desired inheritance-related specifications while respecting visibility
+and modularity. Since C has no inheritance, these intricacies are
+avoided in ACSL.
+
+\subsubsection*{Error handling without exceptions}
+
+The usual way of signaling errors in JAVA is through
+exceptions. Therefore, JML specifications are tailored to express
+exceptional postconditions, depending on the exception raised. Since C
+has no exceptions, ACSL does not use exceptional
+specifications. Instead, C programmers are used to signal errors by
+returning special values, like mandated in various ways in the C standard.
+
+\begin{example}
+In \S 7.12.1 of the standard, it is said that functions in <math.h>
+signal errors as follows:
+``On a domain error, [...] the integer expression errno
+acquires the value EDOM.''
+\end{example}
+
+\begin{example}
+In \S 7.19.5.1 of the standard, it is said that function fclose signal
+errors as follows:
+``The fclose function returns [...] EOF if any errors were detected.''
+\end{example}
+
+\begin{example}
+In \S 7.19.6.1 of the standard, it is said that function fprintf
+signal errors as follows:
+``The fprintf function returns [...] a negative value if an output or
+encoding error occured.''
+\end{example}
+
+\begin{example}
+In \S 7.20.3 of the standard, it is said that memory management functions
+signal errors as follows:
+``If the space cannot be allocated, a null pointer is returned.''
+\end{example}
+
+As shown by these few examples, there is no unique way to signal
+errors in the C standard library, not mentioning user-defined
+functions. But since errors are signaled by returning special values, it
+is sufficient to write an appropriate postcondition:
+
+\begin{flushleft}\ttfamily
+/*@ ensures $\mathit{\result == error\_value ~||~ normal\_postcondition}$; */
+\end{flushleft}
+
+\noindent
+A tool could easily set errors conditions aside, by providing an
+appropriate extension of behaviors, e.g., using a new keyword
+\verb|failswith|:
+
+\begin{flushleft}\ttfamily
+/*@ failswith $\mathit{\result == error\_value}$; \\
+~~@ ensures $\mathit{normal\_postcondition}$; \\
+~~@*/
+\end{flushleft}
+
+\subsubsection*{C contracts are not JAVA ones}
+
+In Java, the precondition of the following function that nullifies an
+array of characters is always true. Even if there was a precondition
+on the length of array {\ttfamily a}, it could easily expressed using
+the JAVA expression {\ttfamily a.length}.
+
+\begin{flushleft}\ttfamily
+public static void nullify(char[] a) \{ \\
+~~if (a == null) return; \\
+~~for (int i = 0; i < a.length; ++i) \{ \\
+~~~~a[i] = 0; \\
+~~\} \\
+\}
+\end{flushleft}
+
+On the contrary, the precondition of the same function in C, whose
+definition follows, is more involved. One must remark that the
+C programmer has to add an extra argument for the size of the array,
+or rather a lower bound of this size. 
+
+\begin{flushleft}\ttfamily
+void nullify(char* a, unsigned int n) \{ \\
+~~int i; \\
+~~if (n == 0) return; \\
+~~for (i = 0; i < n; ++i) \{ \\
+~~~~a[i] = 0; \\
+~~\} \\
+\}
+\end{flushleft}
+
+\noindent
+A correct precondition for this function is the following:
+
+\begin{flushleft}\ttfamily
+/*@ requires $\mathit{\valid(a + 0..(n-1))}$; */
+\end{flushleft}
+
+It uses predicate $\valid$ defined in Section~\ref{subsec:memory},
+with the meaning that $\valid(a + 0..(-1))$ is true.
+When {\ttfamily n} is null, {\ttfamily a} does
+not need to be valid at all, and when {\ttfamily n} is stictly
+positive, {\ttfamily a} must point to an array of size at least
+{\ttfamily n}.  To make it more obvious, the C programmer added a
+defensive programming style, which returns when {\ttfamily n} is
+null. We can duplicate this in the specification:
+
+\begin{flushleft}\ttfamily
+/*@ requires $\mathit{n == 0 ~||~ \valid(a + 0..(n-1))}$; */
+\end{flushleft}
+
+Usually, many memory requirements are only necessary for some paths
+through the function, which correspond to some particular
+behaviors, selected according to some tests. Since C has no memory
+primitives, these tests involve other variables that the C programmer
+added to track additional information, like {\ttfamily n} in our example.
+
+This is why it is possible in ACSL to distinguish between the
+\verb|assume| part of a behavior, that specifies the tests that need
+to succeed for this behavior to apply, and the \verb|requires| part
+that specifies the additional preconditions that must be true when a
+behavior applies. The specification for our example can then be
+translated into: 
+
+\begin{flushleft}\ttfamily
+/*@ behavior $\mathit{n\_is\_null}$: \\
+~~@ ~~assumes $\mathit{n == 0}$; \\
+~~@ behavior $\mathit{n\_is\_not\_null}$: \\
+~~@ ~~assumes $\mathit{n != 0}$; \\
+~~@ ~~requires $\mathit{\valid(a + 0..(n-1))}$; \\
+~~@*/
+\end{flushleft}
+
+This is equivalent to the previous requirement, except here behaviors
+can be enriched with postconditions that belong to one behavior only.
+Contrary to JML, the set of behaviors for a function do not
+necessarily cover all cases of use for this function, as mentioned in 
+Section~\ref{subsec:behaviors}.
+
+\subsubsection*{ACSL contracts vs. JML ones}
+
+To fully understand the difference between specifications in ACSL and
+JML, we detail in the following the requirement on the pre-state and
+the guarantee on the post-state, given behaviors in JML and ACSL.
+
+~\\
+\noindent
+A JML contract is either a lightweight or an heavyweight one.
+For the purpose of our comparison, it is sufficient to know that a
+lightweight contract has \verb|requires| and \verb|ensures| clauses
+all at the same level, while an heavyweight contract has multiple
+behaviors, each consisting of \verb|requires| and \verb|ensures|
+clauses. Although it is not possible in JML to mix both styles, we can
+define here what it would mean to have both, by conjoining the
+conditions on the pre- and the post-state.
+Here is an hypothetical JML contract mixing lightweight and
+heavyweight styles:
+
+\begin{flushleft}\ttfamily
+/*@ requires $P_1$; \\
+~~@ requires $P_2$; \\
+~~@ ensures  $Q_1$; \\
+~~@ ensures  $Q_2$; \\
+~~@ behavior $x_1$: \\
+~~@ ~~requires $R_1$; \\
+~~@ ~~ensures $E_1$; \\
+~~@ behavior $x_2$: \\
+~~@ ~~requires $R_2$; \\
+~~@ ~~ensures $E_2$; \\
+~~@*/
+\end{flushleft}
+
+\noindent
+It assumes from the pre-state the condition:
+
+\begin{center}
+{\ttfamily $P_1 ~\&\&~ P_2 ~\&\&~ (R_1 ~||~ R_2)$}
+\end{center}
+
+\noindent
+and guarantees that the following condition holds in post-state:
+
+\begin{center}
+{\ttfamily $Q_1 ~\&\&~ Q_2 ~\&\&~ 
+  (\old(R_1) ==> E_1) ~\&\&~ (\old(R_2) ==> E_2)$}
+\end{center}
+
+\noindent
+Here is now an ACSL specification:
+
+\begin{flushleft}\ttfamily
+/*@ requires $P_1$; \\
+~~@ requires $P_2$; \\
+~~@ ensures  $Q_1$; \\
+~~@ ensures  $Q_2$; \\
+~~@ behavior $x_1$: \\
+~~@ ~~assumes $A_1$; \\
+~~@ ~~requires $R_1$; \\
+~~@ ~~ensures $E_1$; \\
+~~@ behavior $x_2$: \\
+~~@ ~~assumes $A_2$; \\
+~~@ ~~requires $R_2$; \\
+~~@ ~~ensures $E_2$; \\
+~~@*/
+\end{flushleft}
+
+\noindent
+Syntactically, the only difference with the JML specification is the
+addition of the \verb|assumes| clauses.
+Its translation to assume-guarantee is however quite different. 
+It assumes from the pre-state the condition:
+
+\begin{center}
+{\ttfamily $P_1 ~\&\&~ P_2 ~\&\&~ 
+  (A_1 ==> R_1) ~\&\&~ (A_2 ==> R_2)$}
+\end{center}
+
+\noindent
+and guarantees that the following condition holds in the post-state:
+
+\begin{center}
+{\ttfamily $Q_1 ~\&\&~ Q_2 ~\&\&~ 
+  (\old(A_1) ==> E_1) ~\&\&~ (\old(A_2) ==> E_2)$}
+\end{center}
+
+\subsection{Deductive verification vs. RAC}
+
+\subsubsection*{Sugar-free behaviors}
+
+As explained in details in~\cite{raghavan00desugaring}, JML
+heavyweight behaviors can be viewed as syntactic sugar (however
+complex it is) that can be translated automatically into more basic
+contracts consisting mostly of pre- and postconditions and frame
+conditions.  This allows complex nesting of behaviors from the user
+point of view, while tools only have to deal with basic contracts. In
+particular, the major tools on JML use this desugaring process, like
+the Common JML tools to do assertion checking, unit testing,
+etc. (seen in~\cite{leavens00jml}) and the tool ESC/Java2 for
+automatic deductive verification of JML specifications (seen
+in~\cite{kiriny07implnotes}).
+
+One issue with such a desugaring approach is the complexity of the
+transformations involved, e.g., see the desugaring of assignable clauses
+between multiple \textit{spec-cases} in
+JML~\cite{raghavan00desugaring}.  Another issue is precisely that
+tools only see one global contract, instead of multiple independent
+behaviors, that could be analyzed in more details separately.
+
+Instead, we favor the view that a function implements multiple
+behaviors, that can be analyzed separately if a tool feels like
+it. Therefore, we do not intend to provide a desugaring process.
+
+\subsubsection*{Axiomatized functions in specifications}
+
+JML only allows pure JAVA methods to be called in
+specifications~\cite{leavens00preliminary}. This is certainly
+understandable when relying on RAC: methods called should be defined
+so that the runtime can call them, and they should not have
+side-effects in order not to pollute the program they are supposed to
+annotate. 
+
+In our setting, it is desirable to allow calls to logical functions in
+specifications. These functions may be defined, like program ones, but
+they may also be only declared (with a suitable declaration of read
+effects) and defined through an axiomatization. 
+This makes for richer specifications that may be useful either in
+automatic or in manual deductive verification.
+
+\subsection{Syntactic differences}
+
+The following table summarizes the difference between JML keywords and
+ACSL ones, when the intent is the same, although minor differences
+might exist.
+
+\begin{center}
+\begin{tabular}{c|c}
+  JML                  & ACSL \\ \hline
+  assignable           & assigns \\
+  measured\_by         & decreases \\
+  loop\_invariant      & loop invariant \\
+  decreases            & loop variant \\
+\end{tabular}
+\end{center}
