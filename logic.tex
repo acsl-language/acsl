@@ -23,11 +23,9 @@
   \
   logic-const-decl ::= "logic" type-expr id 
   \
-  logic-function-decl ::= "logic" type-expr id parameters reads-clause? ";"
+  logic-function-decl ::= "logic" type-expr id parameters ";"
   \
-  logic-predicate-decl ::= "predicate" id parameters reads-clause? ";"
-  \
-  reads-clause ::= "reads" locations
+  logic-predicate-decl ::= "predicate" id parameters ";"
   \
   parameters ::= "(" parameter (, parameter)* ")"
   \

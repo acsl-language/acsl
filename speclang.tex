@@ -775,9 +775,9 @@ possible too.
   $0$ and $n-1$ such that $t[i]=0$.
 \end{example}
 
-\begin{example} The following introduce $n$-ary trees using list of children. 
+%\begin{example} The following introduce $n$-ary trees using list of children. 
 %  \input{mutualrec.pp}
-\end{example}
+%\end{example}
 
 \subsection{Higher-order logic constructions}
 
@@ -849,20 +849,44 @@ With record types, the field access notation $t.id$ can be used, and for sum typ
 \subsection{Hybrid functions and predicates}
 
 These are functions or predicates which take both C types and logic
-types as arguments.
+types as arguments. Such a predicate can either be defined with the
+same syntax as before, or simply declared, but in the latter case the
+declaration should usually be augmented with a \reads{} clause, with
+the syntax given on Figure~\ref{fig:gram:logicreads} which extend the
+one of Figure~\ref{fig:gram:logic}. This feature is useful when a
+function or a predicate is not easily definable, but can be more
+easily axiomatized. The specification writer should be very cautious
+because the meaning of the axioms depends on the reads clause (see
+example below)
+
+It also allowed to put a reads clause on a definition, although in
+such a case tools should provide a way to check that the reads clause
+is compatible with the definition.
+
+
+\begin{figure}[t]
+  \fbox{\begin{minipage}{0.97\linewidth}
+      \input{logicreads.bnf}
+    \end{minipage}}
+  \caption{Grammar for logic declarations with reads clauses}
+\label{fig:gram:logicreads}
+\end{figure}
+
 
 \begin{example}
-  \todo{example}
+  The following declares a predicate which tells the number of
+  positive elements in an array of doubles, between given indexes
+  \input{num_of_pos.pp} 
+  It should be noticed that without the reads
+  clauses, this axiomatization would be inconsistent, since the
+  predicate would not depend on the values stored in t, hence the two
+  last axioms would say both that $a=b+1$ and $a=b$ for some $a$ and
+  $b$.
 \end{example}
 
-In case of a declaration without definition, a \reads{} clause is
-usually mandatory.
-
-\todo{On peut aussi autoriser a la fois une def et un reads}
-
-\begin{example}
-  \todo{example}
-\end{example}
+As examplified above, hybrid predicates and functions should be used
+with caution, since they do not depend only on the values of their
+parameters but also in an implicit way on the values stored in memory.
 
 \subsection{Model variables and fields}
 
