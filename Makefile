@@ -24,6 +24,10 @@ main.dvi: main.tex $(DEPS)
 
 main.pdf: main.tex $(DEPS)
 	pdflatex main
+	makeindex main
+	bibtex main
+	pdflatex main
+	pdflatex main
 
 %.pp: %.tex pp.ml
 	ocaml pp.ml -color $< > $@

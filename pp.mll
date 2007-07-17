@@ -29,7 +29,7 @@
     List.iter (fun s -> Hashtbl.add h s ())
       [
 	"valid"; "valid_range"; "lambda" ; "sum" ; "match" ;
-	"base_addr" ; "strlen" ;
+	"base_addr" ; "strlen" ; "max" ;
 	"null" ; "forall"; "old" ; "fresh" ; "nothing" ; "result"
       ];
     h

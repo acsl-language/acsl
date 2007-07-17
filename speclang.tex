@@ -565,15 +565,16 @@ specifies that
   \item for a $\verb|while|~(c)~s$ loop, $I$ must be preserved by the side-effects of $c$ followed by $s$
   \item for a $\verb|for|(init;c;step)~s$ loop, $I$ must be preserved by the side-effects of $c$ followed by $s$ followed by step
   \item for a $\verb|do|~s~\verb|while|~(c);$ loop, $I$ must be preserved by $s$ followed by the side-effects of $c$
-
-\item At any loop iteration, any location that was allocated before
-  entering the loop, and is not member of $L$ in the current state,
-  must be remain allocated and have to same value as before entering
-  the loop.
-\item For each loop iteration that terminates normally or with
-  \texttt{continue}, the value of $m$ at end of the iteration must be
-  smaller that its value at the beginning of the iteration, with
-  respect to relation $R$.
+    
+  \item At any loop iteration, any location that was allocated before
+    entering the loop, and is not member of $L$ in the current state,
+    must be remain allocated and have to same value as before entering
+    the loop.
+  \item For each loop iteration that terminates normally or with
+    \texttt{continue}, the value of $m$ at end of the iteration must be
+    smaller that its value at the beginning of the iteration, with
+    respect to relation $R$.
+  \end{itemize}
 \end{itemize}
 
 Remarks:
@@ -585,7 +586,8 @@ Remarks:
 
 \begin{example}
 \label{ex:bsearch2}
-Here is a continuation of example~\ref{ex:bsearch}.
+Here is a continuation of example~\ref{ex:bsearch}. Notice the use of
+a loop invariant associated to a function behavior.
 
 \input{bsearch2.pp}
 
@@ -595,9 +597,25 @@ Here is a continuation of example~\ref{ex:bsearch}.
 
 \experimental
 
-\remark{Claude}{J'ai mis la semantique actuelle de Caduceus, qui n'est pas forcement la meilleure. On pourrait envisager une semantique ou l'invariant est vrai entre $s$ et $c$. d'ailleurs, la syntaxe pourrait mettre ca en avant si on pouvait poser syntaxiquement l'invariant juste avant le mot-clef while}
-  \end{itemize}
-\remark{Claude}{De facon generale, on pourrait autoriser de poser un invariant de boucle n'importe ou dans le corps de boucle, la semantique etant plus ou moins celle d'une assert}
+We could allow to pose a loop invariant not only at the beginning of
+the loop iteration. For example, it could make sense for a \texttt{do
+  $s$ while $(c)$;} loop to pose a loop invariant just after the loop
+body $s$.
+
+\begin{example}
+  In the following, the loop invariant is correct, but it would not be correct if placed at the beginning of the loop.
+  \input{dowhile.pp}
+\end{example}
+
+
+More generally, a loop invariant could occur anywhere inside the loop
+body. The meaning is just that the invariant is true at that point,
+much like an \texttt{assert}, but moreover impose that it is
+inductive: is preserved by a loop iteration. It even possible to allow
+several loop invariants at different places in the loop body. These
+advanced extensions could be useful for complex control flows, in
+particular with gotos.
+
 
 \subsection*{More about termination}
 
@@ -757,8 +775,8 @@ possible too.
   $0$ and $n-1$ such that $t[i]=0$.
 \end{example}
 
-\begin{example}
-  \todo{mutual recursion}
+\begin{example} The following introduce $n$-ary trees using list of children. 
+%  \input{mutualrec.pp}
 \end{example}
 
 \subsection{Higher-order logic constructions}
@@ -839,6 +857,8 @@ types as arguments.
 
 In case of a declaration without definition, a \reads{} clause is
 usually mandatory.
+
+\todo{On peut aussi autoriser a la fois une def et un reads}
 
 \begin{example}
   \todo{example}
