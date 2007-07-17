@@ -5,7 +5,7 @@ DEPS=intro.tex speclang.tex libraries.tex \
 	max.pp max_index.pp cond_assigns.pp bsearch.pp bsearch2.pp \
 	assigns_array.pp assigns_list.pp sum.pp \
 	listdecl.pp listdef.pp listlengthdef.pp import.pp listmodule.pp \
-	strcpyspec.pp \
+	strcpyspec.pp dowhile.pp \
 	term.bnf binders.bnf fn_behavior.bnf oldandresult.bnf loc.bnf \
 	assertions.bnf loops.bnf st_contracts.bnf moreterm.bnf ghost.bnf \
 	logic.bnf logictypedecl.bnf higherorder.bnf 
