@@ -71,7 +71,7 @@ let beameraction = "uncover" | "visible" | "invisible" | "only" | "onslide"
 rule ctt = parse
   | '{'  { print_string "\\{"; ctt lexbuf }
   | '}'  { print_string "\\}"; ctt lexbuf }
-  | '#'  { print_string "\\ensuremath{\\sharp}"; ctt lexbuf }
+  | '#'  { print_string "\\verb|#|"; ctt lexbuf }
   | '_'  { print_string "\\_{}"; ctt lexbuf }
   | '&'  { print_string "\\&{}"; ctt lexbuf }
   | '%'  { print_string "\\%{}"; ctt lexbuf }
