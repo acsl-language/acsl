@@ -30,7 +30,8 @@
       [
 	"valid"; "valid_range"; "lambda" ; "sum" ; "match" ;
 	"base_addr" ; "strlen" ; "max" ;
-	"null" ; "forall"; "old" ; "fresh" ; "nothing" ; "result"
+	"null" ; "forall"; "old" ; "fresh" ; "nothing" ; "result" ;
+	"block_length" ; 
       ];
     h
 
@@ -95,7 +96,6 @@ rule ctt = parse
   | "\\" beameraction "<" beamerspec ">"
       { print_string (lexeme lexbuf); ctt lexbuf
       }
-  | '\\' { print_string "\\ensuremath{\\backslash}"; ctt lexbuf }
   | "/*@"
       { print_string "\\begin{slshape}";
 	if !color then print_string "\\color{blue}";
@@ -142,6 +142,16 @@ rule ctt = parse
               print_ident s;
 	  ctt lexbuf
 	}
+  | "\\" (ident as s)
+      { if not !in_comment && is_bs_keyword s then
+	    begin
+	      print_string "\\textbf{\\char'134 "; print_ident s;
+	      print_string "}"
+	    end
+	else
+          print_string (lexeme lexbuf);
+	ctt lexbuf
+      }
   | _
       { print_string (lexeme lexbuf); ctt lexbuf }
 
