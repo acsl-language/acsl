@@ -1,20 +1,23 @@
 \chapter{Introduction}
 
 This document is a reference manual for ACSL, an acronym for ``ANSI C
-Specification Language''. This is a specification language proposed by
-the CAT
+Specification Language''. This is a Behavioral Interface Specification
+Language (aka BISL) proposed by the CAT
 project\footnote{\url{http://www.rntl.org/projet/resume2005/cat.htm},
-  \todo{referer a une page publique en anglais dont la creation a ete
-  decide}}, implemented in the \textsc{Frama-C} platform, which aims at
-specifying behavioral properties of C source code. The main
-inspiration for this language comes from the specification language of
-the \textsc{Caduceus} tool~\cite{filliatre04icfem,filliatre07cav} for
-deductive verification of behavioral properties of C programs. It is
-itself inspired from the \emph{Java Modeling Language} (JML) which
-aims at similar goals for Java source code: indeed it aims both at
+\todo{referer a une page publique en anglais dont la creation a ete
+decide}} and implemented in the \textsc{Frama-C} platform. As its name
+suggests it, it aims at specifying behavioral properties of C source
+code. The main inspiration for this language comes from the
+specification language of the \textsc{Caduceus}
+tool~\cite{filliatre04icfem,filliatre07cav} for deductive verification
+of behavioral properties of C programs. It is itself inspired from the
+\emph{Java Modeling Language} (JML~\cite{leavens00jml}) which aims at
+similar goals for Java source code: indeed it aims both at
 \emph{runtime assertion checking} and \emph{static verification} using
-the \textsc{ESC/Java2} tool~\cite{ESCJava2}, where we aim at 
-\emph{static verification} and \emph{deductive verification}.
+the \textsc{ESC/Java2} tool~\cite{ESCJava2}, where we aim at
+\emph{static verification} and \emph{deductive verification} (see
+Appendix~\ref{sec:comp-jml} for a detailed comparison between ACSL and
+JML).
 
 Going back further in history, JML design was guided by the general
 \emph{design-by-contract} principle proposed by Bertrand Meyer, who
@@ -24,28 +27,33 @@ Hoare in the late 60's and early 70's, and originally implemented in
 the \textsc{Eiffel} language.
 
 In this document, we assume that the reader has a good knowledge of
-the ANSI C programming language~\cite{KR88}.
+the ANSI C programming language~\cite{KR88,standardc99}.
 
 \section{Organization of this document}
 
 In this preliminary chapter we introduce some definitions and
 vocabulary, and discuss generalities about this specification language.
 
+~\\
+\noindent
 Chapter~\ref{chap:base} presents the specification language itself.
 
+~\\
+\noindent
 Chapter~\ref{chap:lib} presents additional informations about
 \emph{libraries} of specifications.
 
-A detailed table of contents is given on page~\pageref{chap:contents}
+~\\
+\noindent
+A detailed table of contents is given on page~\pageref{chap:contents}.
 
 \subsection*{Experimental features}
 
 Some features in this document are considered \emph{experimental},
 meaning that their syntax and semantics is still under discussion.
 These features are marked with \experimental.
-
 They must also be considered as ``advanced features'' which are not
-supposed to be useful for a basic use of that specification language.
+supposed to be necessary for a basic use of that specification language.
 
 
 \section{Glossary}
@@ -57,31 +65,36 @@ supposed to be useful for a basic use of that specification language.
   not contain any function call, even if the called function has no
   side-effect itself.
 
-\item[memory locations and left-values] \index{memory location}
-  \index{left value}\index{l-value} A \emph{memory location} is an
-  expression which denotes some place in the memory during program
-  execution, either on the stack, on the heap, or in the static data
-  segment. It can be either a variable identifier or an expression of
-  the form $*e$, $e[e]$, $e\verb|.|id$ or $e\verb|->|id$.
+\item[left-values] \index{left-value}\index{lvalue} 
 
-  A \emph{left value}, or \emph{l-value} for short, is a memory
-  location allowed in the left part of an assignment, that is a
-  non-constant memory location.
+  A \emph{left-value} (\emph{lvalue} for short) is an expression which
+  denotes some place in the memory during program execution, either on
+  the stack, on the heap, or in the static data segment. It can be
+  either a variable identifier or an expression of the form $*e$,
+  $e[e]$, $e\verb|.|id$ or $e\verb|->|id$, where $e$ is any expression
+  and $id$ a field name. See C standard, \S 6.3.2.1 for a more
+  detailed description of lvalues.
+
+  A \emph{modifiable lvalue} is an lvalue allowed in the left part of
+  an assignment, e.g., a non-constant memory location.
  
 \item[pre-state and post-state]
     \index{pre-state}\index{post-state}
     
     For a given function call, the \emph{pre-state} denotes the
-    program's state at the beginning of the call, including the
+    program state at the beginning of the call, including the
     current values for the function parameters. the \emph{post-state}
-    denotes the program's state at the return of the call.
+    denotes the program state at the return of the call.
 
 \item[function behavior] \index{function behavior} \index{behavior}
 
-  A \emph{function behavior} is a set of properties relating the
-  pre-state and the post-state for any call to that function.
+  A \emph{function behavior} (\emph{behavior} for short) is a set of
+  properties relating the pre-state and the post-state for a
+  possibly restricted set of calls to that function.
 
-\item[contract] \index{contract} A \emph{contract} forms a
+\item[function contract] \index{function contract} \index{contract} 
+
+  A \emph{function contract} (\emph{contract} for short) forms a
   specification of a function, consisting of the combination of a
   precondition (an assumption about the pre-state) and a collection
   of behaviors.
@@ -101,7 +114,7 @@ Idem avec les extensions de GCC.}
 \section{Generalities about Annotations}
 
 In this document, we consider that annotations are given as comments
-written directly into C source files, so
+written directly in C source files, so
 that source files remain compilable\footnote{Other means of attaching
   annotations to source files, without modifying them, are left to user
   tools.}. Those comments must start by \verb|/*@| or \verb|//@|.
@@ -124,7 +137,7 @@ that source files remain compilable\footnote{Other means of attaching
 
   \item logic specifications: logic type introduction, introduction
     or definition of logic functions or predicates, axioms. Such an
-    annotation is placed at the global declarations level.
+    annotation is placed at the level of global declarations.
 
   \end{itemize}
 
@@ -155,7 +168,7 @@ that source files remain compilable\footnote{Other means of attaching
       cette annotation~? Oui, pour refer a l'etat avant le statement
       consider\'e}
     
-  \item ghost code: is regular C-code, only visible from the
+  \item ghost code: is regular C code, only visible from the
     specification, that is only allowed to modify ghost variables. See
     section~\ref{sec:ghost}. Ghost braces for enclosing blocks.
 

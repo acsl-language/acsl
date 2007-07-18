@@ -18,7 +18,7 @@ for deductive verification of behavioral properties of programs.
 
 The Jessie plugin currently assumes the input source code free from
 architecture-dependent features. In particular it currently completely
-disallow pointer casts or unions (although there is ongoing work to
+disallows pointer casts or unions (although there is ongoing work to
 support some of them~\cite{moy07ccpp}). As a consequence a valid
 pointer of some type $\tau*$ necessarily points to a memory block
 which contains values of type $\tau$. To model that, the jessie library introduce new logic functions:

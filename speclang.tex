@@ -7,8 +7,9 @@
 
 This first section presents the language of expressions one can use in
 annotations. These are called below \emph{logic expressions}. They
-correspond more or less to pure C expressions, without function
-calls, with additional constructs that we will introduce progressively.
+correspond more or less to pure C expressions, without C function
+calls (but logic function calls are allowed), with additional constructs
+that we will introduce progressively.
 
 \begin{figure}[p]
   \fbox{\begin{minipage}{0.97\textwidth} \input{term.bnf}
@@ -22,7 +23,7 @@ construction of logic expressions.  In that grammar, we distinguish
 between \emph{predicates} and \emph{terms}, following the usual
 distinction between propositions and terms in classical first-order
 logic.  The grammar for binders and type expression is given
-separately Figure~\ref{fig:gram:binders}.
+separately in Figure~\ref{fig:gram:binders}.
 
 Remarks:
 \begin{itemize}
