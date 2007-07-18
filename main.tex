@@ -85,6 +85,16 @@ Version of \today
 
 \include{compjml}
 
+\section{Illustrative example}
+
+This is an attempt to define an example for ACSL, much as the Purse
+example in JML description papers.  It is a memory allocator, whose
+main functions are \verb|memory_alloc| and \verb|memory_free|, to respectively
+allocate and deallocate memory.  The goal is to exercise as much as
+possible of ACSL.
+
+\input{acsl_allocator.pp}
+
 \cleardoublepage
 \addcontentsline{toc}{chapter}{\bibname}
 \bibliographystyle{plain}
