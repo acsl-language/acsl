@@ -1,5 +1,5 @@
 \begin{syntax}
-  logic-type-decl ::= "logic" "type" logic-type = logic-type-def ";"  
+  logic-type-decl ::= "type" logic-type = logic-type-def ";"  
   \
   logic-type-def ::= record-type | sum-type ; 
   \
@@ -8,9 +8,9 @@
   sum-type ::= "|"? constructor ( "|" constructor)* 
   \
   constructor ::= id ; constant constructor
-  | id "of" type-expr ; non-constant constructor
+  | id "(" type-expr ("," type-expr)* ")" ; non-constant constructor
   \
-  type-expr ::= type-expr ("*" type-expr)+ ; product type 
+  type-expr ::= "(" type-expr ("," type-expr)+ ")" ; product type 
   \
   term ::= term "." id ; record field access
   | "\match" term ";" match-cases ; pattern-matching

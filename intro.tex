@@ -2,12 +2,9 @@
 
 This document is a reference manual for ACSL, an acronym for ``ANSI C
 Specification Language''. This is a Behavioral Interface Specification
-Language (aka BISL) proposed by the CAT
-project\footnote{\url{http://www.rntl.org/projet/resume2005/cat.htm},
-\todo{referer a une page publique en anglais dont la creation a ete
-decide}} and implemented in the \textsc{Frama-C} platform. As its name
-suggests it, it aims at specifying behavioral properties of C source
-code. The main inspiration for this language comes from the
+Language (aka BISL) implemented in the \textsc{Frama-C} framework. As
+its name suggests it, it aims at specifying behavioral properties of C
+source code. The main inspiration for this language comes from the
 specification language of the \textsc{Caduceus}
 tool~\cite{filliatre04icfem,filliatre07cav} for deductive verification
 of behavioral properties of C programs. It is itself inspired from the
@@ -32,38 +29,22 @@ the ANSI C programming language~\cite{KR88,standardc99}.
 \section{Organization of this document}
 
 In this preliminary chapter we introduce some definitions and
-vocabulary, and discuss generalities about this specification language.
-
-~\\
-\noindent
-Chapter~\ref{chap:base} presents the specification language itself.
-
-~\\
-\noindent
-Chapter~\ref{chap:lib} presents additional informations about
-\emph{libraries} of specifications.
-
-~\\
-\noindent
-A detailed table of contents is given on page~\pageref{chap:contents}.
-
-\subsection*{Experimental features}
-
-Some features in this document are considered \emph{experimental},
-meaning that their syntax and semantics is still under discussion.
-These features are marked with \experimental.
-They must also be considered as ``advanced features'' which are not
-supposed to be necessary for a basic use of that specification language.
-
+vocabulary, and discuss generalities about this specification
+language.  Chapter~\ref{chap:base} presents the specification language
+itself.  Chapter~\ref{chap:lib} presents additional informations about
+\emph{libraries} of specifications.  Chapter~\ref{chap:appendix}
+finally provides a few additional information.  A detailed table of
+contents is given on page~\pageref{chap:contents}
 
 \section{Glossary}
 
 \begin{description}
-\item[pure expressions] \index{pure expression} A C expression is
-  called \emph{pure} if it has no side-effect: no assignments, no
-  incrementation operator \verb|++| or \verb|--|. Moreover it should
-  not contain any function call, even if the called function has no
-  side-effect itself.
+\item[pure expressions] \index{pure expression} In ACSL setting, a
+  \emph{pure} expression is a C expression which contains no assignments, no
+  incrementation operator \verb|++| or \verb|--|, no function call,
+  and no access to a volatile object. The set of pure expression is a
+  subset of the set of C expressions without side effect (C
+  standard~\cite{KR88,standardc99}, \S 5.1.2.3, alinea 2).
 
 \item[left-values] \index{left-value}\index{lvalue} 
 
@@ -76,7 +57,7 @@ supposed to be necessary for a basic use of that specification language.
   detailed description of lvalues.
 
   A \emph{modifiable lvalue} is an lvalue allowed in the left part of
-  an assignment, e.g., a non-constant memory location.
+  an assignment.
  
 \item[pre-state and post-state]
     \index{pre-state}\index{post-state}
@@ -114,10 +95,10 @@ Idem avec les extensions de GCC.}
 \section{Generalities about Annotations}
 
 In this document, we consider that annotations are given as comments
-written directly in C source files, so
-that source files remain compilable\footnote{Other means of attaching
-  annotations to source files, without modifying them, are left to user
-  tools.}. Those comments must start by \verb|/*@| or \verb|//@|.
+written directly in C source files, so that source files remain
+compilable\footnote{Other means of attaching annotations to source
+  files, without modifying them, are left to user tools.}. Those
+comments must start by \verb|/*@| or \verb|//@| and end as usual in~C.
 
 \subsection{Kinds of annotations}
 
@@ -174,16 +155,16 @@ that source files remain compilable\footnote{Other means of attaching
 
   \end{itemize}
 
-\item Attribute annotations: \experimental. See
-  Section~\ref{sec:attribute_annot}.
+%\item Attribute annotations: \experimental. See
+%  Section~\ref{sec:attribute_annot}.
 
 \end{itemize}
 
 \subsection{Parsing annotations in practice}
 
 In JML, parsing is done by just ignoring \verb|//@|, \verb|/*@| and
-\verb|*/| and the level of lexing. This technique can completely
-modify the semantics of the C code, for example: \input{annot1.pp}
+\verb|*/| and the level of lexing. This technique could modify the
+semantics of the C code, for example: \input{annot1.pp}
 
 In our language this is forbidden. Technically, the current
 implementation of Frama-C isolates the comments in a first step of

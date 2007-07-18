@@ -1,22 +1,22 @@
 
-/*@ logic module List
+/*@ module List :
   @ 
-  @   type 'a list = Nil | Cons of 'a * 'a list;
+  @   type list<'a> = Nil | Cons('a , list<'a>);
   @
-  @   integer length('a list l) {
+  @   logic integer length(list<'a> l) {
   @     \match l ; 
   @       | Nil : 0 
   @       | Cons(h,t) : 1+length(t)
   @   }
   @ 
-  @   'a fold_right(('a -> 'b -> 'b) f, 'a list l,  'b acc) {
+  @   logic 'a fold_right(('a -> 'b -> 'b) f, list<'a> l,  'b acc) {
   @     \match l ;
   @       | Nil : acc
   @       | Cons(h,t) : f(h,fold(f,t,acc))
   @   }
   @
-  @   'a list filter(('a -> boolean) f, 'a list l) {
-  @     fold_right((\lambda 'a x, 'a list acc; 
+  @   logic list<'a> filter(('a -> boolean) f, list<'a> l) {
+  @     fold_right((\lambda 'a x, list<'a> acc; 
   @       f(x) ? Cons(x,acc) : acc), Nil)
   @   }
   @*/

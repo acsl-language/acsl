@@ -47,14 +47,16 @@
 
 {\Huge\bfseries ACSL: ANSI C Specification Language}
 
+\bigskip
+
+{\LARGE Preliminary design (version 1, \today)}
+
 \vspace{20mm}
 
 {P.~Baudin, J.-C.~Filli\^atre, Th.~Hubert,
   C.~March\'e, B.~Monate, Y.~Moy, V.~Prevosto}
 
 \vspace{20mm}
-
-Version of \today
 
 \vfill 
 
@@ -69,6 +71,21 @@ Version of \today
 \label{chap:contents}
 \tableofcontents
 
+\chapter*{Foreword}
+
+This is a preliminary design of the ACSL language, a deliverable of
+the task 7.2 of the ANR RNTL project CAT
+(\url{http://www.rntl.org/projet/resume2005/cat.htm}). In this
+project, a reference implementation of ACSL is provided.
+
+This is the version 1 of ACSL design, which means that several
+features may still evolve in the future. In particular, some features
+in this document are considered \emph{experimental}, meaning that
+their syntax and semantics is still under discussion.  These features
+are marked with \experimental.
+They must also be considered as advanced features, which are not
+supposed to be useful for a basic use of that specification language.
+
 \include{intro}
 
 \include{speclang}
@@ -78,12 +95,15 @@ Version of \today
 \appendix
 
 \chapter{Appendices}
+\label{chap:appendix}
 
-\section{Quick reference card}
+%\section{Quick reference card}
 
-\todo{by Benjamin}
+%\todo{by Benjamin}
 
-\include{compjml}
+\input{compjml}
+
+\input{typingrules}
 
 \section{Illustrative example}
 

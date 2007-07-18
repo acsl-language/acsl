@@ -1,0 +1,87 @@
+\section{Typing rules}
+\label{sec:typingrules}
+
+Disclaimer: this section is unfinished, it is left here just to give an idea of what it will look like in the final document.
+
+\subsection{Rules for terms}
+
+Integer promotion:
+\[
+\frac{\Gamma \vdash e : \tau}{\Gamma \vdash e : \integer} 
+\]
+if $\tau$ is any C integer type \verb|char|, \verb|short|, \verb|int|, or \verb|long|, whatever attribute they have, in particular signed or unsigned
+
+Variables:
+\[
+\frac{}{\Gamma \vdash id : \tau} \mbox{ if $id:\tau\in\Gamma$}
+\]
+
+Unary integer operations:
+\[
+\frac{\Gamma \vdash t : \integer}{\Gamma \vdash op~t : \integer} \mbox{ if $op\in \{+,-,\tilde\}$}
+\]
+
+Boolean negation:
+\[
+\frac{\Gamma \vdash t : \boolean}{\Gamma \vdash !~t : \boolean} 
+\]
+
+Pointer dereferencing:
+\[
+\frac{\Gamma \vdash t : \tau*}{\Gamma \vdash *t : \tau} 
+\]
+
+Address operator:
+\[
+\frac{\Gamma \vdash t : \tau}{\Gamma \vdash \&t : \tau*} 
+\]
+
+Binary
+\[
+\frac{\Gamma \vdash t_1 : \integer\qquad\Gamma \vdash t_2 : \integer}{\Gamma \vdash t_1~op~t_2 : \integer} \mbox{ if $op\in \{+,-,*,/,\%\}$}
+\]
+\[
+\frac{\Gamma \vdash t_1 : \real\qquad\Gamma \vdash t_2 : \real}{\Gamma \vdash t_1~op~t_2 : \real} \mbox{ if $op\in \{+,-,*,/\}$}
+\]
+\[
+\frac{\Gamma \vdash t_1 : \integer\qquad\Gamma \vdash t_2 : \integer}{\Gamma \vdash t_1~op~t_2 : \boolean} \mbox{ if $op\in \{==,!=,<=,<,>=,>\}$}
+\]
+\[
+\frac{\Gamma \vdash t_1 : \real\qquad\Gamma \vdash t_2 : \real}{\Gamma \vdash t_1~op~t_2 : \boolean} \mbox{ if $op\in \{==,!=,<=,<,>=,>\}$}
+\]
+\[
+\frac{\Gamma \vdash t_1 : \tau*\qquad\Gamma \vdash t_2 : \tau*}{\Gamma \vdash t_1~op~t_2 : \boolean} \mbox{ if $op\in \{==,!=,<=,<,>=,>\}$}
+\]
+
+(to be continued)
+
+
+\subsection{Typing rules for locations}
+
+We consider the typing judgement $\Gamma,\Lambda \vdash s : \tau,b$
+meaning that $s$ is a set of terms of type $tau$, which is moreover a
+set of locations if the boolean $b$ is true.
+$\Gamma$ is the C environment and $\Lambda$ is the logic environment.
+
+Rules:
+\[
+\frac{}{\Gamma \vdash id : \tau,true} \mbox{ if $id:\tau in \Gamma$}
+\]
+\[
+\frac{\Gamma\vdash s:\tau*,b}{\vdash *s: \tau,true}
+\]
+\[
+\frac{e: struct S* \quad e_2:tset \tau}{\vdash s->id : \tau}
+\]
+\[
+\frac{b\cup \Lambda \vdash e: tset \tau}{\vdash \{ e \mid b ; P \} : tset \tau }
+\]
+\[
+\frac{\Gamma\vdash e_1:\tau,b \quad e_2:\tau,b}{\vdash e_1,e_2: \tau,b}
+\]
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-PDF-mode: t
+%%% TeX-master: "main"
+%%% End:

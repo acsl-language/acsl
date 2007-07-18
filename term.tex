@@ -10,7 +10,8 @@
        | "*" ; pointer dereferencing
        | "&" ; address operator
        \
-  term ::= id ;
+  term ::= "\true" | "\false" ;
+       | id ;
        | unary-op term ;
        | term bin-op term ;  
        | term "[" term "]" ; array access

@@ -1,8 +1,10 @@
 \begin{syntax}
   term ::= "\old" "(" term ")" ; old value
        | "\result" ; result of a function
+       | "\at" "(" term "," id ")" 
        \
-  pred ::= "\old" "(" pred ")" 
+  pred ::= "\old" "(" pred ")" ;
+       | "\at" "(" pred "," id ")" 
 \end{syntax}
 
 %%% Local Variables:

@@ -7,11 +7,11 @@
           | logic-function-decl | logic-function-def ;
           | axiom-def
   \
-  logic-type-decl ::= "logic" "type" logic-type ";" ; 
+  logic-type-decl ::= "type" logic-type ";" ; 
   \
   logic-type ::= id ;
-  | type-var id ; polymorphic type
-  | "(" type-var (, type-var)* ")" id ; polymorphic type
+  | id "<" type-var ">" ; polymorphic type
+  | id "<" type-var (, type-var)* ">" id ; polymorphic type
   \
   type-var ::= "'" id 
   \

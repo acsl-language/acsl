@@ -1,1 +1,1 @@
-//@ logic type 'a list = Nil | Cons of 'a * 'a list;
+//@ type list<'a> = Nil | Cons('a,list<'a>);

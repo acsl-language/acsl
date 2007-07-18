@@ -2,13 +2,28 @@
 \chapter{Specification language}
 \label{chap:base}
 
+\section{Lexical rules}
+
+Lexical structure mostly follows that of ANSI C. A few differences
+must be noted:
+\begin{itemize}
+\item the character \verb|'@'| is a blank character, thus equivalent
+  to a space character.
+\item the identifiers may start with the backslash character.
+\end{itemize}
+
+\experimental
+
+\begin{itemize}
+\item Some UTF8 characters may be used in place of some constructs: $\leq$ for \verb|<=|, $\forall$ for \Forall, etc.
+\end{itemize}
+
 \section{Logic expressions}
 \label{sec:expressions}
 
 This first section presents the language of expressions one can use in
 annotations. These are called below \emph{logic expressions}. They
-correspond more or less to pure C expressions, without C function
-calls (but logic function calls are allowed), with additional constructs
+correspond to pure C expressions, with additional constructs
 that we will introduce progressively.
 
 \begin{figure}[p]
@@ -49,8 +64,8 @@ With respect to C pure expressions, the additional constructs are as follows:
   equivalence \verb|<-->|.
 
 \item[Quantification] Universal quantification is denoted by $\Forall
-  \tau x_1,\ldots,x_n; e$ and existential quantification by $\Exists
-  \tau x_1,\ldots,x_n; e$.  
+  \tau~x_1,\ldots,x_n; e$ and existential quantification by $\Exists
+  \tau~ x_1,\ldots,x_n; e$.
 
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\textwidth} \input{binders.bnf}
@@ -112,7 +127,7 @@ The precedence of C operators is conservatively extended with additional operato
 \label{fig:precedence}
 \end{figure}
 
-\remark{Claude}{Le if ternaire a une precedence inferieure a
+\oldremark{Claude}{Le if ternaire a une precedence inferieure a
   l'equivalence, comme en JML, et contrairement a Caduceus, ou il est
   entre le ou et l'implication. Choix a valider, en particulier par
   Jean-Christophe}
@@ -120,8 +135,10 @@ The precedence of C operators is conservatively extended with additional operato
 \subsection{Semantics}
 \label{sec:twovaluedlogic}
 
-The semantics of the logic expressions in ACSL is, as in classical
-first-order logic, a 2-valued logic with only total functions, hence
+The semantics of logic expressions in ACSL is based on
+mathematical first-order
+logic~(\url{http://en.wikipedia.org/wiki/First_order_logic}), thus it
+is a 2-valued logic with only total functions. Consequently,
 expressions are never ``undefined''.
 
 This design choice has to be emphasized because it is not
@@ -135,7 +152,7 @@ the term \verb|1/0|, or \verb|*p| when p is null (or more generally
 when it points to a non-properly allocated memory cell). In
 particular, the predicates
 \begin{eqnarray*}
-  1/0 &\verb|==|& 1/0 \\
+  1/0 &\verb|==|& 1/0 \\\relax
   *p &\verb|==|& *p
 \end{eqnarray*}
 are true, since they are instances of the general axiom $\forall x,
@@ -151,28 +168,19 @@ consistent assertions. For example, one might want to pose the lemma
 
 where care is taken to have a premise requiring \verb|y| not zero.
 
-\todo{Distinction entre booleens et predicats. Est-ce que $x<y$ retourne un boolean et pas un entier. }
-
-Notes:
-\begin{itemize}
-\item Quantification can be made over any type (both C and
-  logic types).
-\item Quantification over pointers, structures, union, etc.
-  are possible too. \todo{the meaning must be carefully defined: this is not only the allocated structures.}
-\end{itemize}
 
 \subsection{Typing}
 
-The language of logic expressions is typed. Logic types are:
+The language of logic expressions is typed (as for \emph{multi-sorted}
+first-order logic). Logic types are:
 \begin{itemize}
 \item ``Mathematical'' types: \verb|integer| for unbounded,
   mathematical integers; \verb|real| for real numbers, \verb|boolean|
-  for booleans $\{ \verb|true|, \verb|false| \}$.
+  for booleans (with values written $\{ \verb|\true|, \verb|\false| \}$.
 \item C types
 \item Logic types introduced by specification writer (see
   Section~\ref{sec:logicspec}).
 \end{itemize}
-
 There are implicit coercions for numeric types:
 \begin{itemize}
 \item C integer-like types \verb|char|, \verb|short|, \verb|int| and
@@ -180,53 +188,54 @@ There are implicit coercions for numeric types:
 \item \verb|integer| is itself a subtype of type \verb|real|,
 \item C types \verb|float| and \verb|double| are subtypes of type \verb|real|.
 \end{itemize}
+Notes:
+\begin{itemize}
+\item There is a distinction between booleans and predicates. An
+  expression like $x<y$, in a term position returns a boolean, and is
+  also allowed in a predicate position.
+\item Unlike in C, there is a distinction between booleans and
+  integers. There is an implicit promotion from integers to booleans,
+  thus one may writes \verb|x && y| instead of \verb|x != 0 && y != 0|. 
+  If the reverse conversion is needed, an explicit cast is
+  required, e.g. \texttt{(int)(x>0)+1}, where false becomes 0 and true
+  becomes 1.
+\item Quantification can be made over any type (both C and
+  logic types).
+%\item Quantification over pointers, structures, union, etc.
+%  are possible too. \todo{the meaning must be carefully defined: this is not only the allocated structures.}
+\end{itemize}
 
-\subsection*{Typing rules for terms}
+Formal typing rules for terms are given in appendix~\ref{sec:typingrules}
 
-\[
-\frac{}{\Gamma \vdash id : \tau} \mbox{ if $id:\tau\in\Gamma$}
-\]
-\[
-\frac{\Gamma \vdash t : \integer}{\Gamma \vdash op~t : \integer} \mbox{ if $op\in \{+,-,\tilde\}$}
-\]
-\[
-\frac{\Gamma \vdash t : \boolean}{\Gamma \vdash !~t : \boolean} 
-\]
-\[
-\frac{\Gamma \vdash t : \tau*}{\Gamma \vdash *t : \tau} 
-\]
-\[
-\frac{\Gamma \vdash t : \tau}{\Gamma \vdash \&t : \tau*} 
-\]
-\[
-\frac{\Gamma \vdash t_1 : \integer\qquad\Gamma \vdash t_2 : \integer}{\Gamma \vdash t_1~op~t_2 : \integer} \mbox{ if $op\in \{+,-,*,/,\%\}$}
-\]
-\[
-\frac{\Gamma \vdash t_1 : \real\qquad\Gamma \vdash t_2 : \real}{\Gamma \vdash t_1~op~t_2 : \real} \mbox{ if $op\in \{+,-,*,/\}$}
-\]
-\[
-\frac{\Gamma \vdash t_1 : \integer\qquad\Gamma \vdash t_2 : \integer}{\Gamma \vdash t_1~op~t_2 : \boolean} \mbox{ if $op\in \{==,!=,<=,<,>=,>\}$}
-\]
-\[
-\frac{\Gamma \vdash t_1 : \real\qquad\Gamma \vdash t_2 : \real}{\Gamma \vdash t_1~op~t_2 : \boolean} \mbox{ if $op\in \{==,!=,<=,<,>=,>\}$}
-\]
-\[
-\frac{\Gamma \vdash t_1 : \tau*\qquad\Gamma \vdash t_2 : \tau*}{\Gamma \vdash t_1~op~t_2 : \boolean} \mbox{ if $op\in \{==,!=,<=,<,>=,>\}$}
-\]
-\todo{Continuer}
 
-\subsection{About arithmetic overflow}
+\subsection{About arithmetic operations}
 
-quantification can be either on mathematical \verb|integer| or bounded
-types \verb|short|, \verb|char|, etc.
+\subsubsection*{Promotions and overflow}
 
-we need macros \verb|\max_range|, \verb|min_range| taking a C integer
-type as argument, e.g. \verb|\max_range(unsigned char) = 255|\\
+Operations like addition and multiplication apply to mathematical
+integers. C integers types are promoted to integers if necessary. As a
+consequence, there is no such thing as ``overflow'' in logic expressions.
 
-\remark{Patrick}{Ces macros, types et variables sont en principe
-définies dans des \texttt{.h} que la norme spécifie en grande partie
-(le nom l'est, le type peut y être contraint).
-Il faudrait autant que possible se raprocher de ces noms.}
+Quantification can be either on mathematical \verb|integer| or bounded
+types \verb|short|, \verb|char|, etc. In the latter case,
+quantification corresponds to integer quantification over the
+corresponding interval.
+
+\oldremark{Claude}{we need macros \verb|\max_range|, \verb|min_range|
+  taking a C integer type as argument, e.g.
+  \verb|\max_range(unsigned char) = 255| Ces macros, types et
+  variables sont en principe définies dans des \texttt{.h} que la
+  norme spécifie en grande partie (le nom l'est, le type peut y être
+  contraint).  Il faudrait autant que possible se raprocher de ces
+  noms.}
+
+\oldremark{Claude}{Si la conjecture suivante est vraie, alors il faudrait en parler: Si e1 et e2 sont des expressions d'un type entier de C, quels qu'ils soient et si op est une operation binaire sur entiers, alors l'operation C $e1~op~e2$ (de type $\tau$),donne le meme resultat que l'expression logique $(\tau)(e_1~op~e_2)$ ou $op$ est l'operation logique sur $Z$. Ce cast permet donc a l'utilisateur de parler du resultat du calcul C d'une expressions dans la logique}
+
+\subsubsection*{Bitwise operations}
+
+Bitwise operations apply to any mathematical integers. These must be
+viewed in a infinite 2-complement representation, with infinitely many
+0 or 1 on the left. 
 
 \section{Function contracts}
 \label{sec:fn-behavior}
@@ -258,6 +267,11 @@ for terms as given on figure~\ref{fig:gram:oldandresult}. These are the followin
 \begin{itemize}
 \item $\old(e)$ denotes the value of $e$ in the pre-state of the function.
 \item \result{} denotes the returned value of the function.
+\item $\at(e,id)$ refer to the value of the expression $e$ in the
+  state at label $id$, which has to appear before. Adding labels in
+  annotations is also possible as ghost statements, see
+  Section~\ref{sec:ghost}.
+
 \end{itemize}
 
 
@@ -489,31 +503,12 @@ Only locations are valid as argument to \assigns{} clauses
 
 \end{example}
 
-\subsection*{Typing rules for locations}
 
-We consider the typing judgement $\Gamma,\Lambda \vdash s : \tau,b$
-meaning that $s$ is a set of terms of type $tau$, which is moreover a
-set of locations if the boolean $b$ is true.
-$\Gamma$ is the C environment and $\Lambda$ is the logic environment.
+\subsection{Contract variables}
 
-Rules:
-\[
-\frac{}{\Gamma \vdash id : \tau,true} \mbox{ if $id:\tau in \Gamma$}
-\]
-\[
-\frac{\Gamma\vdash s:\tau*,b}{\vdash *s: \tau,true}
-\]
-\[
-\frac{\Gamma\vdash e_1:\tau_1,b_1 \quad e_2:\tau_2,b_2}{\vdash e_1,e_2: ???}
-\]
-\[
-\frac{e: struct S* \quad e_2:tset \tau}{\vdash s->id : \tau}
-\]
-\[
-\frac{b\cup \Lambda \vdash e: tset \tau}{\vdash \{ e \mid b ; P \} : tset \tau }
-\]
-idem for $loc \tau$
+\experimental
 
+Binding variables over a complete behavior.
 
 \section{Statement annotations}
 
@@ -599,32 +594,32 @@ a loop invariant associated to a function behavior.
 
 \experimental
 
-We could allow to pose a loop invariant not only at the beginning of
-the loop iteration. For example, it could make sense for a \texttt{do
-  $s$ while $(c)$;} loop to pose a loop invariant just after the loop
-body $s$.
+It is allowed to pose a loop invariant not only at the beginning of
+the loop iteration. For example, it make senses for a \texttt{do $s$
+  while $(c)$;} loop to pose a loop invariant just after the loop body
+$s$.
 
 \begin{example}
-  In the following, the loop invariant is correct, but it would not be correct if placed at the beginning of the loop.
+  In the following, the loop invariant is correct, but it would not be
+  correct if placed at the beginning of the loop.  
   \input{dowhile.pp}
 \end{example}
 
-
-More generally, a loop invariant could occur anywhere inside the loop
+More generally, a loop invariant may occur anywhere inside the loop
 body. The meaning is just that the invariant is true at that point,
 much like an \texttt{assert}, but moreover impose that it is
-inductive: is preserved by a loop iteration. It even possible to allow
-several loop invariants at different places in the loop body. These
-advanced extensions could be useful for complex control flows, in
-particular with gotos.
+inductive, i.e. is preserved by a loop iteration.  Several loop
+invariants are allowed at different places in the loop body. These
+advanced extensions can be useful for complex control flows, in
+particular with \verb|goto|s.
 
 
 \subsection*{More about termination}
 
 Property of termination concerns both loops and recursive function
-calls.  For that purpose, loops can be annotated with \emph{loop
-  variants}\index{loop variant}, and functions can be annotated with
-such variants too, with the \decreases{} clause.
+calls.  For that purpose, loops can be annotated with a \texttt{loop
+  variant}\index{loop variant} clause, and functions can be annotated
+with a \decreases{} clause.
 
 \subsubsection*{Integer measures}
 
@@ -640,10 +635,12 @@ where the logic expression $e$ has type \verb|integer|. For recursive calls, or 
 \[
 R(x,y) ::= x > y ~\verb|&&|~ x \geq 0
 \]
-In other words, the measure must be a sequence of integers which decreases and remain non-negative, except possible for the last value of the sequence.
+In other words, the measure must be a decreasing sequence of integers
+which remain non-negative, except possibly for the last value of the
+sequence.
 
 \begin{example}
-  In example~\ref{ex:bsearch2}, the loop variant \verb|u-l| decreases
+  In Example~\ref{ex:bsearch2}, the loop variant \verb|u-l| decreases
   at each iteration, and remains non-negative, except at the last
   iteration where it may become negative.
 \end{example}
@@ -666,7 +663,7 @@ In those cases, the logic expression $e$ has some type $\tau$ and $R$ must be re
 
 
 
-\subsection{Assertions and logic labels}
+\subsection{Assertions}
 
 \begin{figure}[t]
   \begin{cadre}
@@ -676,23 +673,18 @@ In those cases, the logic expression $e$ has some type $\tau$ and $R$ must be re
   \label{fig:gram:assertions}
 \end{figure}
 
-The syntax of those annotations is given Figure~\ref{fig:gram:assertions} under the form of a addition to the grammar of C statements. The grammar for terms is also completed with the built-in $\at$ construct.
+The syntax of those annotations is given Figure~\ref{fig:gram:assertions} under the form of a addition to the grammar of C statements. 
 
 \begin{itemize}
-\item The $\texttt{label}~id$ annotation simply allows one to refer to
-  the value of some expression $e$ in the state before the statement,
-  in further annotations, using the construct $\at(e,id)$
-  
-  \todo{Inclure dans les ghosts statement ? Mais ce n'est pas un statement...}
-
 \item  The $\texttt{assert}~p$ clause means that $p$ must hold in the state
   before the statement.
 
-\item The form $\texttt{for} id_1,\ldots,id_k:~\texttt{assert}~p$
-  variant associates the assertion to the named behaviors $id_i$ which
-  must be a behavior identifiers for the current function.  It means
-  that this assertion is meant to be valid only for the considered
-  behaviors.
+\item The form $\texttt{for}~id_1,\ldots,id_k:~\texttt{assert}~p$
+  variant associates the assertion to the named behaviors $id_i$, each
+  of them being a behavior identifier for the current function (or a
+  behavior of an enclosing block as defined later in
+  Section~\ref{sec:statement_contract}).  It means that this assertion
+  is meant to be valid only for the considered behaviors.
 \end{itemize}
 
 \oldremark{Claude}{unifier les 2 derniers cas? car a-t-on besoin de
@@ -702,7 +694,7 @@ The syntax of those annotations is given Figure~\ref{fig:gram:assertions} under 
 
 \experimental
 
-These allows to pose an assertion on function's state just before it
+This allows to pose an assertion on function's state just before it
 returns, (whatever way that return occurs) where it is still possible
 to refer to local variables.
 
@@ -720,7 +712,7 @@ to refer to local variables.
 \end{figure}
 
 
-The grammar for statement contracts is given
+The grammar for statement contracts is given in
 Figure~\ref{fig:gram:stcontracts}. It is very similar to function
 behaviors, but without \decreases{} clause. Additionally, behavior can
 refer to enclosing named behaviors, with the form \texttt{for $id$ :
@@ -729,7 +721,7 @@ corresponding function behavior, in particular only under the
 corresponding \assumes{} clause.
 
 \begin{example}
-  \todo{example}
+  %\input{}
 \end{example}
 
 \section{Logic specifications}
@@ -749,17 +741,19 @@ and predicates. These declarations follows the classical setting of
 predicates may be either \emph{defined} by explicit expressions, or
 \emph{axiomatized} by a set of axioms. The grammer for these declarations is given Figure~\ref{fig:gram:logic}.
 
-\remark{Claude}{``logic typedef'' au lieu de ``logic type'' ?}
+\oldremark{Claude}{``logic typedef'' au lieu de ``logic type'' ? Non ``type'' et c'est tout}
 
 \subsection{Polymorphic logic types}
+
+\experimental
 
 We consider here an algebraic specification setting based on
 multi-sorted logic, where types can be \emph{polymorphic} that is
 parameterized by other types. For example, one may declare the type of
 polymorphic lists as \input{listdecl.pp} and then can consider for
-example list of integers (\texttt{integer list}), list of pointers
-(e.g. \texttt{char* list}), list of list of reals (\texttt{real list
-  list}), etc.
+example list of integers (\texttt{list <integer>}), list of pointers
+(e.g. \texttt{list <char*>}), list of list of reals (\texttt{list
+  <list <real> >}), etc.
 
 \subsection{Recursive logic definitions}
 
@@ -796,15 +790,16 @@ possible too.
 Figure~\ref{fig:gram:higherorder} introduces new term constructs for
 higher-order logic.
 \begin{description}
-\item[Abstraction] The term $\verb|\lambda| \tau~x_1,\ldots,x_n ; t$
+\item[Abstraction] The term $\verb|\lambda|~\tau~x_1,\ldots,x_n ~;~ t$
   denotes the $n$-ary logic function which maps $x_1,\ldots,x_n$ to
   $t$. It has the same precedence as \Forall and \Exists
 \item[Extended quantifiers] Terms $quant(t_1,t_2,t_3)$ where $quant$
-  is max, min, sum, product,or \verb|num_of|, are extended
-  quantifications. $t_1$ and $t_2$ must have type \verb|integer|, and
-  $t_3$ must be a unary function with an integer argument, and a
-  numeric value (integer or real) except for \verb|\num_of| for which
-  it should have a boolean value. Their meanings are given as follows:
+  is \verb|max|, \verb|min|, \verb|sum|, \verb|product|,or
+  \verb|num_of|, are extended quantifications. $t_1$ and $t_2$ must
+  have type \verb|integer|, and $t_3$ must be a unary function with an
+  integer argument, and a numeric value (integer or real) except for
+  \verb|\num_of| for which it should have a boolean value. Their
+  meanings are given as follows:
   \begin{eqnarray*}
     \verb|\max|(i,j,f) &=& \max \{ f(i),f(i+1), \ldots, f(j) \} \\
     \verb|\min|(i,j,f) &=& \min \{ f(i),f(i+1), \ldots, f(j) \} \\
@@ -894,17 +889,22 @@ parameters but also in an implicit way on the values stored in memory.
 
 \experimental
 
-\begin{example}
-  \todo{example}
-\end{example}
+Similar as JML's model variables, with the restriction that their type must be a logic type.
+
+%\begin{example}
+%  \todo{example}
+%\end{example}
 
 \subsection{Libraries of algebraic specifications}
+\label{sec:specmodules}
+
+\experimental
 
 Specification modules can be provided to encapsulate several logic
 definitions, for example
 \input{listmodule.pp}
 Module components are then accessible using a qualified notation like
-\verb|List.length|.
+\verb|List::length|.
 
 Predefined algebraic specifications can be provided as libraries (see
 section~\ref{chap:lib}), and imported using a construct like
@@ -922,56 +922,46 @@ definitions, like the \verb|List| module above.
 \begin{itemize}
 \item \baseaddr{} base address of an allocated pointer
 \[
-\baseaddr{} : \alpha {\tt *} \ra {\tt char *}
+\baseaddr{} : \verb|'a *| \ra \verb|char*|
 \]
 \item \blocklength{} length of the allocated block of a pointer
 \[
-\blocklength{} : \alpha {\tt *} \ra {\tt size\_t}
+\blocklength{} : \verb|'a *| \ra \verb|size_t|
 \]
 
 \item $\valid$ is a built-in predicate which applies to a set of terms
   of some pointer type. $\valid(s)$ is true whenever dereferencing any
   $p\in s$ is safe. 
-
 \end{itemize}
-
-Shortcuts:
+Some shortcuts are provided:
 \begin{itemize}
-\item $\verb|\null|$ is an extra notation for the NULL pointer. It is
-  a shorcut to \verb|(void*)0| \footnote{or to \texttt{NULL}, if
-    annotations are pre-processed are the appropriate inclusion of
-    \texttt{stddef.h} is added}
+\item $\verb|\null|$ is an extra notation for the null pointer (i.e. a shortcut for \verb|(void*)0|)
+% \footnote{or to \texttt{NULL}, if
+%    annotations are pre-processed are the appropriate inclusion of
+%    \texttt{stddef.h} is added}
 \item $\offset(p)$ returns the offset between p and its base address
 
   \begin{eqnarray*}
-    \offset &:& \alpha {\tt *} \ra \verb|size_t|  \\
-    \offset(p) &=& (\verb|char|*)p - \baseaddr(p)
+    \offset &:& \verb|'a *| \ra \verb|size_t|  \\
+    \offset(p) &=& (\verb|char*|)p - \baseaddr(p)
   \end{eqnarray*}
   the following property holds: for any set of pointers $s$, $\valid(s)$ if and only if for all $p\in s$:
   \[
     \offset(p) \geq 0 \land \offset(p) + \verb|sizeof|(*p) \leq \blocklength(p)
 \]
 
-\item \comparable{} (checks whether two pointers are comparable as defined
-  in the ANSI standard: \todo{by benjamin})
-\[
-\comparable{} : \alpha {\tt *} \ra \beta {\tt *} \ra \boolean
-\]
-
- 
 \end{itemize}
 
 \subsection{Separation}
 
-pointer separation :
-\[
-p \not\equiv q := \baseaddr(p) \neq \baseaddr(q) \lor |(char*)p - (char*)q| \geq \max(\sizeof(p),\sizeof(q))
-\]
+%pointer separation :
+%\[
+%p \not\equiv q := \baseaddr(p) \neq \baseaddr(q) \lor |(\verb|char*|)p - (\verb|char*|)q| \geq \max(\sizeof(p),\sizeof(q))
+%\]
 
-$\separated(loc1,..,loc_n)$ : means that for if $i\neq j$, if $x\in
-loc_i$ and $y \in loc_j$ then $\&x \not\equiv \& y$
+\experimental
 
-where each $loc_i$ is a set of terms as defined in
+$\separated(loc_1,..,loc_n)$ : means that for each $i\neq j$, the intersection of $loc_i$ and $loc_j$ is empty. Each $loc_i$ is a set of terms as defined in
 Section~\ref{sec:locations}.
 
 \subsection{Allocation and deallocation}
@@ -988,32 +978,50 @@ Section~\ref{sec:locations}.
 
 \section{Abnormal termination}
 
-\begin{itemize}
-\item C function \verb|exit(n)|. special behavior notation
-  \begin{verbatim}
-    exit_behavior
-       assumes
-       assigns
-       ensures ...
-  \end{verbatim}
-    where in ensures clause, \result is bound to n
-\end{itemize}
+\experimental
+
+It is used to give behavioral properties to the \verb|main| function
+or to any function that may exit the program, e.g. calling \verb|exit|
+function.
+
+Such a behavior can be written with the form 
+\begin{verbatim}
+  exit_behavior
+    assumes
+    assigns
+    ensures ...
+\end{verbatim}
+where in ensures clause, \result is bound to the return code, e.g the
+value returned by \verb|main| or the argument passed to \verb|exit|.
 
 
 \section{Dependencies information}
 
-\remark{Patrick}{ne faut-t'il pas étendre les clauses ``assigns'' aux
+\oldremark{Patrick}{ne faut-t'il pas étendre les clauses ``assigns'' aux
   clauses ``from'' de CAVEAT prenant en comptes les locations lues, et les
   expressions fonctionnelles~?}
 
 \experimental
 
-\begin{verbatim}
-assigns Locs from Locs
-\end{verbatim}
+An extended syntax of \assigns clauses allows to give dependencies:
+\begin{flushleft}
+//@ assigns $loc_1,\ldots,loc_n$ from $loc'_1,\ldots,loc'_k$ ;
+\end{flushleft}
+Moreover, dependencies can be made precise using \emph{functional expressions}:
+\begin{flushleft}
+//@ assigns $loc$ from $loc'_1,\ldots,loc'_k$ = term ;
+\end{flushleft}
 
-trouver une syntaxe pour introduire les noms des fonctions implicites
-derriere la construction
+\experimental
+
+Useful additional constructs for such functional expressions are constructions  of functional arrays :
+\begin{itemize}
+\item functional update of array : $\{ t[i] \verb|<-| e \} $
+\item functional update of struct : $\{ s.f \verb|<-| e \} $
+\item arrays or structs given extensionaly, syntax like for C initializers : $\{ t_1, \ldots, t_n \}$
+\end{itemize}
+%trouver une syntaxe pour introduire les noms des fonctions implicites
+%derriere la construction
 
 \section{Data invariants}
 \label{sec:invariants}
@@ -1032,7 +1040,17 @@ Examples:
 
 \subsection{Semantics}
 
-an invariant is true when ...\cite{barnett04jot}
+\begin{itemize}
+\item Global invariants: at any state of execution (after
+  initialisation of global static data), the invariant holds.
+\item Type invariants: at any state of execution, an allocated object
+  of the corresponding static type satisfies the invariant.
+\end{itemize}
+
+\experimental
+
+Weak invariants do not hold in any state but can be temporarily violated.
+Such invariants are allowed under some sound policy~\cite{barnett04jot}.
 
 
 \section{Ghost variables and statements}
@@ -1040,7 +1058,7 @@ an invariant is true when ...\cite{barnett04jot}
 
 \experimental
 
-\remark{Patrick}{les ``ghost statements'' correspondent à des
+\oldremark{Patrick}{les ``ghost statements'' correspondent à des
 instructions d'observations des variables du C. Ces instructions
 ne peuvent pas modifier les variables du C, mais que les ``ghost
 variables''. Cela permet d'écrire plus facilement l'observateur
@@ -1048,7 +1066,7 @@ adéquat à la preuve des propriétés puisque les propriétés peuvent
 porter à la fois sur les variables du C et les  ``ghost variables''.
 }
 
-  \remark{Patrick}{on a besoin de ``ghost braces'' pour
+  \oldremark{Patrick}{on a besoin de ``ghost braces'' pour
       écrire du ``ghost code''. Dans ce cas on n'en fait pas un point
       à part entière ici, on en parlera dans la section~\ref{sec:ghost}.
       Par contre, on a besoin de ``logic braces'' afin de créer un
@@ -1056,33 +1074,41 @@ porter à la fois sur les variables du C et les  ``ghost variables''.
       behavior''. Faut'il en parler ici, comme on a parlé des
       ``logic label'' plus haut~?}
 
-\input{ghost.bnf}
+Ghost variables and statements are like C variables and statements, but visible only in the specifications. The grammar is given in Figure~\ref{fig:gram:ghost}. 
+\begin{figure}[t]
+  \fbox{\begin{minipage}{0.97\linewidth}
+      \input{ghost.bnf}
+    \end{minipage}}
+  \caption{Grammar for ghost statements}
+\label{fig:gram:ghost}
+\end{figure}
+
+The semantics requires that ghost statements do not change the regular
+program execution, hence ghost statements modify only ghost variables.
 
 
+%\section{Module constructions}
+%
+%\experimental
+%
+%how to encapsulate several functions...
 
 
-\section{Module constructions}
+%\section{Attribute annotations}
+%\label{sec:attribute_annot}
+%
+%\experimental
+%
+%These are annotations allowing to add attributes on variables, like regular C attributes (const, volatile, restrict).
 
-\experimental
-
-how to encapsulate several functions...
-
-
-\section{Attribute annotations}
-\label{sec:attribute_annot}
-
-\experimental
-
-These are annotations allowing to add attributes on variables, like regular C attributes (const, volatile, restrict).
-
-The purpose of these are various:
-\begin{itemize}
-\item specific verifications, like \url{http://www.cs.umd.edu/~jfoster/cqual}
-\item specific analyses, like region 
-  analyses~\cite{hubert07hav} a la Cyclone~\cite{grossman02pldi}.
-\item allowing to attach model variables/fields to types that are not
-  structures~\cite{filliatr07queens}.
-\end{itemize}
+% The purpose of these are various:
+% \begin{itemize}
+% \item specific verifications, like \url{http://www.cs.umd.edu/~jfoster/cqual}
+% \item specific analyses, like region 
+%   analyses~\cite{hubert07hav} a la Cyclone~\cite{grossman02pldi}.
+% \item allowing to attach model variables/fields to types that are not
+%   structures~\cite{filliatr07queens}.
+% \end{itemize}
 
 %%% Local Variables:
 %%% mode: latex

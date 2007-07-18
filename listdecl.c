@@ -1,1 +1,1 @@
-//@ logic type 'a list;
+//@ type list<'a>;

@@ -18,6 +18,7 @@
 	"public" ; "private" ; "static" ; "struct" ;
 	"throws" ; "extends" ; "implements" ; "reads" ;
 	"requires"; "assumes" ; "invariant"; "representation";
+	"loop" ; "variant" ;
 	"ensures" ; "assigns"; "modifiable" ; "signals" ;
 	"logic" ; "type" ; "predicate" ; "axiom";
 	"normal_behavior" ; "behavior" ; "model";
@@ -29,9 +30,8 @@
     List.iter (fun s -> Hashtbl.add h s ())
       [
 	"valid"; "valid_range"; "lambda" ; "sum" ; "match" ;
-	"base_addr" ; "strlen" ; "max" ;
-	"null" ; "forall"; "old" ; "fresh" ; "nothing" ; "result" ;
-	"block_length" ; 
+	"base_addr" ; "strlen" ; "max" ; "block_length" ;
+	"null" ; "forall"; "old" ; "fresh" ; "nothing" ; "result"
       ];
     h
 

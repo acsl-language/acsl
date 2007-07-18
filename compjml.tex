@@ -88,16 +88,16 @@ is sufficient to write an appropriate postcondition:
 /*@ ensures $\mathit{\result == error\_value ~||~ normal\_postcondition}$; */
 \end{flushleft}
 
-\noindent
-A tool could easily set error conditions aside, by providing an
-appropriate extension of behaviors, e.g., using a new keyword
-\verb|failswith|:
+% \noindent
+% A tool could easily set error conditions aside, by providing an
+% appropriate extension of behaviors, e.g., using a new keyword
+% \verb|failswith|:
 
-\begin{flushleft}\ttfamily
-/*@ failswith $\mathit{\result == error\_value}$; \\
-~~@ ensures $\mathit{normal\_postcondition}$; \\
-~~@*/
-\end{flushleft}
+% \begin{flushleft}\ttfamily
+% /*@ failswith $\mathit{\result == error\_value}$; \\
+% ~~@ ensures $\mathit{normal\_postcondition}$; \\
+% ~~@*/
+% \end{flushleft}
 
 \subsubsection*{C contracts are not Java ones}
 
@@ -141,7 +141,7 @@ A correct precondition for this function is the following:
 It uses predicate $\valid$ defined in Section~\ref{subsec:memory},
 with the meaning that $\valid(a + 0..(-1))$ is always true.
 When {\ttfamily n} is null, {\ttfamily a} does
-not need to be valid at all, and when {\ttfamily n} is stictly
+not need to be valid at all, and when {\ttfamily n} is strictly
 positive, {\ttfamily a} must point to an array of size at least
 {\ttfamily n}.  To make it more obvious, the C programmer adopted a
 defensive programming style, which returns immediately when {\ttfamily n} is
@@ -304,8 +304,8 @@ annotate.
 
 In our setting, it is desirable to allow calls to logical functions in
 specifications. These functions may be defined, like program ones, but
-they may also be only declared (with a suitable declaration of read
-effects) and defined through an axiomatization. 
+they may also be only declared (with a suitable declaration of \reads
+clause) and defined through an axiomatization. 
 This makes for richer specifications that may be useful either in
 automatic or in manual deductive verification.
 
@@ -316,11 +316,24 @@ ACSL ones, when the intent is the same, although minor differences
 might exist.
 
 \begin{center}
-\begin{tabular}{c|c}
+\begin{tabular}{|l|l|}
+\hline
   JML                  & ACSL \\ \hline
-  assignable           & assigns \\
+  modifiable,assignable           & assigns \\
   measured\_by         & decreases \\
   loop\_invariant      & loop invariant \\
   decreases            & loop variant \\
+  $(\Forall~\tau~x ; P ; Q)$ &   $(\Forall~\tau~x ; P \verb|==>| Q)$ \\
+  $(\Exists~\tau~x ; P ; Q)$ &   $(\Exists~\tau~x ; P \verb|&&| Q)$ \\
+  $(\verb|\max|~\tau~x ; a \verb|<=| x \verb|<=| b ; f)$ &   
+  $\verb|\max|(a,b,\verb|\lambda|~\tau~x ; f)$ \\
+  \hline
 \end{tabular}
 \end{center}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-PDF-mode: t
+%%% TeX-master: "main"
+%%% End:
