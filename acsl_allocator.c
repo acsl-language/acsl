@@ -1,79 +1,144 @@
 
-/*@ logic int offset(char* p) reads \nothing; */
-
 #include <stdlib.h>
 
 #define DEFAULT_BLOCK_SIZE 1000
 
 typedef enum _bool { false = 0, true = 1 } bool;
 
+/*@ predicate finite_list(('a* -> 'a*) next_elem, 'a* ptr) {
+  @   ptr == \null || (\valid(ptr) && finite_list(next_elem(ptr)))
+  @ }
+  @
+  @ logic int list_length(('a* -> 'a*) next_elem, 'a* ptr) {
+  @   (ptr == \null) ? 0 : 1 + list_length(next_elem(ptr))
+  @ } 
+  @
+  @ predicate lower_length(('a* -> 'a*) next_elem, 'a* ptr1, 'a* ptr2) {
+  @   finite_list(next_elem, ptr1) && finite_list(next_elem, ptr2) 
+  @   && list_length(next_elem, ptr1) < list_length(next_elem, ptr2)
+  @ } */
+
 // forward reference
 struct _memory_slice;
 
+/* A memory block holds a pointer to a raw block of memory allocated by
+ * calling [malloc]. It is sliced into chunks, which are maintained by
+ * the [slice] structure. It maintains additional information such as 
+ * the [size] of the memory block, the number of bytes [used] and the [next] 
+ * index at which to put a chunk.
+ */
 typedef struct _memory_block {
   //@ ghost bool        packed;
+    // ghost field [packed] is meant to be used as a guard that tells when
+    // the invariant of a structure of type [memory_block] holds
   unsigned int          size;
+    // size of the array [data]
   unsigned int          next;
     // next index in [data] at which to put a chunk
   unsigned int          used;
     // how many bytes are used in [data], not necessarily contiguous ones
   char*                 data;
+    // raw memory block allocated by [malloc]
   struct _memory_slice* slice;
+    // structure that describes the slicing of a block into chunks
 } memory_block;
 
 
 /*@ type invariant inv_memory_block(memory_block mb) {
   @   mb.packed ==>
   @     (0 < mb.size && mb.used <= mb.next <= mb.size
-  @     && offset(mb.data) == 0 && \block_length(mb.data) == mb.size)
-  @ } */
-
-/*@ predicate valid_memory_block(memory_block* mb) {
+  @     && \offset(mb.data) == 0 && \block_length(mb.data) == mb.size)
+  @ }
+  @
+  @ predicate valid_memory_block(memory_block* mb) {
   @   \valid(mb) && mb->packed
   @ } */
 
+/* A memory chunk holds a pointer [data] to some part of a memory block 
+ * [block]. It maintains the [offset] at which it points in the block, as well
+ * as the [size] of the block it is allowed to access. A field [free] tells
+ * whether the chunk is used or not.
+ */
 typedef struct _memory_chunk {
   //@ ghost bool packed;
+    // ghost field [packed] is meant to be used as a guard that tells when
+    // the invariant of a structure of type [memory_chunk] holds
   unsigned int   offset;
+    // offset at which [data] points into [block->data]
   unsigned int   size;
+    // size of the chunk
   bool           free;
+    // true if the chunk is not used, false otherwise
   memory_block*  block;
+    // block of memory into which the chunk points
+  char*          data;
+    // shortcut for [block->data + offset]
 } memory_chunk;
 
 /*@ type invariant inv_memory_chunk(memory_chunk mc) {
   @   mc.packed ==>
   @     (0 < mc.size && valid_memory_block(mc.block)
   @     && mc.offset + mc.size <= mc.block->next)
-  @ } */
-
-/*@ predicate valid_memory_chunk(memory_chunk* mc, int s) {
+  @ }
+  @
+  @ predicate valid_memory_chunk(memory_chunk* mc, int s) {
   @   \valid(mc) && mc->packed && mc->size == s
-  @ } */
-
-/*@ predicate used_memory_chunk(memory_chunk mc) {
+  @ }
+  @
+  @ predicate used_memory_chunk(memory_chunk mc) {
   @   mc.free == false
-  @ } */
-
-/*@ predicate freed_memory_chunk(memory_chunk mc) {
+  @ }
+  @
+  @ predicate freed_memory_chunk(memory_chunk mc) {
   @   mc.free == true
   @ } */
 
+/* A memory chunk list links memory chunks in the same memory block.
+ * Newly allocated chunks are put first, so that the offset of chunks
+ * decreases when following the [next] pointer. Allocated chunks should
+ * fill the memory block up to its own [next] index.
+ */
 typedef struct _memory_chunk_list {
-  //@ ghost unsigned int     offset;
   memory_chunk*              chunk;
+    // current list element
   struct _memory_chunk_list* next;
+    // tail of the list
 } memory_chunk_list;
 
-/*@ predicate valid_memory_chunk_list
+/*@ \let next_chunk = \lambda memory_chunk_list* ptr; ptr->next ;
+  @
+  @ predicate valid_memory_chunk_list
   @                  (memory_chunk_list* mcl, memory_block* mb) {
   @   \valid(mcl) && valid_memory_chunk(mcl->chunk,mcl->chunk->size) 
   @   && mcl->chunk->block == mb
   @   && (mcl->next == \null || valid_memory_chunk_list(mcl->next, mb))
   @   && mcl->offset == mcl->chunk->offset
-  @   && (mcl->next == \null
-  @       || mcl->next->offset + mcl->next->chunk->size == mcl->offset)
+  @   && (
+  @        // it is the last chunk in the list
+  @        (mcl->next == \null && mcl->chunk->offset == 0)
+  @      ||
+  @        // it is a chunk in the middle of the list
+  @        (mcl->next != \null
+  @        && mcl->next->chunk->offset + mcl->next->chunk->size 
+  @           == mcl->chunk->offset)
+  @      )
+  @   && finite_list(next_chunk, mcl)
+  @ }
+  @
+  @ predicate valid_complete_chunk_list
+  @                  (memory_chunk_list* mcl, memory_block* mb) {
+  @   valid_memory_chunk_list(mcl,mb)
+  @   && mcl->next->chunk->offset + mcl->next->chunk->size == mb->next
+  @ } 
+  @
+  @ predicate chunk_lower_length(memory_chunk_list* ptr1, 
+  @                              memory_chunk_list* ptr2) {
+  @   lower_length(next_chunk, ptr1, ptr2)
   @ } */
 
+/* A memory slice holds together a memory block [block] and a list of chunks
+ * [chunks] on this memory block.
+ */
 typedef struct _memory_slice {
   memory_block*      block;
   memory_chunk_list* chunks;
@@ -82,17 +147,30 @@ typedef struct _memory_slice {
 /*@ predicate valid_memory_slice(memory_slice* ms) {
   @   \valid(ms) && valid_memory_block(ms->block) && ms->block->slice == ms
   @   && (ms->chunks == \null
-  @       || valid_memory_chunk_list(ms->chunks, ms->block))
+  @       || valid_complete_chunk_list(ms->chunks, ms->block))
   @ } */
 
+/* A memory slice list links memory slices, to form a memory pool.
+ */
 typedef struct _memory_slice_list {
   memory_slice*              slice;
+    // current list element
   struct _memory_slice_list* next;
+    // tail of the list
 } memory_slice_list;
 
-/*@ predicate valid_memory_slice_list(memory_slice_list* msl) {
+/*@ \let next_slice = \lambda memory_slice_list* ptr; ptr->next ;
+  @
+  @ predicate valid_memory_slice_list(memory_slice_list* msl) {
   @   \valid(msl) && valid_memory_slice(msl->slice)
   @   && (msl->next == \null || valid_memory_slice_list(msl->next))
+  @   && finite_list(next_slice, msl)
+  @ }
+  @
+  @ predicate slice_lower_length(memory_slice_list* ptr1, 
+  @                              memory_slice_list* ptr2) {
+  @   \let next_slice = \lambda memory_slice_list* ptr; ptr->next ;
+  @      lower_length(next_slice, ptr1, ptr2)
   @ } */
 
 typedef memory_slice_list* memory_pool;
@@ -103,8 +181,9 @@ typedef memory_slice_list* memory_pool;
 
 /*@ behavior zero_size:
   @   assumes s == 0;
-  @   assigns \nothing
-  @   ensures \result == 0
+  @   assigns \nothing;
+  @   ensures \result == 0;
+  @
   @ behavior positive_size:
   @   assumes s > 0;
   @   requires valid_memory_pool(arena);
@@ -124,7 +203,8 @@ memory_chunk* memory_alloc(memory_pool* arena, unsigned int s) {
   if (s == 0) return 0;
   // iterate through memory blocks (or slices)
   /*@ 
-    @ loop invariant valid_memory_slice_list(msl)
+    @ loop invariant valid_memory_slice_list(msl);
+    @ loop variant msl for slice_lower_length;
     @ */
   while (msl != 0) {
     ms = msl->slice;
@@ -154,7 +234,8 @@ memory_chunk* memory_alloc(memory_pool* arena, unsigned int s) {
     }
     // iterate through memory chunks
     /*@ 
-      @ loop invariant valid_memory_chunk_list(mcl,mb)
+      @ loop invariant valid_memory_chunk_list(mcl,mb);
+      @ loop variant mcl for chunk_lower_length;
       @ */
     while (mcl != 0) {
       mc = mcl->chunk;
@@ -209,11 +290,13 @@ memory_chunk* memory_alloc(memory_pool* arena, unsigned int s) {
 }
 
 /*@ behavior null_chunk:
-  @   assumes chunk == \null
-  @   assigns \nothing
+  @   assumes chunk == \null;
+  @   assigns \nothing;
+  @
   @ behavior valid_chunk:
-  @   assumes chunk != \null
-  @   requires valid_memory_pool(arena) && valid_used_memory_chunk(chunk);
+  @   assumes chunk != \null;
+  @   requires valid_memory_pool(arena);
+  @   requires valid_used_memory_chunk(chunk);
   @   ensures (valid_memory_chunk(chunk) && freed_memory_chunk(chunk)) 
   @     || ! \valid(chunk);
   @ */
@@ -228,7 +311,8 @@ void memory_free(memory_pool* arena, memory_chunk* chunk) {
     mcl = ms->chunks;
     // iterate through memory chunks
     /*@ 
-      @ loop invariant valid_memory_chunk_list(mcl,mb)
+      @ loop invariant valid_memory_chunk_list(mcl,mb);
+      @ loop variant mcl for chunk_lower_length;
       @ */
     while (mcl != 0) {
       memory_chunk_list *mcl_next = mcl->next;

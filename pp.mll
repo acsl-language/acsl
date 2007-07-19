@@ -31,7 +31,7 @@
       [
 	"valid"; "valid_range"; "lambda" ; "sum" ; "match" ;
 	"base_addr" ; "strlen" ; "max" ; "block_length" ;
-	"null" ; "forall"; "old" ; "fresh" ; "nothing" ; "result"
+	"null" ; "forall"; "old" ; "fresh" ; "nothing" ; "result" ; "let" ;
       ];
     h
 
