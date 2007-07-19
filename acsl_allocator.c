@@ -43,7 +43,6 @@ typedef struct _memory_block {
     // structure that describes the slicing of a block into chunks
 } memory_block;
 
-
 /*@ type invariant inv_memory_block(memory_block mb) {
   @   mb.packed ==>
   @     (0 < mb.size && mb.used <= mb.next <= mb.size
@@ -140,19 +139,30 @@ typedef struct _memory_chunk_list {
  * [chunks] on this memory block.
  */
 typedef struct _memory_slice {
+  //@ ghost bool     packed;
+    // ghost field [packed] is meant to be used as a guard that tells when
+    // the invariant of a structure of type [memory_slice] holds
   memory_block*      block;
   memory_chunk_list* chunks;
 } memory_slice;
 
-/*@ predicate valid_memory_slice(memory_slice* ms) {
-  @   \valid(ms) && valid_memory_block(ms->block) && ms->block->slice == ms
-  @   && (ms->chunks == \null
-  @       || valid_complete_chunk_list(ms->chunks, ms->block))
+/*@ type invariant inv_memory_slice(memory_slice* ms) {
+  @   ms.packed ==>
+  @     (valid_memory_block(ms->block) && ms->block->slice == ms
+  @     && (ms->chunks == \null
+  @         || valid_complete_chunk_list(ms->chunks, ms->block)))
+  @ }
+  @
+  @ predicate valid_memory_slice(memory_slice* ms) {
+  @   \valid(ms) && ms->packed
   @ } */
 
 /* A memory slice list links memory slices, to form a memory pool.
  */
 typedef struct _memory_slice_list {
+  //@ ghost bool     packed;
+    // ghost field [packed] is meant to be used as a guard that tells when
+    // the invariant of a structure of type [memory_slice_list] holds
   memory_slice*              slice;
     // current list element
   struct _memory_slice_list* next;
@@ -161,10 +171,15 @@ typedef struct _memory_slice_list {
 
 /*@ \let next_slice = \lambda memory_slice_list* ptr; ptr->next ;
   @
+  @ type invariant inv_memory_slice_list(memory_slice_list* msl) {
+  @   msl.packed ==>
+  @     (valid_memory_slice(msl->slice)
+  @     && (msl->next == \null || valid_memory_slice_list(msl->next))
+  @     && finite_list(next_slice, msl))
+  @ }
+  @
   @ predicate valid_memory_slice_list(memory_slice_list* msl) {
-  @   \valid(msl) && valid_memory_slice(msl->slice)
-  @   && (msl->next == \null || valid_memory_slice_list(msl->next))
-  @   && finite_list(next_slice, msl)
+  @   \valid(msl) && msl->packed
   @ }
   @
   @ predicate slice_lower_length(memory_slice_list* ptr1, 
@@ -175,7 +190,7 @@ typedef struct _memory_slice_list {
 
 typedef memory_slice_list* memory_pool;
 
-/*@ predicate valid_memory_pool(memory_pool *mp) {
+/*@ type invariant valid_memory_pool(memory_pool *mp) {
   @   \valid(mp) && valid_memory_slice_list(*mp)
   @ } */
 
@@ -212,6 +227,7 @@ memory_chunk* memory_alloc(memory_pool* arena, unsigned int s) {
     mcl = ms->chunks;
     // does [mb] contain enough free space?
     if (s <= mb->size - mb->next) {
+      //@ ghost ms->ghost = false;   // unpack the slice
       // allocate a new chunk
       mc = (memory_chunk*)malloc(sizeof(memory_chunk));
       if (mc == 0) return 0;
@@ -219,17 +235,19 @@ memory_chunk* memory_alloc(memory_pool* arena, unsigned int s) {
       mc->size = s;
       mc->free = false;
       mc->block = mb;
+      //@ ghost mc->ghost = true;   // pack the chunk
       // update block accordingly
+      //@ ghost mb->ghost = false;   // unpack the block
       mb->next += s;
       mb->used += s;
+      //@ ghost mb->ghost = true;   // pack the block
       // add the new chunk to the list
       mcl = (memory_chunk_list*)malloc(sizeof(memory_chunk_list));
       if (mcl == 0) return 0;
-      //@ ghost mcl_offset = msl->chunks->offset + msl->chunks->chunk->size;
-      //@ ghost mcl->offset = mcl_offset;
       mcl->chunk = mc;
       mcl->next = ms->chunks;
       ms->chunks = mcl;
+      //@ ghost ms->ghost = true;   // pack the slice
       return mc;
     }
     // iterate through memory chunks
@@ -260,6 +278,7 @@ memory_chunk* memory_alloc(memory_pool* arena, unsigned int s) {
   mb->next = s;
   mb->used = s;
   mb->data = mb_data;
+  //@ ghost mb->ghost = true;   // pack the block
   // allocate a new chunk
   mc = (memory_chunk*)malloc(sizeof(memory_chunk));
   if (mc == 0) return 0;
@@ -267,6 +286,7 @@ memory_chunk* memory_alloc(memory_pool* arena, unsigned int s) {
   mc->size = s;
   mc->free = false;
   mc->block = mb;
+  //@ ghost mc->ghost = true;   // pack the chunk
   // allocate a new chunk list
   mcl = (memory_chunk_list*)malloc(sizeof(memory_chunk_list));
   if (mcl == 0) return 0;
@@ -278,6 +298,7 @@ memory_chunk* memory_alloc(memory_pool* arena, unsigned int s) {
   if (ms == 0) return 0;
   ms->block = mb;
   ms->chunks = mcl;
+  //@ ghost ms->ghost = true;   // pack the slice
   // update the block accordingly
   mb->slice = ms;
   // add the new slice to the list
@@ -285,6 +306,7 @@ memory_chunk* memory_alloc(memory_pool* arena, unsigned int s) {
   if (msl == 0) return 0;
   msl->slice = ms;
   msl->next = *arena;
+  //@ ghost msl->ghost = true;   // pack the slice list
   *arena = msl;
   return mc;
 }
@@ -296,17 +318,44 @@ memory_chunk* memory_alloc(memory_pool* arena, unsigned int s) {
   @ behavior valid_chunk:
   @   assumes chunk != \null;
   @   requires valid_memory_pool(arena);
-  @   requires valid_used_memory_chunk(chunk);
-  @   ensures (valid_memory_chunk(chunk) && freed_memory_chunk(chunk)) 
-  @     || ! \valid(chunk);
+  @   requires valid_memory_chunk(chunk,chunk->size);
+  @   requires used_memory_chunk(chunk);
+  @   ensures 
+  @       // if it is not the last chunk in the block, mark it as free
+  @       (valid_memory_chunk(chunk,chunk->size) 
+  @       && freed_memory_chunk(chunk)) 
+  @     || 
+  @       // if it is the last chunk in the block, deallocate the block
+  @       ! \valid(chunk);
   @ */
 void memory_free(memory_pool* arena, memory_chunk* chunk) {
+  memory_slice_list *msl = *arena;
   memory_block *mb = chunk->block;
   memory_slice *ms = mb->slice;
   memory_chunk_list *mcl;
   memory_chunk *mc;
   // is it the last chunk in use in the block?
   if (mb->used == chunk->size) {
+    // remove the corresponding slice from the memory pool
+    // case it is the first slice
+    if (msl->slice == ms) {
+      *arena = msl->next;
+      //@ ghost msl->ghost = false;    // unpack the slice list
+      free(msl);
+    }
+    // case it is not the first slice
+    while (msl != 0) {
+      if (msl->next != 0 && msl->next->slice == ms) {
+        memory_slice_list* msl_next = msl->next;
+	msl->next = msl->next->next;
+	// unpack the slice list
+	//@ ghost msl_next->ghost = false;
+	free(msl_next);
+	break;
+      }
+      msl = msl->next;
+    }
+    //@ ghost ms->ghost = false;    // unpack the slice
     // deallocate all chunks in the block
     mcl = ms->chunks;
     // iterate through memory chunks
@@ -317,12 +366,19 @@ void memory_free(memory_pool* arena, memory_chunk* chunk) {
     while (mcl != 0) {
       memory_chunk_list *mcl_next = mcl->next;
       mc = mcl->chunk;
+      //@ ghost mc->ghost = false;    // unpack the chunk
       free(mc);
       free(mcl);
       mcl = mcl_next;
     }
     mb->next = 0;
     mb->used = 0;
+    // deallocate the memory block and its data
+    //@ ghost mb->ghost = false;     // unpack the block
+    free(mb->data);
+    free(mb);
+    // deallocate the corresponding slice
+    free(ms);
     return;
   }
   // mark the chunk as freed

@@ -116,13 +116,17 @@ rule ctt = parse
 	ctt lexbuf }
   | "//"
       { in_comment := true;
-	in_slashshash := true;
-	print_string "\\begin{slshape}\\rmfamily\\color{darkgreen}//";
+	if !in_slashshash then
+	  print_string "\\rmfamily\\color{darkgreen}//"
+	else
+	  print_string "\\begin{slshape}\\rmfamily\\color{darkgreen}//";
+        in_slashshash := true;
 	ctt lexbuf }
   | eof  { () }
   | '-'  { print_string "$-$"; ctt lexbuf }
   | "::" { print_string ":\\hspace*{-0.1em}:"; ctt lexbuf }
   | " "  { print_string "~"; ctt lexbuf }
+  | "\t"  { print_string "~~~~~~~~"; ctt lexbuf } (* tab is 8 spaces *)
   | "[" (ident as s) "]"
       { if !in_comment then print_string "{\\ttfamily " else print_string "[";
 	print_ident s;
