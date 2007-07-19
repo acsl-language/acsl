@@ -9,11 +9,13 @@
   \
   logic-type-decl ::= "type" logic-type ";" ; 
   \
-  logic-type ::= id ;
-  | id "<" type-var ">" ; polymorphic type
-  | id "<" type-var (, type-var)* ">" id ; polymorphic type
-  \
   type-var ::= "'" id 
+  \
+  logic-type ::= id ;
+  | id "<" type-var (, type-var)* ">" ; polymorphic type
+  \
+  logic-type-expr ::= type-var ; type variable
+  | id "<" type-expr (, type-expr)* ">" ; polymorphic type
   \
   logic-const-def ::= "logic" type-expr id "=" term
   \

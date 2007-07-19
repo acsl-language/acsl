@@ -6,9 +6,6 @@
   \
   logic-type-expr ::= built-in-logic-type ;
   | id ; type identifier
-  | "'" id ; type variable
-  | type-expr id ; polymorphic type                 
-  | "(" type-expr (, type-expr)* ")" id ; polymorphic type
   \
   built-in-logic-type ::= "boolean" | "integer" | "real" 
   \
