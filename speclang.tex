@@ -163,9 +163,7 @@ non-déterministe comme  $(\texttt{any} x \mid P)$}
 So, it is up to the writer of specification to take care of writing
 consistent assertions. For example, one might want to pose the lemma
 (see Section~\ref{sec:logicspec}):
-
 \input{div_lemma.pp}
-
 where care is taken to have a premise requiring \verb|y| not zero.
 
 
@@ -742,6 +740,9 @@ predicates may be either \emph{defined} by explicit expressions, or
 \emph{axiomatized} by a set of axioms. The grammer for these declarations is given Figure~\ref{fig:gram:logic}.
 
 \oldremark{Claude}{``logic typedef'' au lieu de ``logic type'' ? Non ``type'' et c'est tout}
+
+The difference between a lemma and an axiom is that a lemma is
+supposed to be deductible from axioms: a redundant axioms in some sense.
 
 \subsection{Polymorphic logic types}
 

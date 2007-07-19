@@ -71,14 +71,15 @@ contents is given on page~\pageref{chap:contents}
 
   A \emph{function behavior} (\emph{behavior} for short) is a set of
   properties relating the pre-state and the post-state for a
-  possibly restricted set of calls to that function.
+  possibly restricted set of pre-states (behavior \emph{assumptions}).
 
 \item[function contract] \index{function contract} \index{contract} 
 
   A \emph{function contract} (\emph{contract} for short) forms a
   specification of a function, consisting of the combination of a
-  precondition (an assumption about the pre-state) and a collection
-  of behaviors.
+  precondition (a requirement on the pre-state for any caller to that
+  function), a collection of behaviors, and possibly a measure in case
+  of a recursive function.
 
 \end{description}
 
@@ -94,8 +95,8 @@ Idem avec les extensions de GCC.}
 
 \section{Generalities about Annotations}
 
-In this document, we consider that annotations are given as comments
-written directly in C source files, so that source files remain
+In this document, we consider that specifications are given as annotations 
+in comments written directly in C source files, so that source files remain
 compilable\footnote{Other means of attaching annotations to source
   files, without modifying them, are left to user tools.}. Those
 comments must start by \verb|/*@| or \verb|//@| and end as usual in~C.
@@ -124,8 +125,8 @@ comments must start by \verb|/*@| or \verb|//@| and end as usual in~C.
 
 \item Statement annotations:
   \begin{itemize}
-  \item \assert clause, logic label. These are allowed
-    everywhere a C label is allowed, or exceptionally just before a
+  \item \assert clause. These are allowed
+    everywhere a C label is allowed, or just before a
     block closing brace.  
     \oldremark{Claude}{About \assume{} clauses: current
       discussion is that it is not considered as an element of
@@ -141,17 +142,17 @@ comments must start by \verb|/*@| or \verb|//@| and end as usual in~C.
     allowed immediately before a loop statement: \For, \While,
     \Do\ldots \While. See Section~\ref{sec:loop_annot}
 
-  \item statement contract. Very similar to a function contract.
-    Semantical condition must be checked (normal termination only, no
-    goto going inside, no goto going outside).  See
-    Section~\ref{sec:statement_contract}
+  \item statement contract. Very similar to a function contract, and
+    placed before a statement or a block.  Semantical condition must
+    be checked (normal termination only, no goto going inside, no goto
+    going outside).  See Section~\ref{sec:statement_contract}
     \oldremark{Patrick}{as-t'on droit au \old dans le \ensures de
       cette annotation~? Oui, pour refer a l'etat avant le statement
       consider\'e}
     
   \item ghost code: is regular C code, only visible from the
     specification, that is only allowed to modify ghost variables. See
-    section~\ref{sec:ghost}. Ghost braces for enclosing blocks.
+    section~\ref{sec:ghost}. This includes ghost braces for enclosing blocks.
 
   \end{itemize}
 
@@ -188,8 +189,8 @@ annotations, should macro substitution be performed or not, etc.
 
 Additional keywords of the specification language start with a
 backslash, if they are used in position of a term or a predicate
-(which are defined in the following).
-Otherwise they do not start with a backslash, like \ensures{}.
+(which are defined in the following).  Otherwise they do not start
+with a backslash (like \ensures{}) and they remains valid identifiers.
 
 
 \section{Notations for grammars}

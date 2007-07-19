@@ -1,5 +1,5 @@
 /*@ requires 
-  @   n >= 0 && \valid_range(t,0,n-1) &&
+  @   n >= 0 && \valid(t+(0..n-1)) &&
   @   t_is_sorted :: \forall short k1, short k2; 
   @       0 <= k1 <= k2 <= n-1 => t[k1] <= t[k2];
   @ assigns \nothing;
