@@ -46,7 +46,8 @@ typedef struct _memory_block {
 /*@ type invariant inv_memory_block(memory_block mb) {
   @   mb.packed ==>
   @     (0 < mb.size && mb.used <= mb.next <= mb.size
-  @     && \offset(mb.data) == 0 && \block_length(mb.data) == mb.size)
+  @     && \offset(mb.data) == 0 
+  @     && \block_length(mb.data) == mb.size)
   @ }
   @
   @ predicate valid_memory_block(memory_block* mb) {
