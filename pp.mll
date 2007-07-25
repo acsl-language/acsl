@@ -16,6 +16,7 @@
 	"return"; "switch"; "while";
 	"class" ; "interface" ;
 	"public" ; "private" ; "static" ; "struct" ;
+	"typedef"; "union";
 	"throws" ; "extends" ; "implements" ; "reads" ;
 	"requires"; "assumes" ; "invariant"; "representation";
 	"loop" ; "variant" ;
