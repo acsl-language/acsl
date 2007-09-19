@@ -15,7 +15,14 @@ Remarque de
     \end{tabular}
 \end{quote}}
 
-\newcommand{\oldremark}[2]{}
+\newcommand{\oldremark}[2]{
+\begin{quote}\itshape 
+    \begin{tabular}{||p{0.8\textwidth}}
+Vieille remarque de
+      {#1}~: {#2}
+    \end{tabular}
+\end{quote}
+}
 
 \newcommand{\keyword}[1]{\texttt{#1}\xspace}
 
