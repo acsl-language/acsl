@@ -208,7 +208,18 @@ Formal typing rules for terms are given in appendix~\ref{sec:typingrules}
 
 \subsection{About arithmetic operations}
 
+\remark{SD?}{
+  Preciser les architecture-dependant features: taille des int, etc.
+}
+
 \subsubsection*{Promotions and overflow}
+
+\remark{SD?}{
+  
+  commentaire SD3: problem de perte de signe sur les entiers
+  mathematiques -> demander des precisions.
+
+}
 
 Operations like addition and multiplication apply to mathematical
 integers. C integers types are promoted to integers if necessary. As a
@@ -234,6 +245,12 @@ corresponding interval.
 Bitwise operations apply to any mathematical integers. These must be
 viewed in a infinite 2-complement representation, with infinitely many
 0 or 1 on the left. 
+
+\remark{SD?}{
+
+Detailler, en particulier les bit-a-bit sur les entiers mathematiques
+
+}
 
 \section{Function contracts}
 \label{sec:fn-behavior}
@@ -417,6 +434,27 @@ set of behaviors\footnote{Although, some tools might provide a way to check such
 In the following, \texttt{bsearch($t,n,v$)} searches for element $v$ in array $t$ between indices $0$ and $n-1$.
 \input{bsearch.pp}
 
+\remark{Claude}{Revoir la spec, quantifier sur des integer, mettre des ints a la place des shorts}
+
+\remark{SD5}{
+
+  ajouter 'ensures -1 <= \result < n' 
+
+  discuter sur les points:
+
+  . qu'est-ce qu'une spec complete : exhaustivite' des behaviors
+
+  . behavior disjoint 2 a 2 ?
+
+  proposition de claude : un equivalent de 'assumes' portant sur le post-state. 
+  behavior success:
+    postassumes result >= 0
+
+  behavior failure:
+    postassumes result == -1
+
+}
+
 The intention is to perform a binary search, which requires that the
 array $t$ is sorted in increasing order: this is the purpose of the
 predicate named \texttt{t\_is\_sorted} in the precondition. The
@@ -532,6 +570,13 @@ Annotations on C statements are of three kinds:
   \caption{Grammar for loop annotations}
   \label{fig:gram:loops}
 \end{figure}
+
+\begin{remark}{Colaco}
+  Expliquer d'abord le cas loop variant sans for
+
+  Oui, le for devrait etre dans une sous-section avancee, avec un exemple.  
+
+\end{remark}
 
 The syntax of loop annotations is given Figure~\ref{fig:gram:loops}
 under the form of an addition to the grammar of C statements.
@@ -770,9 +815,7 @@ possible too.
 
 \begin{example}
   The following logic declaration
-
   \input{max_index.pp}
-
   defines a logic function which returns the maximal index $i$ between
   $0$ and $n-1$ such that $t[i]=0$.
 \end{example}
@@ -835,6 +878,14 @@ higher-order logic.
 \label{fig:gram:logictype}
 \end{figure}
 
+\remark{SD6}{
+
+  faire une analogie avec les types sommes (de Caml, des spec algebriques)
+
+  c'est plutot des types avec constructeurs dans les spec algebriques
+
+}
+
 \experimental
 
 Logic types may not only be declared but also defined concretely, either under thr form of record types, or of sum types. These definitions may be recursive.
@@ -890,6 +941,12 @@ is compatible with the definition.
 As examplified above, hybrid predicates and functions should be used
 with caution, since they do not depend only on the values of their
 parameters but also in an implicit way on the values stored in memory.
+
+\remark{SD7}{
+
+  reutiliser l'exemple en question ? (en le faisant mieux)
+
+}
 
 \subsection{Model variables and fields}
 
@@ -1032,6 +1089,14 @@ Useful additional constructs for such functional expressions are constructions  
 \section{Data invariants}
 \label{sec:invariants}
 
+\remark{SD8}{
+
+  montrer un example qui exprime des proprietes d'initialisation de
+  variables globales, i.e un tableau contient des valeurs distinctes 2
+  a 2.
+
+}
+
 \experimental
 
 \begin{itemize}
@@ -1062,6 +1127,13 @@ Such invariants are allowed under some sound policy~\cite{barnett04jot}.
 \section{Ghost variables and statements}
 \label{sec:ghost}
 
+\remark{SD9}{
+
+  illustrer l'utilisation de ghost pour specifier des proprietes temporelles 
+  
+  
+}
+
 \experimental
 
 \oldremark{Patrick}{les ``ghost statements'' correspondent à des
@@ -1089,9 +1161,23 @@ Ghost variables and statements are like C variables and statements, but visible 
 \label{fig:gram:ghost}
 \end{figure}
 
+\remark{DD4}{
+
+  Cette grammaire autorise de mettre des ghost dans les ghost, a refaire.
+ 
+}
+
 The semantics requires that ghost statements do not change the regular
 program execution, hence ghost statements modify only ghost variables.
 
+
+\subsection{Volatile variables}
+
+\remark{DD1}{
+
+  attacher des fonctions de lecture et d'ecriture a une variable volatile
+
+}
 
 %\section{Module constructions}
 %

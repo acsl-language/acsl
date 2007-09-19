@@ -26,10 +26,16 @@ Section~\ref{sec:jessie} describes additional predicates propose by the Jessie p
 The Jessie library is a collection of logic specifications whose
 semantics is well-defined only on source codes free from
 architecture-dependent features. In particular it is currently
-incompatible withpointer casts or unions (although there is ongoing
+incompatible with pointer casts or unions (although there is ongoing
 work to support some of them~\cite{moy07ccpp}). As a consequence a
 valid pointer of some type $\tau*$ necessarily points to a memory
 block which contains values of type $\tau$.
+
+\remark{DD5}{
+
+Dire que ces limitations ne concernent que cette librairie et ce plugin
+
+}
 
 \subsection{Abstract level of pointer validity}
 
