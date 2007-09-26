@@ -9,7 +9,7 @@ typedef enum _bool { false = 0, true = 1 } bool;
   @   ptr == \null || (\valid(ptr) && finite_list(next_elem(ptr)))
   @ }
   @
-  @ logic int list_length(('a* -> 'a*) next_elem, 'a* ptr) {
+  @ logic integer list_length(('a* -> 'a*) next_elem, 'a* ptr) {
   @   (ptr == \null) ? 0 : 1 + list_length(next_elem(ptr))
   @ } 
   @

@@ -208,18 +208,46 @@ Formal typing rules for terms are given in appendix~\ref{sec:typingrules}
 
 \subsection{About arithmetic operations}
 
-\remark{SD?}{
+\begin{remark}{SD?}
   Preciser les architecture-dependant features: taille des int, etc.
-}
+\end{remark}
+
+\begin{remark}{DP}
+  Parler aussi des real (et la difference avec float et double)
+
+  Il faut de toute facon detailler les constructions de le spec pour
+  parler des flottants: reprend-on celles de Caduceus ? exact(...)
+  On peut laisser la main a JCF pour ce point
+
+\end{remark}
+
 
 \subsubsection*{Promotions and overflow}
 
-\remark{SD?}{
+\begin{remark}{SD?}
   
   commentaire SD3: problem de perte de signe sur les entiers
   mathematiques -> demander des precisions.
 
-}
+\end{remark}
+
+\begin{remark}{PC}
+
+ contraintes sur les casts :
+
+
+  que veut dire (char)1000 dans la logique ?? 
+
+
+  les casts implicites vers les types du C pourrait etre interdits, et
+  les casts explicites operent une truncature.
+
+
+  logic int f() { 0 } -> cast implicite ! erreur !
+
+  logic integer f() { 0 } -> OK
+
+\end{remark}
 
 Operations like addition and multiplication apply to mathematical
 integers. C integers types are promoted to integers if necessary. As a
@@ -238,7 +266,14 @@ corresponding interval.
   contraint).  Il faudrait autant que possible se raprocher de ces
   noms.}
 
-\oldremark{Claude}{Si la conjecture suivante est vraie, alors il faudrait en parler: Si e1 et e2 sont des expressions d'un type entier de C, quels qu'ils soient et si op est une operation binaire sur entiers, alors l'operation C $e1~op~e2$ (de type $\tau$),donne le meme resultat que l'expression logique $(\tau)(e_1~op~e_2)$ ou $op$ est l'operation logique sur $Z$. Ce cast permet donc a l'utilisateur de parler du resultat du calcul C d'une expressions dans la logique}
+\oldremark{Claude}{Si la conjecture suivante est vraie, alors il
+  faudrait en parler: Si e1 et e2 sont des expressions d'un type
+  entier de C, quels qu'ils soient et si op est une operation binaire
+  sur entiers, alors l'operation C $e1~op~e2$ (de type $\tau$),donne
+  le meme resultat que l'expression logique $(\tau)(e_1~op~e_2)$ ou
+  $op$ est l'operation logique sur $Z$. Ce cast permet donc a
+  l'utilisateur de parler du resultat du calcul C d'une expressions
+  dans la logique}
 
 \subsubsection*{Bitwise operations}
 
@@ -246,11 +281,11 @@ Bitwise operations apply to any mathematical integers. These must be
 viewed in a infinite 2-complement representation, with infinitely many
 0 or 1 on the left. 
 
-\remark{SD?}{
+\begin{remark}{SD?}
 
 Detailler, en particulier les bit-a-bit sur les entiers mathematiques
 
-}
+\end{remark}
 
 \section{Function contracts}
 \label{sec:fn-behavior}
@@ -290,7 +325,19 @@ for terms as given on figure~\ref{fig:gram:oldandresult}. These are the followin
 \end{itemize}
 
 
-They both can be used only in \ensures{} clauses.
+$\old(e)$ and \result{} can be used only in \ensures{} clauses,
+whereas $\at(e,id)$ can be used everywhere.
+
+\begin{remark}{Patrick}
+
+ veut des $\old$ partout: design toujours le pre-state de la function. 
+ 
+\end{remark}
+
+\begin{remark}{Patrick}
+
+donner des regles de portee pour les labels mentionnes dans les $\at$
+\end{remark}
 
 
 \oldremark{Patrick}{pourquoi seuls les ``behavior'' peuvent avoir un
@@ -328,7 +375,36 @@ The semantics of such a contract is as follows:
 \item If the decreases clause is present, the function can call only
   functions (including itself) which have also a decreases clause with
   the same relation $R$, which are called in a state for which the
-  measure expression $m$ is smaller.
+  measure expression $m$ is smaller.  
+
+  \begin{remark}{PC}
+    Attention, seule
+    les fonctions appelees qui sont dans la meme composante fortement
+    connexe du graphe d'appel sont concernant
+    
+    cad, les fonctions qui sont dans le meme paquet de fonctions
+    mutuellement recursive. 
+
+    Dire qu'Il s'agit du meme R syntaxiquement
+
+
+    Exemple: code jouet avec terminaison lexico sur une paire d'entiers
+
+  \end{remark}
+
+
+\begin{remark}{PC} 
+
+  ``je suis surpris par le melange entre l'ordre et la restriction de
+  l'ensemble'' on a pas compris...
+
+\end{remark}
+
+\begin{remark}{Patrick}
+ commencer par le cas sans R, avec la mesure naturelle
+    sur les entiers 
+  \end{remark}
+
 \end{itemize}
 
 Notice that the multiplicity of clauses are proposed mainly to improve
@@ -429,16 +505,9 @@ Notice that the contract does not impose that the disjunction of the
 $A_i$ is true, that is it is not mandatory to provide a ``complete''
 set of behaviors\footnote{Although, some tools might provide a way to check such a completeness}.
 
-\begin{example}
-\label{ex:bsearch}
-In the following, \texttt{bsearch($t,n,v$)} searches for element $v$ in array $t$ between indices $0$ and $n-1$.
-\input{bsearch.pp}
-
-\remark{Claude}{Revoir la spec, quantifier sur des integer, mettre des ints a la place des shorts}
-
-\remark{SD5}{
-
-  ajouter 'ensures -1 <= \result < n' 
+\begin{remark}{DP et SD}
+\begin{verbatim}
+  Preciser ce point, mieux que par une footnote
 
   discuter sur les points:
 
@@ -446,14 +515,37 @@ In the following, \texttt{bsearch($t,n,v$)} searches for element $v$ in array $t
 
   . behavior disjoint 2 a 2 ?
 
-  proposition de claude : un equivalent de 'assumes' portant sur le post-state. 
+  proposition de claude : un equivalent de 'assumes' portant sur le
+  post-state.
+
   behavior success:
     postassumes result >= 0
 
   behavior failure:
     postassumes result == -1
 
-}
+  alors la completude serait :
+     disjunction des post_assumes = vrai
+     
+  MAIS remarque de Patrick: pourquoi ne pas parler de la disjonction des assumes ?
+\end{verbatim}
+\end{remark}
+
+
+\begin{example}
+\label{ex:bsearch}
+In the following, \texttt{bsearch($t,n,v$)} searches for element $v$ in array $t$ between indices $0$ and $n-1$.
+\input{bsearch.pp}
+
+\begin{remark}{Claude}Revoir la spec, quantifier sur des integer, mettre des ints a la place des shorts
+\end{remark}
+
+\begin{remark}{SD5}
+
+  ajouter 'ensures -1 <= \result < n' 
+
+\end{remark}
+
 
 The intention is to perform a binary search, which requires that the
 array $t$ is sorted in increasing order: this is the purpose of the
@@ -477,6 +569,15 @@ See~\ref{sec:loop_annot} for a continuation of this example.
 \end{example}
 
 
+
+
+
+
+\begin{remark}{PC et YM}
+
+  discuter les behavior specifiquement lies a des cas d'erreur
+
+\end{remark}
 
 \subsection{Memory locations}
 \label{sec:locations}
@@ -559,6 +660,20 @@ Annotations on C statements are of three kinds:
   their behavior in a similar manner as C functions.
 \end{itemize}
 
+\begin{remark}{DP}
+
+  discuter sur les facons d'annoter les statements sans modifier le code source
+  mais en les donnant a part.
+
+  idee :
+
+  . fichier patchs
+  . autres
+    
+  a discuter en appendice de ce document.
+
+\end{remark}
+
 \subsection{Loop annotations}
 \label{sec:loop_annot}
 
@@ -631,6 +746,10 @@ a loop invariant associated to a function behavior.
 
 \input{bsearch2.pp}
 
+\begin{remark}{PC}
+  probleme de lecture : u-l confondu avec u-1
+\end{remark}
+
 \end{example}
 
 \subsection*{Advanced loop invariants}
@@ -656,6 +775,13 @@ invariants are allowed at different places in the loop body. These
 advanced extensions can be useful for complex control flows, in
 particular with \verb|goto|s.
 
+
+\begin{remark}{PC}
+
+  discuter la difference entre un loop invariant place arbitrairement
+  dans le corps de boucle et un assert au meme endroit ? idee d'invariant inductif 
+
+\end{remark}
 
 \subsection*{More about termination}
 
@@ -741,6 +867,24 @@ This allows to pose an assertion on function's state just before it
 returns, (whatever way that return occurs) where it is still possible
 to refer to local variables.
 
+\begin{remark}{PC}
+
+  avoir la meme chose sur toute fin de bloc. 
+
+  Mais il semble que c'est deja prevu... -> A VERIFIER qu'on la bien dit.
+
+  De toute facon, il faut detailler
+
+  Garder l'idee principal: on veut des annotations qui parlent a la
+  fois de \result et des variables locales.
+
+
+  A-t-on besoin de mettre cela pour toute expression ?
+
+ exemple : x = x + (f(..) //@ assert ...\result...)
+  
+\end{remark}
+
 
 \subsection{Statement contracts}
 \label{sec:statement_contract}
@@ -824,6 +968,14 @@ possible too.
 %  \input{mutualrec.pp}
 %\end{example}
 
+\begin{remark}{PC}
+
+  critere autorisant la recursion: primitive... NON
+
+  -> a discuter
+
+\end{remark}
+
 \subsection{Higher-order logic constructions}
 
 \experimental
@@ -878,13 +1030,13 @@ higher-order logic.
 \label{fig:gram:logictype}
 \end{figure}
 
-\remark{SD6}{
+\begin{remark}{SD6}
 
   faire une analogie avec les types sommes (de Caml, des spec algebriques)
 
   c'est plutot des types avec constructeurs dans les spec algebriques
 
-}
+\end{remark}
 
 \experimental
 
@@ -899,6 +1051,13 @@ With record types, the field access notation $t.id$ can be used, and for sum typ
   defines the length of a list by recursion and pattern-matching.
 \end{example}
 
+
+\begin{remark}{PC}
+
+  proposer des syntaxes concretes pour des types logiques standards:
+  ensemble en particulier, style ZB
+
+\end{remark}
 
 \subsection{Hybrid functions and predicates}
 
@@ -942,11 +1101,11 @@ As examplified above, hybrid predicates and functions should be used
 with caution, since they do not depend only on the values of their
 parameters but also in an implicit way on the values stored in memory.
 
-\remark{SD7}{
+\begin{remark}{SD7}
 
   reutiliser l'exemple en question ? (en le faisant mieux)
 
-}
+\end{remark}
 
 \subsection{Model variables and fields}
 
@@ -1015,6 +1174,7 @@ Some shortcuts are provided:
 
 \end{itemize}
 
+
 \subsection{Separation}
 
 %pointer separation :
@@ -1030,6 +1190,12 @@ Section~\ref{sec:locations}.
 \subsection{Allocation and deallocation}
 
 \experimental
+
+\begin{remark}{PC}
+
+quid de la pile -> a voir
+
+\end{remark}
 
 \begin{itemize}
 \item built-in predicate \fresh, specifying in a post-condition that a
@@ -1057,6 +1223,14 @@ Such a behavior can be written with the form
 where in ensures clause, \result is bound to the return code, e.g the
 value returned by \verb|main| or the argument passed to \verb|exit|.
 
+\begin{remark}{PC}
+
+  utilite de la clause assigns ?
+
+  probleme de l'exclusion avec les autres comportements. -> postassumes... 
+
+   
+\end{remark}
 
 \section{Dependencies information}
 
@@ -1086,16 +1260,22 @@ Useful additional constructs for such functional expressions are constructions  
 %trouver une syntaxe pour introduire les noms des fonctions implicites
 %derriere la construction
 
+\begin{remark}{PC}
+
+  Ne comprends pas ce que ca veut dire
+
+\end{remark}
+
 \section{Data invariants}
 \label{sec:invariants}
 
-\remark{SD8}{
+\begin{remark}{SD8}
 
   montrer un example qui exprime des proprietes d'initialisation de
   variables globales, i.e un tableau contient des valeurs distinctes 2
   a 2.
 
-}
+\end{remark}
 
 \experimental
 
@@ -1123,16 +1303,36 @@ Examples:
 Weak invariants do not hold in any state but can be temporarily violated.
 Such invariants are allowed under some sound policy~\cite{barnett04jot}.
 
+\begin{remark}{PC}
+
+  remise en cause de la politique d'invariants
+
+\end{remark}
 
 \section{Ghost variables and statements}
 \label{sec:ghost}
 
-\remark{SD9}{
+\begin{remark}{SD9}
 
   illustrer l'utilisation de ghost pour specifier des proprietes temporelles 
   
   
-}
+\end{remark}
+
+\begin{remark}{JCF et CM}
+
+les ghosts pourrait etre des types logiques.
+
+
+et quid de prendre l'addresse d'une variable dans les formules logiques ?
+autorise' ?
+
+et de toute facon il y a besoib de critere de separation qui assure
+que le code ghost ne change pas la semantique du code C. Cas de champ
+ghost dans les structures -> change 
+
+
+\end{remark}
 
 \experimental
 
@@ -1161,11 +1361,11 @@ Ghost variables and statements are like C variables and statements, but visible 
 \label{fig:gram:ghost}
 \end{figure}
 
-\remark{DD4}{
+\begin{remark}{DD4}
 
   Cette grammaire autorise de mettre des ghost dans les ghost, a refaire.
  
-}
+\end{remark}
 
 The semantics requires that ghost statements do not change the regular
 program execution, hence ghost statements modify only ghost variables.
@@ -1173,11 +1373,11 @@ program execution, hence ghost statements modify only ghost variables.
 
 \subsection{Volatile variables}
 
-\remark{DD1}{
+\begin{remark}{DD1}
 
   attacher des fonctions de lecture et d'ecriture a une variable volatile
 
-}
+\end{remark}
 
 %\section{Module constructions}
 %
