@@ -33,6 +33,7 @@
 	"valid"; "valid_range"; "lambda" ; "sum" ; "match" ;
 	"base_addr" ; "strlen" ; "max" ; "block_length" ;
 	"null" ; "forall"; "old" ; "fresh" ; "nothing" ; "result" ; "let" ;
+        "exists";
       ];
     h
 
@@ -187,18 +188,18 @@ and pp = parse
   let () = Arg.parse
     [
       "-color", Arg.Set color, "print in color" ;
-      "-c", Arg.String (fun f -> 
+      "-c", Arg.String (fun f ->
 			      c_files := f :: !c_files), "read C file <f>" ;
     ]
     (fun f -> tex_files := f :: !tex_files)
     "pp [options] file..."
 
 
-  let () = 
+  let () =
     List.iter (fun f ->
 		 let cin = open_in f in
 		 let lb = from_channel cin in
-		 pp lb; close_in cin) 
+		 pp lb; close_in cin)
       !tex_files;
     List.iter (fun f ->
 		 let cin = open_in f in
@@ -206,7 +207,7 @@ and pp = parse
 		 begin_tt ();
 		 ctt lb;
 		 end_tt ();
-		 close_in cin) 
+		 close_in cin)
       !c_files
 
 }
