@@ -206,65 +206,39 @@ Notes:
 Formal typing rules for terms are given in appendix~\ref{sec:typingrules}
 
 
-\subsection{About arithmetic operations}
+\subsection{Integer arithmetic and machine integers}
 
 \begin{remark}{SD?}
   Preciser les architecture-dependant features: taille des int, etc.
 \end{remark}
 
-\begin{remark}{DP}
-  Parler aussi des real (et la difference avec float et double)
+The following integer arithmetic operations apply to
+\emph{mathematical integers}: addition, subtraction, multiplication,
+unary minus. The value of a C variable of an integer type is promoted
+to a mathematical integer. As a consequence, there is no such thing as
+``overflow'' in logic expressions.
 
-  Il faut de toute facon detailler les constructions de le spec pour
-  parler des flottants: reprend-on celles de Caduceus ? exact(...)
-  On peut laisser la main a JCF pour ce point
-
-\end{remark}
-
-
-\subsubsection*{Promotions and overflow}
-
-\begin{remark}{SD?}
-  
-  commentaire SD3: problem de perte de signe sur les entiers
-  mathematiques -> demander des precisions.
-
-\end{remark}
-
-\begin{remark}{PC}
-
- contraintes sur les casts :
+Division and modulo are also mathematical operations, whose results
+are identical to those of C operations on C machine integers, thus
+following the ANSI C99 conventions:
+\begin{itemize}
+\item if a b positive, a / b is ...
+\item if a negative, b positive ...
+\item TODO
+\end{itemize}
 
 
-  que veut dire (char)1000 dans la logique ?? 
+\subsubsection*{Casts and overflow}
 
-
-  les casts implicites vers les types du C pourrait etre interdits, et
-  les casts explicites operent une truncature.
-
-
-  logic int f() { 0 } -> cast implicite ! erreur !
-
-  logic integer f() { 0 } -> OK
-
-\end{remark}
-
-Operations like addition and multiplication apply to mathematical
-integers. C integers types are promoted to integers if necessary. As a
-consequence, there is no such thing as ``overflow'' in logic expressions.
-
-Quantification can be either on mathematical \verb|integer| or bounded
-types \verb|short|, \verb|char|, etc. In the latter case,
-quantification corresponds to integer quantification over the
-corresponding interval.
-
-\oldremark{Claude}{we need macros \texttt{max\_range} \texttt{min\_range}
-  taking a C integer type as argument, e.g.
-  \texttt{max\_range(unsigned char) = 255} Ces macros, types et
-  variables sont en principe définies dans des \texttt{.h} que la
-  norme spécifie en grande partie (le nom l'est, le type peut y être
-  contraint).  Il faudrait autant que possible se raprocher de ces
-  noms.}
+In logic expressions, casting operations towards a C integer type $t$
+(among \texttt{char}, \texttt{short}, \texttt{int} and \texttt{long},
+signed or unsigned) is allowed, and is interpreted as follows: the
+result is the unique value of the corresponding type that is congruent
+to the mathematical result modulo the cardinal of this type (that is 2
+to $8\times\sizeof(t)$). Example:
+\begin{itemize}
+\item (unsigned char)1000 is $1000 \bmod 256 = 232$
+\end{itemize}
 
 \oldremark{Claude}{Si la conjecture suivante est vraie, alors il
   faudrait en parler: Si e1 et e2 sont des expressions d'un type
@@ -275,17 +249,136 @@ corresponding interval.
   l'utilisateur de parler du resultat du calcul C d'une expressions
   dans la logique}
 
-\subsubsection*{Bitwise operations}
+If one wants to express, in the logic, the result of the C
+computations of an expression, one should add all necessary casts. For
+example, the logic expression which denotes the result of C
+computation of $x*y+z$ is $(int)((int)(x*y)+z)$
 
-Bitwise operations apply to any mathematical integers. These must be
-viewed in a infinite 2-complement representation, with infinitely many
-0 or 1 on the left. 
+Important: implicit casts from integers to C integer type are forbidden. 
+Example:
+\begin{flushleft}
+  logic int f(int x) { x+1 }
+\end{flushleft}
+is forbidden because the result (mathematical integer 0) must be cast to int.
+Either write
+\begin{flushleft}
+  logic integer f(int x) { x+1 }
+\end{flushleft}
+or
+\begin{flushleft}
+  logic int f(int x) { (int)(x+1) }
+\end{flushleft}
+if you really want to return an int.
+
+
 
 \begin{remark}{SD?}
-
-Detailler, en particulier les bit-a-bit sur les entiers mathematiques
+  
+  commentaire SD3: problem de perte de signe sur les entiers
+  mathematiques -> demander des precisions.
 
 \end{remark}
+
+\subsubsection*{Quantification}
+
+Quantification can be either on mathematical \verb|integer| or bounded
+types \verb|short|, \verb|char|, etc. In the latter case,
+quantification corresponds to integer quantification over the
+corresponding interval. Example
+\begin{flushleft}
+  
+\end{flushleft}
+
+\subsubsection*{Size of C integer types}
+
+As in C, we do not specify the size of integer types. The sizeof
+operator may be used in the logic. Constants giving maximum and minimum values of those types may be given in a library.
+
+
+\oldremark{Claude}{we need macros \texttt{max\_range} \texttt{min\_range}
+  taking a C integer type as argument, e.g.
+  \texttt{max\_range(unsigned char) = 255} Ces macros, types et
+  variables sont en principe définies dans des \texttt{.h} que la
+  norme spécifie en grande partie (le nom l'est, le type peut y être
+  contraint).  Il faudrait autant que possible se raprocher de ces
+  noms.}
+
+\subsubsection*{Enum types}
+
+Enum types are also interpreted as mathematical integers. Casting of
+an integer to a enum in the logic must give the same result as if it
+was in the C code.
+
+\subsubsection*{Bitwise operations}
+
+Like arithmetic operations, bitwise operations apply to any
+mathematical integers: any mathematical integer as a unique infinite
+2-complement binary representation with infinitely many 0 (for
+non-negative numbers) or 1 (for negative numbers) on the left. Then bitwise operations apply to these representation. Example:
+\begin{itemize}
+\item \verb|7 & 12| = $\cdots 00111 \verb|&| \cdots 001100$ = $\cdots 00100$ = 4 
+\item \verb+-8 | 5+ = $\cdots 11000 \verb+|+ \cdots 00101$ = $\cdots 11101$ = -3 
+\item \verb+~5+ = $\verb|~|\cdots 00101$ = $\cdots 111010$ = -6 
+\item \verb+-5 << 2+ = $\cdots 11011 \verb|<<| 2$ = $\cdots 11101100$ = -20 
+\item \verb+5 >> 2+ = $\cdots 00101 \verb|>>| 2$ = $\cdots 0001$ = 1
+\item \verb+-5 >> 2+ = $\cdots 11011 \verb|>>| 2$ = $\cdots 1110$ = -2 
+\end{itemize}
+
+\subsection{Real numbers and floating point numbers}
+
+Floating-point constants and operations are interpreted as
+mathematical real numbers. A C variable of type float or double is
+implicitly promoted to a real. Integers are promoted to reals if necessary. 
+Example:
+\begin{itemize}
+\item $2 * 3.5$ is equal to the real number 7 
+\end{itemize}
+
+Comparisons operators are interpreted as real operators too. 
+ 
+TODO: syntaxe pour abs et power ?
+
+\begin{remark}{DP}
+  Il faut de toute facon detailler les constructions de le spec pour
+  parler des flottants: reprend-on celles de Caduceus ? exact(...)
+  On peut laisser la main a JCF pour ce point
+
+\end{remark}
+
+\subsubsection*{Cast}
+
+Casting from an integer type or a float type to a float or a double is
+as in C: same conversion operations applies. 
+
+Casting a real number $x$ to a float or a double results in a real
+number $y$ which is the closest to $x$ real number which is
+representable in the target type.
+\begin{itemize}
+\item Example: (float)0.1 = TODO
+\end{itemize}
+
+
+\subsubsection*{Quantification}
+
+Quantification over a variable of type \verb|real| is of course usual
+quantification over real numbers. 
+  
+Quantification sur (float) et (double) : meme probleme que
+quantification sur les structures, etc.
+
+\subsubsection*{Exact computations}
+
+built-in \verb|exact|: a definir TODO
+
+\begin{remark}{JCF}
+  
+Que deviennent les champs modeles de caduceus ?
+
+Il faudrait les integrer a une traitement plus general des modeles
+pour des types de donnees
+
+\end{remark}
+
 
 \section{Function contracts}
 \label{sec:fn-behavior}
@@ -1323,11 +1416,10 @@ Such invariants are allowed under some sound policy~\cite{barnett04jot}.
 
 les ghosts pourrait etre des types logiques.
 
-
 et quid de prendre l'addresse d'une variable dans les formules logiques ?
 autorise' ?
 
-et de toute facon il y a besoib de critere de separation qui assure
+et de toute facon il y a besoin de critere de separation qui assure
 que le code ghost ne change pas la semantique du code C. Cas de champ
 ghost dans les structures -> change 
 
