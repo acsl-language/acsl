@@ -92,7 +92,7 @@ With respect to C pure expressions, the additional constructs are as follows:
 
 \subsection{Operator precedence}
 
-The precedence of C operators is conservatively extended with additional operators, as shown Figure~\ref{fig:precedence}. In this table, operators are sorted from highest to lowest priority. Operators of same priority are presented on the same line. 
+The precedence of C operators is conservatively extended with additional operators, as shown Figure~\ref{fig:precedence}. In this table, operators are sorted from highest to lowest priority. Operators of same priority are presented on the same line.
 
 
 \begin{figure}[t]
@@ -193,7 +193,7 @@ Notes:
   also allowed in a predicate position.
 \item Unlike in C, there is a distinction between booleans and
   integers. There is an implicit promotion from integers to booleans,
-  thus one may writes \verb|x && y| instead of \verb|x != 0 && y != 0|. 
+  thus one may writes \verb|x && y| instead of \verb|x != 0 && y != 0|.
   If the reverse conversion is needed, an explicit cast is
   required, e.g. \texttt{(int)(x>0)+1}, where false becomes 0 and true
   becomes 1.
@@ -254,26 +254,26 @@ computations of an expression, one should add all necessary casts. For
 example, the logic expression which denotes the result of C
 computation of $x*y+z$ is $(int)((int)(x*y)+z)$
 
-Important: implicit casts from integers to C integer type are forbidden. 
+Important: implicit casts from integers to C integer type are forbidden.
 Example:
 \begin{flushleft}
-  logic int f(int x) { x+1 }
+  logic int f(int x) \{ x+1 \}
 \end{flushleft}
 is forbidden because the result (mathematical integer 0) must be cast to int.
 Either write
 \begin{flushleft}
-  logic integer f(int x) { x+1 }
+  logic integer f(int x) \{ x+1 \}
 \end{flushleft}
 or
 \begin{flushleft}
-  logic int f(int x) { (int)(x+1) }
+  logic int f(int x) \{ (int)(x+1) \}
 \end{flushleft}
 if you really want to return an int.
 
 
 
 \begin{remark}{SD?}
-  
+
   commentaire SD3: problem de perte de signe sur les entiers
   mathematiques -> demander des precisions.
 
@@ -286,7 +286,7 @@ types \verb|short|, \verb|char|, etc. In the latter case,
 quantification corresponds to integer quantification over the
 corresponding interval. Example
 \begin{flushleft}
-  
+
 \end{flushleft}
 
 \subsubsection*{Size of C integer types}
@@ -316,26 +316,26 @@ mathematical integers: any mathematical integer as a unique infinite
 2-complement binary representation with infinitely many 0 (for
 non-negative numbers) or 1 (for negative numbers) on the left. Then bitwise operations apply to these representation. Example:
 \begin{itemize}
-\item \verb|7 & 12| = $\cdots 00111 \verb|&| \cdots 001100$ = $\cdots 00100$ = 4 
-\item \verb+-8 | 5+ = $\cdots 11000 \verb+|+ \cdots 00101$ = $\cdots 11101$ = -3 
-\item \verb+~5+ = $\verb|~|\cdots 00101$ = $\cdots 111010$ = -6 
-\item \verb+-5 << 2+ = $\cdots 11011 \verb|<<| 2$ = $\cdots 11101100$ = -20 
+\item \verb|7 & 12| = $\cdots 00111 \verb|&| \cdots 001100$ = $\cdots 00100$ = 4
+\item \verb+-8 | 5+ = $\cdots 11000 \verb+|+ \cdots 00101$ = $\cdots 11101$ = -3
+\item \verb+~5+ = $\verb|~|\cdots 00101$ = $\cdots 111010$ = -6
+\item \verb+-5 << 2+ = $\cdots 11011 \verb|<<| 2$ = $\cdots 11101100$ = -20
 \item \verb+5 >> 2+ = $\cdots 00101 \verb|>>| 2$ = $\cdots 0001$ = 1
-\item \verb+-5 >> 2+ = $\cdots 11011 \verb|>>| 2$ = $\cdots 1110$ = -2 
+\item \verb+-5 >> 2+ = $\cdots 11011 \verb|>>| 2$ = $\cdots 1110$ = -2
 \end{itemize}
 
 \subsection{Real numbers and floating point numbers}
 
 Floating-point constants and operations are interpreted as
 mathematical real numbers. A C variable of type float or double is
-implicitly promoted to a real. Integers are promoted to reals if necessary. 
+implicitly promoted to a real. Integers are promoted to reals if necessary.
 Example:
 \begin{itemize}
-\item $2 * 3.5$ is equal to the real number 7 
+\item $2 * 3.5$ is equal to the real number 7
 \end{itemize}
 
-Comparisons operators are interpreted as real operators too. 
- 
+Comparisons operators are interpreted as real operators too.
+
 TODO: syntaxe pour abs et power ?
 
 \begin{remark}{DP}
@@ -348,7 +348,7 @@ TODO: syntaxe pour abs et power ?
 \subsubsection*{Cast}
 
 Casting from an integer type or a float type to a float or a double is
-as in C: same conversion operations applies. 
+as in C: same conversion operations applies.
 
 Casting a real number $x$ to a float or a double results in a real
 number $y$ which is the closest to $x$ real number which is
@@ -361,8 +361,8 @@ representable in the target type.
 \subsubsection*{Quantification}
 
 Quantification over a variable of type \verb|real| is of course usual
-quantification over real numbers. 
-  
+quantification over real numbers.
+
 Quantification sur (float) et (double) : meme probleme que
 quantification sur les structures, etc.
 
@@ -371,7 +371,7 @@ quantification sur les structures, etc.
 built-in \verb|exact|: a definir TODO
 
 \begin{remark}{JCF}
-  
+
 Que deviennent les champs modeles de caduceus ?
 
 Il faudrait les integrer a une traitement plus general des modeles
@@ -423,8 +423,8 @@ whereas $\at(e,id)$ can be used everywhere.
 
 \begin{remark}{Patrick}
 
- veut des $\old$ partout: design toujours le pre-state de la function. 
- 
+ veut des $\old$ partout: design toujours le pre-state de la function.
+
 \end{remark}
 
 \begin{remark}{Patrick}
@@ -468,15 +468,15 @@ The semantics of such a contract is as follows:
 \item If the decreases clause is present, the function can call only
   functions (including itself) which have also a decreases clause with
   the same relation $R$, which are called in a state for which the
-  measure expression $m$ is smaller.  
+  measure expression $m$ is smaller.
 
   \begin{remark}{PC}
     Attention, seule
     les fonctions appelees qui sont dans la meme composante fortement
     connexe du graphe d'appel sont concernant
-    
+
     cad, les fonctions qui sont dans le meme paquet de fonctions
-    mutuellement recursive. 
+    mutuellement recursive.
 
     Dire qu'Il s'agit du meme R syntaxiquement
 
@@ -486,7 +486,7 @@ The semantics of such a contract is as follows:
   \end{remark}
 
 
-\begin{remark}{PC} 
+\begin{remark}{PC}
 
   ``je suis surpris par le melange entre l'ordre et la restriction de
   l'ensemble'' on a pas compris...
@@ -495,7 +495,7 @@ The semantics of such a contract is as follows:
 
 \begin{remark}{Patrick}
  commencer par le cas sans R, avec la mesure naturelle
-    sur les entiers 
+    sur les entiers
   \end{remark}
 
 \end{itemize}
@@ -516,7 +516,7 @@ potentially assigns ``everything''.
 
 \begin{example}
   The following function is given a simple contract for computation of
-  integer square root, rounded to the floor.  
+  integer square root, rounded to the floor.
 
   \input{isqrt.pp}
 
@@ -619,7 +619,7 @@ set of behaviors\footnote{Although, some tools might provide a way to check such
 
   alors la completude serait :
      disjunction des post_assumes = vrai
-     
+
   MAIS remarque de Patrick: pourquoi ne pas parler de la disjonction des assumes ?
 \end{verbatim}
 \end{remark}
@@ -635,7 +635,7 @@ In the following, \texttt{bsearch($t,n,v$)} searches for element $v$ in array $t
 
 \begin{remark}{SD5}
 
-  ajouter 'ensures -1 <= \result < n' 
+  ajouter 'ensures -1 <= \result < n'
 
 \end{remark}
 
@@ -762,7 +762,7 @@ Annotations on C statements are of three kinds:
 
   . fichier patchs
   . autres
-    
+
   a discuter en appendice de ce document.
 
 \end{remark}
@@ -782,7 +782,7 @@ Annotations on C statements are of three kinds:
 \begin{remark}{Colaco}
   Expliquer d'abord le cas loop variant sans for
 
-  Oui, le for devrait etre dans une sous-section avancee, avec un exemple.  
+  Oui, le for devrait etre dans une sous-section avancee, avec un exemple.
 
 \end{remark}
 
@@ -813,7 +813,7 @@ specifies that
   \item for a $\verb|while|~(c)~s$ loop, $I$ must be preserved by the side-effects of $c$ followed by $s$
   \item for a $\verb|for|(init;c;step)~s$ loop, $I$ must be preserved by the side-effects of $c$ followed by $s$ followed by step
   \item for a $\verb|do|~s~\verb|while|~(c);$ loop, $I$ must be preserved by $s$ followed by the side-effects of $c$
-    
+
   \item At any loop iteration, any location that was allocated before
     entering the loop, and is not member of $L$ in the current state,
     must be remain allocated and have to same value as before entering
@@ -856,7 +856,7 @@ $s$.
 
 \begin{example}
   In the following, the loop invariant is correct, but it would not be
-  correct if placed at the beginning of the loop.  
+  correct if placed at the beginning of the loop.
   \input{dowhile.pp}
 \end{example}
 
@@ -872,7 +872,7 @@ particular with \verb|goto|s.
 \begin{remark}{PC}
 
   discuter la difference entre un loop invariant place arbitrairement
-  dans le corps de boucle et un assert au meme endroit ? idee d'invariant inductif 
+  dans le corps de boucle et un assert au meme endroit ? idee d'invariant inductif
 
 \end{remark}
 
@@ -891,7 +891,7 @@ Functions are annotated with integer measures with the form
 \end{flushleft}
 and loops are annotated similarly with the form
 \begin{flushleft}\ttfamily
-//@ loop variant $e$; 
+//@ loop variant $e$;
 \end{flushleft}
 where the logic expression $e$ has type \verb|integer|. For recursive calls, or for loops, this expression must decrease for the relation $R$ defined by
 \[
@@ -915,7 +915,7 @@ More general measures on other types can be provided, using the keyword \verb|fo
 \end{flushleft}
 and for loops:
 \begin{flushleft}\ttfamily
-//@ loop variant $e$ for $R$; 
+//@ loop variant $e$ for $R$;
 \end{flushleft}
 In those cases, the logic expression $e$ has some type $\tau$ and $R$ must be relation on $\tau$, that is a logic binary predicate declared by the form
 \begin{flushleft}\ttfamily
@@ -935,7 +935,7 @@ In those cases, the logic expression $e$ has some type $\tau$ and $R$ must be re
   \label{fig:gram:assertions}
 \end{figure}
 
-The syntax of those annotations is given Figure~\ref{fig:gram:assertions} under the form of a addition to the grammar of C statements. 
+The syntax of those annotations is given Figure~\ref{fig:gram:assertions} under the form of a addition to the grammar of C statements.
 
 \begin{itemize}
 \item  The $\texttt{assert}~p$ clause means that $p$ must hold in the state
@@ -962,7 +962,7 @@ to refer to local variables.
 
 \begin{remark}{PC}
 
-  avoir la meme chose sur toute fin de bloc. 
+  avoir la meme chose sur toute fin de bloc.
 
   Mais il semble que c'est deja prevu... -> A VERIFIER qu'on la bien dit.
 
@@ -975,7 +975,7 @@ to refer to local variables.
   A-t-on besoin de mettre cela pour toute expression ?
 
  exemple : x = x + (f(..) //@ assert ...\result...)
-  
+
 \end{remark}
 
 
@@ -1057,7 +1057,7 @@ possible too.
   $0$ and $n-1$ such that $t[i]=0$.
 \end{example}
 
-%\begin{example} The following introduce $n$-ary trees using list of children. 
+%\begin{example} The following introduce $n$-ary trees using list of children.
 %  \input{mutualrec.pp}
 %\end{example}
 
@@ -1074,9 +1074,9 @@ possible too.
 \experimental
 
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\linewidth} 
+  \fbox{\begin{minipage}{0.97\linewidth}
       \input{higherorder.bnf}
-    \end{minipage}}  
+    \end{minipage}}
   \caption{Grammar for higher-order constructs}
 \label{fig:gram:higherorder}
 \end{figure}
@@ -1182,7 +1182,7 @@ is compatible with the definition.
 \begin{example}
   The following declares a predicate which tells the number of
   positive elements in an array of doubles, between given indexes
-  \input{num_of_pos.pp} 
+  \input{num_of_pos.pp}
   It should be noticed that without the reads
   clauses, this axiomatization would be inconsistent, since the
   predicate would not depend on the values stored in t, hence the two
@@ -1246,7 +1246,7 @@ definitions, like the \verb|List| module above.
 
 \item $\valid$ is a built-in predicate which applies to a set of terms
   of some pointer type. $\valid(s)$ is true whenever dereferencing any
-  $p\in s$ is safe. 
+  $p\in s$ is safe.
 \end{itemize}
 Some shortcuts are provided:
 \begin{itemize}
@@ -1306,7 +1306,7 @@ It is used to give behavioral properties to the \verb|main| function
 or to any function that may exit the program, e.g. calling \verb|exit|
 function.
 
-Such a behavior can be written with the form 
+Such a behavior can be written with the form
 \begin{verbatim}
   exit_behavior
     assumes
@@ -1320,9 +1320,9 @@ value returned by \verb|main| or the argument passed to \verb|exit|.
 
   utilite de la clause assigns ?
 
-  probleme de l'exclusion avec les autres comportements. -> postassumes... 
+  probleme de l'exclusion avec les autres comportements. -> postassumes...
 
-   
+
 \end{remark}
 
 \section{Dependencies information}
@@ -1407,9 +1407,9 @@ Such invariants are allowed under some sound policy~\cite{barnett04jot}.
 
 \begin{remark}{SD9}
 
-  illustrer l'utilisation de ghost pour specifier des proprietes temporelles 
-  
-  
+  illustrer l'utilisation de ghost pour specifier des proprietes temporelles
+
+
 \end{remark}
 
 \begin{remark}{JCF et CM}
@@ -1421,7 +1421,7 @@ autorise' ?
 
 et de toute facon il y a besoin de critere de separation qui assure
 que le code ghost ne change pas la semantique du code C. Cas de champ
-ghost dans les structures -> change 
+ghost dans les structures -> change
 
 
 \end{remark}
@@ -1444,7 +1444,7 @@ porter à la fois sur les variables du C et les  ``ghost variables''.
       behavior''. Faut'il en parler ici, comme on a parlé des
       ``logic label'' plus haut~?}
 
-Ghost variables and statements are like C variables and statements, but visible only in the specifications. The grammar is given in Figure~\ref{fig:gram:ghost}. 
+Ghost variables and statements are like C variables and statements, but visible only in the specifications. The grammar is given in Figure~\ref{fig:gram:ghost}.
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
       \input{ghost.bnf}
@@ -1456,7 +1456,7 @@ Ghost variables and statements are like C variables and statements, but visible 
 \begin{remark}{DD4}
 
   Cette grammaire autorise de mettre des ghost dans les ghost, a refaire.
- 
+
 \end{remark}
 
 The semantics requires that ghost statements do not change the regular
@@ -1488,7 +1488,7 @@ program execution, hence ghost statements modify only ghost variables.
 % The purpose of these are various:
 % \begin{itemize}
 % \item specific verifications, like \url{http://www.cs.umd.edu/~jfoster/cqual}
-% \item specific analyses, like region 
+% \item specific analyses, like region
 %   analyses~\cite{hubert07hav} a la Cyclone~\cite{grossman02pldi}.
 % \item allowing to attach model variables/fields to types that are not
 %   structures~\cite{filliatr07queens}.

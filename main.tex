@@ -19,8 +19,11 @@
 \renewcommand{\textfraction}{0.01}
 \renewcommand{\topfraction}{0.99}
 \renewcommand{\bottomfraction}{0.99}
-
-\usepackage{fancyheadings}
+% fancyheadings semble condamne: cf
+% https://bugs.launchpad.net/ubuntu/+source/texlive-base/+bug/132399
+% Remplace par fancyhdr
+%\usepackage{fancyheadings}
+\usepackage{fancyhdr}
 \pagestyle{fancyplain}
 \renewcommand{\footrulewidth}{0.4pt}
 \addtolength{\headheight}{2pt}
@@ -58,10 +61,10 @@
 
 \vspace{20mm}
 
-\vfill 
+\vfill
 
 \includegraphics[height=14mm]{cealistlogo.jpg}
-\hfill 
+\hfill
 \includegraphics[height=12mm]{inriafuturslogoshort.jpg}
 
 \end{center}
