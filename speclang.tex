@@ -197,10 +197,11 @@ Notes:
   If the reverse conversion is needed, an explicit cast is
   required, e.g. \texttt{(int)(x>0)+1}, where false becomes 0 and true
   becomes 1.
-\item Quantification can be made over any type (both C and
-  logic types).
-%\item Quantification over pointers, structures, union, etc.
-%  are possible too. \todo{the meaning must be carefully defined: this is not only the allocated structures.}
+\item Quantification can be made over any type: logic types and any C
+  types. Quantification over pointers must be carefully designed,
+  regarding the memory state where dereferencing is done: see
+  Section~\ref{sec:quantification} and
+  Section~\ref{sec:logicalstates}.
 \end{itemize}
 
 Formal typing rules for terms are given in appendix~\ref{sec:typingrules}
@@ -280,6 +281,7 @@ if you really want to return an int.
 \end{remark}
 
 \subsubsection*{Quantification}
+\label{sec:quantification}
 
 Quantification can be either on mathematical \verb|integer| or bounded
 types \verb|short|, \verb|char|, etc. In the latter case,
@@ -1235,6 +1237,7 @@ With record types, the field access notation $t.id$ can be used, and for sum typ
 \end{remark}
 
 \subsection{Hybrid functions and predicates}
+\label{sec:logicalstates}
 
 These are functions or predicates which take both C types and logic
 types as arguments. Such a predicate can either be defined with the
@@ -1270,6 +1273,14 @@ is compatible with the definition.
   predicate would not depend on the values stored in t, hence the two
   last axioms would say both that $a=b+1$ and $a=b$ for some $a$ and
   $b$.
+\end{example}
+
+\begin{example}
+
+  \input{nb_occ.pp}
+
+  \input{permut.pp}
+
 \end{example}
 
 As examplified above, hybrid predicates and functions should be used
