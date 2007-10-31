@@ -1,8 +1,10 @@
 \documentclass[a4paper,11pt,twoside,openright]{report}
 
+\usepackage[a4paper=true,pdftex,colorlinks=true,urlcolor=blue,pdfstartview=FitH]{hyperref}
+
 \usepackage[T1]{fontenc}
 \usepackage{times}
-\usepackage{url,amssymb}
+\usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{color}
 \usepackage{xspace}
@@ -19,10 +21,7 @@
 \renewcommand{\textfraction}{0.01}
 \renewcommand{\topfraction}{0.99}
 \renewcommand{\bottomfraction}{0.99}
-% fancyheadings semble condamne: cf
-% https://bugs.launchpad.net/ubuntu/+source/texlive-base/+bug/132399
-% Remplace par fancyhdr
-%\usepackage{fancyheadings}
+
 \usepackage{fancyhdr}
 \pagestyle{fancyplain}
 \renewcommand{\footrulewidth}{0.4pt}
