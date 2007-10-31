@@ -229,6 +229,11 @@ following the ANSI C99 conventions:
 \end{itemize}
 
 
+\begin{todo}
+  hexadecimal and octal constants: always non-negative. Suffixes u and
+  l are allowed but meaningless.
+\end{todo}
+
 \subsubsection*{Casts and overflow}
 
 In logic expressions, casting operations towards a C integer type $t$
@@ -429,7 +434,7 @@ whereas $\at(e,id)$ can be used everywhere.
 
 \begin{remark}{Patrick}
 
- veut des $\old$ partout: design toujours le pre-state de la function.
+ veut des $\old$ partout: designe toujours le pre-state de la function.
 
 \end{remark}
 
@@ -750,6 +755,7 @@ See~\ref{sec:loop_annot} for a continuation of this example.
 
 
 
+
 \begin{remark}{PC et YM}
 
   discuter les behavior specifiquement lies a des cas d'erreur
@@ -824,7 +830,60 @@ Only locations are valid as argument to \assigns{} clauses
 
 Binding variables over a complete behavior.
 
+\subsection{Default contracts, multiple contracts}
+\label{sec:multiplecontracts}
+
+\begin{todo}rediger
+
+  Default contract: requires true, assigns ``every locations''
+
+  \footnote{Of course, tools might provide ways to generate more
+    precise default contracts, e.g. by computing an over-approximation
+    of the assigned memory locations from the body of the function}
+
+\end{todo}
+
+\begin{remark}{Claude}
+  Limiter cela aux fonctions dont on n'a pas le corps.
+
+  Cela revient a dire: pour une fonction dont on n'a pas le corps: il
+  faut mettre une spec.
+
+  par contre, pour les fonctions dont on a le corps, alors, il ne faut
+  pas imposer cette spec par defaut car on perdrait de l'information.
+
+\end{remark}
+
+In C, a function can be defined only once but declared several times.
+It is allowed to annotate each of these declarations with contracts.
+Those contracts are seen as a single contract with the union of the
+requires clauses and the behaviors.
+
+\begin{remark}{Claude}
+
+  Attention, cette semantique est dangereuse car si en pratique on
+  inclut une partie seulement du contrat, on peut oublier de verifier
+  un requires.
+
+  Autres solutions:
+
+  1) interdire les contrats multiples
+
+  2) proposer une syntaxe pour distinguer les contrats initiaux, et
+     les contrats complementaires (comme le also de JML)
+
+  
+\end{remark}
+
+
 \section{Statement annotations}
+
+\begin{remark}{Claude}
+  
+  Il faut absolument ajouter des regles de portee, a plusieurs
+  endroits dans ce document
+
+\end{remark}
 
 Annotations on C statements are of three kinds:
 \begin{itemize}
@@ -836,20 +895,6 @@ Annotations on C statements are of three kinds:
 \item Statement contracts; allowed before any C statement, specifying
   their behavior in a similar manner as C functions.
 \end{itemize}
-
-\begin{remark}{DP}
-
-  discuter sur les facons d'annoter les statements sans modifier le code source
-  mais en les donnant a part.
-
-  idee :
-
-  . fichier patchs
-  . autres
-
-  a discuter en appendice de ce document.
-
-\end{remark}
 
 \subsection{Loop annotations}
 \label{sec:loop_annot}
@@ -1055,11 +1100,11 @@ to refer to local variables.
   Garder l'idee principal: on veut des annotations qui parlent a la
   fois de \result et des variables locales.
 
-
   A-t-on besoin de mettre cela pour toute expression ?
 
- exemple : x = x + (f(..) //@ assert ...\result...)
+  exemple : x = x + (f(..) //@ assert ...\result...) REFUSE'
 
+  par contre, c'est un cas particulier de clause ``returns'' de la section suivante 
 \end{remark}
 
 
@@ -1087,6 +1132,12 @@ corresponding \assumes{} clause.
 \begin{example}
   %\input{}
 \end{example}
+
+\begin{remark}{Claude}
+
+  clauses ``breaks'' ``continues'' et ``returns''
+  
+\end{remark}
 
 \section{Logic specifications}
 \label{sec:logicspec}
@@ -1254,6 +1305,16 @@ It also allowed to put a reads clause on a definition, although in
 such a case tools should provide a way to check that the reads clause
 is compatible with the definition.
 
+
+
+Expressions that relate to a program point are
+\begin{itemize}
+\item pointer dereferencing: *p, p ->f
+\item array accesses: t[i]
+\item address operator: \&x
+\item built-in predicates: \valid, others ?
+\item others ?
+\end{itemize}
 
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}

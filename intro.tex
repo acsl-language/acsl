@@ -101,13 +101,25 @@ Idem avec les extensions de GCC.}
 
 \section{Generalities about Annotations}
 
-In this document, we consider that specifications are given as annotations 
-in comments written directly in C source files, so that source files remain
-compilable\footnote{Other means of attaching annotations to source
-  files, without modifying them, are left to user tools.}. Those
-comments must start by \verb|/*@| or \verb|//@| and end as usual in~C.
+In this document, we consider that specifications are given as
+annotations in comments written directly in C source files, so that
+source files remain compilable. Those comments must start by
+\verb|/*@| or \verb|//@| and end as usual in~C.
+
+For some particular context, it might not be possible to modify the
+source code. It is strongly recommended that a tool which implements
+ACSL specifications provides a technical means to store annotations in
+separate files. This is not the purpose of this document to describe
+such technical means.  Nevertheless, some of the specifications,
+namely those at a global level, can be given in separate files:
+logical specifications can be imported (see
+Section~\ref{sec:specmodules}) and a function contract can be attached
+to a copy of the function profile (see
+Section~\ref{sec:multiplecontracts}).
+
 
 \begin{remark}
+
   Elaborer plus sur ce que peuvent faire les outils pour permettre des
   annotations dans des fichiers a part.
 
@@ -115,6 +127,22 @@ comments must start by \verb|/*@| or \verb|//@| and end as usual in~C.
   etre dans un .h a part)
 
 \end{remark}
+
+\begin{remark}{DP}
+
+  discuter sur les facons d'annoter les statements sans modifier le code source
+  mais en les donnant a part.
+
+  idee :
+
+  . fichier patchs
+  . autres
+
+  a discuter en appendice de ce document. (?)
+
+\end{remark}
+
+
 
 \subsection{Kinds of annotations}
 

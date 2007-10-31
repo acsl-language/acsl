@@ -1,6 +1,7 @@
 
 
-/* nb_occ(t,i,j,e) gives the number of occurrences of e in t[i..j]
+/* nb_occ<L>(t,i,j,e) gives the number of occurrences of e in t[i..j]
+ * at some label L
  */
 
 //@ logic integer nb_occ<L>(double t[], integer i, integer j, double e);
