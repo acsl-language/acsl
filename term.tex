@@ -1,8 +1,8 @@
 \begin{syntax}
-  bin-op ::= "+" | "-" | "*" | "/" | "%" ; 
+  bin-op ::= "+" | "-" | "*" | "/" | "%" ;
        | "==" | "!=" | "<=" | ">=" | ">" | "<" ;
-       | "&&" | "||" |   ; boolean operations 
-       | "&" | "|" | "--->" | "<--->" | "^"; bitwise operations 
+       | "&&" | "||" |   ; boolean operations
+       | "&" | "|" | "--->" | "<--->" | "^"; bitwise operations
        \
   unary-op ::= "+" | "-" ; unary plus and minus
        | "!" ; boolean negation
@@ -13,23 +13,23 @@
   term ::= "\true" | "\false" ;
        | id ;
        | unary-op term ;
-       | term bin-op term ;  
+       | term bin-op term ;
        | term "[" term "]" ; array access
        | term "." id  ; structure field access
-       | term "->" id ; 
-       | "(" type-expr ")" term  ; cast 
+       | term "->" id ;
+       | "(" type-expr ")" term  ; cast
        | id "(" term ("," term)* ")" ; function application
        | "(" term ")" ; parentheses
-       | term "?" term ":" term ; 
+       | term "?" term ":" term ;
        | "\let" id "=" term ";" term ; local binding
-       | "sizeof" "(" term ")" ; 
+       | "sizeof" "(" term ")" ;
        | "sizeof" "(" C-type-expr ")" ;
-       | id ":" term ; syntactic naming 
+       | id ":" term ; syntactic naming
        \
-  rel-op ::= "==" | "!=" | "<=" | ">=" | ">" | "<" 
+  rel-op ::= "==" | "!=" | "<=" | ">=" | ">" | "<"
        \
   pred ::= "\true" | "\false" ;
-       | term (rel-op term)* ; comparisons, see remark below
+       | term (rel-op term)+ ; comparisons, see remark below
        | id "(" term ("," term)* ")" ; predicate application
        | "(" pred ")" ; parentheses
        | pred "&&" pred ; conjunction
@@ -39,11 +39,11 @@
        | "!" pred ; negation
        | pred "^^" pred ; exclusive or
        | term "?" pred ":" pred ;
-       | pred "?" pred ":" pred ; 
+       | pred "?" pred ":" pred ;
        | "\let" id "=" term ";" pred ; local binding
        | "\forall" binders ";" pred ; universal quantification
        | "\exists" binders ";" pred ; existential quantification
-       | id ":" pred ; syntactic naming 
+       | id ":" pred ; syntactic naming
 \end{syntax}
 
 %%% Local Variables:

@@ -6,9 +6,9 @@
        | tset "[" tset "]" ;
        | term? ".." term? ; range
        | tset "," tset ;
-       | tset "+" tset ;  
+       | tset "+" tset ;
        | "(" tset ")" ;
-       | "{" tset "|" binders (";" predicate)? "}" ; set comprehension
+       | "{" tset "|" binders (";" pred)? "}" ; set comprehension
 \end{syntax}
 
 %%% Local Variables:
