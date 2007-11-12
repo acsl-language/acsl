@@ -7,9 +7,9 @@
           | logic-function-decl | logic-function-def ;
           | axiom-def
   \
-  logic-type-decl ::= "type" logic-type ";" ; 
+  logic-type-decl ::= "type" logic-type ";" ;
   \
-  type-var ::= "'" id 
+  type-var ::= "`" id
   \
   logic-type ::= id ;
   | id "<" type-var (, type-var)* ">" ; polymorphic type
@@ -23,7 +23,7 @@
   \
   logic-predicate-def ::= "predicate" id parameters "{" pred "}"
   \
-  logic-const-decl ::= "logic" type-expr id 
+  logic-const-decl ::= "logic" type-expr id
   \
   logic-function-decl ::= "logic" type-expr id parameters ";"
   \
@@ -31,7 +31,7 @@
   \
   parameters ::= "(" parameter (, parameter)* ")"
   \
-  parameter ::= type-expr variable-ident  
+  parameter ::= type-expr variable-ident
   \
   axiom-def ::= "axiom" id ":" pred ";" ;
   | "lemma" id ":" pred ";" ;

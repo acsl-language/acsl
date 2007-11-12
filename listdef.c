@@ -1,1 +1,1 @@
-//@ type list<'a> = Nil | Cons('a,list<'a>);
+//@ type list<`a> = Nil | Cons(`a,list<`a>);

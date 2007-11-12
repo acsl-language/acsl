@@ -631,18 +631,18 @@ set of behaviors\footnote{Although, some tools might provide a way to check such
   alors la completude serait :
      disjunction des post_assumes = vrai
 
-  MAIS remarque de Patrick: pourquoi ne pas parler de la disjonction 
-  des assumes ? 
+  MAIS remarque de Patrick: pourquoi ne pas parler de la disjonction
+  des assumes ?
 
 
 Decision du 24 octobre 2007:
 
 
-  1) On peut avoir envie de specifier que les behavior sont 
-     mutuellement exclusifs et/ou couvrent tous les cas SELON 
+  1) On peut avoir envie de specifier que les behavior sont
+     mutuellement exclusifs et/ou couvrent tous les cas SELON
      LEURS CLAUSES "assumes".
 
-     
+
      ajouter une clause supplementaire a un contrat de function:
 
      "disjoint behaviors"
@@ -676,7 +676,7 @@ Decision du 24 octobre 2007:
   size_t fwrite(const  void  *ptr,  size_t  size,  size_t  nmemb,  FILE
        *stream);
 
-   
+
   /*@ behavior normal:
     @   post assumes \result != NULL;
     @   ensures \valid( (char*)\result + (0..size-1))
@@ -686,30 +686,30 @@ Decision du 24 octobre 2007:
   void *malloc(size_t size);
 
 
-  3) On pourrait avoir envie de specifier que les behavior sont 
-     mutuellement exclusifs et/ou couvrent tous les cas SELON 
+  3) On pourrait avoir envie de specifier que les behavior sont
+     mutuellement exclusifs et/ou couvrent tous les cas SELON
      LEURS CLAUSES "post_assumes".
 
-     ON NE TRAITE PAS CE CAS S'IL N'Y A PAS DE BESOIN, et il est 
-     alors interdit d'utiliser les clauses "complete behavior" et 
+     ON NE TRAITE PAS CE CAS S'IL N'Y A PAS DE BESOIN, et il est
+     alors interdit d'utiliser les clauses "complete behavior" et
      "disjoint behavior" sur des behavior contenant des "post assumes"
 
      la semantique serait:
 
     La condition de d'exclusion mutuelle des cas de behaviors
-    est: pour toute paire de behavior B_1 et B_2 : post-condition 
+    est: pour toute paire de behavior B_1 et B_2 : post-condition
     supplementaire
 
-           not ((\old(assumes_1) et \postassume_1) 
-                 et 
+           not ((\old(assumes_1) et \postassume_1)
+                 et
                 (\old(assumes_2) et \postassume_2))
- 
+
     La condition de couverture des cas de behaviors est :
-    
+
     la disjunction des (\old(assumes_i) et \postassume_i) est une post-conditionn supplementaire
 
-   
-  
+
+
 \end{verbatim}
 \end{remark}
 
@@ -872,14 +872,14 @@ requires clauses and the behaviors.
   2) proposer une syntaxe pour distinguer les contrats initiaux, et
      les contrats complementaires (comme le also de JML)
 
-  
+
 \end{remark}
 
 
 \section{Statement annotations}
 
 \begin{remark}{Claude}
-  
+
   Il faut absolument ajouter des regles de portee, a plusieurs
   endroits dans ce document
 
@@ -1104,7 +1104,7 @@ to refer to local variables.
 
   exemple : x = x + (f(..) //@ assert ...\result...) REFUSE'
 
-  par contre, c'est un cas particulier de clause ``returns'' de la section suivante 
+  par contre, c'est un cas particulier de clause ``returns'' de la section suivante
 \end{remark}
 
 
@@ -1136,7 +1136,7 @@ corresponding \assumes{} clause.
 \begin{remark}{Claude}
 
   clauses ``breaks'' ``continues'' et ``returns''
-  
+
 \end{remark}
 
 \section{Logic specifications}
@@ -1391,11 +1391,11 @@ definitions, like the \verb|List| module above.
 \begin{itemize}
 \item \baseaddr{} base address of an allocated pointer
 \[
-\baseaddr{} : \verb|'a *| \ra \verb|char*|
+\baseaddr{} : \verb|`a *| \ra \verb|char*|
 \]
 \item \blocklength{} length of the allocated block of a pointer
 \[
-\blocklength{} : \verb|'a *| \ra \verb|size_t|
+\blocklength{} : \verb|`a *| \ra \verb|size_t|
 \]
 
 \item $\valid$ is a built-in predicate which applies to a set of terms
@@ -1411,7 +1411,7 @@ Some shortcuts are provided:
 \item $\offset(p)$ returns the offset between p and its base address
 
   \begin{eqnarray*}
-    \offset &:& \verb|'a *| \ra \verb|size_t|  \\
+    \offset &:& \verb|`a *| \ra \verb|size_t|  \\
     \offset(p) &=& (\verb|char*|)p - \baseaddr(p)
   \end{eqnarray*}
   the following property holds: for any set of pointers $s$, $\valid(s)$ if and only if for all $p\in s$:

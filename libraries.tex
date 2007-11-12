@@ -12,7 +12,7 @@ Section~\ref{sec:jessie} describes additional predicates propose by the Jessie p
 %\item \comparable{}: checks whether two pointers are comparable
 %  as defined in the ANSI standard.
 %  \[
-%  \comparable{} : \verb|'a *| \ra \verb|'b *| \ra \boolean
+%  \comparable{} : \verb|`a *| \ra \verb|`b *| \ra \boolean
 %  \]
 %\end{itemize}
 
@@ -47,8 +47,8 @@ support some of them~\cite{moy07ccpp}). As a consequence a valid
 pointer of some type $\tau*$ necessarily points to a memory block
 which contains values of type $\tau$. To model that, the jessie library introduce new logic functions:
 \begin{flushleft}
-\integer ~ \offsetmin('a *p); \\
-\integer ~ \offsetmax('a *p);
+\integer ~ \offsetmin(`a *p); \\
+\integer ~ \offsetmax(`a *p);
 \end{flushleft}
 
 \begin{itemize}
@@ -65,7 +65,7 @@ The following properties hold:
 \end{eqnarray*}
 It also introduce syntactic sugar:
 \begin{eqnarray*}
-\validrange(p,i,j) &:=& \offsetmin(p) <= i \land \offsetmax(p) >= j 
+\validrange(p,i,j) &:=& \offsetmin(p) <= i \land \offsetmax(p) >= j
 \end{eqnarray*}
 and the ACSL built-in predicate $\valid(p)$ is now equivalent to
 $\validrange(p,0,0)$.
@@ -74,7 +74,7 @@ $\validrange(p,0,0)$.
 
 \experimental
 
-The predicate 
+The predicate
 \[
 \integer~\strlen(\verb|char*|p)
 \]
