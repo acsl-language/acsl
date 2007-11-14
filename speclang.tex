@@ -1178,6 +1178,15 @@ rules for declaring polymorphic types, and for polymorphic type
 expressions. Notice that type variables are identifiers preceded by
 the quote character.
 
+\begin{remark}
+  Plutot que de prefixer les variables de type par dfes backquote, on popurrait mettre des lieurs explicites:
+
+  predicate p<A,B>(A x, B y)
+
+  axiom a<A,B> : ...
+
+\end{remark}
+
 \subsection{Recursive logic definitions}
 
 The explicit definitions of logic functions and predicates can be
@@ -1559,12 +1568,10 @@ Such invariants are allowed under some sound policy~\cite{barnett04jot}.
 \section{Ghost variables and statements}
 \label{sec:ghost}
 
-\begin{remark}{SD9}
+Ghost variables and statements are like C variables and statements,
+but visible only in the specifications. The grammar is given in
+Figure~\ref{fig:gram:ghost}.
 
-  illustrer l'utilisation de ghost pour specifier des proprietes temporelles
-
-
-\end{remark}
 
 \begin{remark}{JCF et CM}
 
@@ -1598,7 +1605,6 @@ porter à la fois sur les variables du C et les  ``ghost variables''.
       behavior''. Faut'il en parler ici, comme on a parlé des
       ``logic label'' plus haut~?}
 
-Ghost variables and statements are like C variables and statements, but visible only in the specifications. The grammar is given in Figure~\ref{fig:gram:ghost}.
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
       \input{ghost.bnf}
@@ -1611,11 +1617,62 @@ Ghost variables and statements are like C variables and statements, but visible 
 
   Cette grammaire autorise de mettre des ghost dans les ghost, a refaire.
 
+  En fait non, on l'autorise : du code ghost peut avoir besoin
+  d'annotation, comme des invariants de boucle
+
 \end{remark}
 
-The semantics requires that ghost statements do not change the regular
-program execution, hence ghost statements modify only ghost variables.
+\begin{remark}{SD9}
 
+  illustrer l'utilisation de ghost pour specifier des proprietes temporelles
+
+\end{remark}
+
+
+\paragraph{Semantics of Ghost Code}
+
+The question of semantics is essential for ghost code. Informally, the
+semantics requires that ghost statements do not change the regular
+program execution. This implies several conditions, including e.g:
+\begin{itemize}
+\item Ghost code cannot modify a non-ghost C variable.
+\item Ghost code cannot modify a non-ghost structure field.
+\item If $p$ is a ghost pointer pointing to a non-ghost memory location, then it is forbidden to assign $*p$.
+\item Body of a ghost function is ghost code, hence do not modify
+  non-ghost variables or fields.
+\item If a non-ghost C function is called in ghost code, it must no
+  modify non-ghost variables or fields.
+\item If a structure has ghost fields, the \texttt{sizeof} of the
+  structure is the same has the structure without ghost fields. Also,
+  alignment of fields remains unchanged.
+\end{itemize}
+
+Semantics is specified as follows. First, one has to think that
+program execution with ghost code involves a \emph{ghost memory heap}
+and a \emph{ghost stack}, disjoint from the regular heap and stack.
+Ghost variables lie in the ghost heap, so as the ghost field of
+structures. Thus, every memory side-effect can be classified as ghost
+or non-ghost. Then, the semantics is that memory side-effects of ghost
+code must always be in the ghost heap or the ghost stack.
+
+Notice that this semantics is not statically decidable. It is left to
+tools to provide approximations, correct in the sense that any code
+statically detected as ghost must be semantically ghost.
+
+\begin{example}
+  The following is not valid ghost code:
+  \input{ghostpointer.pp}
+\end{example}
+
+\begin{remark}{Claude}
+  d'autres exemples, valides ou non valides, serait bienvenus
+\end{remark}
+
+\begin{remark}{All}
+  
+On veut des tableaux ghost de taille infinie
+
+\end{remark}
 
 \subsection{Volatile variables}
 

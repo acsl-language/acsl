@@ -122,9 +122,11 @@ possible of ACSL.
 \cleardoublepage
 \addcontentsline{toc}{chapter}{\bibname}
 \bibliographystyle{plain}
-\IfFileExists{biblio-demons.tex}{%
-\input{biblio-demons.tex}
-}{\bibliography{./biblio}}
+%\IfFileExists{biblio-demons.tex}{%
+%\input{biblio-demons.tex}
+%}{
+\bibliography{./biblio}
+%}
 
 \cleardoublepage
 \addcontentsline{toc}{chapter}{\listfigurename}

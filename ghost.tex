@@ -1,6 +1,14 @@
 \begin{syntax}
-  statement ::= ghost-statements statement \\
-  ghost-statements ::= "/*@" "ghost" statement+ "*/"
+  
+  
+  vardecl ::= "//@" "ghost" vardecl 
+          | "//@"  \\
+   
+  typedecl ::= "//@" "ghost" typedecl \\
+
+  statement ::= C-statement | ghost-statements C-statement \\
+  ghost-statements ::= "/*@" "ghost" C-statement+ "*/"
+
 \end{syntax}
 
 %%% Local Variables:

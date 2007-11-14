@@ -7,9 +7,10 @@ DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
 	listdecl.pp listdef.pp listlengthdef.pp import.pp listmodule.pp \
 	strcpyspec.pp dowhile.pp num_of_pos.pp nb_occ.pp permut.pp \
 	acsl_allocator.pp \
+	ghostpointer.pp \
 	term.bnf binders.bnf fn_behavior.bnf oldandresult.bnf loc.bnf \
 	assertions.bnf loops.bnf st_contracts.bnf moreterm.bnf ghost.bnf \
-	logic.bnf logictypedecl.bnf higherorder.bnf logicreads.bnf
+	logic.bnf logictypedecl.bnf higherorder.bnf logicreads.bnf 
 
 all: main.pdf
 
