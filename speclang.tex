@@ -428,21 +428,36 @@ for terms as given on figure~\ref{fig:gram:oldandresult}. These are the followin
 
 \end{itemize}
 
+\begin{remark}{Patrick}
+
+La restriction sur les label des $\at$ n'est pas forcement necessaire.
+Une semantique plus generale permet de suprimer le texte ``which has
+to appear before'' :
+partant du principe que toute les propritétes sont relatives a un
+point de programe,
+$\at(e,id)$ désigne la valeur de $e$ precedent passe au label $id$.
+
+Cela donne la même chose lorsque $id$ est avant le point de programme
+en question et que la regle de portee non encore exprimee est
+verifiee.
+
+Sinon, il faut donner des regles de portee pour les labels mentionnes dans les $\at$
+
+\end{remark}
+
+
 
 $\old(e)$ and \result{} can be used only in \ensures{} clauses,
 whereas $\at(e,id)$ can be used everywhere.
 
 \begin{remark}{Patrick}
 
- veut des $\old$ partout: designe toujours le pre-state de la function.
+ veut des $\old$ partout (assert, invariant de boucle, ...) : cela
+ designe toujours le pre-state de la function à l'exception, bien sur,
+ des  \ensures{} contenus dans les contrats de fonctions.
+
 
 \end{remark}
-
-\begin{remark}{Patrick}
-
-donner des regles de portee pour les labels mentionnes dans les $\at$
-\end{remark}
-
 
 \oldremark{Patrick}{pourquoi seuls les ``behavior'' peuvent avoir un
   nom~? Ne peut-t'on pas avoir le ``ident:'' optionnel pour chacune
@@ -633,17 +648,17 @@ set of behaviors\footnote{Although, some tools might provide a way to check such
 
   MAIS remarque de Patrick: pourquoi ne pas parler de la disjonction
   des assumes ?
+\end{verbatim}
+\end{remark}
 
-
-Decision du 24 octobre 2007:
-
+\begin{remark}{Decision du 24 octobre 2007}
+\begin{verbatim}
 
   1) On peut avoir envie de specifier que les behavior sont
      mutuellement exclusifs et/ou couvrent tous les cas SELON
      LEURS CLAUSES "assumes".
 
-
-     ajouter une clause supplementaire a un contrat de function:
+   * ajouter une clause supplementaire a un contrat de function:
 
      "disjoint behaviors"
      ou plus generalement
@@ -658,14 +673,12 @@ Decision du 24 octobre 2007:
      "complete behaviors b1,...,bn"
 
      semantique: disj_{1<=i<=n} assumes_i (est valide)
-
-
+\end{verbatim}
+\begin{verbatim}
   2) on veut faire des behaviors differents suivant le post-state
      -> clause 'post assumes'
 
-
   exemples : (voir aussi annexe (Error Handling without exception))
-
 
 
   /*@ behavior normal:
@@ -684,8 +697,8 @@ Decision du 24 octobre 2007:
     @   post assumes \result == NULL ;
     @*/
   void *malloc(size_t size);
-
-
+\end{verbatim}
+\begin{verbatim}
   3) On pourrait avoir envie de specifier que les behavior sont
      mutuellement exclusifs et/ou couvrent tous les cas SELON
      LEURS CLAUSES "post_assumes".
@@ -707,11 +720,29 @@ Decision du 24 octobre 2007:
     La condition de couverture des cas de behaviors est :
 
     la disjunction des (\old(assumes_i) et \postassume_i) est une post-conditionn supplementaire
-
-
-
 \end{verbatim}
 \end{remark}
+
+\begin{remark}{SD}
+  Stephane confirme qu'AIRBUS utilise dans leur methodologie la notion
+  d'assumes, mais pas celle de post-assumes.
+
+  La possibilité d'ecrire des assumes permettra de reduire la taille
+  des post-conditions actuelles et conduira a moins de repetitions des
+  conditions de behaviors.
+  Par contre, placer les actuelles pre-conditions dans des behaviors
+  devrait conduire a plus de repetitions dans les clauses requires.
+  Il est important pour AIRBUS de pouvoir eviter les repetitions de termes
+  dans les proprietes.
+
+  Ne serait-il pas possible de définir dans les contrats de fonctions
+  des prédicats ou termes parlant des operandes de la fonction, sans
+  passer par des fonctions logiques auxquelles on passerait en
+  argument les operandes de la fonctions ?
+  
+  Ces predicats ou termes aurait une portee locale a la fonction.
+\end{remark}
+
 
 
 \begin{example}
