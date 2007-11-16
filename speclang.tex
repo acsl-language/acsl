@@ -209,8 +209,8 @@ Formal typing rules for terms are given in appendix~\ref{sec:typingrules}
 
 \subsection{Integer arithmetic and machine integers}
 
-\begin{remark}{SD?}
-  Preciser les architecture-dependant features: taille des int, etc.
+\begin{remark}{SD2}
+Preciser les architecture-dependant features: taille des int, etc.
 \end{remark}
 
 The following integer arithmetic operations apply to
@@ -277,13 +277,6 @@ or
 if you really want to return an int.
 
 
-
-\begin{remark}{SD?}
-
-  commentaire SD3: problem de perte de signe sur les entiers
-  mathematiques -> demander des precisions.
-
-\end{remark}
 
 \subsubsection*{Quantification}
 \label{sec:quantification}
@@ -463,7 +456,7 @@ whereas $\at(e,id)$ can be used everywhere.
   nom~? Ne peut-t'on pas avoir le ``ident:'' optionnel pour chacune
   des clauses~? Claude: parce que le nommage de behavior doit servir
   pour les associer a des clauses du corps de la fonction, p. ex.
-  assert ou lopp invariant. Mais on peut aussi proposer par ailleurs
+  assert ou loop invariant. Mais on peut aussi proposer par ailleurs
   de nommer des predicate ou terms, p. ex. avec la notation Caduceus
   (id : f) }
 
@@ -1521,10 +1514,6 @@ value returned by \verb|main| or the argument passed to \verb|exit|.
 
 \section{Dependencies information}
 
-\oldremark{Patrick}{ne faut-t'il pas étendre les clauses ``assigns'' aux
-  clauses ``from'' de CAVEAT prenant en comptes les locations lues, et les
-  expressions fonctionnelles~?}
-
 \experimental
 
 An extended syntax of \assigns clauses allows to give dependencies:
@@ -1620,21 +1609,10 @@ ghost dans les structures -> change
 
 \experimental
 
-\oldremark{Patrick}{les ``ghost statements'' correspondent à des
-instructions d'observations des variables du C. Ces instructions
-ne peuvent pas modifier les variables du C, mais que les ``ghost
-variables''. Cela permet d'écrire plus facilement l'observateur
-adéquat à la preuve des propriétés puisque les propriétés peuvent
-porter à la fois sur les variables du C et les  ``ghost variables''.
-}
-
-  \oldremark{Patrick}{on a besoin de ``ghost braces'' pour
-      écrire du ``ghost code''. Dans ce cas on n'en fait pas un point
-      à part entière ici, on en parlera dans la section~\ref{sec:ghost}.
-      Par contre, on a besoin de ``logic braces'' afin de créer un
+\oldremark{Patrick}{on a besoin de ``ghost braces'' pour
+      écrire du ``ghost code'', mais également de ``logic braces'' afin de créer un
       ``logic statement'' auquel on désire associer un ``statement
-      behavior''. Faut'il en parler ici, comme on a parlé des
-      ``logic label'' plus haut~?}
+      behavior''. Où en parler~?}
 
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
