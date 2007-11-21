@@ -175,7 +175,7 @@ first-order logic). Logic types are:
 \item ``Mathematical'' types: \verb|integer| for unbounded,
   mathematical integers; \verb|real| for real numbers, \verb|boolean|
   for booleans (with values written $\{ \verb|\true|, \verb|\false| \}$.
-\item C types
+% NON! \item C types
 \item Logic types introduced by specification writer (see
   Section~\ref{sec:logicspec}).
 \end{itemize}
@@ -1304,6 +1304,27 @@ higher-order logic.
 Logic types may not only be declared but also defined concretely, either under thr form of record types, or of sum types. These definitions may be recursive.
 With record types, the field access notation $t.id$ can be used, and for sum types, a pattern-matching construction is available. The grammar rules for these additional constructions are given Figure~\ref{fig:gram:logictype}
 
+\begin{remark}{All}
+
+TODO: ajouter les types tableaux logiques: tableaux fonctionnels. 
+
+sucre syntaxique: t[i] pour select(t,i),  et dans le cas de code ghost, t[i] = e pour t = store(t,i,e)
+
+Example: n-reines. 
+
+  
+\end{remark}
+
+\begin{remark}{All}
+
+TODO: else ghost 
+
+  manque `if () i1 //@ else i2' dans la grammaire
+
+\end{remark}
+
+
+
 \begin{example}
   The declaration
   \input{listdef.pp}
@@ -1387,15 +1408,62 @@ parameters but also in an implicit way on the values stored in memory.
 
 \end{remark}
 
-\subsection{Model variables and fields}
+\subsection{Model variables and model fields}
 
-\experimental
+%\experimental
 
-Similar as JML's model variables, with the restriction that their type must be a logic type.
+A model variable is a variable introduced in the specification, whose
+type is a logic type. Analogously, structures may have \emph{model
+  fields}.  These are used to provide abstract specifications to
+functions whose concrete implementation must remain private.
 
-%\begin{example}
-%  \todo{example}
-%\end{example}
+\begin{example}
+  Here is an example of a specification of a function which generates
+  fresh integers. The contract is given in term of a model variable
+  which is intended to represent the set of ``forbidden'' values, e.g. that already have been generated. 
+  \input{gen_spec_with_model.pp}
+  The contract is expressed abstractly, telling that 
+  \begin{itemize}
+  \item the forbidden set of values is modified
+  \item the result number is not in the set of forbidden values, thus is ``fresh''
+  \item the new set of forbidden contains both the returned value and
+    the previously forbidden values.
+  \end{itemize}
+  An implementation of this function might be as follows, where a
+  decision has been made to generate values in increasing order, so
+  that it suffices to record the last value generated. This decision
+  is made explicit by an invariant.
+ \input{gen_code.pp}
+\end{example}
+
+Informal semantics of model variables is as follows:
+\begin{itemize}
+\item Model variables can only appear in specifications. They are not lvalues, thus cannot be assigned directly (unlike ghost variables, see below).
+\item Nevertheless a function contract might say that a model variable
+  is assigned.
+\item When a function contract mentions model variables:
+  \begin{itemize}
+  \item the precondition is implicitely existentially quantified over
+    those variables
+  \item the post-conditions are universally quantified over the old
+    values of model variables, and existentially quantified over the new values.
+  \end{itemize}
+\end{itemize}
+Thus, in practice the only way of proving that a function body
+satisfies a contract with model variables is to provide an invariant
+relating model variables and concrete variables, as in the example
+above.
+
+\paragraph{Remarks}
+
+Although the syntax of model variables is close to JML model
+variables, they differ in the sense that the type of a model variable
+is a logic type, not a program type. Also, the semantics above is
+closer to the one of the B machines.  It has to be noticed that
+program verification with model variables does not have a
+well-establish theoretical background~\cite{marche07,leavens07}, so we
+deliberately don't provide a precise semantics in this document .
+
 
 \subsection{Libraries of algebraic specifications}
 \label{sec:specmodules}
@@ -1682,6 +1750,10 @@ statically detected as ghost must be semantically ghost.
 On veut des tableaux ghost de taille infinie
 
 \end{remark}
+
+\paragraph{Differences between model variables and ghost variables}
+
+TODO
 
 \subsection{Volatile variables}
 

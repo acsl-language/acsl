@@ -5,18 +5,19 @@
 
 typedef enum _bool { false = 0, true = 1 } bool;
 
-/*@ predicate finite_list((`a* -> `a*) next_elem, `a* ptr) {
-  @   ptr == \null || (\valid(ptr) && finite_list(next_elem(ptr)))
+/*@ predicate finite_list<A>((A* -> A*) next_elem, A* ptr) {
+  @   ptr == \null || (\valid(ptr) && finite_list(next_elem,next_elem(ptr)))
   @ }
   @
-  @ logic integer list_length((`a* -> `a*) next_elem, `a* ptr) {
-  @   (ptr == \null) ? 0 : 1 + list_length(next_elem(ptr))
+  @ logic integer list_length<A>((A* -> A*) next_elem, A* ptr) {
+  @   (ptr == \null) ? 0 : 1 + list_length(next_elem,next_elem(ptr))
   @ }
   @
-  @ predicate lower_length((`a* -> `a*) next_elem, `a* ptr1, `a* ptr2) {
+  @ predicate lower_length<A>((A* -> A*) next_elem, A* ptr1, A* ptr2) {
   @   finite_list(next_elem, ptr1) && finite_list(next_elem, ptr2)
   @   && list_length(next_elem, ptr1) < list_length(next_elem, ptr2)
-  @ } */
+  @ } 
+  @*/
 
 // forward reference
 struct _memory_slice;

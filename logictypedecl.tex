@@ -2,6 +2,7 @@
   logic-type-decl ::= "type" logic-type = logic-type-def ";"  
   \
   logic-type-def ::= record-type | sum-type ; 
+  | type-expr ; type abbreviation 
   \
   record-type ::= "{" type-expr id ( ";" type-expr id)* ";"? "}" 
   \
