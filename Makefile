@@ -57,6 +57,9 @@ transf.ml: transf.mll
 
 .PHONY: clean rubber
 
+check:
+	gcc -c *.c
+
 clean:
 	rm -rf *~ *.aux *.log *.nav *.out *.snm *.toc *.pp *.bnf \
                transf trans.ml *.cm?

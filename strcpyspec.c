@@ -7,6 +7,6 @@
   @ ensures
   @   \forall integer k; 0 <= k <= \strlen(src) ==> dest[k] == src[k]
   @*/
-void strcpy(char *dest, const char *src);
+void str_cpy(char *dest, const char *src);
 
 

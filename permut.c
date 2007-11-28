@@ -7,7 +7,7 @@
   
 
 /*@ axiom permut_refl<L> :
-  @   \forall double t[], integer n; permut<L,L>(t,t,n)
+  @   \forall double t[], integer n; permut<L,L>(t,t,n);
   @*/
  
 /*@ axiom permut_sym<L1,L2> :
@@ -21,8 +21,9 @@
   @     ==> permut<L1,L3>(t1,t3)
   @*/
   
-axiom permut_exchange :
-  forall t:int farray. forall i:int. forall j:int.
-    permut(t, update(update(t,i,t[j]),j,t[i]))
+/* axiom permut_exchange :
+ *   forall t:int farray. forall i:int. forall j:int.
+ *   permut(t, update(update(t,i,t[j]),j,t[i]));
+ */
 
 

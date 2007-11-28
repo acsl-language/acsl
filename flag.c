@@ -4,17 +4,6 @@ typedef enum { BLUE, WHITE, RED } color;
   @ }
   @*/
 
-/*@ predicate isMonochrome(int t[], integer i, integer j, color c) {
-  @   \valid(t+(i..j)) && 
-  @   \forall integer k; i <= k <= j ==> t[k] == c 
-  @ } 
-  @*/
-
-typedef struct flag {
-  int n;
-  color *colors;
-} flag;
-
 /*@ requires \valid(t+i) && \valid(t+j);
   @ assigns t[i],t[j];
   @ ensures t[i] == \old(t[j]) && t[j] == \old(t[i]);
@@ -25,10 +14,20 @@ void swap(color t[], int i, int j) {
   t[j] = tmp;
 }
 
+typedef struct flag {
+  int n;
+  color colors[];
+} flag;
 /*@ type invariant is_colored(flag f) {
   @   f.n >= 0 && \valid(f.colors+(0..f.n-1)) &&
   @   \forall integer k; 0 <= k < f.n ==> isColor(f.colors[k])
   @ }
+  @*/
+
+/*@ predicate isMonochrome(color t[], integer i, integer j, color c) {
+  @   \valid(t+(i..j)) && 
+  @   \forall integer k; i <= k <= j ==> t[k] == c 
+  @ } 
   @*/
 
 /*@ assigns f.colors[0..f.n-1];
@@ -38,7 +37,7 @@ void swap(color t[], int i, int j) {
   @      isMonochrome(f.colors,b,r-1,WHITE) &&
   @      isMonochrome(f.colors,r,f.n-1,RED))
   @*/
-void flag(flag f) {
+void dutch_flag(flag f) {
   color *t = f.colors;
   int b = 0;
   int i = 0;
