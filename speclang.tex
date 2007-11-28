@@ -1637,16 +1637,40 @@ Examples:
 \subsection{Semantics}
 
 \begin{itemize}
-\item Global invariants: at any state of execution (after
-  initialisation of global static data), the invariant holds.
-\item Type invariants: at any state of execution, an allocated object
-  of the corresponding static type satisfies the invariant.
+\item Global strong invariants: at any state of execution (i.e. at any
+  \emph{sequence point} in the norm TODO: give a reference)(after
+  initialisation of global data), the invariant holds.
+
+\item Global weak invariants: at function entrance and function exit
+  only
+
+\item weak Type invariant: at any function entrance and exit, any
+  global variable of this static type, and any formal parameter, and
+  also the result value, satisfies the invariant. 
+
+\item strong Type invariants: at any state of execution, any global
+  variable, formal parameter or local variable, of this static type,
+  and also the result value, satisfies the invariant.
+
 \end{itemize}
 
 \experimental
 
 Weak invariants do not hold in any state but can be temporarily violated.
 Such invariants are allowed under some sound policy~\cite{barnett04jot}.
+
+
+
+\begin{example}
+  example of strong type invariant:
+
+  typedef double temperature; 
+  //@ strong type invariant I(temperature t) { t >= -273.15 }
+
+  Such kind of strong invariant might be verified using a model with
+  abstract data types. (cf caduceus)
+
+\end{example}
 
 \begin{remark}{PC}
 

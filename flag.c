@@ -1,7 +1,6 @@
 typedef enum { BLUE, WHITE, RED } color;
-
-/*@ predicate isColor(integer i) { 
-  @   i == BLUE || i == WHITE || i == RED 
+//@ type invariant isColor(color c) { 
+  @   c == BLUE || c == WHITE || c == RED 
   @ }
   @*/
 
@@ -10,6 +9,11 @@ typedef enum { BLUE, WHITE, RED } color;
   @   \forall integer k; i <= k <= j ==> t[k] == c 
   @ } 
   @*/
+
+typedef struct flag {
+  int n;
+  color *colors;
+} flag;
 
 /*@ requires \valid(t+i) && \valid(t+j);
   @ assigns t[i],t[j];
@@ -20,11 +24,6 @@ void swap(color t[], int i, int j) {
   t[i] = t[j];
   t[j] = tmp;
 }
-
-typedef struct flag {
-  int n;
-  color *colors;
-} flag;
 
 /*@ type invariant is_colored(flag f) {
   @   f.n >= 0 && \valid(f.colors+(0..f.n-1)) &&
