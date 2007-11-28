@@ -1,5 +1,5 @@
 typedef enum { BLUE, WHITE, RED } color;
-//@ type invariant isColor(color c) { 
+/*@ type invariant isColor(color c) { 
   @   c == BLUE || c == WHITE || c == RED 
   @ }
   @*/

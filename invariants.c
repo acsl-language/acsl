@@ -1,8 +1,11 @@
 int a;
 //@ global invariant a_is_positive: a > 0
 
-typedef int T;
-//@ type invariant T_is_positive(T x) { x > 0 } 
+typedef double temperature; 
+/*@ strong type invariant temp_in_celsius(temperature t) { 
+  @   t >= -273.15 
+  @ }
+  @*/
 
 struct S {
   int f;

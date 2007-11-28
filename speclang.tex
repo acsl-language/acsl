@@ -1614,6 +1614,46 @@ Useful additional constructs for such functional expressions are constructions  
 \section{Data invariants}
 \label{sec:invariants}
 
+
+Data invariants are properties on data that are supposed to hold permanently during the life of these data. In ACSL, we distinguish between
+\begin{itemize}
+\item \emph{global} invariants and \emph{type} invariants: the former
+  apply on global variables, whereas the latter are associated to
+  static types, and apply on any variables of this type.
+\item \emph{strong} invariants and \emph{weak} invariants: strong
+  invariants must be valid really at any any time of the program
+  execution (more precisely at any \emph{sequence point} as defined in
+  the norm TODO: give a reference), whereas weak invariants are valid
+  at \emph{function boundaries} (function entrance and exit) but
+  cannot be violated in between.
+\end{itemize}
+
+\begin{figure}[t]
+  \fbox{\begin{minipage}{0.97\linewidth}
+      \input{data_invariants.bnf}
+    \end{minipage}}
+  \caption{Grammar for declarations of data invariants}
+\label{fig:gram:datainvariants}
+\end{figure}
+
+The syntax for declaring data invariants is given in
+Figure~\ref{fig:gram:datainvariants}. The strength modifier defaults
+to \texttt{weak}.
+
+
+\begin{example}
+  In the following example, we declare
+  \begin{enumerate}
+  \item a weak global invariant \verb|a_is_positive| which specifies that
+    the global variable \texttt{a} should remains positive (weakly, so
+    this property might be violated temporarily between functions
+    calls)
+  \item a strong type invariant for type \verb|temperature|
+  \item a weak type invariant on structures \verb|S|.
+  \end{enumerate}
+  \input{invariants.pp}
+\end{example}
+
 \begin{remark}{SD8}
 
   montrer un example qui exprime des proprietes d'initialisation de
@@ -1622,50 +1662,46 @@ Useful additional constructs for such functional expressions are constructions  
 
 \end{remark}
 
-\experimental
-
 \begin{itemize}
 \item Global invariants: invariants on global variables
 \item Type invariants: invariants on struct, union, typedef
-\item \verb|initially|: predicates that should hold after global
+\item \experimental: \verb|initially|: predicates that should hold after global
   variables initialization
 \end{itemize}
 
-Examples:
-\input{invariants.pp}
 
 \subsection{Semantics}
 
+The distinction between strong and weak invariants is on the sequence points were the property is supposed to hold. The distinction between the global invariants and the type invariants is the set of values on which they are supposed to hold.
+
 \begin{itemize}
-\item Global strong invariants: at any state of execution (i.e. at any
-  \emph{sequence point} in the norm TODO: give a reference)(after
-  initialisation of global data), the invariant holds.
+\item Weak global invariants are properties which applies to global
+  data and hold at any function entrance and function exit.
 
-\item Global weak invariants: at function entrance and function exit
-  only
+\item Strong global invariants are properties which applies to global data and hold at any step of execution (starting after 
+  initialisation of these data).
 
-\item weak Type invariant: at any function entrance and exit, any
-  global variable of this static type, and any formal parameter, and
-  also the result value, satisfies the invariant. 
+\item A weak type invariant on a type $\tau$ is supposed to hold at
+  any function entrance and exit, and applies to any global variable
+  or formal parameter which has static type $\tau$. If the result of
+  the function is of type $\tau$, the result is also supposed to
+  satisfy its invariant at function exit.
 
-\item strong Type invariants: at any state of execution, any global
-  variable, formal parameter or local variable, of this static type,
-  and also the result value, satisfies the invariant.
+\item A strong type invariant on a type $\tau$ is supposed to hold at
+  any state of execution, and applies to any global variable, local
+  variable, or formal parameter which has static type $\tau$. If the
+  result of the function is of type $\tau$, the result is also
+  supposed to satisfy its strong invariant at function exit
 
 \end{itemize}
 
-\experimental
 
-Weak invariants do not hold in any state but can be temporarily violated.
-Such invariants are allowed under some sound policy~\cite{barnett04jot}.
 
 
 
 \begin{example}
   example of strong type invariant:
 
-  typedef double temperature; 
-  //@ strong type invariant I(temperature t) { t >= -273.15 }
 
   Such kind of strong invariant might be verified using a model with
   abstract data types. (cf caduceus)
@@ -1675,6 +1711,12 @@ Such invariants are allowed under some sound policy~\cite{barnett04jot}.
 \begin{remark}{PC}
 
   remise en cause de la politique d'invariants
+
+
+
+Weak invariants do not hold in any state but can be temporarily violated.
+Such invariants are allowed under some sound policy~\cite{barnett04jot}.
+
 
 \end{remark}
 
@@ -1700,8 +1742,8 @@ void reset(S *p) {
 \end{remark}
 
 \begin{example}
-  Dijkstra's Dutch flag.
-\input{flag.pp}
+  Here is a longer example, the famouns Dijkstra's Dutch flag algorithm.
+  \input{flag.pp}
 \end{example}
 
 \section{Ghost variables and statements}
