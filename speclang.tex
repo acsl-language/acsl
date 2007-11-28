@@ -1,3 +1,4 @@
+%; whizzy-master "main.tex"
 
 \chapter{Specification language}
 \label{chap:base}
@@ -1652,6 +1653,32 @@ Such invariants are allowed under some sound policy~\cite{barnett04jot}.
   remise en cause de la politique d'invariants
 
 \end{remark}
+
+\begin{remark}{Claude}
+
+  il faut decider comment sont lies les declarations d'invariants et
+  les type associe'.
+
+Example:
+
+
+typedef struct S {
+  int x;
+} S;
+
+void reset(S *p) {
+  p->x = 0;
+}
+
+//@ type invariant I(S *p) { p.x > 0 }
+
+-> reset ne respecte pas cet invariant
+\end{remark}
+
+\begin{example}
+  Dijkstra's Dutch flag.
+\input{flag.pp}
+\end{example}
 
 \section{Ghost variables and statements}
 \label{sec:ghost}
