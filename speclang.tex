@@ -128,7 +128,7 @@ The precedence of C operators is conservatively extended with additional operato
       connective implies & right & \verb|==>| \\
       connective equiv & left & \verb|<==>| \\
       ternary connective & right & $\cdots\verb|?|\cdots\verb|:|\cdots$ \\
-      quantification & left & \Forall{} \Exists{} \\
+      binding & left & \Forall{} \Exists{} \Let{} \\
       \hline
     \end{tabular}
   \end{center}
@@ -1086,6 +1086,11 @@ In those cases, the logic expression $e$ has some type $\tau$ and $R$ must be re
 (see Section~\ref{sec:logicspec} for details). Of course, to guarantee termination, it must be proved that $R$ is a well-founded relation.
 
 
+\begin{example}
+  The following is a toy example illustrating a variant annotation
+  using a pair of integers, ordered lexicographically.
+  \input{lexico.pp}
+\end{example}
 
 \subsection{Assertions}
 
