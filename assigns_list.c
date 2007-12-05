@@ -11,5 +11,5 @@ struct list {
 
 //@ assigns { q->hd | struct list *q ; reachable(p,q) } ;
 void incr_list(struct list *p) {
-  while (p != NULL) { p->hd++ ; p = p->next }
+  while (p) { p->hd++ ; p = p->next; }
 }

@@ -107,6 +107,60 @@ supposed to be useful for a basic use of that specification language.
 
 %\todo{by Benjamin}
 
+\section{Glossary}
+\label{sec:glossary}
+
+\begin{description}
+\item[pure expressions] \index{pure expression} In ACSL setting, a
+  \emph{pure} expression is a C expression which contains no assignments, no
+  incrementation operator \verb|++| or \verb|--|, no function call,
+  and no access to a volatile object. The set of pure expression is a
+  subset of the set of C expressions without side effect (C
+  standard~\cite{KR88,standardc99}, \S 5.1.2.3, alinea 2).
+
+\item[left-values] \index{left-value}\index{lvalue} 
+
+  A \emph{left-value} (\emph{lvalue} for short) is an expression which
+  denotes some place in the memory during program execution, either on
+  the stack, on the heap, or in the static data segment. It can be
+  either a variable identifier or an expression of the form $*e$,
+  $e[e]$, $e\verb|.|id$ or $e\verb|->|id$, where $e$ is any expression
+  and $id$ a field name. See C standard, \S 6.3.2.1 for a more
+  detailed description of lvalues.
+
+  A \emph{modifiable lvalue} is an lvalue allowed in the left part of
+  an assignment.
+
+  \begin{remark}{DP}
+De'tailler (avec un exemple), meme si c'est dans la
+    norme, la difference entre lvalue modifiable et non-modifiable
+  \end{remark}
+  
+ 
+\item[pre-state and post-state]
+    \index{pre-state}\index{post-state}
+    
+    For a given function call, the \emph{pre-state} denotes the
+    program state at the beginning of the call, including the
+    current values for the function parameters. The \emph{post-state}
+    denotes the program state at the return of the call.
+
+\item[function behavior] \index{function behavior} \index{behavior}
+
+  A \emph{function behavior} (\emph{behavior} for short) is a set of
+  properties relating the pre-state and the post-state for a
+  possibly restricted set of pre-states (behavior \emph{assumptions}).
+
+\item[function contract] \index{function contract} \index{contract} 
+
+  A \emph{function contract} (\emph{contract} for short) forms a
+  specification of a function, consisting of the combination of a
+  precondition (a requirement on the pre-state for any caller to that
+  function), a collection of behaviors, and possibly a measure in case
+  of a recursive function.
+
+\end{description}
+
 \input{compjml}
 
 \input{typingrules}

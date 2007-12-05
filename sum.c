@@ -1,4 +1,4 @@
-/*@ requires n >= 0 && \valid_range(t,0,n-1) ;
+/*@ requires n >= 0 && \valid(t+(0..n-1)) ;
   @ ensures \result == \sum(0,n-1,\lambda int k; t[k]);
   @*/  
 double array_sum(double t[],int n) {

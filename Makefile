@@ -1,7 +1,7 @@
 
 DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
 	div_lemma.pp annot1.pp annot2.pp assigns.pp invariants.pp \
-	isqrt.pp incrstar.pp \
+	isqrt.pp incrstar.pp parsing_annot.pp \
 	max.pp max_index.pp cond_assigns.pp bsearch.pp bsearch2.pp \
 	assigns_array.pp assigns_list.pp sum.pp \
 	listdecl.pp listdef.pp listlengthdef.pp import.pp listmodule.pp \
@@ -59,6 +59,7 @@ transf.ml: transf.mll
 
 check:
 	gcc -c *.c
+	../../bin/toplevel.byte *.c
 
 clean:
 	rm -rf *~ *.aux *.log *.nav *.out *.snm *.toc *.pp *.bnf \

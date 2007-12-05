@@ -86,11 +86,11 @@ With respect to C pure expressions, the additional constructs are as follows:
 \item[Local binding] $\Let x = e_1 ; e_2$ introduces the name $x$ for
   expression $e_1$ which can be used in expression $e_2$.
 
-\item[Conditional] $\If c \Then e_1 \Else e_2$. There is a subtlety
+\item[Conditional] $c ? e_1 : e_2$. There is a subtlety
   here: the condition may be either a boolean term or a predicate.  In
   case of a predicate, the two branches must be also predicates, so
   that this construct acts as a connective with the following
-  semantics: $\If c \Then e_1 \Else e_2$ is equivalent to $(c
+  semantics: $ c ? e_1 : e_2$ is equivalent to $(c
   \verb|==>| e_1) \verb|&&| (\verb|!| c \verb|==>| e_2)$
 
 \item[Syntactic naming] $id \verb|:| e$ is a term or a predicate
@@ -135,11 +135,6 @@ The precedence of C operators is conservatively extended with additional operato
   \caption{Operator precedence}
 \label{fig:precedence}
 \end{figure}
-
-\oldremark{Claude}{Le if ternaire a une precedence inferieure a
-  l'equivalence, comme en JML, et contrairement a Caduceus, ou il est
-  entre le ou et l'implication. Choix a valider, en particulier par
-  Jean-Christophe}
 
 \subsection{Semantics}
 \label{sec:twovaluedlogic}
@@ -218,10 +213,6 @@ Formal typing rules for terms are given in appendix~\ref{sec:typingrules}
 
 \subsection{Integer arithmetic and machine integers}
 
-\begin{remark}{SD2}
-Preciser les architecture-dependant features: taille des int, etc.
-\end{remark}
-
 The following integer arithmetic operations apply to
 \emph{mathematical integers}: addition, subtraction, multiplication,
 unary minus. The value of a C variable of an integer type is promoted
@@ -234,14 +225,14 @@ following the ANSI C99 conventions:
 \begin{itemize}
 \item if a b positive, a / b is ...
 \item if a negative, b positive ...
-\item TODO
+\item TODO (by Claude) 
+\item div par zero ?
 \end{itemize}
 
+\subsection{Hexadecimal constants}
 
-\begin{todo}
-  hexadecimal and octal constants: always non-negative. Suffixes u and
-  l are allowed but meaningless.
-\end{todo}
+Hexadecimal and octal constants are always non-negative. Suffixes \texttt{u} and
+  \texttt{l} are allowed but meaningless.
 
 \subsubsection*{Casts and overflow}
 
@@ -255,6 +246,17 @@ to $8\times\sizeof(t)$). Example:
 \item (unsigned char)1000 is $1000 \bmod 256 = 232$
 \end{itemize}
 
+Remark that the size of C types is architecture-dependent. The ACSL
+does not enforce these sizes either, hence the semantics of terms
+involving such types is also architecture-dependent (but of course in
+the same way as the C code).
+
+
+If one wants to express, in the logic, the result of the C
+computations of an expression, one should add all necessary casts. For
+example, the logic expression which denotes the result of C
+computation of $x*y+z$ is \texttt{(int)((int)(x*y)+z)}. 
+
 \oldremark{Claude}{Si la conjecture suivante est vraie, alors il
   faudrait en parler: Si e1 et e2 sont des expressions d'un type
   entier de C, quels qu'ils soient et si op est une operation binaire
@@ -264,10 +266,6 @@ to $8\times\sizeof(t)$). Example:
   l'utilisateur de parler du resultat du calcul C d'une expressions
   dans la logique}
 
-If one wants to express, in the logic, the result of the C
-computations of an expression, one should add all necessary casts. For
-example, the logic expression which denotes the result of C
-computation of $x*y+z$ is $(int)((int)(x*y)+z)$
 
 Important: implicit casts from integers to C integer type are forbidden.
 Example:
@@ -349,14 +347,22 @@ Example:
 
 Comparisons operators are interpreted as real operators too.
 
-TODO: syntaxe pour abs et power ?
+\oldremark{All}{  syntaxe pour abs et power ? a priori non, on peut
+  fournir une library pour les reels avec abs(), power(), mais
+  proposer des syntaxes speciales parait difficile
 
-\begin{remark}{DP}
+  mais: on pourrait permettre des definition d'operateurs infixes
+
+}
+
+\oldremark{DP+all}{
+
   Il faut de toute facon detailler les constructions de le spec pour
   parler des flottants: reprend-on celles de Caduceus ? exact(...)
+
   On peut laisser la main a JCF pour ce point
 
-\end{remark}
+}
 
 \subsubsection*{Cast}
 
@@ -367,7 +373,10 @@ Casting a real number $x$ to a float or a double results in a real
 number $y$ which is the closest to $x$ real number which is
 representable in the target type.
 \begin{itemize}
-\item Example: (float)0.1 = TODO
+\item Example: (float)0.1 =  (TODO by
+  JCF: forme exact avec un mantisse * 2 puissance exposant)
+
+which is approximately $0.100000000000000005551\cdots$
 \end{itemize}
 
 
@@ -379,18 +388,17 @@ quantification over real numbers.
 Quantification sur (float) et (double) : meme probleme que
 quantification sur les structures, etc.
 
+\oldremark{JCF+All}{
 \subsubsection*{Exact computations}
 
 built-in \verb|exact|: a definir TODO
-
-\begin{remark}{JCF}
 
 Que deviennent les champs modeles de caduceus ?
 
 Il faudrait les integrer a une traitement plus general des modeles
 pour des types de donnees
 
-\end{remark}
+}
 
 
 \section{Function contracts}
@@ -429,6 +437,14 @@ for terms as given on figure~\ref{fig:gram:oldandresult}. These are the followin
   Section~\ref{sec:ghost}.
 
 \end{itemize}
+
+\begin{remark}{Claude}
+
+changer le critere de validite des labels du at: regle de portee
+similaire a celle des variables locales. Insister sur la difference
+avec le goto.
+
+\end{remark}
 
 \begin{remark}{Patrick}
 
@@ -798,7 +814,9 @@ See~\ref{sec:loop_annot} for a continuation of this example.
 \subsection{Memory locations}
 \label{sec:locations}
 
-There are several places where one needs to describe a set of memory locations:  in the above \assigns{} clauses of functions' contracts, or in the \reads{} clauses of Section~\ref{sec:logicspec}.
+There are several places where one needs to describe a set of memory
+locations: in the above \assigns{} clauses of functions' contracts, or
+in the \reads{} clauses of Section~\ref{sec:logicspec}.
 
 \begin{figure}
   \fbox{\begin{minipage}{0.97\textwidth}
@@ -829,7 +847,8 @@ The semantics is given as follows, where $s$ denotes any tset:
   Binders $b$ are bound in $s$ and $P$
 \end{itemize}
 
-A \emph{location} is any set of terms denoting a set of lvalues.
+A \emph{location} is any set of terms denoting a set of
+\emph{modifiable lvalues} as described in Section~\ref{sec:glossary}.
 Only locations are valid as argument to \assigns{} clauses
 
 \begin{example}
@@ -1766,6 +1785,17 @@ Ghost variables and statements are like C variables and statements,
 but visible only in the specifications. The grammar is given in
 Figure~\ref{fig:gram:ghost}.
 
+\begin{remark}{All}
+
+  On veut autoriser \verb|/@ .. @/| dans les commentaires C, on a en a besoin
+  pour annoter le code ghost
+  
+  preciser aussi que l'on a le droit de mettre des \verb|@| en debut
+  de ligne (\verb|\n space* @|) et juste avant le \verb|*/| fermant
+  (ou alors, considerer le caractere \verb|@| juste comme un 'space' ?)
+
+  
+\end{remark}
 
 \begin{remark}{JCF et CM}
 
