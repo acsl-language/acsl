@@ -225,7 +225,7 @@ following the ANSI C99 conventions:
 \begin{itemize}
 \item if a b positive, a / b is ...
 \item if a negative, b positive ...
-\item TODO (by Claude) 
+\item TODO (by Claude)
 \item div par zero ?
 \end{itemize}
 
@@ -255,7 +255,7 @@ the same way as the C code).
 If one wants to express, in the logic, the result of the C
 computations of an expression, one should add all necessary casts. For
 example, the logic expression which denotes the result of C
-computation of $x*y+z$ is \texttt{(int)((int)(x*y)+z)}. 
+computation of $x*y+z$ is \texttt{(int)((int)(x*y)+z)}.
 
 \oldremark{Claude}{Si la conjecture suivante est vraie, alors il
   faudrait en parler: Si e1 et e2 sont des expressions d'un type
@@ -1774,7 +1774,7 @@ void reset(S *p) {
 \end{remark}
 
 \begin{example}
-  Here is a longer example, the famouns Dijkstra's Dutch flag algorithm.
+  Here is a longer example, the famous Dijkstra's Dutch flag algorithm.
   \input{flag.pp}
 \end{example}
 
@@ -1782,19 +1782,52 @@ void reset(S *p) {
 \label{sec:ghost}
 
 Ghost variables and statements are like C variables and statements,
-but visible only in the specifications. The grammar is given in
-Figure~\ref{fig:gram:ghost}.
+but visible only in the specifications. They are introduced by the
+\verb|ghost| keyword at the beginning of the annotation
+(i.e. \verb|/*@ ghost ... */| or \verb|//@ ghost ...| for a one-line
+ghost code, as mentionned in section~\ref{sec:gener-about-annot}).
+The grammar is given in Figure~\ref{fig:gram:ghost}, in which only the
+first form of annotation is used. In this figure, the \textit{C-*}
+non-terminals refer to the corresponding grammar rules of the ISO standard,
+without any ACSL extension. Any non terminal of the form
+\textit{ghost-non-term} for which no definition is given in the figure
+represents the corresponding \textit{C-non-term} entry, in which any
+\textit{entry} is substituted by \textit{ghost-entry}.
+
+The variations with respect to the C
+grammar are the following:
+\begin{itemize}
+\item Comments must be introduced by \verb|//| and extend until the
+  end of the line (the ghost code itself is placed inside a C
+  comment. \verb|/* ... */| would thus lead to incorrect C code).
+\item It is however possible to write multi-line annotations for ghost
+  code. These annotations are enclosed between \verb|/@| and
+  \verb|@/|. As in normal annotations, \verb|@|s at the beginning of a
+  line and at the end of the comment (before the final \verb|@/|) are
+  considered as blank.
+\item Logical types, such as \verb|integer| or \verb|real| are
+  authorized in ghost code.
+\item A non-ghost function can take ghost parameters. If such a ghost
+  clause is present in the declarator, then the list of ghost
+  parameters must be non-empty and fixed (no vararg ghost). The call
+  to the function must then provide the appropriate number of ghost parameters.
+\item Any non-ghost \textit{if-statement} which does not have a non-ghost
+  \verb|else| clause can be augmented with a ghost one. Similarly, a non-ghost
+  \verb|switch| can have a ghost \verb|default:| clause if it does not
+  have a non-ghost one (there are however semantical restrictions for valid
+  ghost labelled statements in a switch, see next paragraph for details).
+\end{itemize}
 
 \begin{remark}{All}
 
   On veut autoriser \verb|/@ .. @/| dans les commentaires C, on a en a besoin
   pour annoter le code ghost
-  
+
   preciser aussi que l'on a le droit de mettre des \verb|@| en debut
   de ligne (\verb|\n space* @|) et juste avant le \verb|*/| fermant
   (ou alors, considerer le caractere \verb|@| juste comme un 'space' ?)
 
-  
+
 \end{remark}
 
 \begin{remark}{JCF et CM}
@@ -1853,11 +1886,15 @@ program execution. This implies several conditions, including e.g:
 \item If $p$ is a ghost pointer pointing to a non-ghost memory location, then it is forbidden to assign $*p$.
 \item Body of a ghost function is ghost code, hence do not modify
   non-ghost variables or fields.
-\item If a non-ghost C function is called in ghost code, it must no
+\item If a non-ghost C function is called in ghost code, it must not
   modify non-ghost variables or fields.
 \item If a structure has ghost fields, the \texttt{sizeof} of the
   structure is the same has the structure without ghost fields. Also,
   alignment of fields remains unchanged.
+\item The control-flow graph of a function must not be altered by
+  ghost statements. In particular, no ghost \verb|return|,
+  \verb|goto|, \verb|break|, or \verb|continue| can appear in the body
+  of a non-ghost function.
 \end{itemize}
 
 Semantics is specified as follows. First, one has to think that
@@ -1873,8 +1910,13 @@ tools to provide approximations, correct in the sense that any code
 statically detected as ghost must be semantically ghost.
 
 \begin{example}
-  The following is not valid ghost code:
+  The following example shows some invalid assignments of ghost pointers:
   \input{ghostpointer.pp}
+\end{example}
+
+\begin{example}
+  The following example shows some invalid ghost statements:
+  \input{ghostcfg.pp}
 \end{example}
 
 \begin{remark}{Claude}

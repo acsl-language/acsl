@@ -1,13 +1,13 @@
 
 DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
-	div_lemma.pp annot1.pp annot2.pp assigns.pp invariants.pp \
+	div_lemma.pp assigns.pp invariants.pp \
 	isqrt.pp incrstar.pp parsing_annot.pp \
 	max.pp max_index.pp cond_assigns.pp bsearch.pp bsearch2.pp \
 	assigns_array.pp assigns_list.pp sum.pp \
 	listdecl.pp listdef.pp listlengthdef.pp import.pp listmodule.pp \
 	strcpyspec.pp dowhile.pp num_of_pos.pp nb_occ.pp permut.pp \
 	acsl_allocator.pp gen_spec_with_model.pp gen_code.pp \
-	ghostpointer.pp flag.pp lexico.pp \
+	ghostpointer.pp ghostcfg.pp flag.pp lexico.pp \
 	term.bnf binders.bnf fn_behavior.bnf oldandresult.bnf loc.bnf \
 	assertions.bnf loops.bnf st_contracts.bnf moreterm.bnf ghost.bnf \
 	logic.bnf logictypedecl.bnf higherorder.bnf logicreads.bnf \

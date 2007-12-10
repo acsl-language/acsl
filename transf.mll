@@ -1,4 +1,4 @@
-(* $Id: transf.mll,v 1.6 2007-07-13 14:02:04 uid525 Exp $ *)
+(* $Id: transf.mll,v 1.7 2007-12-10 17:36:40 uid562 Exp $ *)
 
 { open Lexing;; }
 
@@ -39,7 +39,7 @@ and syntax = parse
       indoublequote lexbuf }
   | "below" { print_string "\\below"; syntax lexbuf }
   | "epsilon" { print_string "\\emptystring"; syntax lexbuf }
-  | ['a'-'z''-'] + {
+  | ['A'-'Z''a'-'z''-'] + {
       print_string "\\nonterm{";
       print_string (lexeme lexbuf);
       print_string"}";

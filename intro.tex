@@ -50,7 +50,7 @@ du C++ ou C\# à utiliser ou à généraliser.
 Idem avec les extensions de GCC.}
 
 
-\section{Generalities about Annotations}
+\section{Generalities about Annotations}\label{sec:gener-about-annot}
 
 In this document, we consider that specifications are given as
 annotations in comments written directly in C source files, so that
@@ -123,17 +123,17 @@ Section~\ref{sec:multiplecontracts}).
   \begin{itemize}
   \item \assert clause. These are allowed
     everywhere a C label is allowed, or just before a
-    block closing brace.  
+    block closing brace.
     \oldremark{Claude}{About \assume{} clauses: current
       discussion is that it is not considered as an element of
       specification, so not present here. This should be part of proof
-      management done by tools.} 
+      management done by tools.}
     \oldremark{Patrick}{En C, seules les
       instructions peuvent être étiquettées. GCC étend cela aux
       accolades fermantes des blocs, y compris celle fermant le corps
       de fonction. On peut dire que l'on fait de même lorsque l'on
       place des annotations juste avant la fermerture d'un bloc.}
-    
+
   \item loop annotation (invariant, variant, assign clauses) is
     allowed immediately before a loop statement: \For, \While,
     \Do\ldots \While. See Section~\ref{sec:loop_annot}
@@ -145,7 +145,7 @@ Section~\ref{sec:multiplecontracts}).
     \oldremark{Patrick}{as-t'on droit au \old dans le \ensures de
       cette annotation~? Oui, pour refer a l'etat avant le statement
       consider\'e}
-    
+
   \item ghost code: is regular C code, only visible from the
     specification, that is only allowed to modify ghost variables. See
     section~\ref{sec:ghost}. This includes ghost braces for enclosing blocks.
