@@ -46,14 +46,18 @@ Remarks:
 \item The construct $t_1~relop_1~t_2~relop_2~t_3 \cdots t_k$ with
   several consecutive comparison operators is a shortcut for
   $t_1~relop_1~t_2 ~\verb|&&|~ t_2~relop_2~t_3 ~\verb|&&|~ \cdots $.
-  However, the $relop_i$ must be in the ``same sense'', {\it i.e.} they must
-  all belong either to $\{\verb|<|, \verb|<=|, \verb|==|\}$,
-  $\{\verb|>|,\verb|>=|,\verb|==|\}$, or $\{\verb|!=|\}$. In
-  particular, the expression \verb|x < y > z| is forbidden. Moreover,
-\verb|x != y != z| does not mean that \verb|x| is different from \verb|z|.
+  However, the $relop_i$ must be in the same ``direction'',
+  \emph{i.e.} they must all belong either to $\{\verb|<|, \verb|<=|,
+  \verb|==|\}$, $\{\verb|>|,\verb|>=|,\verb|==|\}$, or
+  $\{\verb|!=|\}$. In particular, the expression \verb|x < y > z| is
+  forbidden. Moreover, \verb|x != y != z| does not mean that \verb|x|
+  is different from \verb|z|.
 \begin{remark}{Virgile}Dans le dernier cas, on pourrait vouloir avoir x, y
   et z deux à deux distincts, et eventuellement un prédicat n-aire
 \verb|\distinct(x,y,z)| comme dans SMT-lib
+
+  Claude: je suis plutot pour refuser les \verb|!=| consecutifs
+
 \end{remark}
 \item Function and predicate application are not applications of C
   functions, but of logic functions or predicates: see
@@ -174,12 +178,12 @@ where care is taken to have a premise requiring \verb|y| not zero.
 \subsection{Typing}
 
 The language of logic expressions is typed (as for \emph{multi-sorted}
-first-order logic). Logic types are:
+first-order logic). Types are either C types or \emph{logic types}
+defined as follows:
 \begin{itemize}
 \item ``Mathematical'' types: \verb|integer| for unbounded,
   mathematical integers; \verb|real| for real numbers, \verb|boolean|
-  for booleans (with values written $\{ \verb|\true|, \verb|\false| \}$.
-% NON! \item C types
+  for booleans (with values written as \verb|\true| and \verb|\false|).
 \item Logic types introduced by specification writer (see
   Section~\ref{sec:logicspec}).
 \end{itemize}
@@ -199,8 +203,8 @@ Notes:
   integers. There is an implicit promotion from integers to booleans,
   thus one may writes \verb|x && y| instead of \verb|x != 0 && y != 0|.
   If the reverse conversion is needed, an explicit cast is
-  required, e.g. \texttt{(int)(x>0)+1}, where false becomes 0 and true
-  becomes 1.
+  required, e.g. \texttt{(int)(x>0)+1}, where \verb|\false| becomes 0
+  and \verb|\true| becomes 1.
 \item Quantification can be made over any type: logic types and any C
   types. Quantification over pointers must be carefully designed,
   regarding the memory state where dereferencing is done: see
@@ -221,27 +225,43 @@ to a mathematical integer. As a consequence, there is no such thing as
 
 Division and modulo are also mathematical operations, whose results
 are identical to those of C operations on C machine integers, thus
-following the ANSI C99 conventions:
+following the ANSI C99 conventions. Generally speaking, division
+rounds the result towards zero. The results are not specified if
+divisor is zero, otherwise if $q$ and $r$ are the quotient and the
+remainder of $n$ divided by $d$ then:
 \begin{itemize}
-\item if a b positive, a / b is ...
-\item if a negative, b positive ...
-\item TODO (by Claude)
-\item div par zero ?
+\item $|d.q| \leq |n|$, and $|q|$ is maximal for this property ;
+\item $q$ is zero if $|n|<|d|$ ;
+\item $q$ is positive if $|n|\geq|d|$ and $n$ and $d$ have the same sign ;
+\item $q$ is negative if $|n|\geq|d|$ and $n$ and $d$ have the opposite signs ;
+\item $q.d+r = n$ ;
+\item $|r|<|d|$ ;
+\item $r$ is zero or has the same sign as $d$.
 \end{itemize}
+
+\begin{example}
+  The following examples illustrates the results of division and modulo depending on signs of arguments:
+  \begin{itemize}
+  \item \verb|5/3| is 1 and \verb|5%3| is 2
+  \item \verb|(-5)/3| is -1 and \verb|(-5)%3| is -2
+  \item \verb|5/(-3)| is -1 and \verb|5%(-3)| is 2
+  \item \verb|(-5)/(-3)| is 1 and \verb|(-5)%(-3)| is -2
+  \end{itemize}
+\end{example}
 
 \subsection{Hexadecimal constants}
 
-Hexadecimal and octal constants are always non-negative. Suffixes \texttt{u} and
-  \texttt{l} are allowed but meaningless.
+Hexadecimal and octal constants are always non-negative. Suffixes
+\texttt{u} and \texttt{l} for C constants are allowed but meaningless.
 
 \subsubsection*{Casts and overflow}
 
-In logic expressions, casting operations towards a C integer type $t$
-(among \texttt{char}, \texttt{short}, \texttt{int} and \texttt{long},
-signed or unsigned) is allowed, and is interpreted as follows: the
-result is the unique value of the corresponding type that is congruent
-to the mathematical result modulo the cardinal of this type (that is 2
-to $8\times\sizeof(t)$). Example:
+In logic expressions, casting operations from mathematical integers
+towards a C integer type $t$ (among \texttt{char}, \texttt{short},
+\texttt{int} and \texttt{long}, signed or unsigned) is allowed, and is
+interpreted as follows: the result is the unique value of the
+corresponding type that is congruent to the mathematical result modulo
+the cardinal of this type (that is 2 to $8\times\sizeof(t)$). Example:
 \begin{itemize}
 \item (unsigned char)1000 is $1000 \bmod 256 = 232$
 \end{itemize}
@@ -249,7 +269,7 @@ to $8\times\sizeof(t)$). Example:
 Remark that the size of C types is architecture-dependent. The ACSL
 does not enforce these sizes either, hence the semantics of terms
 involving such types is also architecture-dependent (but of course in
-the same way as the C code).
+a consistent way as the C code).
 
 
 If one wants to express, in the logic, the result of the C
@@ -268,20 +288,7 @@ computation of $x*y+z$ is \texttt{(int)((int)(x*y)+z)}.
 
 
 Important: implicit casts from integers to C integer type are forbidden.
-Example:
-\begin{flushleft}
-  logic int f(int x) \{ x+1 \}
-\end{flushleft}
-is forbidden because the result (mathematical integer 0) must be cast to int.
-Either write
-\begin{flushleft}
-  logic integer f(int x) \{ x+1 \}
-\end{flushleft}
-or
-\begin{flushleft}
-  logic int f(int x) \{ (int)(x+1) \}
-\end{flushleft}
-if you really want to return an int.
+\input{integer-cast.pp}
 
 
 
@@ -291,10 +298,17 @@ if you really want to return an int.
 Quantification can be either on mathematical \verb|integer| or bounded
 types \verb|short|, \verb|char|, etc. In the latter case,
 quantification corresponds to integer quantification over the
-corresponding interval. Example
-\begin{flushleft}
-
-\end{flushleft}
+corresponding interval. 
+\begin{example}
+The formula
+  \begin{center}
+    \verb|\forall char c; c <= 1000|
+  \end{center}
+is valid since it is equivalent to
+\begin{center}
+  \verb|\forall integer c; -128 <= c <= 127 ==> c <= 1000|
+\end{center}
+\end{example}
 
 
 
@@ -373,10 +387,8 @@ Casting a real number $x$ to a float or a double results in a real
 number $y$ which is the closest to $x$ real number which is
 representable in the target type.
 \begin{itemize}
-\item Example: (float)0.1 =  (TODO by
-  JCF: forme exact avec un mantisse * 2 puissance exposant)
-
-which is approximately $0.100000000000000005551\cdots$
+\item Example: \verb|(float)0.1| = $13421773 \times 2 ^{-27}$
+which is approximately $0.100000001490116119\cdots$
 \end{itemize}
 
 
@@ -424,9 +436,9 @@ pour des types de donnees
 
 
 
-The Figure~\ref{fig:gram:contracts} show a grammar for the function
-contracts. The grammars for non-terminal locations is given later,
-informally, they denotes C lvalues. We also introduce additional constructs
+The Figure~\ref{fig:gram:contracts} shows a grammar for function
+contracts. Grammars for non-terminal \textsl{locations} are given later,
+informally, they denote C l-values\index{lvalue}. We also introduce additional constructs
 for terms as given on figure~\ref{fig:gram:oldandresult}. These are the following:
 \begin{itemize}
 \item $\old(e)$ denotes the value of $e$ in the pre-state of the function.
@@ -848,8 +860,9 @@ The semantics is given as follows, where $s$ denotes any tset:
 \end{itemize}
 
 A \emph{location} is any set of terms denoting a set of
-\emph{modifiable lvalues} as described in Section~\ref{sec:glossary}.
-Only locations are valid as argument to \assigns{} clauses
+\emph{modifiable lvalues} \index{lvalue} as described in
+Section~\ref{sec:glossary}.  Only locations are valid as argument to
+\assigns{} clauses
 
 \begin{example}
   The following function sets to 0 each cell of an array.

@@ -1,7 +1,7 @@
 
 DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
 	div_lemma.pp assigns.pp invariants.pp \
-	isqrt.pp incrstar.pp parsing_annot.pp \
+	isqrt.pp incrstar.pp parsing_annot.pp integer-cast.pp \
 	max.pp max_index.pp cond_assigns.pp bsearch.pp bsearch2.pp \
 	assigns_array.pp assigns_list.pp sum.pp \
 	listdecl.pp listdef.pp listlengthdef.pp import.pp listmodule.pp \
