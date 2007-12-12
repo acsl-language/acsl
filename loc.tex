@@ -1,14 +1,18 @@
 \begin{syntax}
-  tset ::= term ;
+  tset ::= "\empty" ; empty set 
+       | term ; singleton
        | tset "->" id ;
        | tset "." id  ;
        | "*" tset ;
        | tset "[" tset "]" ;
        | term? ".." term? ; range
-       | tset "," tset ;
+       | "\union" "(" tset ("," tset)* ")" ; union of locations
+       | "\inter" "(" tset ("," tset)* ")" ; intersection
        | tset "+" tset ;
        | "(" tset ")" ;
        | "{" tset "|" binders (";" pred)? "}" ; set comprehension
+       \
+  pred ::= "\subset" "(" tset "," tset ")" ; inclusion of locations
 \end{syntax}
 
 %%% Local Variables:

@@ -789,6 +789,7 @@ Figure~\ref{fig:gram:locations}.
 
 The semantics is given as follows, where $s$ denotes any tset:
 \begin{itemize}
+\item \verb|\empty| 
 \item a simple term denotes a singleton
 \item $s\ra id$ denotes the set of $x\ra id$ for each $x \in s$
 \item $s.id$ denotes the set of $x.id$ for each $x \in s$
@@ -833,6 +834,7 @@ Section~\ref{sec:glossary}.  Only locations are valid as argument to
 
 
 \end{example}
+
 
 
 \subsection{Contract variables}
@@ -1592,7 +1594,6 @@ Some shortcuts are provided:
 
 \end{itemize}
 
-
 \subsection{Separation}
 
 %pointer separation :
@@ -1604,6 +1605,29 @@ Some shortcuts are provided:
 
 $\separated(loc_1,..,loc_n)$ : means that for each $i\neq j$, the intersection of $loc_i$ and $loc_j$ is empty. Each $loc_i$ is a set of terms as defined in
 Section~\ref{sec:locations}.
+
+\subsubsection{Locations as first-class values}
+
+Locations, as defined in Section~\ref{sec:locations}, can be used as
+first-class values in annotations. They have the built-in type
+$loc<A>$ where $A$ is the type of values in that locations. 
+
+\begin{example}
+  Here is an example where we defined the footprint~\cite{?} of a
+  structure. 
+
+  \input{footprint.pp}
+
+  This logic function can be used as argument of \separated.
+\end{example}
+
+Note: in other words, a clause assigns l1,..,ln could be transformed
+into an post-condition 
+\[
+\forall char* p; \separated(\union(l1,..,ln),*p) ==> *p == \old(*p)
+\]
+
+
 
 \subsection{Allocation and deallocation}
 
