@@ -165,8 +165,9 @@ particular, the predicates
 \end{eqnarray*}
 are true, since they are instances of the general axiom $\forall x,
 x\verb|==|x$ of first-order logic.
-\oldremark{Anonyme}{Donc on ne peut pas introduire de construction
-non-déterministe comme  $(\texttt{any} x \mid P)$}
+\begin{oldremark}{Anonyme}Donc on ne peut pas introduire de construction
+non-déterministe comme  $(\texttt{any} x \mid P)$
+\end{oldremark}
 
 So, it is up to the writer of specification to take care of writing
 consistent assertions. For example, one might want to pose the lemma
@@ -274,14 +275,15 @@ computations of an expression, one should add all necessary casts. For
 example, the logic expression which denotes the result of C
 computation of $x*y+z$ is \texttt{(int)((int)(x*y)+z)}.
 
-\oldremark{Claude}{Si la conjecture suivante est vraie, alors il
+\begin{oldremark}{Claude}Si la conjecture suivante est vraie, alors il
   faudrait en parler: Si e1 et e2 sont des expressions d'un type
   entier de C, quels qu'ils soient et si op est une operation binaire
   sur entiers, alors l'operation C $e1~op~e2$ (de type $\tau$),donne
   le meme resultat que l'expression logique $(\tau)(e_1~op~e_2)$ ou
   $op$ est l'operation logique sur $Z$. Ce cast permet donc a
   l'utilisateur de parler du resultat du calcul C d'une expressions
-  dans la logique}
+  dans la logique
+\end{oldremark}
 
 
 Important: implicit casts from integers to C integer type are forbidden.
@@ -322,13 +324,14 @@ the logic.
 Constants giving maximum and minimum values of those types may be
 given in a library.
 
-\oldremark{Claude}{we need macros \texttt{max\_range} \texttt{min\_range}
+\begin{oldremark}{Claude}we need macros \texttt{max\_range} \texttt{min\_range}
   taking a C integer type as argument, e.g.
   \texttt{max\_range(unsigned char) = 255} Ces macros, types et
   variables sont en principe définies dans des \texttt{.h} que la
   norme spécifie en grande partie (le nom l'est, le type peut y être
   contraint).  Il faudrait autant que possible se raprocher de ces
-  noms.}
+  noms.
+\end{oldremark}
 
 \subsubsection{Enum types}
 
@@ -368,22 +371,23 @@ $2 * 3.5$ is equal to the real number 7
 \end{example}
 Comparisons operators are interpreted as real operators too.
 
-\oldremark{All}{  syntaxe pour abs et power ? a priori non, on peut
+\begin{oldremark}{All}  syntaxe pour abs et power ? a priori non, on peut
   fournir une library pour les reels avec abs(), power(), mais
   proposer des syntaxes speciales parait difficile
 
   mais: on pourrait permettre des definition d'operateurs infixes
 
-}
+\end{oldremark}
 
-\oldremark{DP+all}{
+
+\begin{oldremark}{DP+all}
 
   Il faut de toute facon detailler les constructions de le spec pour
   parler des flottants: reprend-on celles de Caduceus ? exact(...)
 
   On peut laisser la main a JCF pour ce point
 
-}
+\end{oldremark}
 
 \subsubsection{Cast}
 
@@ -409,7 +413,7 @@ Quantification sur (float) et (double) : meme probleme que
 quantification sur les structures, etc.
 \end{remark}
 
-\oldremark{JCF+All}{
+\begin{oldremark}{JCF+All}
 \subsubsection{Exact computations}
 
 built-in \verb|exact|: a definir TODO
@@ -419,7 +423,7 @@ Que deviennent les champs modeles de caduceus ?
 Il faudrait les integrer a une traitement plus general des modeles
 pour des types de donnees
 
-}
+\end{oldremark}
 
 
 \section{Function contracts}
@@ -446,22 +450,25 @@ pour des types de donnees
 
 
 The Figure~\ref{fig:gram:contracts} shows a grammar for function
-contracts. Grammar for non-terminal \textsl{locations} is given later,
-informally, they denote C l-values\index{lvalue}. 
+contracts in general. The grammar for non-terminal \textsl{locations}
+is given below in Section~\ref{sec:locations}, informally they denote
+C l-values\index{lvalue}.
 
 We present below first the role of \emph{simple contracts}
 (Section~\ref{sec:simplecontracts}), then more generally contracts
 with \emph{named behaviors} (Section~\ref{subsec:behaviors}). The role
 of \verb|decreases| clause is presented later in
-Section~\ref{sec:termination}. 
+Section~\ref{sec:termination}. Prior to this, in next section we
+introduce two additional constructs in the grammer for terms.
 
-\oldremark{Patrick}{pourquoi seuls les ``behavior'' peuvent avoir un
+\begin{oldremark}{Patrick}pourquoi seuls les ``behavior'' peuvent avoir un
   nom~? Ne peut-t'on pas avoir le ``ident:'' optionnel pour chacune
   des clauses~? Claude: parce que le nommage de behavior doit servir
   pour les associer a des clauses du corps de la fonction, p. ex.
   assert ou loop invariant. Mais on peut aussi proposer par ailleurs
   de nommer des predicate ou terms, p. ex. avec la notation Caduceus
-  (id : f) }
+  (id : f) 
+\end{oldremark}
 
 \subsection{Built-in constructs $\old$ and $\result$}
 
@@ -519,8 +526,9 @@ simplified one:
 ~~@*/
 \end{flushleft}
 Also, if no clause \requires is given, it defaults to requiring
-`true', and similarly for \ensures clause. No clause \assigns means
-potentially assigns ``everything''.
+`true', and similarly for \ensures clause. Giving no \assigns clause means
+that locations assigned by the function are not specified, so the
+caller has no information at all on this function's side effects. 
 
 \begin{example}
   The following function is given a simple contract for computation of
@@ -542,8 +550,8 @@ potentially assigns ``everything''.
   The contract means that the function must be called with a pointer
   $p$ that points to a safely allocated memory location (See
   Section~\ref{sec:pointers} for details on $\valid$ built-in
-  predicate). It modifies only the value pointed by $p$, and more
-  precisely it increments it by one.
+  predicate). It does not modify any memory location except the value
+  pointed by $p$, and more precisely this value is incremented by one.
 \end{example}
 
 \subsection{Contracts with named behaviors}
@@ -553,8 +561,8 @@ More generally, a function contract has the following form with named
 behaviors (restricted to two behaviors for readability):
 \begin{flushleft}\ttfamily
 /*@ requires $P$; \\
-~~@ assigns $L$; \\
-~~@ ensures $E$; \\
+% ~~@ assigns $L$; \\
+% ~~@ ensures $E$; \\
 ~~@ behavior $b_1$: \\
 ~~@ ~~assumes $A_1$; \\
 ~~@ ~~requires $R_1$; \\
@@ -574,12 +582,14 @@ The semantics of such a contract is as follows:
 \item The caller of the function must guarantee that it is called in a
   state where the property $P \verb|&&| (A_1 \verb|==>| R_1) \verb|&&|
   (A_2 \verb|==>| R_2)$ holds.
-\item The called function returns a state where the property $E$ holds
-  and the properties $\old(A_i) \verb|==>| E_i$ hold for each $i$.
+\item The called function returns a state where 
+% the property $E$ holds  and 
+the properties $\old(A_i) \verb|==>| E_i$ hold for each $i$.
 \item For each $i$, if the function is called in a pre-state where
-  $A_i$ holds, then all memory locations of that pre-state that do not
-  belong to the set $L \cup L_i$ remain allocated and are left unchanged
-  in the post-state. In any case, locations of $L$ are unchanged.
+  $A_i$ holds, then each memory location of that pre-state that do not
+  belong to the set $L_i$ remain allocated and is left unchanged
+  in the post-state. 
+% In any case, locations of $L$ are unchanged.
 \end{itemize}
 
 Notice that the \requires{} clauses in the behaviors are proposed
@@ -588,8 +598,8 @@ formulas), since the contract above is equivalent to the following
 simplified one:
 \begin{flushleft}\ttfamily
 /*@ requires $P \verb|&&| (A_1 \verb|==>| R_1) \verb|&&| (A_2 \verb|==>| R_2)$; \\
-~~@ assigns $L$; \\
-~~@ ensures $E$; \\
+% ~~@ assigns $L$; \\
+% ~~@ ensures $E$; \\
 ~~@ behavior $b_1$: \\
 ~~@ ~~assumes $A_1$; \\
 ~~@ ~~assigns $L_1$; \\
@@ -602,60 +612,99 @@ simplified one:
 ~~@*/
 \end{flushleft}
 
-Notice that the contract does not impose that the disjunction of the
-$A_i$ is true, that is it is not mandatory to provide a ``complete''
-set of behaviors\footnote{Although, some tools might provide a way to check such a completeness}.
+Also, a simple contract like in Section~\ref{sec:simplecontracts} is
+indeed equivalent to 
+\begin{flushleft}\ttfamily
+/*@ requires $P$; \\
+~~@ behavior \textsl{<any name>}: \\
+~~@ ~~assumes true; \\
+~~@ ~~assigns $L$; \\
+~~@ ~~ensures $E$; \\
+~~@*/
+\end{flushleft}
+thus simple contracts are just contracts with an anonymous behavior.
 
-\begin{remark}{DP et SD}
-\begin{verbatim}
-  Preciser ce point, mieux que par une footnote
 
-  discuter sur les points:
+\begin{example}
+\label{ex:bsearch}
+In the following, \texttt{bsearch($t,n,v$)} searches for element $v$
+in array $t$ between indices $0$ and $n-1$. 
 
-  . qu'est-ce qu'une spec complete : exhaustivite' des behaviors
+\input{bsearch.pp} 
 
-  . behavior disjoint 2 a 2 ?
+The precondition is to require that the array is safely allocated for
+at least the index from $0$ to $n-1$. The two named behaviors
+correspond respectively to the succesful behavior and the failing
+behavior.
 
-  proposition de claude : un equivalent de 'assumes' portant sur le
-  post-state.
+The intention is to perform a binary search, which requires that the
+array $t$ is sorted in increasing order: this is the purpose of the
+predicate named \texttt{t\_is\_sorted} in the assumes clause of the
+behavior named \verb|failure| .
 
-  behavior success:
-    postassumes result >= 0
+See~\ref{sec:loop_annot} for a continuation of this example.
+\end{example}
 
-  behavior failure:
-    postassumes result == -1
+\begin{example}
+  The following function illustrates the importance of different
+  \assigns{} clauses for each behavior.
 
-  alors la completude serait :
-     disjunction des post_assumes = vrai
+  \input{cond_assigns.pp}
 
-  MAIS remarque de Patrick: pourquoi ne pas parler de la disjonction
-  des assumes ?
-\end{verbatim}
-\end{remark}
+  Its contract means that it assigns values pointed by $p$ or by $q$,
+  conditionally on the sign of $n$.
+\end{example}
 
-\begin{remark}{Decision du 24 octobre 2007}
-\begin{verbatim}
 
-  1) On peut avoir envie de specifier que les behavior sont
-     mutuellement exclusifs et/ou couvrent tous les cas SELON
-     LEURS CLAUSES "assumes".
 
-   * ajouter une clause supplementaire a un contrat de function:
 
-     "disjoint behaviors"
-     ou plus generalement
-     "disjoint behaviors b1,...,bn"
 
-     semantique: pour tout i,j, i !=j, not (assumes_i /\ assumes_j)
+\subsubsection{Completeness of behaviors}
 
-     et
+Notice that in a contract with named behaviors, it is not required that
+the disjunction of the $A_i$ is true, \emph{i.e.} is it is not mandatory to
+provide a ``complete'' set of behaviors. Analogously, it is not
+required that two distinct behaviors are disjoint.
 
-     "complete behaviors"
-     ou plus generalement
-     "complete behaviors b1,...,bn"
+If such conditions are seeked, it is possible to add specific clauses
+to a contract:
+\begin{flushleft}\ttfamily
+/*@ ... \\
+~~@ complete behaviors $b_1,\ldots,b_n$; \\
+~~@*/
+\end{flushleft}
+specifies that the set of behaviors is complete \emph{i.e.} 
+\[
+\bigvee_{1\leq i \leq n} A_i
+\]
+is true. The simplified version of that clause
+\begin{flushleft}\ttfamily
+/*@ ... \\
+~~@ complete behaviors; \\
+~~@*/
+\end{flushleft}
+means that all behaviors given in the contract should be taken into account.
 
-     semantique: disj_{1<=i<=n} assumes_i (est valide)
-\end{verbatim}
+Analogously, 
+\begin{flushleft}\ttfamily
+/*@ ... \\
+~~@ disjoint behaviors $b_1,\ldots,b_n$; \\
+~~@*/
+\end{flushleft}
+specifies that the given behaviors are pairwise disjoint \emph{i.e.} 
+for all distinct $i$ and $j$:
+\[
+\lnot (A_i \land A_j)
+\] 
+is true. The simplified version of that clause
+\begin{flushleft}\ttfamily
+/*@ ... \\
+~~@ disjoint behaviors; \\
+~~@*/
+\end{flushleft}
+means that all behaviors given in the contract should be taken into account.
+
+\begin{oldremark}{Abandonne}
 \begin{verbatim}
   2) on veut faire des behaviors differents suivant le post-state
      -> clause 'post assumes'
@@ -703,7 +752,8 @@ set of behaviors\footnote{Although, some tools might provide a way to check such
 
     la disjunction des (\old(assumes_i) et \postassume_i) est une post-conditionn supplementaire
 \end{verbatim}
-\end{remark}
+\end{oldremark}
+
 
 \begin{remark}{SD}
   Stephane confirme qu'AIRBUS utilise dans leur methodologie la notion
@@ -727,42 +777,6 @@ set of behaviors\footnote{Although, some tools might provide a way to check such
 
 
 
-\begin{example}
-\label{ex:bsearch}
-In the following, \texttt{bsearch($t,n,v$)} searches for element $v$
-in array $t$ between indices $0$ and $n-1$. 
-
-\input{bsearch.pp} 
-
-The precondition is to require that the array is safely allocated for
-at least the index from $0$ to $n-1$. The two named behaviors
-correspond respectively to the succesful behavior and the failing
-behavior.
-
-The intention is to perform a binary search, which requires that the
-array $t$ is sorted in increasing order: this is the purpose of the
-predicate named \texttt{t\_is\_sorted} in the assumes clause of the
-behavior named \verb|failure| .
-
-See~\ref{sec:loop_annot} for a continuation of this example.
-\end{example}
-
-\begin{example}
-  The following function illustrates the importance of different
-  \assigns{} clauses for each behavior.
-
-  \input{cond_assigns.pp}
-
-  Its contract means that it assigns values pointed by $p$ or by $q$,
-  conditionally on the sign of $n$.
-\end{example}
-
-
-
-
-
-
-
 \begin{remark}{PC et YM}
 
   discuter les behavior specifiquement lies a des cas d'erreur
@@ -774,22 +788,26 @@ See~\ref{sec:loop_annot} for a continuation of this example.
 
 There are several places where one needs to describe a set of memory
 locations: in the above \assigns{} clauses of functions' contracts, or
-in the \reads{} clauses of Section~\ref{sec:logicspec}.
+in the \reads{} clauses of Section~\ref{sec:logicspec}. More
+generally, we introduce syntactic constructs to denote \emph{sets of
+  terms}. A \emph{memory location} is then any set of terms denoting a set of
+lvalues\index{lvalue}. Moreover, a location given as argument to
+an \assigns{} clause must be a set of modifiable lvalues, as described in
+Section~\ref{sec:glossary}.
 
 \begin{figure}
   \fbox{\begin{minipage}{0.97\textwidth}
       \input{loc.bnf}
     \end{minipage}}
-  \caption{Grammar for memory locations}
+  \caption{Grammar for sets of terms}
 \label{fig:gram:locations}
 \end{figure}
 
-The grammar for denoting such a set of memory locations is given
-Figure~\ref{fig:gram:locations}.
-
-The semantics is given as follows, where $s$ denotes any tset:
+The grammar for denoting sets of terms is given in
+Figure~\ref{fig:gram:locations}. The semantics is given as follows,
+where $s$ denotes any tset:
 \begin{itemize}
-\item \verb|\empty| 
+\item \verb|\empty| denotes the empty set
 \item a simple term denotes a singleton
 \item $s\ra id$ denotes the set of $x\ra id$ for each $x \in s$
 \item $s.id$ denotes the set of $x.id$ for each $x \in s$
@@ -798,18 +816,15 @@ The semantics is given as follows, where $s$ denotes any tset:
   and $x_2 \in s_2$
 \item $t_1 .. t_2$ denotes the set of integers between $t_1$ and
   $t_2$, included.
-\item $s_1,s_2$ denotes the union of $s_1$ and $s_2$
+\item $\union(s_1,\ldots,s_n$ denotes the union of $s_1,s_2,\ldots $ and $s_n$
+\item $\inter(s_1,\ldots,s_n$ denotes the intersection of $s_1,s_2,\ldots $ and $s_n$
 \item $s_1+s_2$ denotes the set of $x_1+x_2$ for each $x_1 \in s_1$ and $x_2 \in s_2$
 \item $(s)$ denotes the same set as $s$
-\item $\{ s \mid b ; P \}$ denotes set comprehension: set of term
+\item $\{ s \mid b ; P \}$ denotes set comprehension: set of terms
   denoted by $s$ for each values of binders satisfying predicate $P$.
   Binders $b$ are bound in $s$ and $P$
 \end{itemize}
 
-A \emph{location} is any set of terms denoting a set of
-\emph{modifiable lvalues} \index{lvalue} as described in
-Section~\ref{sec:glossary}.  Only locations are valid as argument to
-\assigns{} clauses
 
 \begin{example}
   The following function sets to 0 each cell of an array.
@@ -912,20 +927,21 @@ Annotations on C statements are of three kinds:
 \subsection{Built-in construct $\at$}
 
 Statement annotations usually need another additional construct
-$\at(e,id)$ refer to the value of the expression $e$ in the
-state at label $id$.
-
-, which has to appear before. Adding labels in
-  annotations is also possible as ghost statements, see
-  Section~\ref{sec:ghost}.
-
-\begin{remark}{Claude}
-
-changer le critere de validite des labels du at: regle de portee
-similaire a celle des variables locales. Insister sur la difference
-avec le goto.
-
-\end{remark}
+$\at(e,id)$ refering to the value of the expression $e$ in the
+state at label $id$. The label $id$ can be either a regular C label,
+or a label added within a ghost statement as described in
+Section~\ref{sec:ghost}. This label must be declared in the same
+function as the occurrence of $\at(e,id)$, but unlike \texttt{goto}s,
+more scoping rules must be respected:
+\begin{itemize}
+\item the label $id$ must occur before the occurrence of  $\at(e,id)$
+  in the source.
+\item the label $id$ must not be inside a inner block. 
+\end{itemize}
+These rules are exactly the same rules as the visibility of some local
+variable within a statement (see~\cite{KR88}, Section \begin{todo}{Claude}x.x
+\end{todo}
+) 
 
 \begin{remark}{Patrick}
 
@@ -1085,8 +1101,10 @@ The syntax of those annotations is given Figure~\ref{fig:gram:assertions} under 
   is meant to be valid only for the considered behaviors.
 \end{itemize}
 
-\oldremark{Claude}{unifier les 2 derniers cas? car a-t-on besoin de
-  nommer un assert en dehors d'un behavior de la fonction? Surtout que l'on peut deja ecrire assert (id : p)}
+\begin{oldremark}{Claude}unifier les 2 derniers cas? car a-t-on besoin de
+  nommer un assert en dehors d'un behavior de la fonction? Surtout que
+  l'on peut deja ecrire assert (id : p)
+\end{oldremark}
 
 \subsection{Assertions on return}
 
@@ -1252,7 +1270,9 @@ and predicates. These declarations follows the classical setting of
 predicates may be either \emph{defined} by explicit expressions, or
 \emph{axiomatized} by a set of axioms. The grammer for these declarations is given Figure~\ref{fig:gram:logic}.
 
-\oldremark{Claude}{``logic typedef'' au lieu de ``logic type'' ? Non ``type'' et c'est tout}
+\begin{oldremark}{Claude}``logic typedef'' au lieu de ``logic type'' ?
+  Non ``type'' et c'est tout
+\end{oldremark}
 
 The difference between a lemma and an axiom is that a lemma is
 supposed to be deductible from axioms: a redundant axioms in some sense.
@@ -1907,11 +1927,12 @@ ghost dans les structures -> change
 
 \experimental
 
-\oldremark{Patrick}{on a besoin de ``ghost braces'' pour
+\begin{oldremark}{Patrick}on a besoin de ``ghost braces'' pour
       écrire du ``ghost code'', mais également de ``logic braces'' afin de créer un
       ``logic statement'' auquel on désire associer un ``statement
-      behavior''. Où en parler~?}
-
+      behavior''. Où en parler~?
+    \end{oldremark}
+    
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
       \input{ghost.bnf}

@@ -39,15 +39,19 @@ contents is given on page~\pageref{chap:contents}
 
 A glossary is given in Appendix~\ref{sec:glossary}
 
-\oldremark{Claude}{ce document doit etre illustré par des
+\begin{oldremark}{Claude}
+ce document doit etre illustré par des
 exemples. Toute construction qui ne serait pas illustrée par un
-exemple sera non-retenue.}
+exemple sera non-retenue.
+\end{oldremark}
 
-\oldremark{Patrick}{utiliser en priorité les constructions de JML,
+\begin{oldremark}{Patrick}
+utiliser en priorité les constructions de JML,
 ensuite les généraliser lorsque cela a un sens, et en dernier recours,
 en créer de nouvelles. Il y a peut-être des constructions
 du C++ ou C\# à utiliser ou à généraliser.
-Idem avec les extensions de GCC.}
+Idem avec les extensions de GCC.
+\end{oldremark}
 
 
 \section{Generalities about Annotations}\label{sec:gener-about-annot}
@@ -124,16 +128,18 @@ Section~\ref{sec:multiplecontracts}).
   \item \assert clause. These are allowed
     everywhere a C label is allowed, or just before a
     block closing brace.
-    \oldremark{Claude}{About \assume{} clauses: current
+    \begin{oldremark}{Claude}About \assume{} clauses: current
       discussion is that it is not considered as an element of
       specification, so not present here. This should be part of proof
-      management done by tools.}
-    \oldremark{Patrick}{En C, seules les
+      management done by tools.
+    \end{oldremark}
+    \begin{oldremark}{Patrick}En C, seules les
       instructions peuvent être étiquettées. GCC étend cela aux
       accolades fermantes des blocs, y compris celle fermant le corps
       de fonction. On peut dire que l'on fait de même lorsque l'on
-      place des annotations juste avant la fermerture d'un bloc.}
-
+      place des annotations juste avant la fermerture d'un bloc.
+    \end{oldremark}
+    
   \item loop annotation (invariant, variant, assign clauses) is
     allowed immediately before a loop statement: \For, \While,
     \Do\ldots \While. See Section~\ref{sec:loop_annot}
@@ -142,10 +148,12 @@ Section~\ref{sec:multiplecontracts}).
     placed before a statement or a block.  Semantical condition must
     be checked (normal termination only, no goto going inside, no goto
     going outside).  See Section~\ref{sec:statement_contract}
-    \oldremark{Patrick}{as-t'on droit au \old dans le \ensures de
+    \begin{oldremark}{Patrick}
+      as-t'on droit au \old dans le \ensures de
       cette annotation~? Oui, pour refer a l'etat avant le statement
-      consider\'e}
-
+      consider\'e
+    \end{oldremark}
+    
   \item ghost code: is regular C code, only visible from the
     specification, that is only allowed to modify ghost variables. See
     section~\ref{sec:ghost}. This includes ghost braces for enclosing blocks.
