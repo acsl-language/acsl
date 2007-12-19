@@ -57,7 +57,34 @@ Remarks:
 \verb|\distinct(x,y,z)| comme dans SMT-lib
 
   Claude: je suis plutot pour refuser les \verb|!=| consecutifs
+    oui
 
+  
+  il faut aussi detailler  l'utilisation des op de comparaison en
+  position de terme. : retourne un entier ou un booleen ? 
+
+  Expliquer: 
+
+   $a < b < c$  est equivalent $a < b \verb|&&| b < c$
+   $a < (b < c)$ est equivalent $a \texttt{let} x = b < c ; a < x$
+  
+  
+  Example:
+
+\begin{verbatim}
+   int f(int a, int b) { return a < b; }
+
+   \result == a < b : faux car \result == a && a < b
+
+   
+   \result == (a < b) : mal type car 'int' == 'bool'
+
+   \result <==> a < b : mal type cat int <==> prop
+    
+   \result != 0 <==> a < b : OK
+
+   \result == (integer)(a<b) : OK
+\end{verbatim}
 \end{remark}
 \item Function and predicate application are not applications of C
   functions, but of logic functions or predicates: see
@@ -397,11 +424,35 @@ as in C: same conversion operations applies.
 Casting a real number $x$ to a float or a double results in a real
 number $y$ which is the closest to $x$ real number which is
 representable in the target type.
+\begin{remark}
+  ca ne va pas: il faut faire comme la norme IEEE 
+
+  Il faut pouvoir dire, comme
+  pour les operations entieres, que le resultat d'une operation C sur
+  des float est le cast de l'operation logique: 
+
+  on peut aussi obtenir Nan, + inf, - inf, et -0 
+
+  mode d'arrondi ?
+
+
+  on veut des fonctions predef :
+
+  isNan, is Finite, ...
+
+  
+\end{remark}
+
 \begin{example}
   We have
   \verb|(float)0.1| = $13421773 \times 2 ^{-27}$ which is
   approximately $0.100000001490116119\cdots$
 \end{example}
+
+\begin{remark}
+
+    
+\end{remark}
 
 \subsubsection{Quantification}
 
@@ -409,8 +460,14 @@ Quantification over a variable of type \verb|real| is of course usual
 quantification over real numbers.
 
 \begin{remark}{Claude}TODO
-Quantification sur (float) et (double) : meme probleme que
-quantification sur les structures, etc.
+Quantification sur (float) et (double) : signifie quantifier sur les
+flottants fini. 
+\[
+\Forall float x ; P <==> \forall real x; isFinite((float)x) ==> P
+\]
+
+
+
 \end{remark}
 
 \begin{oldremark}{JCF+All}
@@ -483,7 +540,10 @@ $\old(e)$ and \result{} can be used only in \ensures{} clauses.
 
 \begin{remark}{Claude}
 
-  \old dans les assigns ?
+  \old dans les assigns ? OUI
+
+  loop\_assigns aussi
+
 
 \end{remark}
 
