@@ -45,6 +45,7 @@ and modularity. Since C has no inheritance, these intricacies are
 avoided in ACSL.
 
 \subsubsection*{Error handling without exceptions}
+\label{sec:errorhandling}
 
 The usual way of signaling errors in Java is through
 exceptions. Therefore, JML specifications are tailored to express
@@ -98,6 +99,10 @@ is sufficient to write an appropriate postcondition:
 % ~~@ ensures $\mathit{normal\_postcondition}$; \\
 % ~~@*/
 % \end{flushleft}
+
+
+\input{fwrite-malloc.pp}
+
 
 \subsubsection*{C contracts are not Java ones}
 

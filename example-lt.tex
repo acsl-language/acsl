@@ -1,0 +1,19 @@
+
+Let's consider the following toy example
+\begin{c}
+  int f(int a, int b) { return a < b; }
+\end{c}
+The following post-conditions are wrong:
+\begin{itemize}
+\item the direct \verb|\result == a < b| is not true because it is a shortcut to \verb|\result == a && a < b|
+\item the same with parentheses, \verb|\result == (a < b)| is not well-typed, because it tests equality of \verb|\result| which has type \verb|int| with \verb|a < b| which has type \verb|boolean|
+\item similarly, \verb|\result <==> a < b| is not well-typed, because makes an equivalence between an \verb|int| and a predicate. 
+\end{itemize}
+The following are correct post-conditions:
+\begin{itemize}
+\item \verb|\result != 0 <==> a < b| is OK because it is an equivalence between two predicates.
+\item \verb|\result == (integer)(a<b)| is also OK because it tests
+  equality of two integers. The cast towards \verb|integer| enforces
+  \verb|a<b| to be understood as a boolean term. Notice that a cast towards \verb|int| would be OK too.
+\end{itemize}
+

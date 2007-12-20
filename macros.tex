@@ -6,19 +6,19 @@
      {\begin{lrbox}{\fmbox}\begin{minipage}{0.98\textwidth}}
      {\end{minipage}\end{lrbox}\fbox{\usebox{\fmbox}}}
 
-\newenvironment{todo}{\begin{quote} 
-    \begin{tabular}{||p{0.8\textwidth}}
-TODO~:\itshape}{\end{tabular}\end{quote}}
+% \newenvironment{todo}{\begin{quote} 
+%     \begin{tabular}{||p{0.8\textwidth}}
+% TODO~:\itshape}{\end{tabular}\end{quote}}
 
 \newenvironment{remark}[1]{\begin{quote}\itshape 
     \begin{tabular}{||p{0.8\textwidth}}
 Remarque de {#1}~:}{\end{tabular}\end{quote}}
 
-\newenvironment{oldremark}[1]{\begin{quote}\itshape 
-    \begin{tabular}{||p{0.8\textwidth}}
-Vieille remarque de {#1}~:
-}{
-\end{tabular}\end{quote}
+\newcommand{\oldremark}[2]{%
+%\begin{quote}\itshape 
+%    \begin{tabular}{||p{0.8\textwidth}}
+%Vieille remarque de {#1}~: #2
+%\end{tabular}\end{quote}
 }
 
 \newcommand{\keyword}[1]{\texttt{#1}\xspace}

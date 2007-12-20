@@ -41,57 +41,6 @@ distinction between propositions and terms in classical first-order
 logic.  The grammar for binders and type expression is given
 separately in Figure~\ref{fig:gram:binders}.
 
-Remarks:
-\begin{itemize}
-\item The construct $t_1~relop_1~t_2~relop_2~t_3 \cdots t_k$ with
-  several consecutive comparison operators is a shortcut for
-  $t_1~relop_1~t_2 ~\verb|&&|~ t_2~relop_2~t_3 ~\verb|&&|~ \cdots $.
-  However, the $relop_i$ must be in the same ``direction'',
-  \emph{i.e.} they must all belong either to $\{\verb|<|, \verb|<=|,
-  \verb|==|\}$, $\{\verb|>|,\verb|>=|,\verb|==|\}$, or
-  $\{\verb|!=|\}$. In particular, the expression \verb|x < y > z| is
-  forbidden. Moreover, \verb|x != y != z| does not mean that \verb|x|
-  is different from \verb|z|.
-\begin{remark}{Virgile}Dans le dernier cas, on pourrait vouloir avoir x, y
-  et z deux à deux distincts, et eventuellement un prédicat n-aire
-\verb|\distinct(x,y,z)| comme dans SMT-lib
-
-  Claude: je suis plutot pour refuser les \verb|!=| consecutifs
-    oui
-
-  
-  il faut aussi detailler  l'utilisation des op de comparaison en
-  position de terme. : retourne un entier ou un booleen ? 
-
-  Expliquer: 
-
-   $a < b < c$  est equivalent $a < b \verb|&&| b < c$
-   $a < (b < c)$ est equivalent $a \texttt{let} x = b < c ; a < x$
-  
-  
-  Example:
-
-\begin{verbatim}
-   int f(int a, int b) { return a < b; }
-
-   \result == a < b : faux car \result == a && a < b
-
-   
-   \result == (a < b) : mal type car 'int' == 'bool'
-
-   \result <==> a < b : mal type cat int <==> prop
-    
-   \result != 0 <==> a < b : OK
-
-   \result == (integer)(a<b) : OK
-\end{verbatim}
-\end{remark}
-\item Function and predicate application are not applications of C
-  functions, but of logic functions or predicates: see
-  Section~\ref{sec:logicspec} for detail.
-\end{itemize}
-
-
 With respect to C pure expressions, the additional constructs are as follows:
 \begin{description}
 \item[Additional connectives]
@@ -128,7 +77,43 @@ With respect to C pure expressions, the additional constructs are as follows:
   equivalent to $e$. It is different from local naming with $\Let$:
   the name cannot be reused in other terms of predicates. It is only
   for readibility purposes.
+
+\item[Logic functions] applications in terms and in propositions are not
+applications of C functions, but of logic functions or predicates: see
+Section~\ref{sec:logicspec} for detail.  
+
+\item[Consecutive comparison operators] the construct $t_1~relop_1~t_2~relop_2~t_3 \cdots t_k$ with
+  several consecutive comparison operators is a shortcut for
+  $t_1~relop_1~t_2 ~\verb|&&|~ t_2~relop_2~t_3 ~\verb|&&|~ \cdots $.
+  Nevertheless, it is required that the $relop_i$ operators must be in
+  the same ``direction'', \emph{i.e.} they must all belong either to
+  $\{\verb|<|, \verb|<=|, \verb|==|\}$ or to
+  $\{\verb|>|,\verb|>=|,\verb|==|\}$. For example, expressions
+  \verb|x < y > z| and \verb|x != y != z| are forbidden. 
+
+  To enforce the same interpretation as in C expressions, one must put
+  extra parentheses: $a == b < c$ is equivalent to $a == b \verb|&&| b
+  < c$, whereas $a == (b < c)$ is equivalent to $a \texttt{let} x = b
+  < c ; a == x$. Nevertheless, this situation raises some issues, see
+  example below.
+
+
+\oldremark{Virgile}{Dans le dernier cas, on pourrait vouloir avoir x, y
+  et z deux à deux distincts, et eventuellement un prédicat n-aire
+\verb|\distinct(x,y,z)| comme dans SMT-lib}
+
 \end{description}
+
+There is a subtlety with respect to comparison operators: they are
+predicate if in predicate position, and boolean functions in term
+position.
+\begin{example}
+\input{example-lt.pp}
+\end{example}
+
+
+
+
 
 \subsection{Operator precedence}
 
@@ -192,9 +177,9 @@ particular, the predicates
 \end{eqnarray*}
 are true, since they are instances of the general axiom $\forall x,
 x\verb|==|x$ of first-order logic.
-\begin{oldremark}{Anonyme}Donc on ne peut pas introduire de construction
+\oldremark{Anonyme}{Donc on ne peut pas introduire de construction
 non-déterministe comme  $(\texttt{any} x \mid P)$
-\end{oldremark}
+}
 
 So, it is up to the writer of specification to take care of writing
 consistent assertions. For example, one might want to pose the lemma
@@ -302,7 +287,7 @@ computations of an expression, one should add all necessary casts. For
 example, the logic expression which denotes the result of C
 computation of $x*y+z$ is \texttt{(int)((int)(x*y)+z)}.
 
-\begin{oldremark}{Claude}Si la conjecture suivante est vraie, alors il
+\oldremark{Claude}{Si la conjecture suivante est vraie, alors il
   faudrait en parler: Si e1 et e2 sont des expressions d'un type
   entier de C, quels qu'ils soient et si op est une operation binaire
   sur entiers, alors l'operation C $e1~op~e2$ (de type $\tau$),donne
@@ -310,7 +295,7 @@ computation of $x*y+z$ is \texttt{(int)((int)(x*y)+z)}.
   $op$ est l'operation logique sur $Z$. Ce cast permet donc a
   l'utilisateur de parler du resultat du calcul C d'une expressions
   dans la logique
-\end{oldremark}
+}
 
 
 Important: implicit casts from integers to C integer type are forbidden.
@@ -351,14 +336,14 @@ the logic.
 Constants giving maximum and minimum values of those types may be
 given in a library.
 
-\begin{oldremark}{Claude}we need macros \texttt{max\_range} \texttt{min\_range}
+\oldremark{Claude}{we need macros \texttt{max\_range} \texttt{min\_range}
   taking a C integer type as argument, e.g.
   \texttt{max\_range(unsigned char) = 255} Ces macros, types et
   variables sont en principe définies dans des \texttt{.h} que la
   norme spécifie en grande partie (le nom l'est, le type peut y être
   contraint).  Il faudrait autant que possible se raprocher de ces
   noms.
-\end{oldremark}
+}
 
 \subsubsection{Enum types}
 
@@ -398,34 +383,52 @@ $2 * 3.5$ is equal to the real number 7
 \end{example}
 Comparisons operators are interpreted as real operators too.
 
-\begin{oldremark}{All}  syntaxe pour abs et power ? a priori non, on peut
+\oldremark{All}{  syntaxe pour abs et power ? a priori non, on peut
   fournir une library pour les reels avec abs(), power(), mais
   proposer des syntaxes speciales parait difficile
 
   mais: on pourrait permettre des definition d'operateurs infixes
 
-\end{oldremark}
+}
 
 
-\begin{oldremark}{DP+all}
+\oldremark{DP+all}{
 
   Il faut de toute facon detailler les constructions de le spec pour
   parler des flottants: reprend-on celles de Caduceus ? exact(...)
 
   On peut laisser la main a JCF pour ce point
 
-\end{oldremark}
+}
 
-\subsubsection{Cast}
+\subsubsection{Casts, infinity and NaNs}
 
 Casting from an integer type or a float type to a float or a double is
 as in C: same conversion operations applies.
 
-Casting a real number $x$ to a float or a double results in a real
-number $y$ which is the closest to $x$ real number which is
-representable in the target type.
-\begin{remark}
-  ca ne va pas: il faut faire comme la norme IEEE 
+Casting a real number $x$ to a float (resp. a double) results in a
+float value $y$ with the nearest-even rounding mode (see IEEE 754
+norm), which is the closest to $x$ real number which is representable
+in the float (resp. double) type. If the source real number is too
+large, this may also result into one of the special values +infinity
+and -infinity. This semantics ensures that the float result of a C
+operation $e_1 op e_2$ on floats, if the default rounding mode is not
+changed in the program, might be obtained in the logic under the form
+$(float)(e_1 op e_2)$.
+
+\begin{example}
+  We have
+  \verb|(float)0.1| = $13421773 \times 2 ^{-27}$ which is
+  approximately $0.100000001490116119\cdots$
+\end{example}
+
+Rounding of real number towards a float with other rounding modes
+might be obtained via specific logic functions given in external
+libraries. As well, classical mathematical operations like
+exponential, sine, cosine, etc. are supposed to be available in some
+library (see Section~\ref{sec:libreal}).
+
+\oldremark{Claude}{
 
   Il faut pouvoir dire, comme
   pour les operations entieres, que le resultat d'une operation C sur
@@ -440,47 +443,34 @@ representable in the target type.
 
   isNan, is Finite, ...
 
-  
-\end{remark}
 
-\begin{example}
-  We have
-  \verb|(float)0.1| = $13421773 \times 2 ^{-27}$ which is
-  approximately $0.100000001490116119\cdots$
-\end{example}
+  Probleme: 
+}
 
-\begin{remark}
 
-    
-\end{remark}
 
 \subsubsection{Quantification}
 
 Quantification over a variable of type \verb|real| is of course usual
-quantification over real numbers.
+quantification over real numbers. 
 
-\begin{remark}{Claude}TODO
-Quantification sur (float) et (double) : signifie quantifier sur les
-flottants fini. 
-\[
-\Forall float x ; P <==> \forall real x; isFinite((float)x) ==> P
-\]
+Quantification over float (resp. double) types is allowed too, and are
+supposed to range over all real numbers representable as floats (resp
+doubles). In particular, this does not include NaN, +infinity and
+-infinity in the considered range.
 
 
-
-\end{remark}
-
-\begin{oldremark}{JCF+All}
+\oldremark{JCF+All}{
 \subsubsection{Exact computations}
 
-built-in \verb|exact|: a definir TODO
+built-in \texttt{exact}: a definir TODO
 
 Que deviennent les champs modeles de caduceus ?
 
 Il faudrait les integrer a une traitement plus general des modeles
 pour des types de donnees
 
-\end{oldremark}
+}
 
 
 \section{Function contracts}
@@ -518,14 +508,14 @@ of \verb|decreases| clause is presented later in
 Section~\ref{sec:termination}. Prior to this, in next section we
 introduce two additional constructs in the grammer for terms.
 
-\begin{oldremark}{Patrick}pourquoi seuls les ``behavior'' peuvent avoir un
+\oldremark{Patrick}{pourquoi seuls les ``behavior'' peuvent avoir un
   nom~? Ne peut-t'on pas avoir le ``ident:'' optionnel pour chacune
   des clauses~? Claude: parce que le nommage de behavior doit servir
   pour les associer a des clauses du corps de la fonction, p. ex.
   assert ou loop invariant. Mais on peut aussi proposer par ailleurs
   de nommer des predicate ou terms, p. ex. avec la notation Caduceus
   (id : f) 
-\end{oldremark}
+}
 
 \subsection{Built-in constructs $\old$ and $\result$}
 
@@ -764,35 +754,16 @@ is true. The simplified version of that clause
 \end{flushleft}
 means that all behaviors given in the contract should be taken into account.
 
-\begin{oldremark}{Abandonne}
-\begin{verbatim}
+\oldremark{Abandonne}{
+
   2) on veut faire des behaviors differents suivant le post-state
      -> clause 'post assumes'
 
   exemples : (voir aussi annexe (Error Handling without exception))
 
-
-  /*@ behavior normal:
-    @   post assumes \result == nmemb;
-    @ behavior error:
-    @   post assumes \result < nmemb ;
-    @*/
-  size_t fwrite(const  void  *ptr,  size_t  size,  size_t  nmemb,  FILE
-       *stream);
-
-
-  /*@ behavior normal:
-    @   post assumes \result != NULL;
-    @   ensures \valid( (char*)\result + (0..size-1))
-    @ behavior error:
-    @   post assumes \result == NULL ;
-    @*/
-  void *malloc(size_t size);
-\end{verbatim}
-\begin{verbatim}
   3) On pourrait avoir envie de specifier que les behavior sont
      mutuellement exclusifs et/ou couvrent tous les cas SELON
-     LEURS CLAUSES "post_assumes".
+     LEURS CLAUSES "post assumes".
 
      ON NE TRAITE PAS CE CAS S'IL N'Y A PAS DE BESOIN, et il est
      alors interdit d'utiliser les clauses "complete behavior" et
@@ -801,21 +772,21 @@ means that all behaviors given in the contract should be taken into account.
      la semantique serait:
 
     La condition de d'exclusion mutuelle des cas de behaviors
-    est: pour toute paire de behavior B_1 et B_2 : post-condition
+    est: pour toute paire de behavior $B_1$ et $B_2$ : post-condition
     supplementaire
-
-           not ((\old(assumes_1) et \postassume_1)
+\[
+           not ((\old(assumes_1) et postassume_1)
                  et
-                (\old(assumes_2) et \postassume_2))
-
+                (\old(assumes_2) et postassume_2))
+\]
     La condition de couverture des cas de behaviors est :
 
-    la disjunction des (\old(assumes_i) et \postassume_i) est une post-conditionn supplementaire
-\end{verbatim}
-\end{oldremark}
+    la disjunction des $(\old(assumes_i) et postassume_i)$ est une post-conditionn supplementaire
+
+}
 
 
-\begin{remark}{SD}
+\oldremark{SD+Patrick}{
   Stephane confirme qu'AIRBUS utilise dans leur methodologie la notion
   d'assumes, mais pas celle de post-assumes.
 
@@ -833,15 +804,13 @@ means that all behaviors given in the contract should be taken into account.
   argument les operandes de la fonctions ?
 
   Ces predicats ou termes aurait une portee locale a la fonction.
-\end{remark}
+}
 
 
+\subsubsection{Error cases}
 
-\begin{remark}{PC et YM}
-
-  discuter les behavior specifiquement lies a des cas d'erreur
-
-\end{remark}
+See Section~\ref{sec:errorhandling} for a discussion about
+behaviors related to error cases.
 
 \subsection{Memory locations}
 \label{sec:locations}
@@ -921,33 +890,26 @@ Binding variables over a complete behavior.
 \subsection{Default contracts, multiple contracts}
 \label{sec:multiplecontracts}
 
-\begin{todo}rediger
-
-  Default contract: requires true, assigns ``every locations''
-
-  \footnote{Of course, tools might provide ways to generate more
-    precise default contracts, e.g. by computing an over-approximation
-    of the assigned memory locations from the body of the function}
-
-\end{todo}
-
-\begin{remark}{Claude}
-  Limiter cela aux fonctions dont on n'a pas le corps.
-
-  Cela revient a dire: pour une fonction dont on n'a pas le corps: il
-  faut mettre une spec.
-
-  par contre, pour les fonctions dont on a le corps, alors, il ne faut
-  pas imposer cette spec par defaut car on perdrait de l'information.
-
-\end{remark}
-
 In C, a function can be defined only once but declared several times.
 It is allowed to annotate each of these declarations with contracts.
 Those contracts are seen as a single contract with the union of the
 requires clauses and the behaviors.
 
-\begin{remark}{Claude}
+On the other hand a function may have no contract at all, or a
+contract with not all clauses. The \verb|requires| and
+the \verb|ensures| clauses default to true when none is given. 
+
+If no \verb|assigns| clause is given, it remains unspecified. If the
+function under consideration has only a declaration but no body, then
+that means it potentially modifies ``everything'', hence in practice
+it will be impossible to verify anything about programs calling that
+function; in other words giving it a contract is in practice
+mandatory. On the other hand, if that function has a body, giving no
+\verb|assigns| clause means in practice that it is left to tools to
+compute an over-approximation of the sets of assigned locations.
+
+ 
+\oldremark{Claude}{
 
   Attention, cette semantique est dangereuse car si en pratique on
   inclut une partie seulement du contrat, on peut oublier de verifier
@@ -960,18 +922,16 @@ requires clauses and the behaviors.
   2) proposer une syntaxe pour distinguer les contrats initiaux, et
      les contrats complementaires (comme le also de JML)
 
-
-\end{remark}
-
+}
 
 \section{Statement annotations}
 
-\begin{remark}{Claude}
-
+\oldremark{Claude}{
   Il faut absolument ajouter des regles de portee, a plusieurs
   endroits dans ce document
 
-\end{remark}
+  Note c'est maintenant fait pour les \at
+}
 
 Annotations on C statements are of three kinds:
 \begin{itemize}
@@ -999,11 +959,11 @@ more scoping rules must be respected:
 \item the label $id$ must not be inside a inner block. 
 \end{itemize}
 These rules are exactly the same rules as the visibility of some local
-variable within a statement (see~\cite{KR88}, Section \begin{todo}{Claude}x.x
-\end{todo}
-) 
+variable within a statement (see~\cite{KR88}, Section A11.1) 
 
-\begin{remark}{Patrick}
+\oldremark{Patrick}{
+
+Claude: ceci est regle maintenant je pense
 
 La restriction sur les label des $\at$ n'est pas forcement necessaire.
 Une semantique plus generale permet de suprimer le texte ``which has
@@ -1018,18 +978,19 @@ verifiee.
 
 Sinon, il faut donner des regles de portee pour les labels mentionnes dans les $\at$
 
-\end{remark}
+}
 
 
 
-\begin{remark}{Patrick}
+\oldremark{Patrick}{
 
  veut des $\old$ partout (assert, invariant de boucle, ...) : cela
  designe toujours le pre-state de la function à l'exception, bien sur,
  des  \ensures{} contenus dans les contrats de fonctions.
 
+ Claude: pour l'instant on reste plutot sur \at(e,Pre)
 
-\end{remark}
+}
 
 
 \subsection{Loop annotations}
@@ -1044,22 +1005,17 @@ Sinon, il faut donner des regles de portee pour les labels mentionnes dans les $
   \label{fig:gram:loops}
 \end{figure}
 
-\begin{remark}{Colaco}
-  Expliquer d'abord le cas loop variant sans for
-
-  Oui, le for devrait etre dans une sous-section avancee, avec un exemple.
-
-\end{remark}
-
 The syntax of loop annotations is given Figure~\ref{fig:gram:loops}
 under the form of an addition to the grammar of C statements.
+
+\subsubsection{Loop invariants}
 
 The semantics of loop invariants is defined as follows: a loop
 annotation of the form
 \begin{flushleft}\ttfamily
 /*@ loop invariant $I$; \\
 ~~@ loop assigns $L$; \\
-~~@ loop variant $m$ for $R$; \\
+% ~~@ loop variant $m$ for $R$; \\
 ~~@*/ \\
 ...
 \end{flushleft}
@@ -1078,23 +1034,20 @@ specifies that
   \item for a $\verb|while|~(c)~s$ loop, $I$ must be preserved by the side-effects of $c$ followed by $s$
   \item for a $\verb|for|(init;c;step)~s$ loop, $I$ must be preserved by the side-effects of $c$ followed by $s$ followed by step
   \item for a $\verb|do|~s~\verb|while|~(c);$ loop, $I$ must be preserved by $s$ followed by the side-effects of $c$
+  \end{itemize}
 
-  \item At any loop iteration, any location that was allocated before
+\item At any loop iteration, any location that was allocated before
     entering the loop, and is not member of $L$ in the current state,
     must be remain allocated and have to same value as before entering
     the loop.
-  \item For each loop iteration that terminates normally or with
-    \texttt{continue}, the value of $m$ at end of the iteration must be
-    smaller that its value at the beginning of the iteration, with
-    respect to relation $R$.
-  \end{itemize}
+
 \end{itemize}
 
 Remarks:
 \begin{itemize}
 \item The $\old$ construct is not allowed in loop annotations. The \verb|at| form should be used to refer to another state.
-\item When a loop exists with \texttt{break} or \texttt{return} or
-  \texttt{goto}, it is not required that the loop invariant holds.
+\item When a loop exits with \texttt{break} or \texttt{return} or
+  \texttt{goto}, it is not required that the loop invariant hold.
 \end{itemize}
 
 \begin{example}
@@ -1106,7 +1059,29 @@ a loop invariant associated to a function behavior.
 
 \end{example}
 
-\subsection{Advanced loop invariants}
+\subsubsection{Loop variants}
+
+Optionally, a loop annotation may end with a loop variant of the form
+\begin{flushleft}\ttfamily
+/*@ loop variant $m$; \\
+~~@*/ \\
+...
+\end{flushleft}
+where $m$ is a term of type \verb|integer|.
+
+The semantics is as follows: for each loop iteration that terminates
+normally or with \texttt{continue}, the value of $m$ at end of the
+iteration must be smaller that its value at the beginning of the
+iteration. Moreover, its value at the beginning must be non-negative. 
+
+Notice that it means that the value of $m$ at loop exit might be
+negative. This is OK because it does not compromise termination of the
+loop. An toy example is as follows:
+\input{loopvariantnegative.pp}
+
+It also possible to specify termination orderings other than the less-than relation on integers, using the additional \verb|for| modifier. This is explained in Section~\ref{sec:termination}.
+
+\subsubsection{Advanced loop invariants}
 
 \experimental
 
@@ -1161,10 +1136,10 @@ The syntax of those annotations is given Figure~\ref{fig:gram:assertions} under 
   is meant to be valid only for the considered behaviors.
 \end{itemize}
 
-\begin{oldremark}{Claude}unifier les 2 derniers cas? car a-t-on besoin de
+\oldremark{Claude}{unifier les 2 derniers cas? car a-t-on besoin de
   nommer un assert en dehors d'un behavior de la fonction? Surtout que
   l'on peut deja ecrire assert (id : p)
-\end{oldremark}
+}
 
 \subsection{Assertions on return}
 
@@ -1330,9 +1305,9 @@ and predicates. These declarations follows the classical setting of
 predicates may be either \emph{defined} by explicit expressions, or
 \emph{axiomatized} by a set of axioms. The grammer for these declarations is given Figure~\ref{fig:gram:logic}.
 
-\begin{oldremark}{Claude}``logic typedef'' au lieu de ``logic type'' ?
+\oldremark{Claude}{``logic typedef'' au lieu de ``logic type'' ?
   Non ``type'' et c'est tout
-\end{oldremark}
+}
 
 The difference between a lemma and an axiom is that a lemma is
 supposed to be deductible from axioms: a redundant axioms in some sense.
@@ -1987,11 +1962,11 @@ ghost dans les structures -> change
 
 \experimental
 
-\begin{oldremark}{Patrick}on a besoin de ``ghost braces'' pour
+\oldremark{Patrick}{on a besoin de ``ghost braces'' pour
       écrire du ``ghost code'', mais également de ``logic braces'' afin de créer un
       ``logic statement'' auquel on désire associer un ``statement
       behavior''. Où en parler~?
-    \end{oldremark}
+    }
     
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
