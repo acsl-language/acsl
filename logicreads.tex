@@ -8,4 +8,11 @@
   logic-function-def ::= "logic" type-expr id parameters reads-clause "{" term "}"
   \
   logic-predicate-def ::= "predicate" id parameters reads-clause "{" pred "}"
+  \
+  poly-id ::= id ; normal identifier
+  | id type-var-binders ; identifier for polymorphic object 
+  | id label-binders ; normal identifier with labels
+  | id label-binders type-var-binders ; polymorphic identififer with labels
+  \ 
+  label-binders ::= "{" id (, id)* "}" 
 \end{syntax}

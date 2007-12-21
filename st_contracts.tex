@@ -1,5 +1,9 @@
 \begin{syntax}
   statement ::= "/*@" statement-contract "*/" statement
   \
-  statement-contract ::= ("for" id (,id)* ":")? simple-behavior named-behavior*  
+  statement-contract ::= ("for" id ("," id)*)? simple-behavior named-behavior* abrupt-clause*
+  \
+  abrupt-clause ::= "breaks" predicate ";" ;
+  | "continues" predicate ";" ;
+  | "returns" predicate ";" ;
 \end{syntax}

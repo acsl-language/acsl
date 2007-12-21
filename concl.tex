@@ -1,7 +1,21 @@
 
 \chapter{Conclusion}
 
-\begin{remark}{DP}
+This document presents a Behavioral Interface Specification Language
+for ANSI C source code. It provides a common basis that could be
+shared among several tools.
+
+The specification language described here is intended to evolve in the
+future, and remain open to additional constructions.
+
+One possible interesting extension is regarding ``temporal''
+properties in a large sense, such as liveness properties, which
+sometimes can be simulated by regular specifications with ghost
+variables~\cite{giorgetti06fase}, or properties on evolution of data
+over the time, such as the history constraints of JML, or in the Lustre
+assertion language.
+
+\oldremark{DP}{
 ouverture vers d'autres formalismes de specification: temporal logic, etc.
 
 Donner des elements pour traduire vers ACSL. Utilisation des
@@ -10,10 +24,9 @@ variables/champ modeles.
 et history contraints de JML ?
 
 Referencer des travaux lies: Leino, Schulte ; Huisman et al.
-\end{remark}
+}
 
-\begin{remark}{Colaco}
-
+\oldremark{Colaco}{
 
   Et langage d'assertion a la Lustre ? operateur pre et des langages
   synchrones
@@ -36,6 +49,19 @@ devient
 Un compilateur comme SCADE devrait engendrer lui meme ce genre d'annotation.
 
 
-\end{remark}
+}
+
+\oldremark{SD9}{
+
+  illustrer l'utilisation de ghost pour specifier des proprietes temporelles
+
+}
 
 
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-PDF-mode: t
+%%% TeX-master: "main"
+%%% End:

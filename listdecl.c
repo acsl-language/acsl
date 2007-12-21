@@ -1,1 +1,1 @@
-//@ type list<`a>;
+//@ type list<A>;

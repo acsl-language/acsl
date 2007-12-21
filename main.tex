@@ -129,12 +129,14 @@ supposed to be useful for a basic use of that specification language.
   detailed description of lvalues.
 
   A \emph{modifiable lvalue} is an lvalue allowed in the left part of
-  an assignment.
+  an assignment. In essence, all lvalues are modifiable except
+  variables declared as \texttt{const} or of some array type with
+  explicit length.
 
-  \begin{remark}{DP}
+  \oldremark{DP}{
 De'tailler (avec un exemple), meme si c'est dans la
     norme, la difference entre lvalue modifiable et non-modifiable
-  \end{remark}
+  }
   
  
 \item[pre-state and post-state]

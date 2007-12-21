@@ -1024,33 +1024,6 @@ The syntax of those annotations is given Figure~\ref{fig:gram:assertions} under 
   l'on peut deja ecrire assert (id : p)
 }
 
-\subsection{Assertions on return}
-
-\experimental
-
-This allows to pose an assertion on function's state just before it
-returns, (whatever way that return occurs) where it is still possible
-to refer to local variables.
-
-\begin{remark}{PC}
-
-  avoir la meme chose sur toute fin de bloc.
-
-  Mais il semble que c'est deja prevu... -> A VERIFIER qu'on la bien dit.
-
-  De toute facon, il faut detailler
-
-  Garder l'idee principal: on veut des annotations qui parlent a la
-  fois de \result et des variables locales.
-
-  A-t-on besoin de mettre cela pour toute expression ?
-
-  exemple : x = x + (f(..) //@ assert ...\result...) REFUSE'
-
-  par contre, c'est un cas particulier de clause ``returns'' de la section suivante
-\end{remark}
-
-
 \subsection{Loop annotations}
 \label{sec:loop_annot}
 
@@ -1134,8 +1107,11 @@ iteration. Moreover, its value at the beginning must be non-negative.
 
 Notice that it means that the value of $m$ at loop exit might be
 negative. This is OK because it does not compromise termination of the
-loop. An toy example is as follows:
-\input{loopvariantnegative.pp}
+loop. A toy example is as follows.
+\begin{example}
+  \label{ex:loopvariant}
+  \input{loopvariantnegative.pp}
+\end{example}
 
 It also possible to specify termination orderings other than the less-than relation on integers, using the additional \verb|for| modifier. This is explained in Section~\ref{sec:termination}.
 
@@ -1206,26 +1182,53 @@ refer to enclosing named behaviors, with the form \texttt{for $id$ :
 corresponding function behavior, in particular only under the
 corresponding \assumes{} clause.
 
+The clauses \texttt{breaks}, \texttt{continues} and \texttt{returns}
+are specific way for stating a property on the program state when the
+annotated statement terminates abruptly with the corresponding C
+statements, \texttt{break}, \texttt{continue} and \texttt{return}. For the \texttt{returns} case, the \result{} construct is allowed and bound to the value returned (if not a void function).
+
 \begin{example}
-  %\input{}
+  TODO
 \end{example}
 
-\begin{remark}{Claude}
 
-  clauses ``breaks'' ``continues'' et ``returns''
 
-\end{remark}
+\oldremark{PC+Claude}{
+
+This allows to pose an assertion on function's state just before it
+returns, (whatever way that return occurs) where it is still possible
+to refer to local variables.
+
+  avoir la meme chose sur toute fin de bloc.
+
+  Mais il semble que c'est deja prevu... -> A VERIFIER qu'on la bien dit.
+
+  De toute facon, il faut detailler
+
+  Garder l'idee principal: on veut des annotations qui parlent a la
+  fois de \result et des variables locales.
+
+  A-t-on besoin de mettre cela pour toute expression ?
+
+  exemple : x = x + (f(..) //@ assert ...\result...) REFUSE'
+
+}
+
+
+
 
 \section{Termination}
 \label{sec:termination}
 
 The property of termination concerns both loops and recursive function
-calls.  For that purpose, loops can be annotated with a \texttt{loop
-  variant}\index{loop variant} clause, and functions can be annotated
-with a \decreases{} clause.
+calls. 
+% For that purpose, loops can be annotated with a \texttt{loop
+%  variant}\index{loop variant} clause, and functions can be annotated
+%with a \decreases{} clause.
+Termination is guaranteed by attaching a measure function to each loop
+and each recursive functions. 
 
-Termination is guaranted by attaching a measure function to each loop
-and each recursive functions. By default, a measure is a function into
+By default, a measure is a function into
 integers, and measures are compared using standard less-than ordering
 (Section~\ref{sec:integermeasures}). It is also possible to define
 measures into other domains and/or using a different ordering relation
@@ -1248,7 +1251,7 @@ R(x,y) ::= x > y ~\verb|&&|~ x \geq 0
 \]
 In other words, the measure must be a decreasing sequence of integers
 which remain non-negative, except possibly for the last value of the
-sequence.
+sequence (See example~\ref{ex:loopvariant}).
 
 \begin{example}
   In Example~\ref{ex:bsearch2}, a loop variant \verb|u-l| decreases
@@ -1297,11 +1300,13 @@ $g$ must occur in a state where the measure attached to $g$ is smaller
 applies when $g$ is $f$ itself.
 
 \begin{example}
-  TODO: fact ? power ? gcd ?
+  This are the classical factorial and Fibonacci functions
+  \input{fact.pp}
 \end{example}
 
 \begin{example}
-  TODO: mutual recursion 
+  This example illustrate mutual recursion 
+  \input{mutualrec.pp}
 \end{example}
 
 
@@ -1343,23 +1348,24 @@ example list of integers (\texttt{list <integer>}), list of pointers
 
 The grammar of Figure~\ref{fig:gram:logic} contains the additional
 rules for declaring polymorphic types, and for polymorphic type
-expressions. Notice that type variables are identifiers preceded by
-the quote character.
+expressions. 
+%Notice that type variables are identifiers preceded by
+%the quote character.
 
-\begin{remark}
+\oldremark{All}{
   Plutot que de prefixer les variables de type par dfes backquote, on popurrait mettre des lieurs explicites:
 
   predicate p<A,B>(A x, B y)
 
   axiom a<A,B> : ...
 
-\end{remark}
+}
 
 \subsection{Recursive logic definitions}
 
 The explicit definitions of logic functions and predicates can be
 recursive. Declarations in the same bunch of logic declarations are
-implcitely mutually recursive, so mutually recursive functions are
+implicitely mutually recursive, so mutually recursive functions are
 possible too.
 
 \begin{example}
@@ -1373,13 +1379,15 @@ possible too.
 %  \input{mutualrec.pp}
 %\end{example}
 
-\begin{remark}{PC}
-
-  critere autorisant la recursion: primitive... NON
-
-  -> a discuter
-
-\end{remark}
+Notice that there is no syntactic condition on such recursive
+definitions, such as limitation to primitive recursion like e.g. in
+Coq~\cite{Coq}. In essence, a recursive definition of the form
+$f(args) { e }$ where $f$ occurs in expression $e$ is just a shorcut
+for a declaration of $f$ followed by an axiom $\Forall args, f(args) =
+e$. In other words, recursive definitions are not guaranteed to be
+consistent, ion the same way that axioms may introduce
+inconsistency. Of course, tools might provide a way to check
+consistency.
 
 \subsection{Higher-order logic constructions}
 
@@ -1435,20 +1443,20 @@ higher-order logic.
 \label{fig:gram:logictype}
 \end{figure}
 
-\begin{remark}{SD6}
+\oldremark{SD6+All}{
 
   faire une analogie avec les types sommes (de Caml, des spec algebriques)
 
   c'est plutot des types avec constructeurs dans les spec algebriques
 
-\end{remark}
+}
 
 \experimental
 
 Logic types may not only be declared but also defined concretely, either under thr form of record types, or of sum types. These definitions may be recursive.
 With record types, the field access notation $t.id$ can be used, and for sum types, a pattern-matching construction is available. The grammar rules for these additional constructions are given Figure~\ref{fig:gram:logictype}
 
-\begin{remark}{All}
+\oldremark{All}{
 
 TODO: ajouter les types tableaux logiques: tableaux fonctionnels.
 
@@ -1457,17 +1465,7 @@ sucre syntaxique: t[i] pour select(t,i),  et dans le cas de code ghost, t[i] = e
 Example: n-reines.
 
 
-\end{remark}
-
-\begin{remark}{All}
-
-TODO: else ghost
-
-  manque `if () i1 //@ else i2' dans la grammaire
-
-\end{remark}
-
-
+}
 
 \begin{example}
   The declaration
@@ -1477,13 +1475,6 @@ TODO: else ghost
   defines the length of a list by recursion and pattern-matching.
 \end{example}
 
-
-\begin{remark}{PC}
-
-  proposer des syntaxes concretes pour des types logiques standards:
-  ensemble en particulier, style ZB
-
-\end{remark}
 
 \subsection{Hybrid functions and predicates}
 \label{sec:logicalstates}
@@ -1495,24 +1486,24 @@ declaration should usually be augmented with a \reads{} clause, with
 the syntax given on Figure~\ref{fig:gram:logicreads} which extend the
 one of Figure~\ref{fig:gram:logic}. This feature is useful when a
 function or a predicate is not easily definable, but can be more
-easily axiomatized. The specification writer should be very cautious
-because the meaning of the axioms depends on the reads clause (see
-example below)
+easily axiomatized. 
 
-It also allowed to put a reads clause on a definition, although in
-such a case tools should provide a way to check that the reads clause
-is compatible with the definition.
-
-
-
-Expressions that relate to a program point are
+Both with direct logic definitions or with logic declarations and
+axioms, an hybrid function will usually depend on one or more program
+points, because it depends upon memory states, via expressions such as:
 \begin{itemize}
-\item pointer dereferencing: *p, p ->f
-\item array accesses: t[i]
-\item address operator: \&x
-\item built-in predicates: \valid, others ?
-\item others ?
+\item pointer dereferencing: \verb|*p|, \verb|p->f|
+\item array accesses: \verb|t[i]|
+\item address operator: \verb|&x|
+\item built-in predicates depending on memory: \valid
+% \item others ?
 \end{itemize}
+To make such a definition safe, it is mandatory to add after the
+declared identifier a set of labels, between curly braces. Expressions
+as above must then be enclosed into the \at{} construct to refer to a
+given label. Nevertheless, to ease reading such logic expressions, it
+is allowed to forgot a label whenever there is only one label in the
+context.
 
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
@@ -1542,15 +1533,16 @@ Expressions that relate to a program point are
 
 \end{example}
 
+\oldremark{SD7+All}{
+
 As examplified above, hybrid predicates and functions should be used
 with caution, since they do not depend only on the values of their
 parameters but also in an implicit way on the values stored in memory.
 
-\begin{remark}{SD7}
 
   reutiliser l'exemple en question ? (en le faisant mieux)
 
-\end{remark}
+}
 
 \subsection{Model variables and model fields}
 
@@ -1685,7 +1677,7 @@ first-class values in annotations. They have the built-in type
 $loc<A>$ where $A$ is the type of values in that locations. 
 
 \begin{example}
-  Here is an example where we defined the footprint~\cite{?} of a
+  Here is an example where we defined the \emph{footprint} of a
   structure. 
 
   \input{footprint.pp}
@@ -1705,11 +1697,11 @@ into an post-condition
 
 \experimental
 
-\begin{remark}{PC}
+\oldremark{PC}{
 
 quid de la pile -> a voir
 
-\end{remark}
+}
 
 \begin{itemize}
 \item built-in predicate \fresh, specifying in a post-condition that a
@@ -1737,14 +1729,13 @@ Such a behavior can be written with the form
 where in ensures clause, \result is bound to the return code, e.g the
 value returned by \verb|main| or the argument passed to \verb|exit|.
 
-\begin{remark}{PC}
+\oldremark{PC}{
 
   utilite de la clause assigns ?
 
   probleme de l'exclusion avec les autres comportements. -> postassumes...
 
-
-\end{remark}
+}
 
 \section{Dependencies information}
 
@@ -1770,11 +1761,11 @@ Useful additional constructs for such functional expressions are constructions  
 %trouver une syntaxe pour introduire les noms des fonctions implicites
 %derriere la construction
 
-\begin{remark}{PC}
+\oldremark{PC}{
 
   Ne comprends pas ce que ca veut dire
 
-\end{remark}
+}
 
 \section{Data invariants}
 \label{sec:invariants}
@@ -1819,13 +1810,13 @@ to \texttt{weak}.
   \input{invariants.pp}
 \end{example}
 
-\begin{remark}{SD8}
+\oldremark{SD8}{
 
   montrer un example qui exprime des proprietes d'initialisation de
   variables globales, i.e un tableau contient des valeurs distinctes 2
   a 2.
 
-\end{remark}
+}
 
 \begin{itemize}
 \item Global invariants: invariants on global variables
@@ -1837,13 +1828,17 @@ to \texttt{weak}.
 
 \subsection{Semantics}
 
-The distinction between strong and weak invariants is on the sequence points were the property is supposed to hold. The distinction between the global invariants and the type invariants is the set of values on which they are supposed to hold.
+The distinction between strong and weak invariants is on the sequence
+points were the property is supposed to hold. The distinction between
+the global invariants and the type invariants is the set of values on
+which they are supposed to hold.
 
 \begin{itemize}
 \item Weak global invariants are properties which applies to global
   data and hold at any function entrance and function exit.
 
-\item Strong global invariants are properties which applies to global data and hold at any step of execution (starting after
+\item Strong global invariants are properties which applies to global
+  data and hold at any step of execution (starting after
   initialisation of these data).
 
 \item A weak type invariant on a type $\tau$ is supposed to hold at
@@ -1862,18 +1857,16 @@ The distinction between strong and weak invariants is on the sequence points wer
 
 
 
-
-
 \begin{example}
   example of strong type invariant:
-
+  TODO
 
   Such kind of strong invariant might be verified using a model with
   abstract data types. (cf caduceus)
 
 \end{example}
 
-\begin{remark}{PC}
+\oldremark{PC}{
 
   remise en cause de la politique d'invariants
 
@@ -1882,10 +1875,9 @@ The distinction between strong and weak invariants is on the sequence points wer
 Weak invariants do not hold in any state but can be temporarily violated.
 Such invariants are allowed under some sound policy~\cite{barnett04jot}.
 
+}
 
-\end{remark}
-
-\begin{remark}{Claude}
+\oldremark{Claude}{
 
   il faut decider comment sont lies les declarations d'invariants et
   les type associe'.
@@ -1904,7 +1896,7 @@ void reset(S *p) {
 //@ type invariant I(S *p) { p.x > 0 }
 
 -> reset ne respecte pas cet invariant
-\end{remark}
+}
 
 \begin{example}
   Here is a longer example, the famous Dijkstra's Dutch flag algorithm.
@@ -1951,7 +1943,7 @@ grammar are the following:
   ghost labelled statements in a switch, see next paragraph for details).
 \end{itemize}
 
-\begin{remark}{All}
+\oldremark{All}{
 
   On veut autoriser \verb|/@ .. @/| dans les commentaires C, on a en a besoin
   pour annoter le code ghost
@@ -1961,9 +1953,9 @@ grammar are the following:
   (ou alors, considerer le caractere \verb|@| juste comme un 'space' ?)
 
 
-\end{remark}
+}
 
-\begin{remark}{JCF et CM}
+\oldremark{JCF et CM}{
 
 les ghosts pourrait etre des types logiques.
 
@@ -1975,7 +1967,7 @@ que le code ghost ne change pas la semantique du code C. Cas de champ
 ghost dans les structures -> change
 
 
-\end{remark}
+}
 
 \experimental
 
@@ -1993,20 +1985,23 @@ ghost dans les structures -> change
 \label{fig:gram:ghost}
 \end{figure}
 
-\begin{remark}{DD4}
+\oldremark{DD4}{
 
   Cette grammaire autorise de mettre des ghost dans les ghost, a refaire.
 
   En fait non, on l'autorise : du code ghost peut avoir besoin
   d'annotation, comme des invariants de boucle
 
-\end{remark}
+}
 
-\begin{remark}{SD9}
 
-  illustrer l'utilisation de ghost pour specifier des proprietes temporelles
+\oldremark{All}{
 
-\end{remark}
+TODO: else ghost
+
+  manque `if () i1 //@ else i2' dans la grammaire
+
+}
 
 
 \paragraph{Semantics of Ghost Code}
@@ -2053,27 +2048,37 @@ statically detected as ghost must be semantically ghost.
   \input{ghostcfg.pp}
 \end{example}
 
-\begin{remark}{Claude}
+\oldremark{Claude}{
   d'autres exemples, valides ou non valides, serait bienvenus
-\end{remark}
+}
 
-\begin{remark}{All}
+\oldremark{All}{
 
-On veut des tableaux ghost de taille infinie
+On veut des tableaux ghost de taille infinie -> cf tableaux fonctionnels de la section sur les assigns from
 
-\end{remark}
+}
 
 \paragraph{Differences between model variables and ghost variables}
 
-TODO
+
+A ghost variable is an additional specification variable which is
+assigned in ghost code like any C variable. On the other hand, a model
+variable cannot be assigned, but one can state it is modified and can
+express properties about the new value, in a non-deterministic way,
+using logic assertions and invariants.
+
+In other words, one can say that the specifications stating a ghost
+variable modification are executable.
 
 \subsection{Volatile variables}
 
-\begin{remark}{DD1}
+TODO
+
+\oldremark{DD1}{
 
   attacher des fonctions de lecture et d'ecriture a une variable volatile
 
-\end{remark}
+}
 
 %\section{Module constructions}
 %

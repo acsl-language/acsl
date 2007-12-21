@@ -27,16 +27,10 @@ The Jessie library is a collection of logic specifications whose
 semantics is well-defined only on source codes free from
 architecture-dependent features. In particular it is currently
 incompatible with pointer casts or unions (although there is ongoing
-work to support some of them~\cite{moy07ccpp}). As a consequence a
-valid pointer of some type $\tau*$ necessarily points to a memory
-block which contains values of type $\tau$.
-
-\begin{remark}{DD5}
-
-Dire que ces limitations ne concernent que cette librairie et ce plugin
-
-\end{remark}
-
+work to support some of them~\cite{moy07ccpp}). As a consequence, in
+this particular setting, a valid pointer of some type $\tau*$
+necessarily points to a memory block which contains values of type
+$\tau$.
 
 \subsection{Abstract level of pointer validity}
 
@@ -127,16 +121,24 @@ Includes
 \end{itemize}
 
 \subsection{Finite lists}
-\label{sec:libreal}
 
 \begin{itemize}
 \item pure functions nil, cons, append, fold, etc.
 \item Path, Reachable, isFiniteList, isCyclic, etc. on C linked-lists.
 \end{itemize}
+
+
 \subsection{Sets and Maps}
-\label{sec:libreal}
 
 Finite sets, finite maps, in ZB-style.
+
+\oldremark{PC}{
+
+  proposer des syntaxes concretes pour des types logiques standards:
+  ensemble en particulier, style ZB
+
+}
+
 
 
 %%% Local Variables:
