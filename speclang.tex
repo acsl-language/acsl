@@ -526,16 +526,17 @@ given on figure~\ref{fig:gram:oldandresult}. These are the following:
 \item \result{} denotes the returned value of the function.
 \end{itemize}
 
-$\old(e)$ and \result{} can be used only in \ensures{} clauses.
+$\old(e)$ and $\result$ can be used only in \assigns{} clauses and
+\ensures{} clauses, since \requires{} clauses and \assumes{} refer to
+the pre-state.
 
-\begin{remark}{Claude}
+\oldremark{Claude}{
 
   \old dans les assigns ? OUI
 
-  loop\_assigns aussi
+  loop\_assigns aussi NON, utiliser \at(e,Pre)
 
-
-\end{remark}
+}
 
 \subsection{Simple function contracts}
 \label{sec:simplecontracts}
@@ -576,9 +577,11 @@ simplified one:
 ~~@*/
 \end{flushleft}
 Also, if no clause \requires is given, it defaults to requiring
-`true', and similarly for \ensures clause. Giving no \assigns clause means
-that locations assigned by the function are not specified, so the
-caller has no information at all on this function's side effects. 
+`true', and similarly for \ensures clause. Giving no \assigns clause
+means that locations assigned by the function are not specified, so
+the caller has no information at all on this function's side
+effects. See Section~\ref{sec:multiplecontracts} for more details on
+default status of clauses.
 
 \begin{example}
   The following function is given a simple contract for computation of
@@ -992,6 +995,61 @@ Sinon, il faut donner des regles de portee pour les labels mentionnes dans les $
 
 }
 
+\subsection{Assertions}
+
+\begin{figure}[t]
+  \begin{cadre}
+    \input{assertions.bnf}
+  \end{cadre}
+  \caption{Grammar for assertions}
+  \label{fig:gram:assertions}
+\end{figure}
+
+The syntax of those annotations is given Figure~\ref{fig:gram:assertions} under the form of a addition to the grammar of C statements.
+
+\begin{itemize}
+\item  The $\texttt{assert}~p$ clause means that $p$ must hold in the state
+  before the statement.
+
+\item The form $\texttt{for}~id_1,\ldots,id_k:~\texttt{assert}~p$
+  variant associates the assertion to the named behaviors $id_i$, each
+  of them being a behavior identifier for the current function (or a
+  behavior of an enclosing block as defined later in
+  Section~\ref{sec:statement_contract}).  It means that this assertion
+  is meant to be valid only for the considered behaviors.
+\end{itemize}
+
+\oldremark{Claude}{unifier les 2 derniers cas? car a-t-on besoin de
+  nommer un assert en dehors d'un behavior de la fonction? Surtout que
+  l'on peut deja ecrire assert (id : p)
+}
+
+\subsection{Assertions on return}
+
+\experimental
+
+This allows to pose an assertion on function's state just before it
+returns, (whatever way that return occurs) where it is still possible
+to refer to local variables.
+
+\begin{remark}{PC}
+
+  avoir la meme chose sur toute fin de bloc.
+
+  Mais il semble que c'est deja prevu... -> A VERIFIER qu'on la bien dit.
+
+  De toute facon, il faut detailler
+
+  Garder l'idee principal: on veut des annotations qui parlent a la
+  fois de \result et des variables locales.
+
+  A-t-on besoin de mettre cela pour toute expression ?
+
+  exemple : x = x + (f(..) //@ assert ...\result...) REFUSE'
+
+  par contre, c'est un cas particulier de clause ``returns'' de la section suivante
+\end{remark}
+
 
 \subsection{Loop annotations}
 \label{sec:loop_annot}
@@ -1104,68 +1162,27 @@ invariants are allowed at different places in the loop body. These
 advanced extensions can be useful for complex control flows, in
 particular with \verb|goto|s.
 
+\begin{example}
+Here is a program annotated with loop invariants (TODO) inside the loop body:
+input{advancedloopinvariants.pp}
+The control-flow graph of the code is as follows
+\begin{center}
+  TODO
+\end{center}
 
-\begin{remark}{PC}
+\end{example}
 
-  discuter la difference entre un loop invariant place arbitrairement
-  dans le corps de boucle et un assert au meme endroit ? idee d'invariant inductif
+Syntactically, such an advanced loop invariant can be placed anywhere
+where an \assert{} clause. The difference is in the
+semantics: a loop invariant must be \emph{inductive}. This means that
+a proposition given as a loop invariant must not only be true at the
+corresponding program point for any execution of the program, but it
+must be also preserved indepedently of the context. TODO(citer une ref
+a propos des invariants inductifs)
 
-\end{remark}
-
-\subsection{Assertions}
-
-\begin{figure}[t]
-  \begin{cadre}
-    \input{assertions.bnf}
-  \end{cadre}
-  \caption{Grammar for assertions}
-  \label{fig:gram:assertions}
-\end{figure}
-
-The syntax of those annotations is given Figure~\ref{fig:gram:assertions} under the form of a addition to the grammar of C statements.
-
-\begin{itemize}
-\item  The $\texttt{assert}~p$ clause means that $p$ must hold in the state
-  before the statement.
-
-\item The form $\texttt{for}~id_1,\ldots,id_k:~\texttt{assert}~p$
-  variant associates the assertion to the named behaviors $id_i$, each
-  of them being a behavior identifier for the current function (or a
-  behavior of an enclosing block as defined later in
-  Section~\ref{sec:statement_contract}).  It means that this assertion
-  is meant to be valid only for the considered behaviors.
-\end{itemize}
-
-\oldremark{Claude}{unifier les 2 derniers cas? car a-t-on besoin de
-  nommer un assert en dehors d'un behavior de la fonction? Surtout que
-  l'on peut deja ecrire assert (id : p)
-}
-
-\subsection{Assertions on return}
-
-\experimental
-
-This allows to pose an assertion on function's state just before it
-returns, (whatever way that return occurs) where it is still possible
-to refer to local variables.
-
-\begin{remark}{PC}
-
-  avoir la meme chose sur toute fin de bloc.
-
-  Mais il semble que c'est deja prevu... -> A VERIFIER qu'on la bien dit.
-
-  De toute facon, il faut detailler
-
-  Garder l'idee principal: on veut des annotations qui parlent a la
-  fois de \result et des variables locales.
-
-  A-t-on besoin de mettre cela pour toute expression ?
-
-  exemple : x = x + (f(..) //@ assert ...\result...) REFUSE'
-
-  par contre, c'est un cas particulier de clause ``returns'' de la section suivante
-\end{remark}
+\begin{example}
+\input{inductiveloopinvariants.pp}  
+\end{example}
 
 
 \subsection{Statement contracts}

@@ -9,6 +9,7 @@ DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
 	acsl_allocator.pp gen_spec_with_model.pp gen_code.pp \
 	ghostpointer.pp ghostcfg.pp flag.pp lexico.pp footprint.pp \
 	fwrite-malloc.pp loopvariantnegative.pp \
+        advancedloopinvariants.pp inductiveloopinvariants.pp \
 	term.bnf binders.bnf fn_behavior.bnf oldandresult.bnf loc.bnf \
 	assertions.bnf loops.bnf st_contracts.bnf moreterm.bnf ghost.bnf \
 	logic.bnf logictypedecl.bnf higherorder.bnf logicreads.bnf \
