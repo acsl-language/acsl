@@ -517,7 +517,7 @@ introduce two additional constructs in the grammer for terms.
   (id : f) 
 }
 
-\subsection{Built-in constructs $\old$ and $\result$}
+\subsection{Built-in constructs \old{} and \result{}}
 
 Function contracts usually need additional constructs for terms as
 given on figure~\ref{fig:gram:oldandresult}. These are the following:
@@ -947,7 +947,7 @@ Annotations on C statements are of three kinds:
   their behavior in a similar manner as C functions.
 \end{itemize}
 
-\subsection{Built-in construct $\at$}
+\subsection{Built-in construct \at{}}
 
 Statement annotations usually need another additional construct
 $\at(e,id)$ refering to the value of the expression $e$ in the
@@ -1569,7 +1569,7 @@ functions whose concrete implementation must remain private.
   decision has been made to generate values in increasing order, so
   that it suffices to record the last value generated. This decision
   is made explicit by an invariant.
- \input{gen_code.pp}
+  \input{gen_code.pp}
 \end{example}
 
 Informal semantics of model variables is as follows:
@@ -2069,6 +2069,13 @@ using logic assertions and invariants.
 
 In other words, one can say that the specifications stating a ghost
 variable modification are executable.
+
+\begin{example}
+  \label{ex:gen_code}
+  The example~\ref{ex:gen_code} can also be specified with a ghost
+  field instead of a model field, by adding before the return :
+  \verb|//@ ghost forbidden = union(single(\result),forbidden;|
+\end{example}
 
 \subsection{Volatile variables}
 

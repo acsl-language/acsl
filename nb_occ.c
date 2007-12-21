@@ -4,7 +4,8 @@
  * (in a given memory state labelled L)
  */
 
-/*@ logic integer nb_occ{L}(double t[], integer i, integer j, double e) 
+/*@ logic integer nb_occ{L}(double t[], integer i, integer j, 
+  @                         double e) 
   @   reads t[..];
   @*/
 /* Notice that without label {L}, t[..] would be rejected. 

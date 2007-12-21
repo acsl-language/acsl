@@ -6,14 +6,17 @@
 typedef enum _bool { false = 0, true = 1 } bool;
 
 /*@ predicate finite_list<A>((A* -> A*) next_elem, A* ptr) {
-  @   ptr == \null || (\valid(ptr) && finite_list(next_elem,next_elem(ptr)))
+  @   ptr == \null || 
+  @   (\valid(ptr) && finite_list(next_elem,next_elem(ptr)))
   @ }
   @
   @ logic integer list_length<A>((A* -> A*) next_elem, A* ptr) {
-  @   (ptr == \null) ? 0 : 1 + list_length(next_elem,next_elem(ptr))
+  @   (ptr == \null) ? 0 : 
+  @   1 + list_length(next_elem,next_elem(ptr))
   @ }
   @
-  @ predicate lower_length<A>((A* -> A*) next_elem, A* ptr1, A* ptr2) {
+  @ predicate lower_length<A>((A* -> A*) next_elem, 
+  @                           A* ptr1, A* ptr2) {
   @   finite_list(next_elem, ptr1) && finite_list(next_elem, ptr2)
   @   && list_length(next_elem, ptr1) < list_length(next_elem, ptr2)
   @ } 
@@ -112,7 +115,8 @@ typedef struct _memory_chunk_list {
   @                  (memory_chunk_list* mcl, memory_block* mb) {
   @   \valid(mcl) && valid_memory_chunk(mcl->chunk,mcl->chunk->size)
   @   && mcl->chunk->block == mb
-  @   && (mcl->next == \null || valid_memory_chunk_list(mcl->next, mb))
+  @   && (mcl->next == \null || 
+  @       valid_memory_chunk_list(mcl->next, mb))
   @   && mcl->offset == mcl->chunk->offset
   @   && (
   @        // it is the last chunk in the list
@@ -129,7 +133,8 @@ typedef struct _memory_chunk_list {
   @ predicate valid_complete_chunk_list
   @                  (memory_chunk_list* mcl, memory_block* mb) {
   @   valid_memory_chunk_list(mcl,mb)
-  @   && mcl->next->chunk->offset + mcl->next->chunk->size == mb->next
+  @   && mcl->next->chunk->offset + 
+  @      mcl->next->chunk->size == mb->next
   @ }
   @
   @ predicate chunk_lower_length(memory_chunk_list* ptr1,
@@ -176,7 +181,8 @@ typedef struct _memory_slice_list {
   @ type invariant inv_memory_slice_list(memory_slice_list* msl) {
   @   msl.packed ==>
   @     (valid_memory_slice(msl->slice)
-  @     && (msl->next == \null || valid_memory_slice_list(msl->next))
+  @     && (msl->next == \null || 
+  @         valid_memory_slice_list(msl->next))
   @     && finite_list(next_slice, msl))
   @ }
   @
@@ -205,7 +211,8 @@ typedef memory_slice_list* memory_pool;
   @   assumes s > 0;
   @   requires valid_memory_pool(arena);
   @   ensures \result == 0
-  @     || (valid_memory_chunk(\result,s) && used_memory_chunk(*\result));
+  @     || (valid_memory_chunk(\result,s) && 
+  @         used_memory_chunk(*\result));
   @ */
 memory_chunk* memory_alloc(memory_pool* arena, unsigned int s) {
   memory_slice_list *msl = *arena;

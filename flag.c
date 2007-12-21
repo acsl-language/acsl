@@ -24,7 +24,8 @@ typedef struct flag {
   @ }
   @*/
 
-/*@ predicate isMonochrome(color t[], integer i, integer j, color c) {
+/*@ predicate isMonochrome(color t[], integer i, integer j, 
+  @                        color c) {
   @   \valid(t+(i..j)) && 
   @   \forall integer k; i <= k <= j ==> t[k] == c 
   @ } 
