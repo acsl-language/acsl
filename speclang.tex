@@ -80,7 +80,7 @@ With respect to C pure expressions, the additional constructs are as follows:
 
 \item[Logic functions] applications in terms and in propositions are not
 applications of C functions, but of logic functions or predicates: see
-Section~\ref{sec:logicspec} for detail.  
+Section~\ref{sec:logicspec} for detail.
 
 \item[Consecutive comparison operators] the construct $t_1~relop_1~t_2~relop_2~t_3 \cdots t_k$ with
   several consecutive comparison operators is a shortcut for
@@ -89,7 +89,7 @@ Section~\ref{sec:logicspec} for detail.
   the same ``direction'', \emph{i.e.} they must all belong either to
   $\{\verb|<|, \verb|<=|, \verb|==|\}$ or to
   $\{\verb|>|,\verb|>=|,\verb|==|\}$. For example, expressions
-  \verb|x < y > z| and \verb|x != y != z| are forbidden. 
+  \verb|x < y > z| and \verb|x != y != z| are forbidden.
 
   To enforce the same interpretation as in C expressions, one must put
   extra parentheses: $a == b < c$ is equivalent to $a == b \verb|&&| b
@@ -274,7 +274,7 @@ towards a C integer type $t$ (among \texttt{char}, \texttt{short},
 \texttt{int} and \texttt{long}, signed or unsigned) is allowed, and is
 interpreted as follows: the result is the unique value of the
 corresponding type that is congruent to the mathematical result modulo
-the cardinal of this type (that is 2 to $8\times\sizeof(t)$). 
+the cardinal of this type (that is 2 to $8\times\sizeof(t)$).
 \begin{example}
   \begin{itemize}
   \item (unsigned char)1000 is $1000 \bmod 256 = 232$
@@ -309,7 +309,7 @@ Important: implicit casts from integers to C integer type are forbidden.
 Quantification can be either on mathematical \verb|integer| or bounded
 types \verb|short|, \verb|char|, etc. In the latter case,
 quantification corresponds to integer quantification over the
-corresponding interval. 
+corresponding interval.
 \begin{example}
 The formula
   \begin{center}
@@ -357,7 +357,7 @@ Like arithmetic operations, bitwise operations apply to any
 mathematical integers: any mathematical integer as a unique infinite
 2-complement binary representation with infinitely many 0 (for
 non-negative numbers) or 1 (for negative numbers) on the left. Then
-bitwise operations apply to these representation. 
+bitwise operations apply to these representation.
 \begin{example}
   \begin{itemize}
   \item \verb|7 & 12| = $\cdots 00111 \verb|&| \cdots 001100$ =
@@ -432,9 +432,9 @@ library (see Section~\ref{sec:libreal}).
 
   Il faut pouvoir dire, comme
   pour les operations entieres, que le resultat d'une operation C sur
-  des float est le cast de l'operation logique: 
+  des float est le cast de l'operation logique:
 
-  on peut aussi obtenir Nan, + inf, - inf, et -0 
+  on peut aussi obtenir Nan, + inf, - inf, et -0
 
   mode d'arrondi ?
 
@@ -444,7 +444,7 @@ library (see Section~\ref{sec:libreal}).
   isNan, is Finite, ...
 
 
-  Probleme: 
+  Probleme:
 }
 
 
@@ -452,7 +452,7 @@ library (see Section~\ref{sec:libreal}).
 \subsubsection{Quantification}
 
 Quantification over a variable of type \verb|real| is of course usual
-quantification over real numbers. 
+quantification over real numbers.
 
 Quantification over float (resp. double) types is allowed too, and are
 supposed to range over all real numbers representable as floats (resp
@@ -514,7 +514,7 @@ introduce two additional constructs in the grammer for terms.
   pour les associer a des clauses du corps de la fonction, p. ex.
   assert ou loop invariant. Mais on peut aussi proposer par ailleurs
   de nommer des predicate ou terms, p. ex. avec la notation Caduceus
-  (id : f) 
+  (id : f)
 }
 
 \subsection{Built-in constructs \old{} and \result{}}
@@ -635,13 +635,13 @@ The semantics of such a contract is as follows:
 \item The caller of the function must guarantee that it is called in a
   state where the property $P \verb|&&| (A_1 \verb|==>| R_1) \verb|&&|
   (A_2 \verb|==>| R_2)$ holds.
-\item The called function returns a state where 
-% the property $E$ holds  and 
+\item The called function returns a state where
+% the property $E$ holds  and
 the properties $\old(A_i) \verb|==>| E_i$ hold for each $i$.
 \item For each $i$, if the function is called in a pre-state where
   $A_i$ holds, then each memory location of that pre-state that do not
   belong to the set $L_i$ remain allocated and is left unchanged
-  in the post-state. 
+  in the post-state.
 % In any case, locations of $L$ are unchanged.
 \end{itemize}
 
@@ -666,7 +666,7 @@ simplified one:
 \end{flushleft}
 
 Also, a simple contract like in Section~\ref{sec:simplecontracts} is
-indeed equivalent to 
+indeed equivalent to
 \begin{flushleft}\ttfamily
 /*@ requires $P$; \\
 ~~@ behavior \textsl{<any name>}: \\
@@ -681,9 +681,9 @@ thus simple contracts are just contracts with an anonymous behavior.
 \begin{example}
 \label{ex:bsearch}
 In the following, \texttt{bsearch($t,n,v$)} searches for element $v$
-in array $t$ between indices $0$ and $n-1$. 
+in array $t$ between indices $0$ and $n-1$.
 
-\input{bsearch.pp} 
+\input{bsearch.pp}
 
 The precondition is to require that the array is safely allocated for
 at least the index from $0$ to $n-1$. The two named behaviors
@@ -726,7 +726,7 @@ to a contract:
 ~~@ complete behaviors $b_1,\ldots,b_n$; \\
 ~~@*/
 \end{flushleft}
-specifies that the set of behaviors is complete \emph{i.e.} 
+specifies that the set of behaviors is complete \emph{i.e.}
 \[
 \bigvee_{1\leq i \leq n} A_i
 \]
@@ -738,17 +738,17 @@ is true. The simplified version of that clause
 \end{flushleft}
 means that all behaviors given in the contract should be taken into account.
 
-Analogously, 
+Analogously,
 \begin{flushleft}\ttfamily
 /*@ ... \\
 ~~@ disjoint behaviors $b_1,\ldots,b_n$; \\
 ~~@*/
 \end{flushleft}
-specifies that the given behaviors are pairwise disjoint \emph{i.e.} 
+specifies that the given behaviors are pairwise disjoint \emph{i.e.}
 for all distinct $i$ and $j$:
 \[
 \lnot (A_i \land A_j)
-\] 
+\]
 is true. The simplified version of that clause
 \begin{flushleft}\ttfamily
 /*@ ... \\
@@ -900,7 +900,7 @@ requires clauses and the behaviors.
 
 On the other hand a function may have no contract at all, or a
 contract with not all clauses. The \verb|requires| and
-the \verb|ensures| clauses default to true when none is given. 
+the \verb|ensures| clauses default to true when none is given.
 
 If no \verb|assigns| clause is given, it remains unspecified. If the
 function under consideration has only a declaration but no body, then
@@ -911,7 +911,7 @@ mandatory. On the other hand, if that function has a body, giving no
 \verb|assigns| clause means in practice that it is left to tools to
 compute an over-approximation of the sets of assigned locations.
 
- 
+
 \oldremark{Claude}{
 
   Attention, cette semantique est dangereuse car si en pratique on
@@ -959,10 +959,10 @@ more scoping rules must be respected:
 \begin{itemize}
 \item the label $id$ must occur before the occurrence of  $\at(e,id)$
   in the source.
-\item the label $id$ must not be inside a inner block. 
+\item the label $id$ must not be inside a inner block.
 \end{itemize}
 These rules are exactly the same rules as the visibility of some local
-variable within a statement (see~\cite{KR88}, Section A11.1) 
+variable within a statement (see~\cite{KR88}, Section A11.1)
 
 \oldremark{Patrick}{
 
@@ -1103,7 +1103,7 @@ where $m$ is a term of type \verb|integer|.
 The semantics is as follows: for each loop iteration that terminates
 normally or with \texttt{continue}, the value of $m$ at end of the
 iteration must be smaller that its value at the beginning of the
-iteration. Moreover, its value at the beginning must be non-negative. 
+iteration. Moreover, its value at the beginning must be non-negative.
 
 Notice that it means that the value of $m$ at loop exit might be
 negative. This is OK because it does not compromise termination of the
@@ -1157,7 +1157,7 @@ must be also preserved indepedently of the context. TODO(citer une ref
 a propos des invariants inductifs)
 
 \begin{example}
-\input{inductiveloopinvariants.pp}  
+\input{inductiveloopinvariants.pp}
 \end{example}
 
 
@@ -1221,12 +1221,12 @@ to refer to local variables.
 \label{sec:termination}
 
 The property of termination concerns both loops and recursive function
-calls. 
+calls.
 % For that purpose, loops can be annotated with a \texttt{loop
 %  variant}\index{loop variant} clause, and functions can be annotated
 %with a \decreases{} clause.
 Termination is guaranteed by attaching a measure function to each loop
-and each recursive functions. 
+and each recursive functions.
 
 By default, a measure is a function into
 integers, and measures are compared using standard less-than ordering
@@ -1305,7 +1305,7 @@ applies when $g$ is $f$ itself.
 \end{example}
 
 \begin{example}
-  This example illustrate mutual recursion 
+  This example illustrate mutual recursion
   \input{mutualrec.pp}
 \end{example}
 
@@ -1348,7 +1348,7 @@ example list of integers (\texttt{list <integer>}), list of pointers
 
 The grammar of Figure~\ref{fig:gram:logic} contains the additional
 rules for declaring polymorphic types, and for polymorphic type
-expressions. 
+expressions.
 %Notice that type variables are identifiers preceded by
 %the quote character.
 
@@ -1486,7 +1486,7 @@ declaration should usually be augmented with a \reads{} clause, with
 the syntax given on Figure~\ref{fig:gram:logicreads} which extend the
 one of Figure~\ref{fig:gram:logic}. This feature is useful when a
 function or a predicate is not easily definable, but can be more
-easily axiomatized. 
+easily axiomatized.
 
 Both with direct logic definitions or with logic declarations and
 axioms, an hybrid function will usually depend on one or more program
@@ -1674,11 +1674,11 @@ Section~\ref{sec:locations}.
 
 Locations, as defined in Section~\ref{sec:locations}, can be used as
 first-class values in annotations. They have the built-in type
-$loc<A>$ where $A$ is the type of values in that locations. 
+$loc<A>$ where $A$ is the type of values in that locations.
 
 \begin{example}
   Here is an example where we defined the \emph{footprint} of a
-  structure. 
+  structure.
 
   \input{footprint.pp}
 
@@ -1686,7 +1686,7 @@ $loc<A>$ where $A$ is the type of values in that locations.
 \end{example}
 
 Note: in other words, a clause assigns l1,..,ln could be transformed
-into an post-condition 
+into an post-condition
 \[
 \forall char* p; \separated(\union(l1,..,ln),*p) ==> *p == \old(*p)
 \]
@@ -1743,11 +1743,11 @@ value returned by \verb|main| or the argument passed to \verb|exit|.
 
 An extended syntax of \assigns clauses allows to give dependencies:
 \begin{flushleft}
-//@ assigns $loc_1,\ldots,loc_n$ from $loc'_1,\ldots,loc'_k$ ;
+//@ assigns $loc_1,\ldots,loc_n$ \textbackslash{}from $loc'_1,\ldots,loc'_k$ ;
 \end{flushleft}
 Moreover, dependencies can be made precise using \emph{functional expressions}:
 \begin{flushleft}
-//@ assigns $loc$ from $loc'_1,\ldots,loc'_k$ = term ;
+//@ assigns $loc$ \textbackslash{}from $loc'_1,\ldots,loc'_k$ = term ;
 \end{flushleft}
 
 \experimental
@@ -1976,7 +1976,7 @@ ghost dans les structures -> change
       ``logic statement'' auquel on désire associer un ``statement
       behavior''. Où en parler~?
     }
-    
+
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
       \input{ghost.bnf}
