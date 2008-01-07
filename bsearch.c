@@ -1,5 +1,5 @@
 /*@ requires n >= 0 && \valid(t+(0..n-1));
-  @ assigns \nothing;
+  @ assigns \empty;
   @ ensures -1 <= \result <= n-1;
   @ behavior success:
   @   ensures \result >= 0 ==> t[\result] == v;

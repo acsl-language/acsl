@@ -1,5 +1,5 @@
 int a;
-//@ invariant a_is_positive: a > 0
+//@ invariant a_is_positive: a > 0 ;
 
 typedef double temperature; 
 /*@ strong type invariant temp_in_celsius(temperature t) { 
