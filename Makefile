@@ -14,8 +14,7 @@ DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
 	term.bnf binders.bnf fn_behavior.bnf oldandresult.bnf loc.bnf \
 	assertions.bnf loops.bnf st_contracts.bnf moreterm.bnf ghost.bnf \
 	logic.bnf logictypedecl.bnf higherorder.bnf logicreads.bnf \
-	data_invariants.bnf  \
-	cfg.1
+	data_invariants.bnf  
 
 all: main.pdf
 

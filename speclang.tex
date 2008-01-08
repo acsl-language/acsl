@@ -100,7 +100,7 @@ Section~\ref{sec:logicspec} for detail.
 
 \oldremark{Virgile}{Dans le dernier cas, on pourrait vouloir avoir x, y
   et z deux à deux distincts, et eventuellement un prédicat n-aire
-\verb|\distinct(x,y,z)| comme dans SMT-lib}
+\distinct(x,y,z) comme dans SMT-lib}
 
 \end{description}
 
@@ -1139,11 +1139,11 @@ advanced extensions can be useful for complex control flows, in
 particular with \verb|goto|s.
 
 \begin{example}
-Here is a program annotated with loop invariants (TODO) inside the loop body:
-input{advancedloopinvariants.pp}
+Here is a program annotated with a loop invariant inside the loop body:
+\input{advancedloopinvariants.pp}
 The control-flow graph of the code is as follows
 \begin{center}
-  TODO
+%  \includegraphics[width=0.8\textwidth]{./cfg.mps}
 \end{center}
 
 \end{example}
@@ -1945,12 +1945,12 @@ grammar are the following:
 
 \oldremark{All}{
 
-  On veut autoriser \verb|/@ .. @/| dans les commentaires C, on a en a besoin
+  On veut autoriser \texttt{/@ .. @/} dans les commentaires C, on a en a besoin
   pour annoter le code ghost
 
-  preciser aussi que l'on a le droit de mettre des \verb|@| en debut
-  de ligne (\verb|\n space* @|) et juste avant le \verb|*/| fermant
-  (ou alors, considerer le caractere \verb|@| juste comme un 'space' ?)
+  preciser aussi que l'on a le droit de mettre des @ en debut
+  de ligne (\texttt{\textbackslash{}n space* @}) et juste avant le \texttt{*/} fermant
+  (ou alors, considerer le caractere \texttt{@} juste comme un 'space' ?)
 
 
 }
