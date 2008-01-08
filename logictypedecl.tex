@@ -16,7 +16,7 @@
   term ::= term "." id ; record field access
   | "\match" term ";" match-cases ; pattern-matching
   | "(" term ("," term)+ ")" ; tuples
-  | "\let" "(" id (, id)+ ")" "=" term ";" term ; \experimental
+  | "\let" "(" id (, id)+ ")" "=" term ";" term ;
   \
   match-cases ::= "|"? match-case ("|" match-case)* 
   \

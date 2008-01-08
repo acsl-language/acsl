@@ -1,16 +1,16 @@
 \begin{syntax}
-  logic-function-decl ::= "logic" type-expr id parameters ;
+  logic-function-decl ::= "logic" type-expr poly-id parameters ;
                           reads-clause ";"
   \
-  logic-predicate-decl ::= "predicate" id parameters ;
+  logic-predicate-decl ::= "predicate" poly-id parameters ;
                           reads-clause ";"
   \
   reads-clause ::= "reads" locations
   \
-  logic-function-def ::= "logic" type-expr id parameters ;
+  logic-function-def ::= "logic" type-expr poly-id parameters ;
                    reads-clause "{" term "}"
   \
-  logic-predicate-def ::= "predicate" id parameters ; 
+  logic-predicate-def ::= "predicate" poly-id parameters ; 
                           reads-clause "{" pred "}"
   \
   poly-id ::= id ; normal identifier

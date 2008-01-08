@@ -36,21 +36,21 @@ typedef struct flag {
   @   \exists integer b, integer r; 
   @      isMonochrome(f.colors,0,b-1,BLUE) &&
   @      isMonochrome(f.colors,b,r-1,WHITE) &&
-  @      isMonochrome(f.colors,r,f.n-1,RED))
+  @      isMonochrome(f.colors,r,f.n-1,RED) ;
   @*/
 void dutch_flag(flag f) {
   color *t = f.colors;
   int b = 0;
   int i = 0;
   int r = f.n;
-  /*@ invariant
+  /*@ loop invariant
     @   (\forall integer k; 0 <= k < f.n ==> isColor(t[k])) &&
     @   0 <= b <= i <= r <= f.n &&
     @   isMonochrome(t,0,b-1,BLUE) &&
     @   isMonochrome(t,b,i-1,WHITE) &&
     @   isMonochrome(t,r,f.n-1,RED);
-    @ loop_assigns b,i,r,t[0 .. f.n-1];
-    @ variant r - i;
+    @ loop assigns b,i,r,t[0 .. f.n-1];
+    @ loop variant r - i;
     @*/
   while (i < r) {
     switch (t[i]) {
