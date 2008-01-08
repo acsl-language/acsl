@@ -14,7 +14,8 @@ DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
 	term.bnf binders.bnf fn_behavior.bnf oldandresult.bnf loc.bnf \
 	assertions.bnf loops.bnf st_contracts.bnf moreterm.bnf ghost.bnf \
 	logic.bnf logictypedecl.bnf higherorder.bnf logicreads.bnf \
-	data_invariants.bnf 
+	data_invariants.bnf  \
+	cfg.1
 
 all: main.pdf
 
@@ -34,6 +35,12 @@ main.pdf: main.tex $(DEPS)
 	bibtex main
 	pdflatex main
 	pdflatex main
+
+%.1: %.mp
+	mpost -interaction batchmode $<
+
+%.mps: %.1
+	mv $< $@
 
 %.pp: %.tex pp.ml
 	ocaml pp.ml -color $< > $@
