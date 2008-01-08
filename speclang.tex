@@ -1136,6 +1136,17 @@ invariants are allowed at different places in the loop body. These
 advanced extensions can be useful for complex control flows, in
 particular with \verb|goto|s.
 
+Syntactically, such an advanced loop invariant can be placed anywhere
+where an \assert{} clause is allowed. The difference is in the
+semantics: a loop invariant must be \emph{inductive}. This means that
+a proposition given as a loop invariant must not only be true at the
+corresponding program point for any execution of the program, but it
+must be also preserved independently of the context. 
+
+\oldremark{Claude}{TODO(citer une ref
+a propos des invariants inductifs)
+}
+
 \begin{example}
 <<<<<<< speclang.tex
 Here is a program annotated with loop invariants (TODO) inside the loop body:
@@ -1146,10 +1157,11 @@ Here is a program annotated with a loop invariant inside the loop body:
 >>>>>>> 1.57
 The control-flow graph of the code is as follows
 \begin{center}
-\begin{tikzpicture}
-\path (0,4) node[fill=yellow,draw](n1){1}
-      (0,2) node[fill=yellow,draw](n2){2};
-\draw[->,very thick] (n1.south) -- (n2.north);
+\includegraphics{cfg.mps}
+%\begin{tikzpicture}
+%\path (0,4) node[fill=yellow,draw](n1){1}
+%      (0,2) node[fill=yellow,draw](n2){2};
+%\draw[->,very thick] (n1.south) -- (n2.north);
 % \filldraw[fill=green!20] ellipse (1cm and 4mm);
 % \path (-2,2) node[fill=yellow,draw] (eb) {Expected behavior} 
 %       (-2,1) node[fill=yellow,draw] (fs) {Formal Specification} 
@@ -1160,18 +1172,11 @@ The control-flow graph of the code is as follows
 % \draw[->,very thick,shorten >=5mm] (fs.south) -- (proof.north);
 % \draw[->,very thick] (prog.south) -- (pm.north);
 % \draw[->,very thick,shorten >=5mm] (pm.south) -- (proof.north);
-\end{tikzpicture}
+%\end{tikzpicture}
 \end{center}
 
+The loop invariant is inductively preserved by the two paths that goes from node inv to itself.
 \end{example}
-
-Syntactically, such an advanced loop invariant can be placed anywhere
-where an \assert{} clause. The difference is in the
-semantics: a loop invariant must be \emph{inductive}. This means that
-a proposition given as a loop invariant must not only be true at the
-corresponding program point for any execution of the program, but it
-must be also preserved indepedently of the context. TODO(citer une ref
-a propos des invariants inductifs)
 
 \begin{example}
 \input{inductiveloopinvariants.pp}
