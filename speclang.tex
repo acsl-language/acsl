@@ -1143,7 +1143,21 @@ Here is a program annotated with a loop invariant inside the loop body:
 \input{advancedloopinvariants.pp}
 The control-flow graph of the code is as follows
 \begin{center}
-%  \includegraphics[width=0.8\textwidth]{./cfg.mps}
+\begin{tikzpicture}
+\path (0,4) node[fill=yellow,draw](n1){1}
+      (0,2) node[fill=yellow,draw](n2){2};
+\draw[->,very thick] (n1.south) -- (n2.north);
+% \filldraw[fill=green!20] ellipse (1cm and 4mm);
+% \path (-2,2) node[fill=yellow,draw] (eb) {Expected behavior} 
+%       (-2,1) node[fill=yellow,draw] (fs) {Formal Specification} 
+%       (0,0) node (proof) {Proofs}
+%       (2,1) node[fill=blue!30,draw] (pm) {Program Model} 
+%       (2,2) node[fill=blue!30,draw] (prog) {Program}; 
+% \draw[->,very thick] (eb.south) -- (fs.north);
+% \draw[->,very thick,shorten >=5mm] (fs.south) -- (proof.north);
+% \draw[->,very thick] (prog.south) -- (pm.north);
+% \draw[->,very thick,shorten >=5mm] (pm.south) -- (proof.north);
+\end{tikzpicture}
 \end{center}
 
 \end{example}
