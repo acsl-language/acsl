@@ -24,9 +24,9 @@ Similarly with advanced loop invariants: in
 
   while (y > 0) {
     x++;
-    //@ loop invariant 0 < x < 11;
+    //@ invariant 0 < x < 11;
     y--;
-    //@ loop invariant 0 <= y < 10;
+    //@ invariant 0 <= y < 10;
   }
 \end{c}
 the propositions given in loop invariants are correct assertions but
@@ -38,8 +38,8 @@ loop invariants could be:
 \begin{c}
   while (y > 0) {
     x++;
-    //@ loop invariant 0 < x < 11 && x+y == 11;
+    //@ invariant 0 < x < 11 && x+y == 11;
     y--;
-    //@ loop invariant 0 <= y < 10 && x+y == 10;
+    //@ invariant 0 <= y < 10 && x+y == 10;
   } 
 \end{c}

@@ -27,7 +27,7 @@ vardef yellownodes(text t) =
   circleit.loop(btex ~~~ etex) ;
   circleit.inv(btex inv etex) ;
   circleit.loopend(btex ~~~ etex) ;
-  circleit.test(btex ~~~ etex) ;
+  circleit.test(btex do etex) ;
   circleit.exit(btex ~~~ etex) ;
   loopend.c - exit.c =
   inv.c - loopend.c = 

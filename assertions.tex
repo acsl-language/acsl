@@ -1,6 +1,7 @@
 \begin{syntax}
-  statement ::= "/*@" assertion "*/" statement \
-  assertion ::= "label" id ":" ;
-  | "assert" pred ";" ;
-  | "for" id ("," id)* ":" "assert" pred ";" ;
+  compound-statement ::= "{" declaration* statement* assertion+ "}"
+        \
+  statement ::= assertion statement \
+  assertion ::= "/*@" "assert" pred ";" "*/" ;
+  | "/*@" "for" id ("," id)* ":" "assert" pred ";" "*/" ;
 \end{syntax}

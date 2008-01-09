@@ -152,6 +152,18 @@ The precedence of C operators is conservatively extended with additional operato
 \label{fig:precedence}
 \end{figure}
 
+\oldremark{All}{
+
+priorite du local naming: inferieur a tout
+
+ambiguite avec ?: 
+
+
+x?y:z:t -> x?(y:z):t ou x?y:(z:t)
+
+
+}
+
 \subsection{Semantics}
 \label{sec:twovaluedlogic}
 
@@ -418,6 +430,9 @@ $(float)(e_1 op e_2)$.
   We have
   \verb|(float)0.1| = $13421773 \times 2 ^{-27}$ which is
   approximately $0.100000001490116119\cdots$
+
+  TODO: donner la valeur exacte, qui est un decimal (mail de colaco)
+
 \end{example}
 
 Rounding of real number towards a float with other rounding modes
@@ -580,6 +595,13 @@ means that locations assigned by the function are not specified, so
 the caller has no information at all on this function's side
 effects. See Section~\ref{sec:multiplecontracts} for more details on
 default status of clauses.
+
+\oldremark{Colaco}{
+
+  les assigns doivent etre exhaustifs, et doivent etre prouve corrects
+  selon le corps de la function.
+
+}
 
 \begin{example}
   The following function is given a simple contract for computation of
@@ -856,6 +878,9 @@ where $s$ denotes any tset:
 \end{itemize}
 
 
+Remark: assigns \verb|\nothing| is equivalent to assigns
+\verb|\empty|, it is left for convenience.
+
 \begin{example}
   The following function sets to 0 each cell of an array.
 
@@ -882,11 +907,16 @@ where $s$ denotes any tset:
 
 
 
+\oldremark{All}{
+
+This is subsumed by ghost parameters to function
+
 \subsection{Contract variables}
 
 \experimental
 
 Binding variables over a complete behavior.
+}
 
 \subsection{Default contracts, multiple contracts}
 \label{sec:multiplecontracts}
@@ -962,24 +992,10 @@ more scoping rules must be respected:
 These rules are exactly the same rules as the visibility of some local
 variable within a statement (see~\cite{KR88}, Section A11.1)
 
-\oldremark{Patrick}{
+\subsubsection*{Default labels}
 
-Claude: ceci est regle maintenant je pense
-
-La restriction sur les label des $\at$ n'est pas forcement necessaire.
-Une semantique plus generale permet de suprimer le texte ``which has
-to appear before'' :
-partant du principe que toute les propritétes sont relatives a un
-point de programe,
-$\at(e,id)$ désigne la valeur de $e$ precedent passe au label $id$.
-
-Cela donne la même chose lorsque $id$ est avant le point de programme
-en question et que la regle de portee non encore exprimee est
-verifiee.
-
-Sinon, il faut donner des regles de portee pour les labels mentionnes dans les $\at$
-
-}
+Label \verb|Pre| and \verb|Post| are defined by default as refering to
+the pre-state and the post-state of the function.
 
 
 
@@ -1436,10 +1452,10 @@ higher-order logic.
     \verb|\min|(i,j,f) &=& \min \{ f(i),f(i+1), \ldots, f(j) \} \\
     \verb|\sum|(i,j,f) &=& f(i)+f(i+1)+\cdots+f(j) \\
     \verb|\product|(i,j,f) &=& f(i)\times f(i+1) \times \cdots \times f(j) \\
-    \verb|\num_of|(i,j,f) &=& \# \{ k \mid i \leq k \leq j ~\verb|&&|~ f(k) \} \\
+    \verb|\numof|(i,j,f) &=& \# \{ k \mid i \leq k \leq j ~\verb|&&|~ f(k) \} \\
 &=& \verb|\sum|(i,j,\verb|\lambda|~\verb|integer|~k ; f(k) ? 1 : 0)
   \end{eqnarray*}
-  If $i>j$ then \verb|\sum| and \verb|num_of| above are 0,
+  If $i>j$ then \verb|\sum| and \verb|\numof| above are 0,
   \verb|\product| is 1, and \verb|\max| and \verb|\min| are
   unspecified (see Section~\ref{sec:twovaluedlogic}).
 \end{description}
@@ -1798,7 +1814,7 @@ Data invariants are properties on data that are supposed to hold permanently dur
   execution (more precisely at any \emph{sequence point} as defined in
   the norm TODO: give a reference), whereas weak invariants are valid
   at \emph{function boundaries} (function entrance and exit) but
-  cannot be violated in between.
+  can be violated in between.
 \end{itemize}
 
 \begin{figure}[t]
