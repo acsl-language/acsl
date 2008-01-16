@@ -6,7 +6,7 @@ double max_array(double t[], int n) {
   goto L;
   do {
     if (t[i] > m) { L: m = t[i]; }
-    /*@ loop invariant 
+    /*@ invariant 
       @   0 <= i < n && m == \max(0,i,\lambda integer k; t[k]);
       @*/
     i++;
