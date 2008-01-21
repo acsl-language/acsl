@@ -40,8 +40,8 @@ vardef yellownodes(text t) =
   label.rt(btex $m\la t[i]$ etex, fleche(loop.s -- inv.n)) ;
   label.rt(btex $i\la i+1$ etex, fleche(inv.s -- loopend.n)) ;
   label.rt(btex $i\geq n$ etex, fleche(loopend.s -- exit.n)) ;
-  label.urt(btex $i< n$ etex, fleche(loopend.w{left} .. {up}test.s)) ;
-  label.top(btex $m< t[i]$ etex, fleche(test.n{up} .. {right}loop.w)) ;
+  label.urt(btex $i < n$ etex, fleche(loopend.w{left} .. {up}test.s)) ;
+  label.top(btex $m < t[i]$ etex, fleche(test.n{up} .. {right}loop.w)) ;
   label.top(btex $m\geq t[i]$ etex, fleche(test.e -- inv.w)) ;
   
 endfig;
