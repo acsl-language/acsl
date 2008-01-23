@@ -46,7 +46,7 @@ main.pdf: main.tex $(DEPS)
 	ocaml pp.ml -color $< > $@
 
 %.pp: %.c pp.ml
-	ocaml pp.ml -color -c $< > $@
+	ocaml pp.ml -utf8 -color -c $< > $@
 
 %.bnf: %.tex transf
 	./transf < $< > $@

@@ -1801,7 +1801,9 @@ Useful additional constructs for such functional expressions are constructions  
 \label{sec:invariants}
 
 
-Data invariants are properties on data that are supposed to hold permanently during the life of these data. In ACSL, we distinguish between
+Data invariants are properties on data that are supposed to hold
+permanently during the life time of these data. In ACSL, we distinguish
+between:
 \begin{itemize}
 \item \emph{global} invariants and \emph{type} invariants: the former
   apply on global variables, whereas the latter are associated to
@@ -1885,6 +1887,27 @@ which they are supposed to hold.
 
 \end{itemize}
 
+\begin{remark}{Stouls}
+
+  Besoin d'invariant sur variables locales surtout si elles sont
+  statiques. 
+
+  
+\begin{verbatim}
+  void out_char(char c) {
+
+      static int col = 0;
+
+      //@ data invariant I : 0 <= col <= 80;
+
+    }
+\end{verbatim}
+  
+ on devrait les traiter comme des invariants sur globales. Seule
+ out_char devrait preserver cet invariant.
+
+
+\end{document}
 
 
 \begin{example}
@@ -2110,6 +2133,15 @@ variable modification are executable.
 \subsection{Volatile variables}
 
 TODO
+
+volatile tau x;
+//@ volatile x reads f writes g;
+
+
+tau f(tau* p)
+tau g(tau* p, tau v)
+
+volatile tset ...
 
 \oldremark{DD1}{
 

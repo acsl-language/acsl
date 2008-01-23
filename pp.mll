@@ -3,6 +3,23 @@
   open Lexing
 
   let color = ref false
+  let in_utf8 = ref false
+
+  let utf8 = function
+    | ">=" -> "\\ensuremath{\\geq}" 
+    | "<=" -> "\\ensuremath{\\leq}"
+    | ">" -> "\\ensuremath{>}"
+    | "<" -> "\\ensuremath{<}"
+    | "!=" -> "\\ensuremath{\\not\\equiv}"
+    | "==" -> "\\ensuremath{\\equiv}"
+(* Non, c'est du C
+    | "->" -> "\\ensuremath{\\rightarrow}"
+*)
+    | "==>" -> "\\ensuremath{\\Rightarrow}"
+    | "<==>" -> "\\ensuremath{\\Leftrightarrow}"
+    | "&&" -> "\\ensuremath{\\land}"
+    | "||" -> "\\ensuremath{\\lor}"
+    | _ -> assert false
 
   let in_comment = ref false
   let in_slashshash = ref false
@@ -28,12 +45,21 @@
 
   let bs_keywords =
     let h = Hashtbl.create 97 in
-    List.iter (fun s -> Hashtbl.add h s ())
+    List.iter (fun s -> Hashtbl.add h s "")
       [
 	"valid"; "valid_range"; "lambda" ; "sum" ; "match" ;
 	"base_addr" ; "strlen" ; "max" ; "block_length" ;
-	"null" ; "forall"; "old" ; "fresh" ; "nothing" ; "result" ; "let" ;
-        "exists";
+	"null" ; 
+	"old"; 
+	"fresh";
+	"nothing"; 
+	"result";
+	"let" ;
+      ];
+    List.iter (fun (s,t) -> Hashtbl.add h s t)
+      [
+	"forall", "\\ensuremath{\\forall}"; 
+        "exists", "\\ensuremath{\\exists}";
       ];
     h
 
@@ -50,7 +76,8 @@
 
   let is_c_keyword s = Hashtbl.mem c_keywords s
   let is_c_keytype s = Hashtbl.mem c_types s
-  let is_bs_keyword s = Hashtbl.mem bs_keywords s
+  let bs_keyword s = Hashtbl.find bs_keywords s
+
 
   let print_ident =
     let print_ident_char c =
@@ -82,17 +109,12 @@ rule ctt = parse
 	     in_slashshash := false ; in_comment := false
 	   end;
 	   print_string "~\\\\\n"; ctt lexbuf }
-(*
-  | ">=" { print_string "\\ensuremath{\\geq}"; ctt lexbuf }
-  | "<=" { print_string "\\ensuremath{\\leq}"; ctt lexbuf }
-  | ">" { print_string "\\ensuremath{>}"; ctt lexbuf }
-  | "<" { print_string "\\ensuremath{<}"; ctt lexbuf }
-  | "<>" { print_string "\\ensuremath{\\neq}"; ctt lexbuf }
-  | "==" { print_string "\\ensuremath{=}"; ctt lexbuf }
-  | "->" { print_string "\\ensuremath{\\rightarrow}"; ctt lexbuf }
-  | "==>" { print_string "\\ensuremath{\\Rightarrow}"; ctt lexbuf }
-  | "<==>" { print_string "\\ensuremath{\\Leftrightarrow}"; ctt lexbuf }
-*)
+  | "&&" as s
+      { print_string (if !in_utf8 then utf8 s else "\\&\\&{}"); ctt lexbuf }
+  | (">=" | "<=" | ">" | "<" | "!=" | "==" 
+    | "&&" | "||"
+    | "->" | "==>" | "<==>") as s 
+      { print_string (if !in_utf8 then utf8 s else s); ctt lexbuf }
   | "\\end{c}" { () }
   | "\\emph{" [^'}''\n']* '}' { print_string (lexeme lexbuf); ctt lexbuf }
   | "\\" beameraction "<" beamerspec ">"
@@ -149,11 +171,15 @@ rule ctt = parse
 	  ctt lexbuf
 	}
   | "\\" (ident as s)
-      { if not !in_comment && is_bs_keyword s then
-	    begin
-	      print_string "\\textbf{\\char'134 "; print_ident s;
-	      print_string "}"
-	    end
+      { if not !in_comment then
+	  try 
+	    let t = bs_keyword s in
+	    if !in_utf8 && t <> "" then print_string t else
+	      begin
+		print_string "\\textbf{\\char'134 "; print_ident s;
+		print_string "}"
+	      end
+	  with Not_found -> print_string (lexeme lexbuf)
 	else
           print_string (lexeme lexbuf);
 	ctt lexbuf
@@ -188,6 +214,7 @@ and pp = parse
   let () = Arg.parse
     [
       "-color", Arg.Set color, "print in color" ;
+      "-utf8", Arg.Set in_utf8, "use math symbols" ;
       "-c", Arg.String (fun f ->
 			      c_files := f :: !c_files), "read C file <f>" ;
     ]
