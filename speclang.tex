@@ -156,7 +156,7 @@ The precedence of C operators is conservatively extended with additional operato
 
 priorite du local naming: inferieur a tout
 
-ambiguite avec ?: 
+ambiguite avec ?:
 
 
 x?y:z:t -> x?(y:z):t ou x?y:(z:t)
@@ -1154,7 +1154,7 @@ where an \assert{} clause is allowed. The difference is in the
 semantics: a loop invariant must be \emph{inductive}. This means that
 a proposition given as a loop invariant must not only be true at the
 corresponding program point for any execution of the program, but it
-must be also preserved independently of the context. 
+must be also preserved independently of the context.
 
 \oldremark{Claude}{TODO(citer une ref
 a propos des invariants inductifs)
@@ -1171,11 +1171,11 @@ The control-flow graph of the code is as follows
 %      (0,2) node[fill=yellow,draw](n2){2};
 %\draw[->,very thick] (n1.south) -- (n2.north);
 % \filldraw[fill=green!20] ellipse (1cm and 4mm);
-% \path (-2,2) node[fill=yellow,draw] (eb) {Expected behavior} 
-%       (-2,1) node[fill=yellow,draw] (fs) {Formal Specification} 
+% \path (-2,2) node[fill=yellow,draw] (eb) {Expected behavior}
+%       (-2,1) node[fill=yellow,draw] (fs) {Formal Specification}
 %       (0,0) node (proof) {Proofs}
-%       (2,1) node[fill=blue!30,draw] (pm) {Program Model} 
-%       (2,2) node[fill=blue!30,draw] (prog) {Program}; 
+%       (2,1) node[fill=blue!30,draw] (pm) {Program Model}
+%       (2,2) node[fill=blue!30,draw] (prog) {Program};
 % \draw[->,very thick] (eb.south) -- (fs.north);
 % \draw[->,very thick,shorten >=5mm] (fs.south) -- (proof.north);
 % \draw[->,very thick] (prog.south) -- (pm.north);
@@ -1890,9 +1890,9 @@ which they are supposed to hold.
 \begin{remark}{Stouls}
 
   Besoin d'invariant sur variables locales surtout si elles sont
-  statiques. 
+  statiques.
 
-  
+
 \begin{verbatim}
   void out_char(char c) {
 
@@ -1902,12 +1902,12 @@ which they are supposed to hold.
 
     }
 \end{verbatim}
-  
+
  on devrait les traiter comme des invariants sur globales. Seule
- out_char devrait preserver cet invariant.
+ out\_char devrait preserver cet invariant.
 
 
-\end{document}
+\end{remark}
 
 
 \begin{example}

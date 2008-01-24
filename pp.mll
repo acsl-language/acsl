@@ -5,21 +5,23 @@
   let color = ref false
   let in_utf8 = ref false
 
+  let unrecognized = ref 0
+
   let utf8 = function
-    | ">=" -> "\\ensuremath{\\geq}" 
+    | ">=" -> "\\ensuremath{\\geq}"
     | "<=" -> "\\ensuremath{\\leq}"
     | ">" -> "\\ensuremath{>}"
     | "<" -> "\\ensuremath{<}"
     | "!=" -> "\\ensuremath{\\not\\equiv}"
     | "==" -> "\\ensuremath{\\equiv}"
-(* Non, c'est du C
-    | "->" -> "\\ensuremath{\\rightarrow}"
-*)
+    | "->" -> "\\ensuremath{->}"
     | "==>" -> "\\ensuremath{\\Rightarrow}"
     | "<==>" -> "\\ensuremath{\\Leftrightarrow}"
     | "&&" -> "\\ensuremath{\\land}"
     | "||" -> "\\ensuremath{\\lor}"
-    | _ -> assert false
+    | s ->
+        Printf.eprintf "Cannot convert symbol %s to utf8\n" s;
+        unrecognized:= 2; s
 
   let in_comment = ref false
   let in_slashshash = ref false
@@ -49,16 +51,16 @@
       [
 	"valid"; "valid_range"; "lambda" ; "sum" ; "match" ;
 	"base_addr" ; "strlen" ; "max" ; "block_length" ;
-	"null" ; 
-	"old"; 
+	"null" ;
+	"old";
 	"fresh";
-	"nothing"; 
+	"nothing";
 	"result";
 	"let" ;
       ];
     List.iter (fun (s,t) -> Hashtbl.add h s t)
       [
-	"forall", "\\ensuremath{\\forall}"; 
+	"forall", "\\ensuremath{\\forall}";
         "exists", "\\ensuremath{\\exists}";
       ];
     h
@@ -111,9 +113,9 @@ rule ctt = parse
 	   print_string "~\\\\\n"; ctt lexbuf }
   | "&&" as s
       { print_string (if !in_utf8 then utf8 s else "\\&\\&{}"); ctt lexbuf }
-  | (">=" | "<=" | ">" | "<" | "!=" | "==" 
+  | (">=" | "<=" | ">" | "<" | "!=" | "=="
     | "&&" | "||"
-    | "->" | "==>" | "<==>") as s 
+    | "->" | "==>" | "<==>") as s
       { print_string (if !in_utf8 then utf8 s else s); ctt lexbuf }
   | "\\end{c}" { () }
   | "\\emph{" [^'}''\n']* '}' { print_string (lexeme lexbuf); ctt lexbuf }
@@ -172,7 +174,7 @@ rule ctt = parse
 	}
   | "\\" (ident as s)
       { if not !in_comment then
-	  try 
+	  try
 	    let t = bs_keyword s in
 	    if !in_utf8 && t <> "" then print_string t else
 	      begin
@@ -235,6 +237,7 @@ and pp = parse
 		 ctt lb;
 		 end_tt ();
 		 close_in cin)
-      !c_files
+      !c_files;
+    exit !unrecognized
 
 }
