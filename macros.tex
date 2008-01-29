@@ -1,6 +1,21 @@
 
 \newcommand{\experimental}{\textsc{Experimental}}
 
+\newcommand{\highlightnotimplemented}[1]{
+\ifthenelse{\boolean{ColorImplementationRq}}{\textcolor{red}{#1}}%
+           {\uwave{#1}}
+}
+
+\newcommand{\notimplemented}[2][]{%
+\ifthenelse{\boolean{PrintImplementationRq}}{%
+  \begin{changebar}%
+  \highlightnotimplemented{#2}%
+  \ifthenelse{\equal{#1}{}}{}{\footnote{#1}}%
+  \end{changebar}%
+}%
+{#2}}
+
+
 \newsavebox{\fmbox}
 \newenvironment{cadre}
      {\begin{lrbox}{\fmbox}\begin{minipage}{0.98\textwidth}}
@@ -25,7 +40,7 @@ Vieille remarque de {#1}~: #2
 
 \newcommand{\integer}{\keyword{integer}}
 \newcommand{\real}{\keyword{real}}
-\newcommand{\boolean}{\keyword{boolean}}
+\newcommand{\bool}{\keyword{boolean}}
 \newcommand{\assert}{\keyword{assert}}
 \newcommand{\assume}{\keyword{assume}}
 \newcommand{\requires}{\keyword{requires}}

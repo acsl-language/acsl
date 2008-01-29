@@ -1,5 +1,5 @@
 \begin{syntax}
-  C-global-decl ::= "/*@" logic-decl+ "*/"
+  C-global-decl ::= "/*@" logic-decl{[Only one declaration per annotation]+} "*/"
   \
   logic-decl ::= logic-type-decl ;
           | logic-const-decl | logic-const-def ;
@@ -7,9 +7,9 @@
           | logic-function-decl | logic-function-def ;
           | axiom-def
   \
-  type-var ::= id 
+  type-var ::= id
   \
-  type-var-binders ::= "<" type-var (, type-var)* ">" 
+  type-var-binders ::= "<" type-var (, type-var)* ">"
   \
   logic-type-decl ::= "type" logic-type ";" ;
   \
@@ -20,15 +20,15 @@
   | id "<" type-expr (, type-expr)* ">" ; polymorphic type
   \
   poly-id ::= id ; normal identifier
-  | id type-var-binders ; identifier for polymorphic object 
-  \ 
-  logic-const-def ::= "logic" type-expr poly-id "=" term
+  | id type-var-binders ; identifier for polymorphic object
+  \
+  logic-const-def ::= {"logic" type-expr poly-id "=" term}
   \
   logic-function-def ::= "logic" type-expr poly-id parameters "{" term "}"
   \
   logic-predicate-def ::= "predicate" poly-id parameters "{" pred "}"
   \
-  logic-const-decl ::= "logic" type-expr poly-id  
+  logic-const-decl ::= { "logic" type-expr poly-id ";"}
   \
   logic-function-decl ::= "logic" type-expr poly-id parameters ";"
   \
@@ -39,5 +39,5 @@
   parameter ::= type-expr variable-ident
   \
   axiom-def ::= "axiom" poly-id ":" pred ";" ;
-  | "lemma" poly-id ":" pred ";" ;
+  | {"lemma" poly-id ":" pred ";" };
 \end{syntax}

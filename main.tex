@@ -1,5 +1,19 @@
 %; whizzy section -pdf -initex "pdflatex -ini"
 \documentclass[a4paper,11pt,twoside,openright]{report}
+\usepackage{ifthen}
+
+% true = prints marks signaling the state of the implementation
+% false = prints only the ACSL definition, without remarks on implementation.
+\newboolean{PrintImplementationRq}
+%\setboolean{PrintImplementationRq}{true}
+\setboolean{PrintImplementationRq}{false}
+
+% true = remarks about the current state of implementation in Frama-C
+% are in color.
+% false = they are rendered with an underline
+\newboolean{ColorImplementationRq}
+%\setboolean{ColorImplementationRq}{true}
+\setboolean{ColorImplementationRq}{false}
 
 \usepackage[a4paper=true,pdftex,colorlinks=true,urlcolor=blue,pdfstartview=FitH]{hyperref}
 
@@ -11,6 +25,9 @@
 \usepackage{color}
 \usepackage{xspace}
 \usepackage{makeidx}
+\usepackage{ulem}
+\usepackage[leftbars]{changebar}
+\usepackage{alltt}
 \makeindex
 \input{./macros}
 
@@ -120,7 +137,7 @@ supposed to be useful for a basic use of that specification language.
   subset of the set of C expressions without side effect (C
   standard~\cite{KR88,standardc99}, \S 5.1.2.3, alinea 2).
 
-\item[left-values] \index{left-value}\index{lvalue} 
+\item[left-values] \index{left-value}\index{lvalue}
 
   A \emph{left-value} (\emph{lvalue} for short) is an expression which
   denotes some place in the memory during program execution, either on
@@ -139,11 +156,11 @@ supposed to be useful for a basic use of that specification language.
 De'tailler (avec un exemple), meme si c'est dans la
     norme, la difference entre lvalue modifiable et non-modifiable
   }
-  
- 
+
+
 \item[pre-state and post-state]
     \index{pre-state}\index{post-state}
-    
+
     For a given function call, the \emph{pre-state} denotes the
     program state at the beginning of the call, including the
     current values for the function parameters. The \emph{post-state}
@@ -155,7 +172,7 @@ De'tailler (avec un exemple), meme si c'est dans la
   properties relating the pre-state and the post-state for a
   possibly restricted set of pre-states (behavior \emph{assumptions}).
 
-\item[function contract] \index{function contract} \index{contract} 
+\item[function contract] \index{function contract} \index{contract}
 
   A \emph{function contract} (\emph{contract} for short) forms a
   specification of a function, consisting of the combination of a

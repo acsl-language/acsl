@@ -1,26 +1,26 @@
 \begin{syntax}
-  logic-type-decl ::= "type" logic-type = logic-type-def ";"  
+  logic-type-decl ::= {"type" logic-type = logic-type-def ";"}
   \
-  logic-type-def ::= record-type | sum-type ; 
-  | type-expr ; type abbreviation 
+  logic-type-def ::= {record-type} | {sum-type} ;
+  | {type-expr} ; type abbreviation
   \
-  record-type ::= "{" type-expr id ( ";" type-expr id)* ";"? "}" 
+  record-type ::= {"{" type-expr id ( ";" type-expr id)* ";"? "}"}
   \
-  sum-type ::= "|"? constructor ( "|" constructor)* 
+  sum-type ::= {"|"? constructor ( "|" constructor)*}
   \
-  constructor ::= id ; constant constructor
-  | id "(" type-expr ("," type-expr)* ")" ; non-constant constructor
+  constructor ::= {id} ; constant constructor
+  | {id "(" type-expr ("," type-expr)* ")"} ; non-constant constructor
   \
-  type-expr ::= "(" type-expr ("," type-expr)+ ")" ; product type 
+  type-expr ::= {"(" type-expr ("," type-expr)+ ")"} ; product type
   \
-  term ::= term "." id ; record field access
-  | "\match" term ";" match-cases ; pattern-matching
-  | "(" term ("," term)+ ")" ; tuples
-  | "\let" "(" id (, id)+ ")" "=" term ";" term ;
+  term ::= {term "." id} ; record field access
+  | {"\match" term ";" match-cases} ; pattern-matching
+  | {"(" term ("," term)+ ")"} ; tuples
+  | {"\let" "(" id (, id)+ ")" "=" term ";" term} ;
   \
-  match-cases ::= "|"? match-case ("|" match-case)* 
+  match-cases ::= {"|"? match-case ("|" match-case)*}
   \
-  match-case ::= pattern ":" term
+  match-case ::= {pattern ":" term}
   \
-  pattern ::= term ; see semantic conditions
+  pattern ::= {term} ; see semantic conditions
 \end{syntax}

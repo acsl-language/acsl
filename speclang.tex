@@ -63,8 +63,10 @@ With respect to C pure expressions, the additional constructs are as follows:
 \label{fig:gram:binders}
 \end{figure}
 
-\item[Local binding] $\Let x = e_1 ; e_2$ introduces the name $x$ for
+\item[Local binding] \notimplemented{$\Let x = e_1 ; e_2$
+  introduces the name $x$ for
   expression $e_1$ which can be used in expression $e_2$.
+}
 
 \item[Conditional] $c ? e_1 : e_2$. There is a subtlety
   here: the condition may be either a boolean term or a predicate.  In
@@ -635,12 +637,12 @@ behaviors (restricted to two behaviors for readability):
 % ~~@ ensures $E$; \\
 ~~@ behavior $b_1$: \\
 ~~@ ~~assumes $A_1$; \\
-~~@ ~~requires $R_1$; \\
+~~@ ~~\notimplemented{requires $R_1$}; \\
 ~~@ ~~assigns $L_1$; \\
 ~~@ ~~ensures $E_1$; \\
 ~~@ behavior $b_2$:  \\
 ~~@ ~~assumes $A_2$; \\
-~~@ ~~requires $R_2$;  \\
+~~@ ~~\notimplemented{requires $R_2$};  \\
 ~~@ ~~assigns $L_2$; \\
 ~~@ ~~ensures $E_2$; \\
 % ~~@ decreases $m$ for $R$; \\
@@ -740,7 +742,7 @@ If such conditions are seeked, it is possible to add specific clauses
 to a contract:
 \begin{flushleft}\ttfamily
 /*@ ... \\
-~~@ complete behaviors $b_1,\ldots,b_n$; \\
+~~@ \notimplemented{complete behaviors $b_1,\ldots,b_n$;} \\
 ~~@*/
 \end{flushleft}
 specifies that the set of behaviors is complete \emph{i.e.}
@@ -750,7 +752,7 @@ specifies that the set of behaviors is complete \emph{i.e.}
 is true. The simplified version of that clause
 \begin{flushleft}\ttfamily
 /*@ ... \\
-~~@ complete behaviors; \\
+~~@ \notimplemented{complete behaviors;} \\
 ~~@*/
 \end{flushleft}
 means that all behaviors given in the contract should be taken into account.
@@ -758,7 +760,7 @@ means that all behaviors given in the contract should be taken into account.
 Analogously,
 \begin{flushleft}\ttfamily
 /*@ ... \\
-~~@ disjoint behaviors $b_1,\ldots,b_n$; \\
+~~@ \notimplemented{disjoint behaviors $b_1,\ldots,b_n$;} \\
 ~~@*/
 \end{flushleft}
 specifies that the given behaviors are pairwise disjoint \emph{i.e.}
@@ -769,7 +771,7 @@ for all distinct $i$ and $j$:
 is true. The simplified version of that clause
 \begin{flushleft}\ttfamily
 /*@ ... \\
-~~@ disjoint behaviors; \\
+~~@ \notimplemented{disjoint behaviors;} \\
 ~~@*/
 \end{flushleft}
 means that all behaviors given in the contract should be taken into account.
@@ -991,7 +993,7 @@ variable within a statement (see~\cite{KR88}, Section A11.1)
 
 \subsubsection*{Default labels}
 
-Label \verb|Pre| and \verb|Post| are defined by default as refering to
+{Label \verb|Pre| and \verb|Post|} are defined by default as refering to
 the pre-state and the post-state of the function.
 
 
@@ -1087,7 +1089,9 @@ specifies that
 
 Remarks:
 \begin{itemize}
-\item The $\old$ construct is not allowed in loop annotations. The \verb|at| form should be used to refer to another state.
+\item \notimplemented[This is not checked]{The $\old$ construct is not
+    allowed} in loop annotations. The \verb|at| form should be used to
+  refer to another state.
 \item When a loop exits with \texttt{break} or \texttt{return} or
   \texttt{goto}, it is not required that the loop invariant hold.
 \end{itemize}
@@ -1141,8 +1145,9 @@ $s$.
   \input{dowhile.pp}
 \end{example}
 
-More generally, a loop invariant may occur anywhere inside the loop
-body. The meaning is just that the invariant is true at that point,
+\notimplemented{More generally, a loop invariant may occur anywhere
+inside the loop body.}
+The meaning is just that the invariant is true at that point,
 much like an \texttt{assert}, but moreover impose that it is
 inductive, i.e. is preserved by a loop iteration.  Several loop
 invariants are allowed at different places in the loop body. These
@@ -1193,7 +1198,6 @@ The loop invariant is inductively preserved by the two paths that goes from node
 
 \subsection{Statement contracts}
 \label{sec:statement_contract}
-
 
 \begin{figure}[t]
   \begin{cadre}
@@ -1434,14 +1438,18 @@ consistency.
 Figure~\ref{fig:gram:higherorder} introduces new term constructs for
 higher-order logic.
 \begin{description}
-\item[Abstraction] The term $\verb|\lambda|~\tau~x_1,\ldots,x_n ~;~ t$
+\item[Abstraction] The term
+  \notimplemented{${\tt \backslash{}lambda}~\tau~x_1,\ldots,x_n ~;~ t$}
   denotes the $n$-ary logic function which maps $x_1,\ldots,x_n$ to
   $t$. It has the same precedence as \Forall and \Exists
-\item[Extended quantifiers] Terms $\backslash quant(t_1,t_2,t_3)$ where $quant$
-  is \verb|max|, \verb|min|, \verb|sum|, \verb|product|,or
-  \verb|numof|, are extended quantifications. $t_1$ and $t_2$ must
-  have type \verb|integer|, and $t_3$ must be a unary function with an
-  integer argument, and a numeric value (integer or real) except for
+\item[Extended quantifiers] Terms
+  \notimplemented{$\backslash quant(t_1,t_2,t_3)$}
+  where $quant$ is \notimplemented{\tt max},
+  \notimplemented{\tt min}, \notimplemented{\tt sum},
+  \notimplemented{\tt product}, or \notimplemented{\tt numof},
+  are extended quantifications. $t_1$ and $t_2$ must have type
+  \verb|integer|, and $t_3$ must be a unary function with an integer
+  argument, and a numeric value (integer or real) except for
   \verb|\num_of| for which it should have a boolean value. Their
   meanings are given as follows:
   \begin{eqnarray*}
@@ -1578,10 +1586,11 @@ parameters but also in an implicit way on the values stored in memory.
 
 %\experimental
 
-A model variable is a variable introduced in the specification, whose
-type is a logic type. Analogously, structures may have \emph{model
-  fields}.  These are used to provide abstract specifications to
-functions whose concrete implementation must remain private.
+\notimplemented{A model variable is a variable introduced in the
+  specification, whose type is a logic type. Analogously, structures
+  may have \emph{model fields}.  These are used to provide abstract
+  specifications to functions whose concrete implementation must
+  remain private.}
 
 \begin{example}\label{ex:model}
   Here is an example of a specification of a function which generates
@@ -1636,11 +1645,11 @@ deliberately don't provide a precise semantics in this document .
 
 \experimental
 
-Specification modules can be provided to encapsulate several logic
-definitions, for example
+\notimplemented{Specification modules can be provided} to encapsulate
+several logic definitions, for example
 \input{listmodule.pp}
 Module components are then accessible using a qualified notation like
-\verb|List::length|.
+\notimplemented{\tt List::length}.
 
 Predefined algebraic specifications can be provided as libraries (see
 section~\ref{chap:lib}), and imported using a construct like
@@ -1665,7 +1674,8 @@ definitions, like the \verb|List| module above.
 \blocklength{} : \verb|`a *| \ra \verb|size_t|
 \]
 
-\item $\valid$ is a built-in predicate which applies to a set of terms
+\item $\valid$ is a built-in predicate which applies to
+  \notimplemented[only a singleton is allowed]{a set of terms}
   of some pointer type. $\valid(s)$ is true whenever dereferencing any
   $p\in s$ is safe.
 \end{itemize}
@@ -1675,7 +1685,8 @@ Some shortcuts are provided:
 % \footnote{or to \texttt{NULL}, if
 %    annotations are pre-processed are the appropriate inclusion of
 %    \texttt{stddef.h} is added}
-\item $\offset(p)$ returns the offset between p and its base address
+\item \notimplemented{$\offset(p)$} returns the offset between
+  p and its base address
 
   \begin{eqnarray*}
     \offset &:& \verb|`a *| \ra \verb|size_t|  \\
@@ -1697,14 +1708,16 @@ Some shortcuts are provided:
 
 \experimental
 
-$\separated(loc_1,..,loc_n)$ : means that for each $i\neq j$, the intersection of $loc_i$ and $loc_j$ is empty. Each $loc_i$ is a set of terms as defined in
-Section~\ref{sec:locations}.
+\notimplemented{$\separated(loc_1,..,loc_n)$}: means that for each
+$i\neq j$, the intersection of $loc_i$ and $loc_j$ is empty. Each
+$loc_i$ is a set of terms as defined in Section~\ref{sec:locations}.
 
 \subsubsection{Locations as first-class values}
 
-Locations, as defined in Section~\ref{sec:locations}, can be used as
-first-class values in annotations. They have the built-in type
-$loc<A>$ where $A$ is the type of values in that locations.
+Locations, as defined in Section~\ref{sec:locations},
+\notimplemented{can be used as first-class values} in
+annotations. They have the \notimplemented{built-in type $loc<A>$}
+where $A$ is the type of values in that locations.
 
 \begin{example}
   Here is an example where we defined the \emph{footprint} of a
@@ -1737,8 +1750,9 @@ quid de la pile -> a voir
 \item built-in predicate \fresh, specifying in a post-condition that a
   pointer was not allocated in the pre-state.
 
-\item built-in predicate \freed, specifying in a post-condition that a
-  pointer was allocated in the pre-state but not anymore.
+\item \notimplemented{built-in predicate \freed}, specifying in a
+  post-condition that a pointer was allocated in the pre-state but not
+  anymore.
 \end{itemize}
 
 \section{Abnormal termination}
@@ -1750,12 +1764,12 @@ or to any function that may exit the program, e.g. calling \verb|exit|
 function.
 
 Such a behavior can be written with the form
-\begin{verbatim}
-  exit_behavior
-    assumes
-    assigns
-    ensures ...
-\end{verbatim}
+\begin{flushleft}\ttfamily
+~~~\notimplemented{exit\_behavior}\\
+~~~assumes\\
+~~~assigns\\
+~~~ensures ...\\
+\end{flushleft}
 where in ensures clause, \result is bound to the return code, e.g the
 value returned by \verb|main| or the argument passed to \verb|exit|.
 
@@ -1777,16 +1791,18 @@ An extended syntax of \assigns clauses allows to give dependencies:
 \end{flushleft}
 Moreover, dependencies can be made precise using \emph{functional expressions}:
 \begin{flushleft}
-//@ assigns $loc$ \textbackslash{}from $loc'_1,\ldots,loc'_k$ = term ;
+//@ assigns $loc$ \textbackslash{}from $loc'_1,\ldots,loc'_k$
+    \notimplemented{= term} ;
 \end{flushleft}
 
 \experimental
 
 Useful additional constructs for such functional expressions are constructions  of functional arrays :
 \begin{itemize}
-\item functional update of array : $\{ t[i] \verb|<-| e \} $
-\item functional update of struct : $\{ s.f \verb|<-| e \} $
-\item arrays or structs given extensionaly, syntax like for C initializers : $\{ t_1, \ldots, t_n \}$
+\item functional update of array : \notimplemented{$\{ t[i] {\tt<-} e \} $}
+\item functional update of struct : \notimplemented{$\{ s.f {\tt<-} e \} $}
+\item arrays or structs given extensionaly, syntax like for C
+  initializers :  \notimplemented{$\{ t_1, \ldots, t_n \}$}
 \end{itemize}
 %trouver une syntaxe pour introduire les noms des fonctions implicites
 %derriere la construction
@@ -1853,8 +1869,8 @@ to \texttt{weak}.
 \begin{itemize}
 \item Global invariants: invariants on global variables
 \item Type invariants: invariants on struct, union, typedef
-\item \experimental: \verb|initially|: predicates that should hold after global
-  variables initialization
+\item \experimental: \notimplemented{\tt initially}:
+  predicates that should hold after global variables initialization
 \end{itemize}
 
 
@@ -1979,20 +1995,25 @@ grammar are the following:
   end of the line (the ghost code itself is placed inside a C
   comment. \verb|/* ... */| would thus lead to incorrect C code).
 \item It is however possible to write multi-line annotations for ghost
-  code. These annotations are enclosed between \verb|/@| and
-  \verb|@/|. As in normal annotations, \verb|@|s at the beginning of a
+  code. These annotations are enclosed between \notimplemented{{\tt /@} and
+  {\tt @/}}. As in normal annotations, \verb|@|s at the beginning of a
   line and at the end of the comment (before the final \verb|@/|) are
   considered as blank.
-\item Logical types, such as \verb|integer| or \verb|real| are
-  authorized in ghost code.
-\item A non-ghost function can take ghost parameters. If such a ghost
+\item \notimplemented{Logical types, such as {\tt integer} or {\tt real} are
+  authorized in ghost code}.
+\item \notimplemented{A non-ghost function can take ghost
+    parameters}.
+  If such a ghost
   clause is present in the declarator, then the list of ghost
   parameters must be non-empty and fixed (no vararg ghost). The call
   to the function must then provide the appropriate number of ghost parameters.
 \item Any non-ghost \textit{if-statement} which does not have a non-ghost
-  \verb|else| clause can be augmented with a ghost one. Similarly, a non-ghost
-  \verb|switch| can have a ghost \verb|default:| clause if it does not
-  have a non-ghost one (there are however semantical restrictions for valid
+  \verb|else| clause \notimplemented{can be augmented with a ghost
+    one}. Similarly, a non-ghost
+  \verb|switch| can have \notimplemented{a ghost {\tt default:}
+    clause}
+  if it does not have a non-ghost one
+  (there are however semantical restrictions for valid
   ghost labelled statements in a switch, see next paragraph for details).
 \end{itemize}
 
@@ -2074,9 +2095,10 @@ program execution. This implies several conditions, including e.g:
   structure is the same has the structure without ghost fields. Also,
   alignment of fields remains unchanged.
 \item The control-flow graph of a function must not be altered by
-  ghost statements. In particular, no ghost \verb|return|,
-  \verb|goto|, \verb|break|, or \verb|continue| can appear in the body
-  of a non-ghost function.
+  ghost statements. In particular, no ghost \verb|return| can appear
+  in the body of a non-ghost function. Similarly, ghost
+  \verb|goto|, \verb|break|, and continue \verb|continue| cannot jump
+  outside of the innermost enclosing non-ghost block.
 \end{itemize}
 
 Semantics is specified as follows. First, one has to think that
@@ -2087,9 +2109,11 @@ structures. Thus, every memory side-effect can be classified as ghost
 or non-ghost. Then, the semantics is that memory side-effects of ghost
 code must always be in the ghost heap or the ghost stack.
 
-Notice that this semantics is not statically decidable. It is left to
+Notice that this semantics is not statically decidable.
+\notimplemented[No check is currently made to ensure that ghost code
+doesn't modify the behavior of the non-ghost program.]{It is left to
 tools to provide approximations, correct in the sense that any code
-statically detected as ghost must be semantically ghost.
+statically detected as ghost must be semantically ghost.}
 
 \begin{example}
   The following example shows some invalid assignments of ghost pointers:

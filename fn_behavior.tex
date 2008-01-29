@@ -1,13 +1,17 @@
 \begin{syntax}
-  fun-contract ::= simple-behavior named-behavior * decreases-clause ? 
+  fun-contract ::= {[Currently, one cannot mix a simple behavior and
+    named behaviors, except for global requires clause(s)]
+                simple-behavior named-behavior * decreases-clause ?}
   \
   simple-behavior ::= (requires-clause | assigns-clause |
-  ensures-clause ) * 
+  ensures-clause ) *
   \
-  named-behavior ::= "behavior" ident ":" behavior-body 
+  named-behavior ::= "behavior" ident ":" behavior-body
   \
-  behavior-body ::= (assumes-clause | requires-clause | assigns-clause |
-              ensures-clause ) * 
+  behavior-body ::= (assumes-clause |
+                     {[not in a named behavior]requires-clause}
+                    | assigns-clause |
+                      ensures-clause ) *
               \
   assumes-clause ::= "assumes" predicate ";"
   \
@@ -15,7 +19,7 @@
   \
   assigns-clause ::= "assigns" locations ";"
   \
-  locations ::= location ("," location) * | "\nothing" 
+  locations ::= location ("," location) * | "\nothing"
   \
   ensures-clause ::= "ensures" predicate ";"
   \

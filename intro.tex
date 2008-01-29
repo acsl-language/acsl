@@ -39,6 +39,17 @@ contents is given on page~\pageref{chap:contents}
 
 A glossary is given in Appendix~\ref{sec:glossary}
 
+\ifthenelse{\boolean{PrintImplementationRq}}{%
+Not all of the features mentioned in this document are currently
+implemented in the Frama-C kernel. Those who aren't yet are signaled
+as in the following line:
+\begin{quote}
+\notimplemented[Additional remarks on the feature may appear as footnote]%
+{This feature is not currently supported by Frama-C}
+\end{quote}
+}%
+{}
+
 \oldremark{Claude}{
 ce document doit etre illustré par des
 exemples. Toute construction qui ne serait pas illustrée par un
@@ -139,7 +150,7 @@ Section~\ref{sec:multiplecontracts}).
       de fonction. On peut dire que l'on fait de même lorsque l'on
       place des annotations juste avant la fermerture d'un bloc.
     }
-    
+
   \item loop annotation (invariant, variant, assign clauses) is
     allowed immediately before a loop statement: \For, \While,
     \Do\ldots \While. See Section~\ref{sec:loop_annot}
@@ -153,7 +164,7 @@ Section~\ref{sec:multiplecontracts}).
       cette annotation~? Oui, pour refer a l'etat avant le statement
       consider\'e
     }
-    
+
   \item ghost code: is regular C code, only visible from the
     specification, that is only allowed to modify ghost variables. See
     section~\ref{sec:ghost}. This includes ghost braces for enclosing blocks.
@@ -178,8 +189,9 @@ annotations, should macro substitution be performed or not, etc.
 Additional keywords of the specification language start with a
 backslash, if they are used in position of a term or a predicate
 (which are defined in the following).  Otherwise they do not start
-with a backslash (like \ensures{}) and they remain valid identifiers.
-
+with a backslash (like \ensures{}) and
+\notimplemented[Keywords like \ensures{} are currently not allowed in
+Frama-C's annotations]{they remain valid identifiers}.
 
 \section{Notations for grammars}
 

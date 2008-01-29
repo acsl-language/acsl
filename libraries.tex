@@ -41,8 +41,8 @@ support some of them~\cite{moy07ccpp}). As a consequence a valid
 pointer of some type $\tau*$ necessarily points to a memory block
 which contains values of type $\tau$. To model that, the jessie library introduce new logic functions:
 \begin{flushleft}
-\integer ~ \offsetmin(`a *p); \\
-\integer ~ \offsetmax(`a *p);
+\integer ~ \notimplemented{\offsetmin(`a *p)}; \\
+\integer ~ \notimplemented{\offsetmax(`a *p)};
 \end{flushleft}
 
 \begin{itemize}
@@ -70,7 +70,7 @@ $\validrange(p,0,0)$.
 
 The predicate
 \[
-\integer~\strlen(\verb|char*|p)
+\integer~\notimplemented{\strlen(char* p)}
 \]
 denotes the length of a 0-terminated C string. It is total function,
 whose value is non-negative if and only if the pointer in argument is
@@ -109,7 +109,7 @@ Section~\ref{sec:specmodules}
 A library of general purpose functions and predicate over real
 numbers, floats and doubles.
 
-Includes 
+Includes
 
 \begin{itemize}
 \item abs, exp, power, log, sin, cos, atan, etc. over reals

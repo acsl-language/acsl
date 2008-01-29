@@ -1,4 +1,4 @@
-(* $Id: transf.mll,v 1.7 2007-12-10 17:36:40 uid562 Exp $ *)
+(* $Id: transf.mll,v 1.8 2008-01-29 17:43:36 uid562 Exp $ *)
 
 { open Lexing;; }
 
@@ -58,6 +58,8 @@ and syntax = parse
   | "::=" { print_string "\\is{}"; syntax lexbuf }
   | "|" { print_string "\\orelse{}"; syntax lexbuf }
   | "\\" { print_string "\\sep{}"; syntax lexbuf }
+  | "{" { print_string "\\notimplemented"; check_rq lexbuf }
+  | "}" { print_string "}"; syntax lexbuf }
   | _ {
       print_char (lexeme_char lexbuf 0);
       syntax lexbuf }
@@ -85,3 +87,10 @@ and indoublequote = parse
       print_string "\\char";
       print_int (int_of_char (lexeme_char lexbuf 0));
       indoublequote lexbuf }
+and check_rq = parse
+  | "[" { print_string "["; inbrack lexbuf }
+  | "" { print_string "{"; syntax lexbuf }
+and inbrack = parse
+    "]" { print_string "]{"; syntax lexbuf }
+  | _  { print_char (lexeme_char lexbuf 0);
+           inbrack lexbuf }

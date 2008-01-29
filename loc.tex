@@ -1,18 +1,18 @@
 \begin{syntax}
-  tset ::= "\empty" ; empty set 
+  tset ::= "\empty" ; empty set
        | term ; singleton
-       | tset "->" id ;
-       | tset "." id  ;
-       | "*" tset ;
-       | tset "[" tset "]" ;
-       | term? ".." term? ; range
+       | {[restricted to singleton]tset "->" id} ;
+       | {[restricted to singleton]tset "." id} ;
+       | {[restricted to singleton] "*" tset} ;
+       | {[base is restricted to a singleton]tset "[" tset "]"} ;
+       | {[can only appear in position of index]term? ".." term?} ; range
        | "\union" "(" tset ("," tset)* ")" ; union of locations
        | "\inter" "(" tset ("," tset)* ")" ; intersection
-       | tset "+" tset ;
+       | {[only in the form term+term, term+range or range+term]tset "+" tset} ;
        | "(" tset ")" ;
        | "{" tset "|" binders (";" pred)? "}" ; set comprehension
        \
-  pred ::= "\subset" "(" tset "," tset ")" ; set inclusion
+  pred ::= {"\subset" "(" tset "," tset ")"} ; set inclusion
 \end{syntax}
 
 %%% Local Variables:

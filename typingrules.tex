@@ -7,7 +7,7 @@ Disclaimer: this section is unfinished, it is left here just to give an idea of 
 
 Integer promotion:
 \[
-\frac{\Gamma \vdash e : \tau}{\Gamma \vdash e : \integer} 
+\frac{\Gamma \vdash e : \tau}{\Gamma \vdash e : \integer}
 \]
 if $\tau$ is any C integer type \verb|char|, \verb|short|, \verb|int|, or \verb|long|, whatever attribute they have, in particular signed or unsigned
 
@@ -23,17 +23,17 @@ Unary integer operations:
 
 Boolean negation:
 \[
-\frac{\Gamma \vdash t : \boolean}{\Gamma \vdash !~t : \boolean} 
+\frac{\Gamma \vdash t : \bool}{\Gamma \vdash !~t : \bool}
 \]
 
 Pointer dereferencing:
 \[
-\frac{\Gamma \vdash t : \tau*}{\Gamma \vdash *t : \tau} 
+\frac{\Gamma \vdash t : \tau*}{\Gamma \vdash *t : \tau}
 \]
 
 Address operator:
 \[
-\frac{\Gamma \vdash t : \tau}{\Gamma \vdash \&t : \tau*} 
+\frac{\Gamma \vdash t : \tau}{\Gamma \vdash \&t : \tau*}
 \]
 
 Binary
@@ -44,13 +44,13 @@ Binary
 \frac{\Gamma \vdash t_1 : \real\qquad\Gamma \vdash t_2 : \real}{\Gamma \vdash t_1~op~t_2 : \real} \mbox{ if $op\in \{+,-,*,/\}$}
 \]
 \[
-\frac{\Gamma \vdash t_1 : \integer\qquad\Gamma \vdash t_2 : \integer}{\Gamma \vdash t_1~op~t_2 : \boolean} \mbox{ if $op\in \{==,!=,<=,<,>=,>\}$}
+\frac{\Gamma \vdash t_1 : \integer\qquad\Gamma \vdash t_2 : \integer}{\Gamma \vdash t_1~op~t_2 : \bool} \mbox{ if $op\in \{==,!=,<=,<,>=,>\}$}
 \]
 \[
-\frac{\Gamma \vdash t_1 : \real\qquad\Gamma \vdash t_2 : \real}{\Gamma \vdash t_1~op~t_2 : \boolean} \mbox{ if $op\in \{==,!=,<=,<,>=,>\}$}
+\frac{\Gamma \vdash t_1 : \real\qquad\Gamma \vdash t_2 : \real}{\Gamma \vdash t_1~op~t_2 : \bool} \mbox{ if $op\in \{==,!=,<=,<,>=,>\}$}
 \]
 \[
-\frac{\Gamma \vdash t_1 : \tau*\qquad\Gamma \vdash t_2 : \tau*}{\Gamma \vdash t_1~op~t_2 : \boolean} \mbox{ if $op\in \{==,!=,<=,<,>=,>\}$}
+\frac{\Gamma \vdash t_1 : \tau*\qquad\Gamma \vdash t_2 : \tau*}{\Gamma \vdash t_1~op~t_2 : \bool} \mbox{ if $op\in \{==,!=,<=,<,>=,>\}$}
 \]
 
 (to be continued)

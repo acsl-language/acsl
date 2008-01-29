@@ -8,15 +8,15 @@
   reads-clause ::= "reads" locations
   \
   logic-function-def ::= "logic" type-expr poly-id parameters ;
-                   reads-clause "{" term "}"
+                   {reads-clause} "{" term "}"
   \
-  logic-predicate-def ::= "predicate" poly-id parameters ; 
-                          reads-clause "{" pred "}"
+  logic-predicate-def ::= "predicate" poly-id parameters ;
+                          {reads-clause} "{" pred "}"
   \
   poly-id ::= id ; normal identifier
-  | id type-var-binders ; identifier for polymorphic object 
-  | id label-binders ; normal identifier with labels
-  | id label-binders type-var-binders ; polymorphic identififer with labels
-  \ 
-  label-binders ::= "{" id (, id)* "}" 
+  | id type-var-binders ; identifier for polymorphic object
+  | id {label-binders} ; normal identifier with labels
+  | id {label-binders} type-var-binders ; polymorphic identififer with labels
+  \
+  label-binders ::= {"{" id (, id)* "}"}
 \end{syntax}
