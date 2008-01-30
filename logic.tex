@@ -5,7 +5,7 @@
           | logic-const-decl | logic-const-def ;
           | logic-predicate-decl | logic-predicate-def ;
           | logic-function-decl | logic-function-def ;
-          | axiom-def
+          | lemma-def
   \
   type-var ::= id
   \
@@ -22,22 +22,22 @@
   poly-id ::= id ; normal identifier
   | id type-var-binders ; identifier for polymorphic object
   \
-  logic-const-def ::= {"logic" type-expr poly-id "=" term}
+  logic-const-def ::= {"logic" type-expr poly-id "=" term ";"}
   \
-  logic-function-def ::= "logic" type-expr poly-id parameters "{" term "}"
+  logic-function-def ::= "logic" type-expr poly-id parameters "=" term ";"
   \
-  logic-predicate-def ::= "predicate" poly-id parameters "{" pred "}"
+  logic-predicate-def ::= "predicate" poly-id parameters "=" pred ";"
   \
   logic-const-decl ::= { "logic" type-expr poly-id ";"}
   \
   logic-function-decl ::= "logic" type-expr poly-id parameters ";"
   \
-  logic-predicate-decl ::= "predicate" poly-id parameters ";"
+  logic-predicate-decl ::= "predicate" poly-id parameters? ";"
   \
   parameters ::= "(" parameter (, parameter)* ")"
   \
   parameter ::= type-expr variable-ident
   \
-  axiom-def ::= "axiom" poly-id ":" pred ";" ;
-  | {"lemma" poly-id ":" pred ";" };
+  lemma-def ::= "axiom" poly-id ":" pred ";" ;
+  | "lemma" poly-id ":" pred ";" ;
 \end{syntax}

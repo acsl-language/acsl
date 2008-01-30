@@ -17,7 +17,7 @@ correct loop invariant could be \verb|0 <= x < 11 && x+y == 10|, true
 at loop entrance and preserved (under the assumption of the loop
 condition \verb|y>0|).
 
-Similarly with advanced loop invariants: in
+Similarly with general invariants: in
 \begin{c}
   int x = 0;
   int y = 10;
@@ -29,12 +29,12 @@ Similarly with advanced loop invariants: in
     //@ invariant 0 <= y < 10;
   }
 \end{c}
-the propositions given in loop invariants are correct assertions but
+the propositions given as invariants are correct assertions but
 not inductive invariants: \verb|0 <= y < 10| is not a consequence of
 hypothesis \verb|0 < x < 11| after executing \verb|y--| ; and 
 \verb|0 < x < 11| cannot be deduced from \verb|0 <= y < 10| after looping back
 through the condition \verb|y>0| and executing \verb|x++|. Correct
-loop invariants could be:
+invariants could be:
 \begin{c}
   while (y > 0) {
     x++;

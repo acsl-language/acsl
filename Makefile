@@ -12,7 +12,8 @@ DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
 	fact.pp mutualrec.pp \
         advancedloopinvariants.pp inductiveloopinvariants.pp \
 	term.bnf binders.bnf fn_behavior.bnf oldandresult.bnf at.bnf loc.bnf \
-	assertions.bnf loops.bnf st_contracts.bnf moreterm.bnf ghost.bnf \
+	assertions.bnf loops.bnf generalinvariants.bnf \
+	st_contracts.bnf moreterm.bnf ghost.bnf \
 	logic.bnf logictypedecl.bnf higherorder.bnf logicreads.bnf \
 	data_invariants.bnf  \
 	cfg.mps

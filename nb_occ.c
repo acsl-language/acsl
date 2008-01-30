@@ -28,6 +28,6 @@
 /*@ axiom nb_occ_false{L} :
   @   \forall double t[], integer i, integer j, double e;
   @     i <= j && t[i] != e ==> 
-  @       nb_occ<L>(t,i,j,e) == nb_occ<L>(t,i,j-1,e);
+  @       nb_occ(t,i,j,e) == nb_occ(t,i,j-1,e);
   @*/
 

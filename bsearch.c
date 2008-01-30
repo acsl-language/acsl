@@ -4,7 +4,7 @@
   @ behavior success:
   @   ensures \result >= 0 ==> t[\result] == v;
   @ behavior failure:
-  @   assumes (t_is_sorted : \forall integer k1, integer k2; 
+  @   assumes t_is_sorted : \forall integer k1, integer k2; 
   @              0 <= k1 <= k2 <= n-1 ==> t[k1] <= t[k2];
   @   ensures \result == -1 ==> 
   @     \forall integer k; 0 <= k < n ==> t[k] != v;

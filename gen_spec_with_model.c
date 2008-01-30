@@ -1,7 +1,7 @@
 
 /* public interface */
 
-//@ import Set;
+//@ open Set;
 
 //@ model set<integer> forbidden = emptyset;
 

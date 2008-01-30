@@ -4,10 +4,7 @@
   | "/*@" loop-annot "*/" ;
   "for" "(" expr ";" expr ";" expr ")" statement ;
   | "/*@" loop-annot "*/" ;
-  "do" statement "while" "(" expr ")" ";" ;
-  | "do" statement ;
-  "/*@" loop-annot "*/" ;
-  "while" "(" expr ")" ";" ; \experimental
+  "do" statement "while" "(" expr ")" ";" 
   \
   loop-annot ::= (loop-invariant | loop-assigns)* ;
   loop-variant?

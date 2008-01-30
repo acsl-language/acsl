@@ -147,6 +147,7 @@ The precedence of C operators is conservatively extended with additional operato
       connective equiv & left & \verb|<==>| \\
       ternary connective & right & $\cdots\verb|?|\cdots\verb|:|\cdots$ \\
       binding & left & \Forall{} \Exists{} \Let{} \\
+      naming & right & \verb|:| \\
       \hline
     \end{tabular}
   \end{center}
@@ -154,17 +155,12 @@ The precedence of C operators is conservatively extended with additional operato
 \label{fig:precedence}
 \end{figure}
 
-\oldremark{All}{
-
-priorite du local naming: inferieur a tout
-
-ambiguite avec ?:
-
-
-x?y:z:t -> x?(y:z):t ou x?y:(z:t)
-
-
-}
+There is an additional ambiguity between the connective
+\verb|..?..:..| and the naming with \verb|:|. For example, in the
+expression \verb|x?y:z:t|, the precedence table does not enforce
+whether this should be seen as \verb|x?(y:z):t| or \verb|x?y:(z:t)|. 
+Such a case must considered as a syntax error, and should be fixed
+by explicitly using parentheses.
 
 \subsection{Semantics}
 \label{sec:twovaluedlogic}
@@ -747,9 +743,10 @@ to a contract:
 \end{flushleft}
 specifies that the set of behaviors is complete \emph{i.e.}
 \[
-\bigvee_{1\leq i \leq n} A_i
+R \Rightarrow \bigvee_{1\leq i \leq n} A_i
 \]
-is true. The simplified version of that clause
+is true, where $R$ is the pre-condition of the contract. The
+simplified version of that clause
 \begin{flushleft}\ttfamily
 /*@ ... \\
 ~~@ \notimplemented{complete behaviors;} \\
@@ -1130,26 +1127,33 @@ loop. A toy example is as follows.
 
 It also possible to specify termination orderings other than the less-than relation on integers, using the additional \verb|for| modifier. This is explained in Section~\ref{sec:termination}.
 
-\subsubsection{Advanced loop invariants}
+\subsubsection{General inductive invariants}
 
-\experimental
+It is allowed to pose a inductive invariant not only at the beginning of
+a loop iteration. For example, it makes sense for a \texttt{do $s$
+  while $(c)$;} loop to pose an invariant just after the loop body
+$s$. Such an invariant is just a variant of assertions, as
+shown in the grammar of Figure~\ref{fig:advancedinvariants}
 
-It is allowed to pose a loop invariant not only at the beginning of
-the loop iteration. For example, it makes sense for a \texttt{do $s$
-  while $(c)$;} loop to pose a loop invariant just after the loop body
-$s$.
+\begin{figure}[t]
+  \begin{cadre}
+    \input{generalinvariants.bnf}
+  \end{cadre}
+  \caption{Grammar for general inductive invariants}
+  \label{fig:advancedinvariants}
+\end{figure}
+
 
 \begin{example}
-  In the following, the loop invariant is correct, but it would not be
-  correct if placed at the beginning of the loop.
+  In the following, the invariant is correct, but it would not be
+  correct if placed as a loop invariant at the beginning of the loop.
   \input{dowhile.pp}
 \end{example}
 
-\notimplemented{More generally, a loop invariant may occur anywhere
-inside the loop body.}
-The meaning is just that the invariant is true at that point,
-much like an \texttt{assert}, but moreover impose that it is
-inductive, i.e. is preserved by a loop iteration.  Several loop
+\notimplemented{More generally, such an invariant may occur anywhere inside a
+function's body.} The meaning is just that the invariant is true
+at that point, much like an \texttt{assert}, but moreover impose that
+it is inductive, i.e. is preserved by a loop iteration.  Several 
 invariants are allowed at different places in the loop body. These
 advanced extensions can be useful for complex control flows, in
 particular with \verb|goto|s.
@@ -1157,7 +1161,7 @@ particular with \verb|goto|s.
 Syntactically, such an advanced loop invariant can be placed anywhere
 where an \assert{} clause is allowed. The difference is in the
 semantics: a loop invariant must be \emph{inductive}. This means that
-a proposition given as a loop invariant must not only be true at the
+a proposition given as an invariant must not only be true at the
 corresponding program point for any execution of the program, but it
 must be also preserved independently of the context.
 
@@ -1166,7 +1170,7 @@ a propos des invariants inductifs)
 }
 
 \begin{example}
-Here is a program annotated with a loop invariant inside the loop body:
+Here is a program annotated with an invariant inside the loop body:
 \input{advancedloopinvariants.pp}
 The control-flow graph of the code is as follows
 \begin{center}
@@ -1188,7 +1192,8 @@ The control-flow graph of the code is as follows
 %\end{tikzpicture}
 \end{center}
 
-The loop invariant is inductively preserved by the two paths that goes from node inv to itself.
+The invariant is inductively preserved by the two paths that goes from
+node inv to itself.
 \end{example}
 
 \begin{example}
@@ -1361,12 +1366,8 @@ and predicates. These declarations follows the classical setting of
 predicates may be either \emph{defined} by explicit expressions, or
 \emph{axiomatized} by a set of axioms. The grammer for these declarations is given Figure~\ref{fig:gram:logic}.
 
-\oldremark{Claude}{``logic typedef'' au lieu de ``logic type'' ?
-  Non ``type'' et c'est tout
-}
-
 The difference between a lemma and an axiom is that a lemma is
-supposed to be deductible from axioms: a redundant axioms in some sense.
+supposed to be deductible from axioms: a redundant axiom in some sense.
 
 \subsection{Polymorphic logic types}
 
@@ -1386,14 +1387,6 @@ expressions.
 %Notice that type variables are identifiers preceded by
 %the quote character.
 
-\oldremark{All}{
-  Plutot que de prefixer les variables de type par dfes backquote, on popurrait mettre des lieurs explicites:
-
-  predicate p<A,B>(A x, B y)
-
-  axiom a<A,B> : ...
-
-}
 
 \subsection{Recursive logic definitions}
 
@@ -1438,8 +1431,8 @@ consistency.
 Figure~\ref{fig:gram:higherorder} introduces new term constructs for
 higher-order logic.
 \begin{description}
-\item[Abstraction] The term
-  \notimplemented{${\tt \backslash{}lambda}~\tau~x_1,\ldots,x_n ~;~ t$}
+\item[Abstraction]
+  \notimplemented{The term $\Lambda~\tau_1~x_1,\ldots,\tau_n~x_n ~;~ t$}
   denotes the $n$-ary logic function which maps $x_1,\ldots,x_n$ to
   $t$. It has the same precedence as \Forall and \Exists
 \item[Extended quantifiers] Terms
@@ -1488,6 +1481,13 @@ higher-order logic.
   c'est plutot des types avec constructeurs dans les spec algebriques
 
 }
+
+\begin{remark}{Claude}
+
+La syntaxe des cas de pattern est ambigue avec le ou bitabit: 
+\verb+\match x ; Nil : y | ... +
+
+\end{remark}
 
 \experimental
 
@@ -1561,7 +1561,16 @@ context.
   predicate would not depend on the values stored in t, hence the two
   last axioms would say both that $a=b+1$ and $a=b$ for some $a$ and
   $b$.
+
+  \begin{remark}{Claude}
+    expliquer mieux
+    
+    De plus, si l'on oublie la clause reads ça reste
+    correct, donc il faudrait prevoir un warning pour un predicat avec un
+    type pointeur en argument sans reads...
+  \end{remark}
 \end{example}
+
 
 \begin{example}
 
@@ -1582,68 +1591,10 @@ parameters but also in an implicit way on the values stored in memory.
 
 }
 
-\subsection{Model variables and model fields}
 
-%\experimental
-
-\notimplemented{A model variable is a variable introduced in the
-  specification, whose type is a logic type. Analogously, structures
-  may have \emph{model fields}.  These are used to provide abstract
-  specifications to functions whose concrete implementation must
-  remain private.}
-
-\begin{example}\label{ex:model}
-  Here is an example of a specification of a function which generates
-  fresh integers. The contract is given in term of a model variable
-  which is intended to represent the set of ``forbidden'' values, e.g. that already have been generated.
-  \input{gen_spec_with_model.pp}
-  The contract is expressed abstractly, telling that
-  \begin{itemize}
-  \item the forbidden set of values is modified
-  \item the result number is not in the set of forbidden values, thus is ``fresh''
-  \item the new set of forbidden contains both the returned value and
-    the previously forbidden values.
-  \end{itemize}
-  An implementation of this function might be as follows, where a
-  decision has been made to generate values in increasing order, so
-  that it suffices to record the last value generated. This decision
-  is made explicit by an invariant.
-  \input{gen_code.pp}
-\end{example}
-
-Informal semantics of model variables is as follows:
-\begin{itemize}
-\item Model variables can only appear in specifications. They are not lvalues, thus cannot be assigned directly (unlike ghost variables, see below).
-\item Nevertheless a function contract might say that a model variable
-  is assigned.
-\item When a function contract mentions model variables:
-  \begin{itemize}
-  \item the precondition is implicitely existentially quantified over
-    those variables
-  \item the post-conditions are universally quantified over the old
-    values of model variables, and existentially quantified over the new values.
-  \end{itemize}
-\end{itemize}
-Thus, in practice the only way of proving that a function body
-satisfies a contract with model variables is to provide an invariant
-relating model variables and concrete variables, as in the example
-above.
-
-\paragraph{Remarks}
-
-Although the syntax of model variables is close to JML model
-variables, they differ in the sense that the type of a model variable
-is a logic type, not a program type. Also, the semantics above is
-closer to the one of the B machines.  It has to be noticed that
-program verification with model variables does not have a
-well-establish theoretical background~\cite{marche07,leavens07}, so we
-deliberately don't provide a precise semantics in this document .
-
-
-\subsection{Libraries of algebraic specifications}
+\subsection{Specification Modules}
 \label{sec:specmodules}
 
-\experimental
 
 \notimplemented{Specification modules can be provided} to encapsulate
 several logic definitions, for example
@@ -1795,7 +1746,9 @@ Moreover, dependencies can be made precise using \emph{functional expressions}:
     \notimplemented{= term} ;
 \end{flushleft}
 
-\experimental
+\begin{remark}{All}
+
+  Ceci n'est pas au bon endroit, et n'est peut-etre pas du tout utile
 
 Useful additional constructs for such functional expressions are constructions  of functional arrays :
 \begin{itemize}
@@ -1806,6 +1759,7 @@ Useful additional constructs for such functional expressions are constructions  
 \end{itemize}
 %trouver une syntaxe pour introduire les noms des fonctions implicites
 %derriere la construction
+\end{remark}
 
 \oldremark{PC}{
 
@@ -1866,6 +1820,10 @@ to \texttt{weak}.
 
 }
 
+\oldremark{Claude}{
+
+obsolete
+
 \begin{itemize}
 \item Global invariants: invariants on global variables
 \item Type invariants: invariants on struct, union, typedef
@@ -1873,6 +1831,7 @@ to \texttt{weak}.
   predicates that should hold after global variables initialization
 \end{itemize}
 
+}
 
 \subsection{Semantics}
 
@@ -1880,6 +1839,12 @@ The distinction between strong and weak invariants is on the sequence
 points were the property is supposed to hold. The distinction between
 the global invariants and the type invariants is the set of values on
 which they are supposed to hold.
+
+\begin{remark}{Claude}
+
+rajouter des data invariants sur les var locales
+  
+\end{remark}
 
 \begin{itemize}
 \item Weak global invariants are properties which applies to global
@@ -1894,7 +1859,11 @@ which they are supposed to hold.
   or formal parameter which has static type $\tau$. If the result of
   the function is of type $\tau$, the result is also supposed to
   satisfy its invariant at function exit.
+  \begin{remark}{Claude}
 
+    et les var locales d'une fonction appelante ?
+    
+  \end{remark}
 \item A strong type invariant on a type $\tau$ is supposed to hold at
   any state of execution, and applies to any global variable, local
   variable, or formal parameter which has static type $\tau$. If the
@@ -1920,16 +1889,16 @@ which they are supposed to hold.
 \end{verbatim}
 
  on devrait les traiter comme des invariants sur globales. Seule
- out\_char devrait preserver cet invariant.
-
+ \verb|out_char| devrait preserver cet invariant.
 
 \end{remark}
 
 
 \begin{example}
   example of strong type invariant:
-  TODO
-
+  \begin{remark}{Claude}
+    TODO -> temperature ? 
+  \end{remark}
   Such kind of strong invariant might be verified using a model with
   abstract data types. (cf caduceus)
 
@@ -1970,7 +1939,72 @@ void reset(S *p) {
 \begin{example}
   Here is a longer example, the famous Dijkstra's Dutch flag algorithm.
   \input{flag.pp}
+  \begin{remark}{Claude}
+    rajouter la post permut{Pre,Post}(t,t,n-1)
+  \end{remark}
 \end{example}
+
+\subsection{Model variables and model fields}
+
+
+\begin{remark}{Claude}
+Il faut la grammaire
+\end{remark}
+
+
+\notimplemented{A model variable is a variable introduced in the
+  specification, whose type is a logic type. Analogously, structures
+  may have \emph{model fields}.  These are used to provide abstract
+  specifications to functions whose concrete implementation must
+  remain private.}
+
+Informal semantics of model variables is as follows:
+\begin{itemize}
+\item Model variables can only appear in specifications. They are not lvalues, thus cannot be assigned directly (unlike ghost variables, see below).
+\item Nevertheless a function contract might say that a model variable
+  is assigned.
+\item When a function contract mentions model variables:
+  \begin{itemize}
+  \item the precondition is implicitely existentially quantified over
+    those variables
+  \item the post-conditions are universally quantified over the old
+    values of model variables, and existentially quantified over the new values.
+  \end{itemize}
+\end{itemize}
+Thus, in practice the only way of proving that a function body
+satisfies a contract with model variables is to provide an invariant
+relating model variables and concrete variables, as in the example
+below.
+
+\begin{example}\label{ex:model}
+  Here is an example of a specification of a function which generates
+  fresh integers. The contract is given in term of a model variable
+  which is intended to represent the set of ``forbidden'' values, e.g. that already have been generated.
+  \input{gen_spec_with_model.pp}
+  The contract is expressed abstractly, telling that
+  \begin{itemize}
+  \item the forbidden set of values is modified
+  \item the result number is not in the set of forbidden values, thus is ``fresh''
+  \item the new set of forbidden contains both the returned value and
+    the previously forbidden values.
+  \end{itemize}
+  An implementation of this function might be as follows, where a
+  decision has been made to generate values in increasing order, so
+  that it suffices to record the last value generated. This decision
+  is made explicit by an invariant.
+  \input{gen_code.pp}
+\end{example}
+
+\paragraph{Remarks}
+
+Although the syntax of model variables is close to JML model
+variables, they differ in the sense that the type of a model variable
+is a logic type, not a program type. Also, the semantics above is
+closer to the one of the B machines.  It has to be noticed that
+program verification with model variables does not have a
+well-establish theoretical background~\cite{marche07,leavens07}, so we
+deliberately don't provide a precise semantics in this document .
+
 
 \section{Ghost variables and statements}
 \label{sec:ghost}
@@ -1999,6 +2033,11 @@ grammar are the following:
   {\tt @/}}. As in normal annotations, \verb|@|s at the beginning of a
   line and at the end of the comment (before the final \verb|@/|) are
   considered as blank.
+  \begin{remark}{Claude}
+    faudrait supprimer ca. Je propose de maniere generale que le code
+    annote sans les "/*@ ..*/" doit etre parsable aussi, meme s'il
+    n'est pas parsable par un compilo.
+  \end{remark}
 \item \notimplemented{Logical types, such as {\tt integer} or {\tt real} are
   authorized in ghost code}.
 \item \notimplemented{A non-ghost function can take ghost

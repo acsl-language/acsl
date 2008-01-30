@@ -20,7 +20,7 @@
     | "&&" -> "\\ensuremath{\\land}"
     | "||" -> "\\ensuremath{\\lor}"
     | s ->
-        Printf.eprintf "Cannot convert symbol %s to utf8\n" s;
+        Format.eprintf "Cannot convert symbol %s to utf8\n" s;
         unrecognized:= 2; s
 
   let in_comment = ref false
@@ -115,7 +115,7 @@ rule ctt = parse
       { print_string (if !in_utf8 then utf8 s else "\\&\\&{}"); ctt lexbuf }
   | (">=" | "<=" | ">" | "<" | "!=" | "=="
     | "&&" | "||"
-    | "->" | "==>" | "<==>") as s
+    | "==>" | "<==>") as s 
       { print_string (if !in_utf8 then utf8 s else s); ctt lexbuf }
   | "\\end{c}" { () }
   | "\\emph{" [^'}''\n']* '}' { print_string (lexeme lexbuf); ctt lexbuf }
