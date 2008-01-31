@@ -1,7 +1,7 @@
 int f (int x, int y) {
   //@ ghost int z = x + y;
   switch (x) {
-  0: return y;
+  case 0: return y;
   //@ ghost 1: z=y;
   // above statement is correct.
   //@ ghost 2: { z++; break; }

@@ -1,4 +1,4 @@
-//@ ensures \result >= 0
+//@ ensures \result >= 0;
 int dummy();
 
 //@ type intpair = (integer,integer)
@@ -11,7 +11,7 @@ int dummy();
   @*/
 
 //@ requires x >= 0 && y >= 0;
-int f(int x,int y) {
+void f(int x,int y) {
   /*@ loop invariant x >= 0 && y >= 0;
     @ loop variant (x,y) for lexico;
     @*/

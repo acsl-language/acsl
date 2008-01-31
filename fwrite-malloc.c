@@ -1,4 +1,5 @@
 typedef int size_t;
+typedef FILE;
 
 /*@ behavior normal:
   @   post assumes \result == nmemb;
