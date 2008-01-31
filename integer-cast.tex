@@ -1,16 +1,16 @@
 \begin{example}
   The declaration
   \begin{c}
-    //@ logic int f(int x) { x+1 }
+    //@ logic int f(int x) = x+1 ;
   \end{c}
   is forbidden because the result (mathematical integer 0) must be
   casted to int.  One should either write
   \begin{c}
-    //@ logic integer f(int x) { x+1 }
+    //@ logic integer f(int x) = x+1 ;
   \end{c}
   or
   \begin{c}
-    //@ logic int f(int x) { (int)(x+1) }
+    //@ logic int f(int x) = (int)(x+1) ;
   \end{c}
 if one really wants to return an \verb|int|.
 \end{example}

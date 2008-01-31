@@ -1,3 +1,5 @@
+typedef int size_t;
+
 /*@ behavior normal:
   @   post assumes \result == nmemb;
   @ behavior error:

@@ -286,7 +286,7 @@ interpreted as follows: the result is the unique value of the
 corresponding type that is congruent to the mathematical result modulo
 the cardinal of this type (that is 2 to $8\times\sizeof(t)$).
 \begin{example}
-  \emph{\texttt{(unsigned char)1000}} is $1000 \bmod 256$ \emph{i.e.} $232$.
+  \texttt{(unsigned char)1000} is $1000 \bmod 256$ \emph{i.e.} $232$.
 \end{example}
 
 
@@ -1480,8 +1480,11 @@ higher-order logic.
 
   c'est plutot des types avec constructeurs dans les spec algebriques
 
-}
+  rajouter syntax des patterns:
 
+  
+}
+  
 \begin{remark}{Claude}
 
 La syntaxe des cas de pattern est ambigue avec le ou bitabit: 
@@ -1877,16 +1880,7 @@ rajouter des data invariants sur les var locales
   Besoin d'invariant sur variables locales surtout si elles sont
   statiques.
 
-
-\begin{verbatim}
-  void out_char(char c) {
-
-      static int col = 0;
-
-      //@ data invariant I : 0 <= col <= 80;
-
-    }
-\end{verbatim}
+  \input{out_char.pp}
 
  on devrait les traiter comme des invariants sur globales. Seule
  \verb|out_char| devrait preserver cet invariant.

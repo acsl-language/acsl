@@ -6,7 +6,7 @@ DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
 	assigns_array.pp assigns_list.pp sum.pp \
 	listdecl.pp listdef.pp listlengthdef.pp import.pp listmodule.pp \
 	strcpyspec.pp dowhile.pp num_of_pos.pp nb_occ.pp permut.pp \
-	acsl_allocator.pp gen_spec_with_model.pp gen_code.pp \
+	acsl_allocator.pp gen_spec_with_model.pp gen_code.pp out_char.pp \
 	ghostpointer.pp ghostcfg.pp flag.pp lexico.pp footprint.pp \
 	fwrite-malloc.pp loopvariantnegative.pp \
 	fact.pp mutualrec.pp \

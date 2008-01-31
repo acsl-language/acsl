@@ -13,14 +13,22 @@
   \
   type-expr ::= {"(" type-expr ("," type-expr)+ ")"} ; product type
   \
-  | {"\match" term ";" match-cases} ; pattern-matching
+  term ::= {term "." id} ; record field access
+  | {"\match" term "{" match-cases "}" } ; pattern-matching
   | {"(" term ("," term)+ ")"} ; tuples
   | {"{" ("." id "=" term ";")+ "}"} ; records
   | {"\let" "(" id (, id)+ ")" "=" term ";" term} 
   \
-  match-cases ::= {"|"? match-case ("|" match-case)*}
+  match-cases ::= { match-case+ }
   \
-  match-case ::= {pattern ":" term}
+  match-case ::= {"case" pat ":" term}
   \
-  pattern ::= {term} ; see semantic conditions
+  pat ::= id ; constant constructor
+    | id "(" pat ( "," pat)* ")" ; non-constant constructor
+    | pat "|" pat ; or pattern
+    | "_" ; any pattern 
+    | cte ; numeric constant
+    | "{" ("."id "=" pat)* "}" ; record pattern
+    | "(" pat ( "," pat )* ")" ; tuple pattern
+    | pat "as" id ; pattern binding
 \end{syntax}
