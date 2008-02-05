@@ -11,7 +11,9 @@
        | "&" ; address operator
        \
   term ::= "\true" | "\false" ;
-       | id ;
+       | integer ; integer constants
+       | real ; real constants
+       | id ; variables
        | unary-op term ;
        | term bin-op term ;
        | term "[" term "]" ; array access

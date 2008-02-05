@@ -14,9 +14,8 @@
     | "<" -> "\\ensuremath{<}"
     | "!=" -> "\\ensuremath{\\not\\equiv}"
     | "==" -> "\\ensuremath{\\equiv}"
-    | "->" -> "\\ensuremath{->}"
-    | "==>" -> "\\ensuremath{\\Rightarrow}"
-    | "<==>" -> "\\ensuremath{\\Leftrightarrow}"
+    | "==>" -> "\\ensuremath{\\Longrightarrow}"
+    | "<==>" -> "\\ensuremath{\\Longleftrightarrow}"
     | "&&" -> "\\ensuremath{\\land}"
     | "||" -> "\\ensuremath{\\lor}"
     | s ->

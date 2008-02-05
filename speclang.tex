@@ -11,13 +11,41 @@ must be noted:
 \item the character \verb|'@'| is a blank character, thus equivalent
   to a space character.
 \item the identifiers may start with the backslash character.
+\item Some UTF8 characters may be used in place of some constructs, as
+  shown in the following table
+  
+  \begin{center}
+    \begin{tabular}{|l|l|}
+      \hline
+      \verb|>=| & \ensuremath{\geq} \\
+      \hline
+      \verb|<=| & \ensuremath{\leq} \\
+      \hline
+      \verb|>| & \ensuremath{>} \\
+      \hline
+      \verb|<| & \ensuremath{<} \\
+      \hline
+      \verb|!=| & \ensuremath{\not\equiv} \\
+      \hline
+      \verb|==| & \ensuremath{\equiv} \\
+      \hline
+      \verb|==>| & \ensuremath{\Longrightarrow} \\
+      \hline
+      \verb|<==>| & \ensuremath{\Longleftrightarrow} \\
+      \hline
+      \verb|&&| & \ensuremath{\land} \\
+      \hline
+      \verb+||+ & \ensuremath{\lor} \\
+      \hline
+      \verb|\forall| & \ensuremath{\forall} \\
+      \hline
+      \verb|\exists| & \ensuremath{\exists} \\
+      \hline
+    \end{tabular}
+  \end{center}
 \end{itemize}
 
-\experimental
-
-\begin{itemize}
-\item Some UTF8 characters may be used in place of some constructs: $\leq$ for \verb|<=|, $\forall$ for \Forall, etc.
-\end{itemize}
+In this document, we use UTF8 characters to improve readability.
 
 \section{Logic expressions}
 \label{sec:expressions}
@@ -43,10 +71,11 @@ separately in Figure~\ref{fig:gram:binders}.
 
 With respect to C pure expressions, the additional constructs are as follows:
 \begin{description}
-\item[Additional connectives]
-  C operators \verb|&&|, \verb+||+ and \verb|!| are used as
-  logical connectives. There are additional connectives \verb|==>| for
-  implication, \verb|<==>| for equivalence and \verb|^^| for exclusive
+\item[Additional connectives] C operators \verb|&&| (UTF8: $\land$),
+  \verb+||+ (UTF8: $\lor$) and \verb|!| (UTF8: (??)) are used as logical
+  connectives. There are additional connectives \verb|==>| (UTF8:
+  $\Longrightarrow$) for implication, \verb|<==>| (UTF8:
+  $\Longleftrightarrow$) for equivalence and \verb|^^| (UTF8: (??)) for exclusive
   or. These logical connectives all have a bitwise counterpart, either
   C ones like \verb|&|, \verb+|+, \verb|~| and \verb|^|, or additional
   ones like the bitwise implication \verb|-->| and the bitwise
@@ -1603,7 +1632,7 @@ parameters but also in an implicit way on the values stored in memory.
 several logic definitions, for example
 \input{listmodule.pp}
 Module components are then accessible using a qualified notation like
-\notimplemented{\tt List::length}.
+\notimplemented{\texttt{List::length}}.
 
 Predefined algebraic specifications can be provided as libraries (see
 section~\ref{chap:lib}), and imported using a construct like
