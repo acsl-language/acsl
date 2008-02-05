@@ -38,7 +38,7 @@
 	"throws" ; "extends" ; "implements" ; "reads" ;
 	"requires"; "assumes" ; "invariant"; "representation";
 	"loop" ; "variant" ; "strong" ;
-	"ensures" ; "assigns"; "modifiable" ; "signals" ;
+	"ensures" ; "breaks"; "continues"; "returns"; "assigns"; "modifiable" ; "signals" ;
 	"logic" ; "type" ; "predicate" ; "axiom";
 	"normal_behavior" ; "behavior" ; "model";
       ];

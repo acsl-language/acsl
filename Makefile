@@ -9,7 +9,7 @@ DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
 	acsl_allocator.pp gen_spec_with_model.pp gen_code.pp out_char.pp \
 	ghostpointer.pp ghostcfg.pp flag.pp lexico.pp footprint.pp \
 	fwrite-malloc.pp loopvariantnegative.pp \
-	fact.pp mutualrec.pp \
+	fact.pp mutualrec.pp abrupt_termination.pp \
         advancedloopinvariants.pp inductiveloopinvariants.pp \
 	term.bnf binders.bnf fn_behavior.bnf oldandresult.bnf at.bnf loc.bnf \
 	assertions.bnf loops.bnf generalinvariants.bnf \
@@ -43,17 +43,20 @@ main.pdf: main.tex $(DEPS)
 %.mps: %.1
 	mv $< $@
 
-%.pp: %.tex pp.ml
-	ocaml pp.ml -utf8 $< > $@
+%.pp: %.tex pp
+	./pp -utf8 $< > $@
 
-%.pp: %.c pp.ml
-	ocaml pp.ml -utf8 -c $< > $@
+%.pp: %.c pp
+	./pp -utf8 -c $< > $@
 
 %.bnf: %.tex transf
 	./transf < $< > $@
 
-pp.ml: pp.mll
-	ocamllex pp.mll
+%.ml: %.mll
+	ocamllex $<
+
+pp: pp.ml
+	ocamlopt -o $@ $^
 
 transf: transf.cmo transfmain.cmo
 	ocamlc -o $@ $^
@@ -63,14 +66,11 @@ transf: transf.cmo transfmain.cmo
 
 transfmain.cmo: transf.cmo
 
-transf.ml: transf.mll
-	ocamllex transf.mll
-
 .PHONY: clean rubber
 
 check:
 	gcc -c *.c
-	../../bin/toplevel.byte *.c
+	for f in *.c ; do ../../bin/toplevel.byte $$f ; done
 
 clean:
 	rm -rf *~ *.aux *.log *.nav *.out *.snm *.toc *.pp *.bnf \
