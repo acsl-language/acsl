@@ -15,37 +15,41 @@ must be noted:
   shown in the following table
   
   \begin{center}
-    \begin{tabular}{|l|l|}
+    \begin{tabular}{|l|l|r|}
       \hline
-      \verb|>=| & \ensuremath{\geq} \\
+      \verb|>=| & \ensuremath{\geq} & 0x2265 \\
       \hline
-      \verb|<=| & \ensuremath{\leq} \\
+      \verb|<=| & \ensuremath{\leq} & 0x2264 \\
       \hline
-      \verb|>| & \ensuremath{>} \\
+      \verb|>| & \ensuremath{>} & 0x003E \\
       \hline
-      \verb|<| & \ensuremath{<} \\
+      \verb|<| & \ensuremath{<} & 0x003C \\
       \hline
-      \verb|!=| & \ensuremath{\not\equiv} \\
+      \verb|!=| & \ensuremath{\not\equiv} & 0x2262 \\
       \hline
-      \verb|==| & \ensuremath{\equiv} \\
+      \verb|==| & \ensuremath{\equiv} & 0x2261 \\
       \hline
-      \verb|==>| & \ensuremath{\Longrightarrow} \\
+      \verb|==>| & \ensuremath{\Longrightarrow} & 0x21D2 \\
       \hline
-      \verb|<==>| & \ensuremath{\Longleftrightarrow} \\
+      \verb|<==>| & \ensuremath{\Longleftrightarrow} & 0x21D4 \\
       \hline
-      \verb|&&| & \ensuremath{\land} \\
+      \verb|&&| & \ensuremath{\land} & 0x2227 \\
       \hline
-      \verb+||+ & \ensuremath{\lor} \\
+      \verb+||+ & \ensuremath{\lor} & 0x2228 \\
       \hline
-      \verb|\forall| & \ensuremath{\forall} \\
+      \verb+^^+ & \ensuremath{\oplus} & 0x22BB \\
       \hline
-      \verb|\exists| & \ensuremath{\exists} \\
+      \verb+!+ & \ensuremath{\neg} & 0x00AC \\
+      \hline
+      \verb|\forall| & \ensuremath{\forall} & 0x2200 \\
+      \hline
+      \verb|\exists| & \ensuremath{\exists} & 0x2203 \\
       \hline
     \end{tabular}
   \end{center}
 \end{itemize}
 
-In this document, we use UTF8 characters to improve readability.
+In this document, we use UTF8 characters in the examples, to improve readability.
 
 \section{Logic expressions}
 \label{sec:expressions}
@@ -72,7 +76,7 @@ separately in Figure~\ref{fig:gram:binders}.
 With respect to C pure expressions, the additional constructs are as follows:
 \begin{description}
 \item[Additional connectives] C operators \verb|&&| (UTF8: $\land$),
-  \verb+||+ (UTF8: $\lor$) and \verb|!| (UTF8: (??)) are used as logical
+  \verb+||+ (UTF8: $\lor$) and \verb|!| (UTF8: $\neg$) are used as logical
   connectives. There are additional connectives \verb|==>| (UTF8:
   $\Longrightarrow$) for implication, \verb|<==>| (UTF8:
   $\Longleftrightarrow$) for equivalence and \verb|^^| (UTF8: (??)) for exclusive
@@ -465,8 +469,7 @@ libraries. As well, classical mathematical operations like
 exponential, sine, cosine, etc. are supposed to be available in some
 library (see Section~\ref{sec:libreal}).
 
-\oldremark{Claude}{
-
+\begin{verbatim}
   Il faut pouvoir dire, comme
   pour les operations entieres, que le resultat d'une operation C sur
   des float est le cast de l'operation logique:
@@ -475,14 +478,43 @@ library (see Section~\ref{sec:libreal}).
 
   mode d'arrondi ?
 
+   
 
   on veut des fonctions predef :
 
-  isNan, is Finite, ...
+  isNan, 
+
+  isFinite,
+
+  \finite_float: float -> prop
+  \finite_double: double -> prop
+
+  \nearest_even_float: real -> float
+  \nearest_even_double: real -> double
+
+  \to_zero
+
+  \round_up_float
+
+  \round_up_double
+
+  \round_down_float
+
+  \round_up
+ 
+  \nearest_away
 
 
-  Probleme:
-}
+  option: type rounding_mode = Nearest_even | ... 
+
+
+  \round_float : rounding_mode , real -> float
+
+  \round_double
+\end{verbatim}
+
+
+
 
 
 
@@ -2217,6 +2249,8 @@ variable modification are executable.
 \end{example}
 
 \subsection{Volatile variables}
+
+\experimental
 
 TODO
 
