@@ -1529,6 +1529,8 @@ higher-order logic.
 
 \subsection{Concrete logic types}
 
+\experimental
+
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
       \input{logictypedecl.bnf}
@@ -1543,19 +1545,9 @@ higher-order logic.
 
   c'est plutot des types avec constructeurs dans les spec algebriques
 
-  rajouter syntax des patterns:
-
   
 }
   
-\begin{remark}{Claude}
-
-La syntaxe des cas de pattern est ambigue avec le ou bitabit: 
-\verb+\match x ; Nil : y | ... +
-
-\end{remark}
-
-\experimental
 
 Logic types may not only be declared but also defined concretely, either under thr form of record types, or of sum types. These definitions may be recursive.
 With record types, the field access notation $t.id$ can be used, and for sum types, a pattern-matching construction is available. The grammar rules for these additional constructions are given Figure~\ref{fig:gram:logictype}
@@ -1628,13 +1620,13 @@ context.
   last axioms would say both that $a=b+1$ and $a=b$ for some $a$ and
   $b$.
 
-  \begin{remark}{Claude}
+  \oldremark{Claude}{
     expliquer mieux
     
     De plus, si l'on oublie la clause reads ça reste
     correct, donc il faudrait prevoir un warning pour un predicat avec un
     type pointeur en argument sans reads...
-  \end{remark}
+  }
 \end{example}
 
 
@@ -1812,7 +1804,7 @@ Moreover, dependencies can be made precise using \emph{functional expressions}:
     \notimplemented{= term} ;
 \end{flushleft}
 
-\begin{remark}{All}
+\oldremark{All}{
 
   Ceci n'est pas au bon endroit, et n'est peut-etre pas du tout utile
 
@@ -1825,7 +1817,7 @@ Useful additional constructs for such functional expressions are constructions  
 \end{itemize}
 %trouver une syntaxe pour introduire les noms des fonctions implicites
 %derriere la construction
-\end{remark}
+}
 
 \oldremark{PC}{
 
@@ -1847,7 +1839,7 @@ between:
 \item \emph{strong} invariants and \emph{weak} invariants: strong
   invariants must be valid really at any any time of the program
   execution (more precisely at any \emph{sequence point} as defined in
-  the norm TODO: give a reference), whereas weak invariants are valid
+  the norm), whereas weak invariants are valid
   at \emph{function boundaries} (function entrance and exit) but
   can be violated in between.
 \end{itemize}
@@ -1906,12 +1898,6 @@ points were the property is supposed to hold. The distinction between
 the global invariants and the type invariants is the set of values on
 which they are supposed to hold.
 
-\begin{remark}{Claude}
-
-rajouter des data invariants sur les var locales
-  
-\end{remark}
-
 \begin{itemize}
 \item Weak global invariants are properties which applies to global
   data and hold at any function entrance and function exit.
@@ -1925,11 +1911,11 @@ rajouter des data invariants sur les var locales
   or formal parameter which has static type $\tau$. If the result of
   the function is of type $\tau$, the result is also supposed to
   satisfy its invariant at function exit.
-  \begin{remark}{Claude}
+  \oldremark{Claude}{
 
     et les var locales d'une fonction appelante ?
     
-  \end{remark}
+  }
 \item A strong type invariant on a type $\tau$ is supposed to hold at
   any state of execution, and applies to any global variable, local
   variable, or formal parameter which has static type $\tau$. If the
@@ -1938,28 +1924,14 @@ rajouter des data invariants sur les var locales
 
 \end{itemize}
 
-\begin{remark}{Stouls}
-
-  Besoin d'invariant sur variables locales surtout si elles sont
-  statiques.
-
-  \input{out_char.pp}
-
- on devrait les traiter comme des invariants sur globales. Seule
- \verb|out_char| devrait preserver cet invariant.
-
-\end{remark}
-
 
 \begin{example}
-  example of strong type invariant:
-  \begin{remark}{Claude}
-    TODO -> temperature ? 
-  \end{remark}
-  Such kind of strong invariant might be verified using a model with
-  abstract data types. (cf caduceus)
+  The following example illustrates the use of a data invariant on a local static variable
 
+  \input{out_char.pp}
 \end{example}
+
+
 
 \oldremark{PC}{
 
@@ -1996,17 +1968,10 @@ void reset(S *p) {
 \begin{example}
   Here is a longer example, the famous Dijkstra's Dutch flag algorithm.
   \input{flag.pp}
-  \begin{remark}{Claude}
-    rajouter la post permut{Pre,Post}(t,t,n-1)
-  \end{remark}
 \end{example}
 
 \subsection{Model variables and model fields}
 
-
-\begin{remark}{Claude}
-Il faut la grammaire
-\end{remark}
 
 
 \notimplemented{A model variable is a variable introduced in the
@@ -2015,9 +1980,24 @@ Il faut la grammaire
   specifications to functions whose concrete implementation must
   remain private.}
 
+\begin{figure}[t]
+  \fbox{\begin{minipage}{0.97\linewidth}
+      \input{model.bnf}
+    \end{minipage}}
+  \caption{Grammar for declarations of model variables and fields}
+\label{fig:gram:model}
+\end{figure}
+
+
+Syntax of declaration of model variables and fields is given on
+Figure~\ref{fig:gram:model}. It is presented as additions to regular C
+grammar to variable declarations and struct field declarations. 
+
 Informal semantics of model variables is as follows:
 \begin{itemize}
-\item Model variables can only appear in specifications. They are not lvalues, thus cannot be assigned directly (unlike ghost variables, see below).
+\item Model variables can only appear in specifications. They are not
+  lvalues, thus cannot be assigned directly (unlike ghost variables,
+  see below).
 \item Nevertheless a function contract might say that a model variable
   is assigned.
 \item When a function contract mentions model variables:
@@ -2062,7 +2042,6 @@ program verification with model variables does not have a
 well-establish theoretical background~\cite{marche07,leavens07}, so we
 deliberately don't provide a precise semantics in this document .
 
-
 \section{Ghost variables and statements}
 \label{sec:ghost}
 
@@ -2090,11 +2069,11 @@ grammar are the following:
   {\tt @/}}. As in normal annotations, \verb|@|s at the beginning of a
   line and at the end of the comment (before the final \verb|@/|) are
   considered as blank.
-  \begin{remark}{Claude}
+  \oldremark{Claude}{
     faudrait supprimer ca. Je propose de maniere generale que le code
     annote sans les "/*@ ..*/" doit etre parsable aussi, meme s'il
     n'est pas parsable par un compilo.
-  \end{remark}
+  }
 \item \notimplemented{Logical types, such as {\tt integer} or {\tt real} are
   authorized in ghost code}.
 \item \notimplemented{A non-ghost function can take ghost

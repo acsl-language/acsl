@@ -25,7 +25,7 @@
   @*/
   
 /*@ axiom permut_exchange{L1,L2} :
-  @   forall double t1[], double t2[], integer i, integer j, integer n;
+  @   \forall double t1[], double t2[], integer i, integer j, integer n;
   @       \at(t1[i],L1) == \at(t2[j],L2) &&
   @       \at(t1[j],L1) == \at(t2[i],L2) &&
   @       (\forall integer k; 0 <= k < n && k != i && k != j ==>
