@@ -1500,9 +1500,9 @@ higher-order logic.
   $t$. It has the same precedence as \Forall and \Exists
 \item[Extended quantifiers] Terms
   \notimplemented{$\backslash quant(t_1,t_2,t_3)$}
-  where $quant$ is \notimplemented{\tt max},
-  \notimplemented{\tt min}, \notimplemented{\tt sum},
-  \notimplemented{\tt product}, or \notimplemented{\tt numof},
+  where $quant$ is \notimplemented{\texttt{max}},
+  \notimplemented{\texttt{min}}, \notimplemented{\texttt{sum}},
+  \notimplemented{\texttt{product}}, or \notimplemented{\texttt{numof}},
   are extended quantifications. $t_1$ and $t_2$ must have type
   \verb|integer|, and $t_3$ must be a unary function with an integer
   argument, and a numeric value (integer or real) except for
@@ -1885,7 +1885,7 @@ obsolete
 \begin{itemize}
 \item Global invariants: invariants on global variables
 \item Type invariants: invariants on struct, union, typedef
-\item \experimental: \notimplemented{\tt initially}:
+\item \experimental: \notimplemented{\texttt{initially}}:
   predicates that should hold after global variables initialization
 \end{itemize}
 
@@ -2065,17 +2065,28 @@ grammar are the following:
   end of the line (the ghost code itself is placed inside a C
   comment. \verb|/* ... */| would thus lead to incorrect C code).
 \item It is however possible to write multi-line annotations for ghost
-  code. These annotations are enclosed between \notimplemented{{\tt /@} and
-  {\tt @/}}. As in normal annotations, \verb|@|s at the beginning of a
+  code. These annotations are enclosed between \notimplemented{{\texttt{/@}} and
+  {\texttt{@/}}}. As in normal annotations, \verb|@|s at the beginning of a
   line and at the end of the comment (before the final \verb|@/|) are
   considered as blank.
+<<<<<<< speclang.tex
+
+  \begin{remark}{Claude}
+=======
   \oldremark{Claude}{
+>>>>>>> 1.73
     faudrait supprimer ca. Je propose de maniere generale que le code
     annote sans les "/*@ ..*/" doit etre parsable aussi, meme s'il
     n'est pas parsable par un compilo.
+<<<<<<< speclang.tex
+  \end{remark}
+
+\item \notimplemented{Logical types, such as {\texttt{integer}} or {\texttt{real}} are authorized in ghost code}.
+=======
   }
 \item \notimplemented{Logical types, such as {\tt integer} or {\tt real} are
   authorized in ghost code}.
+>>>>>>> 1.73
 \item \notimplemented{A non-ghost function can take ghost
     parameters}.
   If such a ghost
@@ -2085,7 +2096,7 @@ grammar are the following:
 \item Any non-ghost \textit{if-statement} which does not have a non-ghost
   \verb|else| clause \notimplemented{can be augmented with a ghost
     one}. Similarly, a non-ghost
-  \verb|switch| can have \notimplemented{a ghost {\tt default:}
+  \verb|switch| can have \notimplemented{a ghost {\texttt{default:}}
     clause}
   if it does not have a non-ghost one
   (there are however semantical restrictions for valid
