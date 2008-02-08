@@ -597,7 +597,7 @@ given on figure~\ref{fig:gram:oldandresult}. These are the following:
 
 $\old(e)$ and $\result$ can be used only in \assigns{} clauses and
 \ensures{} clauses, since \requires{} clauses and \assumes{} refer to
-the pre-state.
+the pre-state. See Section~\ref{sec:at} for more details on scoping rules for labels.
 
 \oldremark{Claude}{
 
@@ -1033,6 +1033,7 @@ Annotations on C statements are of three kinds:
 \end{itemize}
 
 \subsection{Built-in construct \at{}}
+\label{sec:at}
 
 Statement annotations usually need another additional construct
 $\at(e,id)$ refering to the value of the expression $e$ in the
@@ -1040,7 +1041,7 @@ state at label $id$. The label $id$ can be either a regular C label,
 or a label added within a ghost statement as described in
 Section~\ref{sec:ghost}. This label must be declared in the same
 function as the occurrence of $\at(e,id)$, but unlike \texttt{goto}s,
-more scoping rules must be respected:
+more restrictive scoping rules must be respected:
 \begin{itemize}
 \item the label $id$ must occur before the occurrence of  $\at(e,id)$
   in the source.
@@ -1049,22 +1050,32 @@ more scoping rules must be respected:
 These rules are exactly the same rules as the visibility of some local
 variable within a statement (see~\cite{KR88}, Section A11.1)
 
-\subsubsection*{Default labels}
+\subsubsection*{Default logic labels}
 
-{Label \verb|Pre| and \verb|Post|} are defined by default as refering to
-the pre-state and the post-state of the function.
+There are three predefined logic labels: \verb|Pre|, \verb|Here| and
+\verb|Old|. $\old(e)$ is in fact a syntactic sugar for $\at(e,Old)$.
 
+\begin{itemize}
+\item The label \verb|Pre| is visible in all statement annotations, and refers to the pre-state of the function it occurs in.
+\item The label \verb|Here| is visible in all statement annotations
+  and all contracts, and refers the state where the annotation
+  appears.
+\item The label \verb|Old| is visible in \verb|assigns| and
+  \verb|ensures| clauses of all contracts (both for functions and for
+  statement contracts described below in
+  Section~\ref{sec:statement_contract}), and refers to the pre-state
+  of this contract.
+\end{itemize}
 
+Remark that no logic label are visible in global logic declaration
+such as lemmas, axioms, definition of predicate or logic
+functions. When such an annotation needs to refer to a given memory
+state, it has to be given a label binder: this is described in
+Section~\ref{sec:logicalstates}.
 
-\oldremark{Patrick}{
-
- veut des $\old$ partout (assert, invariant de boucle, ...) : cela
- designe toujours le pre-state de la function à l'exception, bien sur,
- des  \ensures{} contenus dans les contrats de fonctions.
-
- Claude: pour l'instant on reste plutot sur \at(e,Pre)
-
-}
+\begin{example}
+  TODO: example with \at(e,Pre) in a loop invariant.
+\end{example}
 
 \subsection{Assertions}
 
@@ -2069,24 +2080,12 @@ grammar are the following:
   {\texttt{@/}}}. As in normal annotations, \verb|@|s at the beginning of a
   line and at the end of the comment (before the final \verb|@/|) are
   considered as blank.
-<<<<<<< speclang.tex
-
-  \begin{remark}{Claude}
-=======
   \oldremark{Claude}{
->>>>>>> 1.73
     faudrait supprimer ca. Je propose de maniere generale que le code
     annote sans les "/*@ ..*/" doit etre parsable aussi, meme s'il
     n'est pas parsable par un compilo.
-<<<<<<< speclang.tex
-  \end{remark}
-
+}
 \item \notimplemented{Logical types, such as {\texttt{integer}} or {\texttt{real}} are authorized in ghost code}.
-=======
-  }
-\item \notimplemented{Logical types, such as {\tt integer} or {\tt real} are
-  authorized in ghost code}.
->>>>>>> 1.73
 \item \notimplemented{A non-ghost function can take ghost
     parameters}.
   If such a ghost
