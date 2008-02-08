@@ -5,21 +5,19 @@
 
 typedef enum _bool { false = 0, true = 1 } bool;
 
-/*@ predicate finite_list<A>((A* -> A*) next_elem, A* ptr) {
+/*@ predicate finite_list<A>((A* -> A*) next_elem, A* ptr) =
   @   ptr == \null || 
-  @   (\valid(ptr) && finite_list(next_elem,next_elem(ptr)))
-  @ }
+  @   (\valid(ptr) && finite_list(next_elem,next_elem(ptr))) ;
   @
-  @ logic integer list_length<A>((A* -> A*) next_elem, A* ptr) {
+  @ logic integer list_length<A>((A* -> A*) next_elem, A* ptr) =
   @   (ptr == \null) ? 0 : 
-  @   1 + list_length(next_elem,next_elem(ptr))
-  @ }
+  @   1 + list_length(next_elem,next_elem(ptr)) ;
+  @ 
   @
   @ predicate lower_length<A>((A* -> A*) next_elem, 
-  @                           A* ptr1, A* ptr2) {
+  @                           A* ptr1, A* ptr2) =
   @   finite_list(next_elem, ptr1) && finite_list(next_elem, ptr2)
-  @   && list_length(next_elem, ptr1) < list_length(next_elem, ptr2)
-  @ } 
+  @   && list_length(next_elem, ptr1) < list_length(next_elem, ptr2) ;
   @*/
 
 // forward reference
@@ -47,16 +45,15 @@ typedef struct _memory_block {
     // structure that describes the slicing of a block into chunks
 } memory_block;
 
-/*@ type invariant inv_memory_block(memory_block mb) {
+/*@ type invariant inv_memory_block(memory_block mb) =
   @   mb.packed ==>
   @     (0 < mb.size && mb.used <= mb.next <= mb.size
   @     && \offset(mb.data) == 0
-  @     && \block_length(mb.data) == mb.size)
-  @ }
+  @     && \block_length(mb.data) == mb.size) ;
   @
-  @ predicate valid_memory_block(memory_block* mb) {
-  @   \valid(mb) && mb->packed
-  @ } */
+  @ predicate valid_memory_block(memory_block* mb) =
+  @   \valid(mb) && mb->packed ;
+  @*/
 
 /* A memory chunk holds a pointer [data] to some part of a memory block
  * [block]. It maintains the [offset] at which it points in the block, as well
@@ -79,23 +76,20 @@ typedef struct _memory_chunk {
     // shortcut for [block->data + offset]
 } memory_chunk;
 
-/*@ type invariant inv_memory_chunk(memory_chunk mc) {
+/*@ type invariant inv_memory_chunk(memory_chunk mc) =
   @   mc.packed ==>
   @     (0 < mc.size && valid_memory_block(mc.block)
-  @     && mc.offset + mc.size <= mc.block->next)
-  @ }
+  @     && mc.offset + mc.size <= mc.block->next) ;
   @
-  @ predicate valid_memory_chunk(memory_chunk* mc, int s) {
-  @   \valid(mc) && mc->packed && mc->size == s
-  @ }
+  @ predicate valid_memory_chunk(memory_chunk* mc, int s) =
+  @   \valid(mc) && mc->packed && mc->size == s ;
   @
-  @ predicate used_memory_chunk(memory_chunk mc) {
-  @   mc.free == false
-  @ }
+  @ predicate used_memory_chunk(memory_chunk mc) =
+  @   mc.free == false ;
   @
-  @ predicate freed_memory_chunk(memory_chunk mc) {
-  @   mc.free == true
-  @ } */
+  @ predicate freed_memory_chunk(memory_chunk mc) =
+  @   mc.free == true ;
+  @*/
 
 /* A memory chunk list links memory chunks in the same memory block.
  * Newly allocated chunks are put first, so that the offset of chunks
@@ -109,10 +103,10 @@ typedef struct _memory_chunk_list {
     // tail of the list
 } memory_chunk_list;
 
-/*@ \let next_chunk = \lambda memory_chunk_list* ptr; ptr->next ;
+/*@ logic memory_chunk_list* next_chunk(memory_chunk_list* ptr) = ptr->next ;
   @
   @ predicate valid_memory_chunk_list
-  @                  (memory_chunk_list* mcl, memory_block* mb) {
+  @                  (memory_chunk_list* mcl, memory_block* mb) =
   @   \valid(mcl) && valid_memory_chunk(mcl->chunk,mcl->chunk->size)
   @   && mcl->chunk->block == mb
   @   && (mcl->next == \null || 
@@ -127,20 +121,18 @@ typedef struct _memory_chunk_list {
   @        && mcl->next->chunk->offset + mcl->next->chunk->size
   @           == mcl->chunk->offset)
   @      )
-  @   && finite_list(next_chunk, mcl)
-  @ }
+  @   && finite_list(next_chunk, mcl) ;
   @
   @ predicate valid_complete_chunk_list
-  @                  (memory_chunk_list* mcl, memory_block* mb) {
+  @                  (memory_chunk_list* mcl, memory_block* mb) =
   @   valid_memory_chunk_list(mcl,mb)
   @   && mcl->next->chunk->offset + 
-  @      mcl->next->chunk->size == mb->next
-  @ }
+  @      mcl->next->chunk->size == mb->next ;
   @
   @ predicate chunk_lower_length(memory_chunk_list* ptr1,
-  @                              memory_chunk_list* ptr2) {
-  @   lower_length(next_chunk, ptr1, ptr2)
-  @ } */
+  @                              memory_chunk_list* ptr2) =
+  @   lower_length(next_chunk, ptr1, ptr2) ;
+  @*/
 
 /* A memory slice holds together a memory block [block] and a list of chunks
  * [chunks] on this memory block.
@@ -153,16 +145,15 @@ typedef struct _memory_slice {
   memory_chunk_list* chunks;
 } memory_slice;
 
-/*@ type invariant inv_memory_slice(memory_slice* ms) {
+/*@ type invariant inv_memory_slice(memory_slice* ms) =
   @   ms.packed ==>
   @     (valid_memory_block(ms->block) && ms->block->slice == ms
   @     && (ms->chunks == \null
-  @         || valid_complete_chunk_list(ms->chunks, ms->block)))
-  @ }
+  @         || valid_complete_chunk_list(ms->chunks, ms->block))) ;
   @
-  @ predicate valid_memory_slice(memory_slice* ms) {
-  @   \valid(ms) && ms->packed
-  @ } */
+  @ predicate valid_memory_slice(memory_slice* ms) =
+  @   \valid(ms) && ms->packed ;
+  @*/
 
 /* A memory slice list links memory slices, to form a memory pool.
  */
@@ -176,31 +167,28 @@ typedef struct _memory_slice_list {
     // tail of the list
 } memory_slice_list;
 
-/*@ \let next_slice = \lambda memory_slice_list* ptr; ptr->next ;
+/*@ logic memory_slice_list* next_slice(memory_slice_list* ptr) = ptr->next ;
   @
-  @ type invariant inv_memory_slice_list(memory_slice_list* msl) {
+  @ type invariant inv_memory_slice_list(memory_slice_list* msl) =
   @   msl.packed ==>
   @     (valid_memory_slice(msl->slice)
   @     && (msl->next == \null || 
   @         valid_memory_slice_list(msl->next))
-  @     && finite_list(next_slice, msl))
-  @ }
+  @     && finite_list(next_slice, msl)) ;
   @
-  @ predicate valid_memory_slice_list(memory_slice_list* msl) {
-  @   \valid(msl) && msl->packed
-  @ }
+  @ predicate valid_memory_slice_list(memory_slice_list* msl) =
+  @   \valid(msl) && msl->packed ;
   @
   @ predicate slice_lower_length(memory_slice_list* ptr1,
-  @                              memory_slice_list* ptr2) {
-  @   \let next_slice = \lambda memory_slice_list* ptr; ptr->next ;
+  @                              memory_slice_list* ptr2) =
   @      lower_length(next_slice, ptr1, ptr2)
   @ } */
 
 typedef memory_slice_list* memory_pool;
 
-/*@ type invariant valid_memory_pool(memory_pool *mp) {
-  @   \valid(mp) && valid_memory_slice_list(*mp)
-  @ } */
+/*@ type invariant valid_memory_pool(memory_pool *mp) =
+  @   \valid(mp) && valid_memory_slice_list(*mp) ;
+  @*/
 
 /*@ behavior zero_size:
   @   assumes s == 0;

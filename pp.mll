@@ -37,7 +37,7 @@
 	"typedef"; "union";
 	"throws" ; "extends" ; "implements" ; "reads" ;
 	"requires"; "assumes" ; "invariant"; "representation";
-	"loop" ; "variant" ; "strong" ;
+	"loop" ; "variant" ; "data" ; "strong" ;
 	"ensures" ; "breaks"; "continues"; "returns"; "assigns"; "modifiable" ; "signals" ;
 	"logic" ; "type" ; "predicate" ; "axiom";
 	"normal_behavior" ; "behavior" ; "model";

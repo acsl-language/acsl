@@ -1,7 +1,6 @@
 typedef enum { BLUE, WHITE, RED } color;
-/*@ type invariant isColor(color c) { 
-  @   c == BLUE || c == WHITE || c == RED 
-  @ }
+/*@ type invariant isColor(color c) =
+  @   c == BLUE || c == WHITE || c == RED ;
   @*/
 
 /*@ predicate permut{L1,L2}(color t1[], color t2[], integer n)
@@ -22,13 +21,12 @@ typedef struct flag {
   int n;
   color colors[];
 } flag;
-/*@ type invariant is_colored(flag f) {
+/*@ type invariant is_colored(flag f) =
   @   f.n >= 0 && \valid(f.colors+(0..f.n-1)) &&
-  @   \forall integer k; 0 <= k < f.n ==> isColor(f.colors[k])
-  @ }
+  @   \forall integer k; 0 <= k < f.n ==> isColor(f.colors[k]) ;
   @*/
 
-/*@ predicate isMonochrome(color t[], integer i, integer j, 
+/*@ predicate isMonochrome{L}(color t[], integer i, integer j, 
   @                        color c) {
   @   \forall integer k; i <= k <= j ==> t[k] == c 
   @ } 
