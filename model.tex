@@ -1,0 +1,14 @@
+\begin{syntax}
+
+  ghost-type-specifier ::= C-type-specifier | {logic-type-name} \
+  declaration ::= C-declaration ;
+  | "/*@" "model" C-declaration "*/" ; model variable
+  \
+  struct-declaration ::= C-struct-declaration ;
+  | "/*@" "model" C-struct-declaration "*/" ; model field
+\end{syntax}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
