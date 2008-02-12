@@ -3,8 +3,8 @@
   \begin{c}
     //@ logic int f(int x) = x+1 ;
   \end{c}
-  is forbidden because the result (mathematical integer 0) must be
-  casted to int.  One should either write
+  is not allowed because \verb!x+1!, which is a mathematical integer, must be
+  casted to \texttt{int}.  One should write either
   \begin{c}
     //@ logic integer f(int x) = x+1 ;
   \end{c}
@@ -12,5 +12,4 @@
   \begin{c}
     //@ logic int f(int x) = (int)(x+1) ;
   \end{c}
-if one really wants to return an \verb|int|.
 \end{example}

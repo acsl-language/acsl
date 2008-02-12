@@ -153,7 +153,7 @@ used in term position.
 
 
 
-\subsection{Operator precedence}
+\subsection{Operators precedence}
 
 The precedence of C operators is conservatively extended with additional operators, as shown Figure~\ref{fig:precedence}. In this table, operators are sorted from highest to lowest priority. Operators of same priority are presented on the same line.
 
@@ -191,146 +191,149 @@ The precedence of C operators is conservatively extended with additional operato
 \label{fig:precedence}
 \end{figure}
 
-There is an additional ambiguity between the connective
-\verb|..?..:..| and the naming with \verb|:|. For example, in the
-expression \verb|x?y:z:t|, the precedence table does not enforce
-whether this should be seen as \verb|x?(y:z):t| or \verb|x?y:(z:t)|. 
-Such a case must considered as a syntax error, and should be fixed
-by explicitly using parentheses.
+There is a remaining ambiguity between the connective
+\verb|..?..:..| and the labelling operator \verb|:|. Consider for
+instance the
+expression \verb|x?y:z:t|. The precedence table does not indicate
+whether this should be understood as \verb|x?(y:z):t| or \verb|x?y:(z:t)|. 
+Such a case must be considered as a syntax error, and should be fixed
+by explicitly adding parentheses.
 
 \subsection{Semantics}
 \label{sec:twovaluedlogic}
 
 The semantics of logic expressions in ACSL is based on
 mathematical first-order
-logic~(\url{http://en.wikipedia.org/wiki/First_order_logic}), thus it
-is a 2-valued logic with only total functions. Consequently,
+logic~(\url{http://en.wikipedia.org/wiki/First_order_logic}). In
+particular, it is a 2-valued logic with only total functions. Consequently,
 expressions are never ``undefined''.
+This is an important design choice and the specification writer should
+be aware of that. (For a discussion about the issues raised by such
+design choices, in similar specification languages such as JML, see
+the comprehensive list compiled by Patrice
+Chalin~\cite{chalin05ftfjp,chalin07icse}.)
 
-This design choice has to be emphasized because it is not
-straightforward, and specification writer should be aware of that. The
-issues are shared with specification languages with similar purposes,
-like JML. A comprehensive list of issues has been compiled by Patrice
-Chalin~\cite{chalin05ftfjp,chalin07icse}.
-
-The choice of having only total functions allows to write for example
-the term \verb|1/0|, or \verb|*p| when p is null (or more generally
+Having only total functions implies than one can write 
+terms such as \verb|1/0|, or \verb|*p| when \verb!p! is null (or more
+generally 
 when it points to a non-properly allocated memory cell). In
 particular, the predicates
 \begin{eqnarray*}
-  1/0 &\verb|==|& 1/0 \\\relax
-  *p &\verb|==|& *p
+  \verb!1/0! &\verb|==|& \verb!1/0! \\\relax
+  \verb!*p! &\verb|==|& \verb!*p!
 \end{eqnarray*}
-are true, since they are instances of the general axiom $\forall x,
-x\verb|==|x$ of first-order logic.
+are valid, since they are instances of the axiom $\forall x,
+x=x$ of first-order logic. Of course, there is no way to deduce
+anything useful about such terms.
 \oldremark{Anonyme}{Donc on ne peut pas introduire de construction
 non-déterministe comme  $(\texttt{any} x \mid P)$
 }
-
-So, it is up to the writer of specification to take care of writing
-consistent assertions. For example, one might want to pose the lemma
+As usual, it is up to the specification designer to write
+consistent assertions. For example, when introducing the following lemma
 (see Section~\ref{sec:logicspec}):
 \input{div_lemma.pp}
-where care is taken to have a premise requiring \verb|y| not zero.
+a premise is added to require \verb|y| to be non zero.
 
 
 \subsection{Typing}
 
-The language of logic expressions is typed (as for \emph{multi-sorted}
+The language of logic expressions is typed (as in \emph{multi-sorted}
 first-order logic). Types are either C types or \emph{logic types}
 defined as follows:
 \begin{itemize}
-\item ``Mathematical'' types: \verb|integer| for unbounded,
-  mathematical integers; \verb|real| for real numbers, \verb|boolean|
-  for booleans (with values written as \verb|\true| and \verb|\false|).
-\item Logic types introduced by specification writer (see
+\item ``mathematical'' types: \verb|integer| for unbounded,
+  mathematical integers, \verb|real| for real numbers, \verb|boolean|
+  for booleans (with values written \verb|\true| and \verb|\false|);
+\item logic types introduced by the specification writer (see
   Section~\ref{sec:logicspec}).
 \end{itemize}
 There are implicit coercions for numeric types:
 \begin{itemize}
-\item C integer-like types \verb|char|, \verb|short|, \verb|int| and
-  \verb|long|, signed or unsigned, are all subtypes of type \verb|integer|,
-\item \verb|integer| is itself a subtype of type \verb|real|,
+\item C integral types \verb|char|, \verb|short|, \verb|int| and
+  \verb|long|, signed or unsigned, are all subtypes of type \verb|integer|;
+\item \verb|integer| is itself a subtype of type \verb|real|;
 \item C types \verb|float| and \verb|double| are subtypes of type \verb|real|.
 \end{itemize}
 Notes:
 \begin{itemize}
-\item There is a distinction between booleans and predicates. An
-  expression like $x<y$, in a term position returns a boolean, and is
-  also allowed in a predicate position.
+\item There is a distinction between booleans and predicates. The
+  expression $x<y$ in term position is a boolean, and the same expression
+  is also allowed in predicate position.
 \item Unlike in C, there is a distinction between booleans and
   integers. There is an implicit promotion from integers to booleans,
   thus one may write \verb|x && y| instead of \verb|x != 0 && y != 0|.
   If the reverse conversion is needed, an explicit cast is
-  required, e.g. \texttt{(int)(x>0)+1}, where \verb|\false| becomes 0
+  required, \emph{e.g.} \texttt{(int)(x>0)+1}, where \verb|\false| becomes 0
   and \verb|\true| becomes 1.
-\item Quantification can be made over any type: logic types and any C
-  types. Quantification over pointers must be carefully designed,
-  regarding the memory state where dereferencing is done: see
+\item Quantification can be made over any type: logic types and C
+  types. Quantification over pointers must be carefully used,
+  since it depends on the memory state where dereferencing is done (see
   Section~\ref{sec:quantification} and
-  Section~\ref{sec:logicalstates}.
+  Section~\ref{sec:logicalstates}).
 \end{itemize}
 
-Formal typing rules for terms are given in appendix~\ref{sec:typingrules}
+Formal typing rules for terms are given in appendix~\ref{sec:typingrules}.
 
 
 \subsection{Integer arithmetic and machine integers}
 
 The following integer arithmetic operations apply to
 \emph{mathematical integers}: addition, subtraction, multiplication,
-unary minus. The value of a C variable of an integer type is promoted
+unary minus. The value of a C variable of an integral type is promoted
 to a mathematical integer. As a consequence, there is no such thing as
 ``overflow'' in logic expressions.
 
-Division and modulo are also mathematical operations, whose results
-are identical to those of C operations on C machine integers, thus
-following the ANSI C99 conventions. Generally speaking, division
+Division and modulo are also mathematical operations, which coincide
+with the corresponding C operations on C machine integers, thus
+following the ANSI C99 conventions. In particular, these are not the
+usual mathematical Euclidean division and remainder.
+Generally speaking, division
 rounds the result towards zero. The results are not specified if
-divisor is zero, otherwise if $q$ and $r$ are the quotient and the
+divisor is zero; otherwise if $q$ and $r$ are the quotient and the
 remainder of $n$ divided by $d$ then:
 \begin{itemize}
-\item $|d.q| \leq |n|$, and $|q|$ is maximal for this property ;
-\item $q$ is zero if $|n|<|d|$ ;
-\item $q$ is positive if $|n|\geq|d|$ and $n$ and $d$ have the same sign ;
-\item $q$ is negative if $|n|\geq|d|$ and $n$ and $d$ have the opposite signs ;
-\item $q.d+r = n$ ;
-\item $|r|<|d|$ ;
+\item $|d\times q| \leq |n|$, and $|q|$ is maximal for this property;
+\item $q$ is zero if $|n|<|d|$;
+\item $q$ is positive if $|n|\geq|d|$ and $n$ and $d$ have the same sign;
+\item $q$ is negative if $|n|\geq|d|$ and $n$ and $d$ have the opposite signs;
+\item $q\times d+r = n$;
+\item $|r|<|d|$;
 \item $r$ is zero or has the same sign as $d$.
 \end{itemize}
 
 \begin{example}
-  The following examples illustrates the results of division and modulo depending on signs of arguments:
+  The following examples illustrate the results of division and modulo
+  depending on the sign of their arguments: 
   \begin{itemize}
-  \item \verb|5/3| is 1 and \verb|5%3| is 2
-  \item \verb|(-5)/3| is -1 and \verb|(-5)%3| is -2
-  \item \verb|5/(-3)| is -1 and \verb|5%(-3)| is 2
-  \item \verb|(-5)/(-3)| is 1 and \verb|(-5)%(-3)| is -2
+  \item \verb|5/3| is 1 and \verb|5%3| is 2;
+  \item \verb|(-5)/3| is -1 and \verb|(-5)%3| is -2;
+  \item \verb|5/(-3)| is -1 and \verb|5%(-3)| is 2;
+  \item \verb|(-5)/(-3)| is 1 and \verb|(-5)%(-3)| is -2.
   \end{itemize}
 \end{example}
 
-\subsubsection{Hexadecimal constants}
+\subsubsection{Hexadecimal and octal constants}
 
 Hexadecimal and octal constants are always non-negative. Suffixes
 \texttt{u} and \texttt{l} for C constants are allowed but meaningless.
 
-\subsubsection{Casts and overflow}
+\subsubsection{Casts and overflows}
 
-In logic expressions, casting operations from mathematical integers
-towards a C integer type $t$ (among \texttt{char}, \texttt{short},
-\texttt{int} and \texttt{long}, signed or unsigned) is allowed, and is
+In logic expressions, casting from mathematical integers
+to an integral C type $t$ (such as \texttt{char}, \texttt{short},
+\texttt{int}, etc.) is allowed and is
 interpreted as follows: the result is the unique value of the
 corresponding type that is congruent to the mathematical result modulo
-the cardinal of this type (that is 2 to $8\times\sizeof(t)$).
+the cardinal of this type, that is $2^{8\times\sizeof(t)}$.
 \begin{example}
-  \texttt{(unsigned char)1000} is $1000 \bmod 256$ \emph{i.e.} $232$.
+  \texttt{(unsigned char)1000} is $1000 \bmod 256$ i.e. $232$.
 \end{example}
 
 
-If one wants to express, in the logic, the result of the C
-computations of an expression, one should add all necessary casts. For
-example, the logic expression which denotes the result of C
-computation of $x*y+z$ is \texttt{(int)((int)(x*y)+z)}.
-
+To express in the logic the value of a C
+expression, one has to add all the necessary casts. For
+example, the logic expression denoting the value of the C expression
+$x*y+z$ is \texttt{(int)((int)(x*y)+z)}.
 \oldremark{Claude}{Si la conjecture suivante est vraie, alors il
   faudrait en parler: Si e1 et e2 sont des expressions d'un type
   entier de C, quels qu'ils soient et si op est une operation binaire
@@ -340,38 +343,31 @@ computation of $x*y+z$ is \texttt{(int)((int)(x*y)+z)}.
   l'utilisateur de parler du resultat du calcul C d'une expressions
   dans la logique
 }
-
-
-Important: implicit casts from integers to C integer type are forbidden.
+Note that there is no implicit cast from integers to C integral types.
 \input{integer-cast.pp}
 
 
 
-\subsubsection{Quantification}
+\subsubsection{Quantification on C integral types}
 \label{sec:quantification}
 
-Quantification can be either on mathematical \verb|integer| or bounded
-types \verb|short|, \verb|char|, etc. In the latter case,
-quantification corresponds to integer quantification over the
-corresponding interval.
+Quantification over a C integral type corresponds to integer
+quantification over the corresponding interval.
 \begin{example}
-The formula
+Thus the formula
   \begin{center}
     \verb|\forall char c; c <= 1000|
   \end{center}
-is valid since it is equivalent to
+is equivalent to
 \begin{center}
   \verb|\forall integer c; -128 <= c <= 127 ==> c <= 1000|
 \end{center}
 \end{example}
 
 
-
-
-
 \subsubsection{Size of C integer types}
 
-Remark that the size of C types is architecture-dependent. The ACSL
+Remark that the size of C types is architecture-dependent. ACSL
 does not enforce these sizes either, hence the semantics of terms
 involving such types is also architecture-dependent (but of course in
 a consistent way as the C code). The sizeof operator may be used in
@@ -402,7 +398,7 @@ mathematical integers: any mathematical integer as a unique infinite
 2-complement binary representation with infinitely many 0 (for
 non-negative numbers) or 1 (for negative numbers) on the left. Then
 bitwise operations apply to these representation.
-\begin{example}
+\begin{example} ~
   \begin{itemize}
   \item \verb|7 & 12| = $\cdots 00111 \verb|&| \cdots 001100$ =
     $\cdots 00100$ = 4
