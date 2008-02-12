@@ -61,9 +61,14 @@
 
 \begin{titlepage}
 \begin{center}
-~\vfill
+\includegraphics[height=14mm]{cealistlogo.jpg}
+\hfill
+\includegraphics[height=14mm]{inriasaclaylogo.png}
 
-\includegraphics[height=60mm]{FramaC.jpg}
+\vfill
+
+%\includegraphics[height=60mm]{FramaC.jpg}
+~
 
 \vspace{20mm}
 
@@ -71,19 +76,28 @@
 
 \bigskip
 
-{\LARGE Preliminary design (version 1.1, \today)}
+{\LARGE Preliminary design (version 1.2, \today)}
 
 \vspace{20mm}
 
-{P.~Baudin, J.-C.~Filli\^atre, C.~March\'e, B.~Monate, Y.~Moy, V.~Prevosto}
+{P.~Baudin$^1$, J.-C.~Filli\^atre$^{4,3}$, C.~March\'e$^{3,4}$, B.~Monate$^1$, Y.~Moy$^{2,4,3}$, V.~Prevosto$^1$}
 
-\vspace{20mm}
+\medskip
+
+\begin{tabular}{l}
+$^1$ CEA LIST, LSL, Saclay, F-91191 \\
+$^2$ France T\'el\'ecom, Lannion, F-22307 \\
+$^3$ INRIA Saclay - \^Ile-de-France, ProVal, Orsay, F-91893 \\
+$^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405 
+\end{tabular}
 
 \vfill
 
-\includegraphics[height=14mm]{cealistlogo.jpg}
-\hfill
-\includegraphics[height=12mm]{inriafuturslogoshort.jpg}
+
+\begin{flushleft}
+  This work has been supported by the 'CAT' ANR project
+  (ANR-05-RNTL-00302) and by the ANR CIFRE contract 2005/973.
+\end{flushleft}
 
 \end{center}
 \end{titlepage}
@@ -100,13 +114,13 @@ the task 7.2 of the ANR RNTL project CAT
 project, a reference implementation of ACSL is provided: the Frama-C
 platform (\url{http://www.frama-c.cea.fr}).
 
-This is the version 1.1 of ACSL design, which means that several
-features may still evolve in the future. In particular, some features
-in this document are considered \emph{experimental}, meaning that
-their syntax and semantics is still under discussion.  These features
-are marked with \experimental.
-They must also be considered as advanced features, which are not
-supposed to be useful for a basic use of that specification language.
+This is the version 1.2 of ACSL design. Several features may still
+evolve in the future. In particular, some features in this document
+are considered \emph{experimental}, meaning that their syntax and
+semantics is not already fixed.  These features are marked with
+\experimental.  They must also be considered as advanced features,
+which are not supposed to be useful for a basic use of that
+specification language.
 
 \include{intro}
 
