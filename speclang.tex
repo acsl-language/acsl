@@ -1060,9 +1060,10 @@ There are three predefined logic labels: \verb|Pre|, \verb|Here| and
 
 \begin{itemize}
 \item The label \verb|Pre| is visible in all statement annotations, and refers to the pre-state of the function it occurs in.
-\item The label \verb|Here| is visible in all statement annotations
-  and all contracts, and refers the state where the annotation
-  appears.
+\item The label \verb|Here| is visible in all statement annotations,
+  where it refers to the state where the annotation appears; and in
+  all contracts, and refers to the pre-state for the \texttt{requires}
+  clause and the post-state for other clauses.
 \item The label \verb|Old| is visible in \verb|assigns| and
   \verb|ensures| clauses of all contracts (both for functions and for
   statement contracts described below in

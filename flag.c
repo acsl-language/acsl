@@ -38,7 +38,7 @@ typedef struct flag {
   @      isMonochrome(f.colors,0,b-1,BLUE) &&
   @      isMonochrome(f.colors,b,r-1,WHITE) &&
   @      isMonochrome(f.colors,r,f.n-1,RED) &&
-  @      permut{Pre,Post}(f.colors,f.colors,f.n-1);
+  @      permut{Old,Here}(f.colors,f.colors,f.n-1);
   @*/
 void dutch_flag(flag f) {
   color *t = f.colors;
@@ -51,7 +51,7 @@ void dutch_flag(flag f) {
     @   isMonochrome(t,0,b-1,BLUE) &&
     @   isMonochrome(t,b,i-1,WHITE) &&
     @   isMonochrome(t,r,f.n-1,RED) &&
-    @   permut(t,t,f.n-1);
+    @   permut{Pre,Here}(t,t,f.n-1);
     @ loop assigns b,i,r,t[0 .. f.n-1];
     @ loop variant r - i;
     @*/

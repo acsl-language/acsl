@@ -193,8 +193,6 @@ To fully understand the difference between specifications in ACSL and
 JML, we detail in the following the requirement on the pre-state and
 the guarantee on the post-state, given behaviors in JML and ACSL.
 
-~\\
-\noindent
 A JML contract is either a lightweight or an heavyweight one.
 For the purpose of our comparison, it is sufficient to know that a
 lightweight contract has \verb|requires| and \verb|ensures| clauses
@@ -205,7 +203,6 @@ define here what it would mean to have both, by conjoining the
 conditions on the pre- and the post-state.
 Here is an hypothetical JML contract mixing lightweight and
 heavyweight styles:
-
 \begin{flushleft}\ttfamily
 /*@ requires $P_1$; \\
 ~~@ requires $P_2$; \\
@@ -219,23 +216,17 @@ heavyweight styles:
 ~~@ ~~ensures $E_2$; \\
 ~~@*/
 \end{flushleft}
-
-\noindent
 It assumes from the pre-state the condition:
-
 \begin{center}
 {\ttfamily $P_1 ~\&\&~ P_2 ~\&\&~ (R_1 ~||~ R_2)$}
 \end{center}
-
-\noindent
 and guarantees that the following condition holds in post-state:
-
 \begin{center}
 {\ttfamily $Q_1 ~\&\&~ Q_2 ~\&\&~ 
   (\old(R_1) ==> E_1) ~\&\&~ (\old(R_2) ==> E_2)$}
 \end{center}
 
-\noindent
+
 Here is now an ACSL specification:
 
 \begin{flushleft}\ttfamily
@@ -272,6 +263,12 @@ and guarantees that the following condition holds in the post-state:
 {\ttfamily $Q_1 ~\&\&~ Q_2 ~\&\&~ 
   (\old(A_1) ==> E_1) ~\&\&~ (\old(A_2) ==> E_2)$}
 \end{center}
+
+\subsubsection*{ACSL \texttt{assigns} clause}
+
+Beware that in \texttt{assigns} clause, the expressions given refer to
+the post-state, whereas in JML, they refer to the pre-state. The JML
+semantics can be obtained using \verb|\old| construct.
 
 \subsection{Deductive verification vs. RAC}
 
