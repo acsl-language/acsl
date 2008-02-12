@@ -4,7 +4,7 @@
 This document is a reference manual for ACSL, an acronym for ``ANSI C
 Specification Language''. This is a Behavioral Interface Specification
 Language (aka BISL) implemented in the \textsc{Frama-C} framework. As
-its name suggests it, it aims at specifying behavioral properties of C
+suggested by its name, it aims at specifying behavioral properties of C
 source code. The main inspiration for this language comes from the
 specification language of the \textsc{Caduceus}
 tool~\cite{filliatre04icfem,filliatre07cav} for deductive verification
@@ -33,11 +33,10 @@ In this preliminary chapter we introduce some definitions and
 vocabulary, and discuss generalities about this specification
 language.  Chapter~\ref{chap:base} presents the specification language
 itself.  Chapter~\ref{chap:lib} presents additional informations about
-\emph{libraries} of specifications.  Chapter~\ref{chap:appendix}
-finally provides a few additional information.  A detailed table of
-contents is given on page~\pageref{chap:contents}
-
-A glossary is given in Appendix~\ref{sec:glossary}
+\emph{libraries} of specifications.  Finally, chapter~\ref{chap:appendix}
+provides a few additional information.  A detailed table of
+contents is given on page~\pageref{chap:contents}.
+A glossary is given in Appendix~\ref{sec:glossary}.
 
 \ifthenelse{\boolean{PrintImplementationRq}}{%
 Not all of the features mentioned in this document are currently
@@ -117,18 +116,18 @@ Section~\ref{sec:multiplecontracts}).
 \begin{itemize}
 \item Global annotations:
   \begin{itemize}
-  \item function contract. Such an annotation is inserted just before
+  \item \emph{function contract}\,: such an annotation is inserted just before
     the declaration or the definition of a function.
     See section~\ref{sec:fn-behavior}.
 
-  \item global invariant. This is allowed at the level of global declarations.
-    See section~\ref{sec:invariants}.
+  \item \emph{global invariant}\,: this is allowed at the level of
+    global declarations. See section~\ref{sec:invariants}.
 
-  \item type invariant. This allows both structure or union
+  \item \emph{type invariant}\,: this allows both structure or union
     invariants, and invariants on type names introduced by \typedef.
     See section~\ref{sec:invariants}.
 
-  \item logic specifications: logic type introduction, introduction
+  \item \emph{logic specifications}\,: logic type introduction, introduction
     or definition of logic functions or predicates, axioms. Such an
     annotation is placed at the level of global declarations.
 
@@ -136,7 +135,7 @@ Section~\ref{sec:multiplecontracts}).
 
 \item Statement annotations:
   \begin{itemize}
-  \item \assert clause. These are allowed
+  \item \emph{\assert clause}\,: these are allowed
     everywhere a C label is allowed, or just before a
     block closing brace.
     \oldremark{Claude}{About \assume{} clauses: current
@@ -151,21 +150,21 @@ Section~\ref{sec:multiplecontracts}).
       place des annotations juste avant la fermerture d'un bloc.
     }
 
-  \item loop annotation (invariant, variant, assign clauses) is
+  \item \emph{loop annotation} (invariant, variant, assign clauses): is
     allowed immediately before a loop statement: \For, \While,
-    \Do\ldots \While. See Section~\ref{sec:loop_annot}
+    \Do\ldots \While. See Section~\ref{sec:loop_annot}.
 
-  \item statement contract. Very similar to a function contract, and
+  \item \emph{statement contract}\,: very similar to a function contract, and
     placed before a statement or a block.  Semantical condition must
     be checked (normal termination only, no goto going inside, no goto
-    going outside).  See Section~\ref{sec:statement_contract}
+    going outside).  See Section~\ref{sec:statement_contract}.
     \oldremark{Patrick}{
       as-t'on droit au \old dans le \ensures de
       cette annotation~? Oui, pour refer a l'etat avant le statement
       consider\'e
     }
 
-  \item ghost code: is regular C code, only visible from the
+  \item \emph{ghost code}\,: regular C code, only visible from the
     specification, that is only allowed to modify ghost variables. See
     section~\ref{sec:ghost}. This includes ghost braces for enclosing blocks.
 
@@ -198,13 +197,14 @@ Frama-C's annotations]{they remain valid identifiers}.
 In this document, grammar rules are given in BNF form. In grammar
 rules, we use extra notations $e^*$ to denote repetition of zero, one
 or more occurrences of $e$, $e^+$ for repetition of one or more
-occurrences of $e$, $e^?$ for zero or one occurrence of $e$.
+occurrences of $e$, and $e^?$ for zero or one occurrence of $e$.
 
 
 \section*{Acknowledgements}
 
-Several people contributed to this document: P~.Cuoq, T.~Hubert, P.~Crégut, D.~Delmas,
-J.~L. Colaço, (TODO: completer)
+Several people contributed to this document: P.~Cuoq, T.~Hubert,
+P.~Crégut, D.~Delmas, J.-L.~Colaço.
+% (TODO: completer)
 
 
 %%% Local Variables:

@@ -1,22 +1,21 @@
 \subsection{Parsing annotations in practice}
 
-In JML, parsing is done by just ignoring \verb|//@|, \verb|/*@| and
-\verb|*/| and the level of lexing. This technique could modify the
-semantics of the C code, for example: 
+In JML, parsing is done by simply ignoring \verb|//@|, \verb|/*@| and
+\verb|*/| at the lexical analysis level. This technique could modify the
+semantics of the code, for example: 
 \begin{c}
 return x /*@ +1 */ ;
 \end{c}
-In our language this is forbidden. Technically, the current
+In our language, this is forbidden. Technically, the current
 implementation of Frama-C isolates the comments in a first step of
 syntax analysis, and then parses a second time. Nevertheless, the
 grammar and the corresponding parser must be carefully designed to
-avoid interaction of annotations with the code. For example, in such a
-code: 
+avoid interaction of annotations with the code. For example, in code such as
 \begin{c}
   if (c) //@ assert P;
      c=1;
 \end{c}
-the statement \verb|c=1| must be understood as the \texttt{then}
+the statement \verb|c=1| must be understood as the 
 branch of the \texttt{if}. This is ensured by the grammar below,
 saying that \verb|assert| annotations are not statement themselves,
 but attached to the statement that follows, like C labels.
