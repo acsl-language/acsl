@@ -14,6 +14,7 @@ size_t fwrite(const  void  *ptr,  size_t  size,  size_t  nmemb,
   @   post assumes \result != NULL;
   @   ensures \valid( (char*)\result + (0..size-1))
   @ behavior error:
-  @   post assumes \result == NULL ;
+  @   post assumes \result == NULL
+  @   ensures true;
   @*/
 void *malloc(size_t size);

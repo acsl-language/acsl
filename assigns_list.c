@@ -4,9 +4,8 @@ struct list {
 };
 
 // reachability in NULL-terminated lists
-/*@ predicate reachable(struct list *root, struct list *to) {
-  @   root == to || root != \null && reachable(root->next,to)
-  @ }
+/*@ predicate reachable(struct list *root, struct list *to) =
+  @   root == to || root != \null && reachable(root->next,to) ;
   @*/
 
 //@ assigns { q->hd | struct list *q ; reachable(p,q) } ;

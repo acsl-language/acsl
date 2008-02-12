@@ -2114,27 +2114,6 @@ grammar are the following:
 
 }
 
-\oldremark{JCF et CM}{
-
-les ghosts pourrait etre des types logiques.
-
-et quid de prendre l'addresse d'une variable dans les formules logiques ?
-autorise' ?
-
-et de toute facon il y a besoin de critere de separation qui assure
-que le code ghost ne change pas la semantique du code C. Cas de champ
-ghost dans les structures -> change
-
-
-}
-
-\experimental
-
-\oldremark{Patrick}{on a besoin de ``ghost braces'' pour
-      écrire du ``ghost code'', mais également de ``logic braces'' afin de créer un
-      ``logic statement'' auquel on désire associer un ``statement
-      behavior''. Où en parler~?
-    }
 
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
@@ -2143,24 +2122,6 @@ ghost dans les structures -> change
   \caption{Grammar for ghost statements}
 \label{fig:gram:ghost}
 \end{figure}
-
-\oldremark{DD4}{
-
-  Cette grammaire autorise de mettre des ghost dans les ghost, a refaire.
-
-  En fait non, on l'autorise : du code ghost peut avoir besoin
-  d'annotation, comme des invariants de boucle
-
-}
-
-
-\oldremark{All}{
-
-TODO: else ghost
-
-  manque `if () i1 //@ else i2' dans la grammaire
-
-}
 
 
 \paragraph{Semantics of Ghost Code}
@@ -2243,23 +2204,41 @@ variable modification are executable.
 
 \experimental
 
-Volatile variables 
-TODO
+Volatile variables can not be used in logic terms, since reading such
+a variable may have a side effect, in particular two successive reads
+may return different values.
 
-volatile tau x;
+\begin{figure}[t]
+  \fbox{\begin{minipage}{0.97\linewidth}
+      \input{volatile-gram.bnf}
+    \end{minipage}}
+  \caption{Grammar for volatile constructs}
+\label{fig:gram:volatile}
+\end{figure}
+
+Specifying properties of a volatile variable may be done via a
+specific construct to attach two ghost functions to it. This
+construct, described by the grammar of Figure~\ref{fig:gram:volatile}, has
+the following shape:
+\begin{flushleft}\ttfamily
+volatile $\tau$ x;\\
 //@ volatile x reads f writes g;
+\end{flushleft}
+where \verb|f| and \verb|g| are ghost functions with the following prototypes:
+\begin{flushleft}\ttfamily
+$\tau$ f(volatile $\tau$* p); \\
+$\tau$ g(volatile $\tau$* p, $\tau$ v);
+\end{flushleft}
+This must be understood as a special construct to instrument the C
+code, where each access to the variable \verb|x| is replaced by a call
+to \verb|f(&x)|, and each assignment to \verb|x| of a value \verb|v|
+is replaced by \verb|g(&x,v)|.
 
-
-tau f(tau* p)
-tau g(tau* p, tau v)
-
-volatile tset ...
-
-\oldremark{DD1}{
-
-  attacher des fonctions de lecture et d'ecriture a une variable volatile
-
-}
+\begin{example}
+  The following code is instrumented in order to inject fixed values
+  at each read of variable \verb|x|, and collect written values.
+  \input{volatile.pp}
+\end{example}
 
 %\section{Module constructions}
 %

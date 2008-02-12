@@ -3,4 +3,4 @@ struct S {
   int *y;
 };
 
-//@ logic loc<void*> footprint(struct S s) { \union(s.x,s.y) }
+//@ logic loc<void*> footprint(struct S s) = \union(s.x,s.y) ;

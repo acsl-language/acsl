@@ -1,7 +1,9 @@
 \begin{syntax}
 
-  ghost-type-specifier ::= C-type-specifier | {logic-type-name} \
-  declaration ::= C-declaration | "/*@" "ghost" ghost-declaration "*/" \
+  ghost-type-specifier ::= C-type-specifier ;
+  | {logic-type-name} \
+  declaration ::= C-declaration ;
+  | "/*@" "ghost" ghost-declaration "*/" \
   direct-declarator ::= C-direct-declarator ;
     | direct-declarator "(" parameter-type-list? ")";
         {"/*@" "ghost" "("parameter-list")" "*/"} ; declare fun with ghost args

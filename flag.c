@@ -19,7 +19,7 @@ void swap(color t[], int i, int j) {
 
 typedef struct flag {
   int n;
-  color colors[];
+  color *colors;
 } flag;
 /*@ type invariant is_colored(flag f) =
   @   f.n >= 0 && \valid(f.colors+(0..f.n-1)) &&
@@ -27,9 +27,8 @@ typedef struct flag {
   @*/
 
 /*@ predicate isMonochrome{L}(color t[], integer i, integer j, 
-  @                        color c) {
-  @   \forall integer k; i <= k <= j ==> t[k] == c 
-  @ } 
+  @                           color c) =
+  @   \forall integer k; i <= k <= j ==> t[k] == c ;
   @*/
 
 /*@ assigns f.colors[0..f.n-1];
