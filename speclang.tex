@@ -1031,51 +1031,6 @@ Annotations on C statements are of three kinds:
   their behavior in a similar manner as C functions.
 \end{itemize}
 
-\subsection{Built-in construct \at{}}
-\label{sec:at}
-
-Statement annotations usually need another additional construct
-$\at(e,id)$ refering to the value of the expression $e$ in the
-state at label $id$. The label $id$ can be either a regular C label,
-or a label added within a ghost statement as described in
-Section~\ref{sec:ghost}. This label must be declared in the same
-function as the occurrence of $\at(e,id)$, but unlike \texttt{goto}s,
-more restrictive scoping rules must be respected:
-\begin{itemize}
-\item the label $id$ must occur before the occurrence of  $\at(e,id)$
-  in the source.
-\item the label $id$ must not be inside a inner block.
-\end{itemize}
-These rules are exactly the same rules as the visibility of some local
-variable within a statement (see~\cite{KR88}, Section A11.1)
-
-\subsubsection*{Default logic labels}
-
-There are three predefined logic labels: \verb|Pre|, \verb|Here| and
-\verb|Old|. $\old(e)$ is in fact a syntactic sugar for $\at(e,Old)$.
-
-\begin{itemize}
-\item The label \verb|Pre| is visible in all statement annotations, and refers to the pre-state of the function it occurs in.
-\item The label \verb|Here| is visible in all statement annotations,
-  where it refers to the state where the annotation appears; and in
-  all contracts, and refers to the pre-state for the \texttt{requires}
-  clause and the post-state for other clauses.
-\item The label \verb|Old| is visible in \verb|assigns| and
-  \verb|ensures| clauses of all contracts (both for functions and for
-  statement contracts described below in
-  Section~\ref{sec:statement_contract}), and refers to the pre-state
-  of this contract.
-\end{itemize}
-
-Remark that no logic label are visible in global logic declaration
-such as lemmas, axioms, definition of predicate or logic
-functions. When such an annotation needs to refer to a given memory
-state, it has to be given a label binder: this is described in
-Section~\ref{sec:logicalstates}.
-
-\begin{example}
-  TODO: example with \at(e,Pre) in a loop invariant.
-\end{example}
 
 \subsection{Assertions}
 
@@ -1272,6 +1227,57 @@ node inv to itself.
 \input{inductiveloopinvariants.pp}
 \end{example}
 
+\subsection{Built-in construct \at{}}
+\label{sec:at}
+
+Statement annotations usually need another additional construct
+$\at(e,id)$ refering to the value of the expression $e$ in the
+state at label $id$. The label $id$ can be either a regular C label,
+or a label added within a ghost statement as described in
+Section~\ref{sec:ghost}. This label must be declared in the same
+function as the occurrence of $\at(e,id)$, but unlike \texttt{goto}s,
+more restrictive scoping rules must be respected:
+\begin{itemize}
+\item the label $id$ must occur before the occurrence of  $\at(e,id)$
+  in the source.
+\item the label $id$ must not be inside a inner block.
+\end{itemize}
+These rules are exactly the same rules as the visibility of some local
+variable within a statement (see~\cite{KR88}, Section A11.1)
+
+\subsubsection*{Default logic labels}
+
+There are three predefined logic labels: \verb|Pre|, \verb|Here| and
+\verb|Old|. $\old(e)$ is in fact a syntactic sugar for $\at(e,Old)$.
+
+\begin{itemize}
+\item The label \verb|Pre| is visible in all statement annotations, and refers to the pre-state of the function it occurs in.
+\item The label \verb|Here| is visible in all statement annotations,
+  where it refers to the state where the annotation appears; and in
+  all contracts, and refers to the pre-state for the \texttt{requires}
+  clause and the post-state for other clauses.
+\item The label \verb|Old| is visible in \verb|assigns| and
+  \verb|ensures| clauses of all contracts (both for functions and for
+  statement contracts described below in
+  Section~\ref{sec:statement_contract}), and refers to the pre-state
+  of this contract.
+\end{itemize}
+
+Remark that no logic label are visible in global logic declaration
+such as lemmas, axioms, definition of predicate or logic
+functions. When such an annotation needs to refer to a given memory
+state, it has to be given a label binder: this is described in
+Section~\ref{sec:logicalstates}.
+
+\begin{example}
+  The code below implements the famous extended Euclide's algorithm
+  for computation of the greatest common divisor of two integers x and
+  y, computing at the same time two \emph{B\'ezout coefficients} $p$
+  and $q$ such that $p\times x+q\times y =gcd(x,y)$.
+
+  The loop invariant for the B\'ezout property needs to refers to the value of $x$ and $y$ in the pre-state of the function
+  \input{euclide.pp}
+\end{example}
 
 \subsection{Statement contracts}
 \label{sec:statement_contract}
