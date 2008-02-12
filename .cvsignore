@@ -11,3 +11,4 @@ main.ilg
 main.ind
 main.lof
 *.out
+pp main.cb

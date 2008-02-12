@@ -8,9 +8,9 @@
 Lexical structure mostly follows that of ANSI C. A few differences
 must be noted:
 \begin{itemize}
-\item the character \verb|'@'| is a blank character, thus equivalent
+\item the at sign (\verb|@|) is a blank character, thus equivalent
   to a space character.
-\item the identifiers may start with the backslash character.
+\item the identifiers may start with the backslash character (\verb|\|).
 \item Some UTF8 characters may be used in place of some constructs, as
   shown in the following table
   
@@ -55,7 +55,7 @@ In this document, we use UTF8 characters in the examples, to improve readability
 \label{sec:expressions}
 
 This first section presents the language of expressions one can use in
-annotations. These are called below \emph{logic expressions}. They
+annotations. These are called \emph{logic expressions} in the following. They
 correspond to pure C expressions, with additional constructs
 that we will introduce progressively.
 
@@ -67,10 +67,10 @@ that we will introduce progressively.
 \end{figure}
 
 Figure~\ref{fig:gram:term} presents the grammar for the basic
-construction of logic expressions.  In that grammar, we distinguish
+constructs of logic expressions.  In that grammar, we distinguish
 between \emph{predicates} and \emph{terms}, following the usual
 distinction between propositions and terms in classical first-order
-logic.  The grammar for binders and type expression is given
+logic.  The grammar for binders and type expressions is given
 separately in Figure~\ref{fig:gram:binders}.
 
 With respect to C pure expressions, the additional constructs are as follows:
@@ -79,7 +79,8 @@ With respect to C pure expressions, the additional constructs are as follows:
   \verb+||+ (UTF8: $\lor$) and \verb|!| (UTF8: $\neg$) are used as logical
   connectives. There are additional connectives \verb|==>| (UTF8:
   $\Longrightarrow$) for implication, \verb|<==>| (UTF8:
-  $\Longleftrightarrow$) for equivalence and \verb|^^| (UTF8: (??)) for exclusive
+  $\Longleftrightarrow$) for equivalence and \verb|^^| (UTF8:
+  $\oplus$) for exclusive 
   or. These logical connectives all have a bitwise counterpart, either
   C ones like \verb|&|, \verb+|+, \verb|~| and \verb|^|, or additional
   ones like the bitwise implication \verb|-->| and the bitwise
@@ -96,41 +97,43 @@ With respect to C pure expressions, the additional constructs are as follows:
 \label{fig:gram:binders}
 \end{figure}
 
-\item[Local binding] \notimplemented{$\Let x = e_1 ; e_2$
+\item[Local binding] \notimplemented{$\Let x~\texttt{=}~e_1~\texttt{;}~e_2$
   introduces the name $x$ for
   expression $e_1$ which can be used in expression $e_2$.
 }
 
-\item[Conditional] $c ? e_1 : e_2$. There is a subtlety
+\item[Conditional] $c~\verb!?!~e_1~\verb!:!~e_2$. There is a subtlety
   here: the condition may be either a boolean term or a predicate.  In
   case of a predicate, the two branches must be also predicates, so
   that this construct acts as a connective with the following
-  semantics: $ c ? e_1 : e_2$ is equivalent to $(c
-  \verb|==>| e_1) \verb|&&| (\verb|!| c \verb|==>| e_2)$
+  semantics: $ c \verb!?! e_1 \verb!:! e_2$ is equivalent to $(c
+  \verb|==>| e_1) \verb|&&| (\verb|!| c \verb|==>| e_2)$.
 
 \item[Syntactic naming] $id \verb|:| e$ is a term or a predicate
   equivalent to $e$. It is different from local naming with $\Let$:
   the name cannot be reused in other terms or predicates. It is only
   for readibility purposes.
 
-\item[Logic functions] applications in terms and in propositions are not
-applications of C functions, but of logic functions or predicates: see
+\item[Logic functions] Applications in terms and in propositions are not
+applications of C functions, but of logic functions or predicates; see
 Section~\ref{sec:logicspec} for detail.
 
-\item[Consecutive comparison operators] the construct $t_1~relop_1~t_2~relop_2~t_3 \cdots t_k$ with
+\item[Consecutive comparison operators] 
+  The construct $t_1~relop_1~t_2~relop_2~t_3 \cdots t_k$ with
   several consecutive comparison operators is a shortcut for
   $t_1~relop_1~t_2 ~\verb|&&|~ t_2~relop_2~t_3 ~\verb|&&|~ \cdots $.
-  Nevertheless, it is required that the $relop_i$ operators must be in
+  It is required that the $relop_i$ operators must be in
   the same ``direction'', \emph{i.e.} they must all belong either to
   $\{\verb|<|, \verb|<=|, \verb|==|\}$ or to
-  $\{\verb|>|,\verb|>=|,\verb|==|\}$. For example, expressions
-  \verb|x < y > z| and \verb|x != y != z| are forbidden.
+  $\{\verb|>|,\verb|>=|,\verb|==|\}$. Expressions such as
+  \verb|x < y > z| or \verb|x != y != z| are not allowed.
 
-  To enforce the same interpretation as in C expressions, one must put
-  extra parentheses: $a == b < c$ is equivalent to $a == b \verb|&&| b
-  < c$, whereas $a == (b < c)$ is equivalent to $\Let x = b
-  < c ; a == x$. Nevertheless, this situation raises some issues, see
-  example below.
+  To enforce the same interpretation as in C expressions, one may need
+  to add extra parentheses: $a \verb!==! b \verb!<! c$ is equivalent
+  to $a \verb!==! b \verb|&&| b \verb!<! c$, whereas 
+  $a \verb!==! (b \verb!<! c)$ is
+  equivalent to $\Let x \verb!=! b \verb!<! c \verb!;! a \verb!==!
+  x$. This situation raises some issues, see example below.
 
 
 \oldremark{Virgile}{Dans le dernier cas, on pourrait vouloir avoir x, y
@@ -140,8 +143,8 @@ Section~\ref{sec:logicspec} for detail.
 \end{description}
 
 There is a subtlety with respect to comparison operators: they are
-predicate if in predicate position, and boolean functions in term
-position.
+predicates when used in predicate position, and boolean functions when
+used in term position.
 \begin{example}
 \input{example-lt.pp}
 \end{example}
