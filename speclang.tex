@@ -6,16 +6,16 @@
 \section{Lexical rules}
 
 Lexical structure mostly follows that of ANSI C. A few differences
-must be noted:
+must be noted.
 \begin{itemize}
-\item the at sign (\verb|@|) is a blank character, thus equivalent
+\item The at sign (\verb|@|) is a blank character, thus equivalent
   to a space character.
-\item the identifiers may start with the backslash character (\verb|\|).
+\item The identifiers may start with the backslash character (\verb|\|).
 \item Some UTF8 characters may be used in place of some constructs, as
-  shown in the following table
+  shown in the following table:
   
   \begin{center}
-    \begin{tabular}{|l|l|r|}
+    \begin{tabular}{|l|l|l|}
       \hline
       \verb|>=| & \ensuremath{\geq} & 0x2265 \\
       \hline
@@ -83,7 +83,7 @@ With respect to C pure expressions, the additional constructs are as follows:
   $\oplus$) for exclusive 
   or. These logical connectives all have a bitwise counterpart, either
   C ones like \verb|&|, \verb+|+, \verb|~| and \verb|^|, or additional
-  ones like the bitwise implication \verb|-->| and the bitwise
+  ones like bitwise implication \verb|-->| and bitwise
   equivalence \verb|<-->|.
 
 \item[Quantification] Universal quantification is denoted by $\Forall
@@ -121,7 +121,7 @@ Section~\ref{sec:logicspec} for detail.
 \item[Consecutive comparison operators] 
   The construct $t_1~relop_1~t_2~relop_2~t_3 \cdots t_k$ with
   several consecutive comparison operators is a shortcut for
-  $t_1~relop_1~t_2 ~\verb|&&|~ t_2~relop_2~t_3 ~\verb|&&|~ \cdots $.
+  $(t_1~relop_1~t_2) ~\verb|&&|~ (t_2~relop_2~t_3) ~\verb|&&|~ \cdots $.
   It is required that the $relop_i$ operators must be in
   the same ``direction'', \emph{i.e.} they must all belong either to
   $\{\verb|<|, \verb|<=|, \verb|==|\}$ or to
@@ -1607,7 +1607,7 @@ points, because it depends upon memory states, via expressions such as:
 \begin{itemize}
 \item pointer dereferencing: \verb|*p|, \verb|p->f|
 \item array accesses: \verb|t[i]|
-\item address operator: \verb|&x|
+\item address-of operator: \verb|&x|
 \item built-in predicates depending on memory: \valid
 % \item others ?
 \end{itemize}
