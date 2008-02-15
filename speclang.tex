@@ -13,7 +13,7 @@ must be noted.
 \item The identifiers may start with the backslash character (\verb|\|).
 \item Some UTF8 characters may be used in place of some constructs, as
   shown in the following table:
-  
+
   \begin{center}
     \begin{tabular}{|l|l|l|}
       \hline
@@ -80,7 +80,7 @@ With respect to C pure expressions, the additional constructs are as follows:
   connectives. There are additional connectives \verb|==>| (UTF8:
   $\Longrightarrow$) for implication, \verb|<==>| (UTF8:
   $\Longleftrightarrow$) for equivalence and \verb|^^| (UTF8:
-  $\oplus$) for exclusive 
+  $\oplus$) for exclusive
   or. These logical connectives all have a bitwise counterpart, either
   C ones like \verb|&|, \verb+|+, \verb|~| and \verb|^|, or additional
   ones like bitwise implication \verb|-->| and bitwise
@@ -118,7 +118,7 @@ With respect to C pure expressions, the additional constructs are as follows:
 applications of C functions, but of logic functions or predicates; see
 Section~\ref{sec:logicspec} for detail.
 
-\item[Consecutive comparison operators] 
+\item[Consecutive comparison operators]
   The construct $t_1~relop_1~t_2~relop_2~t_3 \cdots t_k$ with
   several consecutive comparison operators is a shortcut for
   $(t_1~relop_1~t_2) ~\verb|&&|~ (t_2~relop_2~t_3) ~\verb|&&|~ \cdots $.
@@ -130,7 +130,7 @@ Section~\ref{sec:logicspec} for detail.
 
   To enforce the same interpretation as in C expressions, one may need
   to add extra parentheses: $a \verb!==! b \verb!<! c$ is equivalent
-  to $a \verb!==! b \verb|&&| b \verb!<! c$, whereas 
+  to $a \verb!==! b \verb|&&| b \verb!<! c$, whereas
   $a \verb!==! (b \verb!<! c)$ is
   equivalent to $\Let x \verb!=! b \verb!<! c \verb!;! a \verb!==!
   x$. This situation raises some issues, see example below.
@@ -195,7 +195,7 @@ There is a remaining ambiguity between the connective
 \verb|..?..:..| and the labelling operator \verb|:|. Consider for
 instance the
 expression \verb|x?y:z:t|. The precedence table does not indicate
-whether this should be understood as \verb|x?(y:z):t| or \verb|x?y:(z:t)|. 
+whether this should be understood as \verb|x?(y:z):t| or \verb|x?y:(z:t)|.
 Such a case must be considered as a syntax error, and should be fixed
 by explicitly adding parentheses.
 
@@ -213,9 +213,9 @@ design choices, in similar specification languages such as JML, see
 the comprehensive list compiled by Patrice
 Chalin~\cite{chalin05ftfjp,chalin07icse}.)
 
-Having only total functions implies than one can write 
+Having only total functions implies than one can write
 terms such as \verb|1/0|, or \verb|*p| when \verb!p! is null (or more
-generally 
+generally
 when it points to a non-properly allocated memory cell). In
 particular, the predicates
 \begin{eqnarray*}
@@ -303,7 +303,7 @@ remainder of $n$ divided by $d$ then:
 
 \begin{example}
   The following examples illustrate the results of division and modulo
-  depending on the sign of their arguments: 
+  depending on the sign of their arguments:
   \begin{itemize}
   \item \verb|5/3| is 1 and \verb|5%3| is 2;
   \item \verb|(-5)/3| is -1 and \verb|(-5)%3| is -2;
@@ -477,11 +477,11 @@ library (see Section~\ref{sec:libreal}).
 
   mode d'arrondi ?
 
-   
+
 
   on veut des fonctions predef :
 
-  isNan, 
+  isNan,
 
   isFinite,
 
@@ -500,11 +500,11 @@ library (see Section~\ref{sec:libreal}).
   \round_down_float
 
   \round_up
- 
+
   \nearest_away
 
 
-  option: type rounding_mode = Nearest_even | ... 
+  option: type rounding_mode = Nearest_even | ...
 
 
   \round_float : rounding_mode , real -> float
@@ -1180,7 +1180,7 @@ shown in the grammar of Figure~\ref{fig:advancedinvariants}
 \notimplemented{More generally, such an invariant may occur anywhere inside a
 function's body.} The meaning is just that the invariant is true
 at that point, much like an \texttt{assert}, but moreover impose that
-it is inductive, i.e. is preserved by a loop iteration.  Several 
+it is inductive, i.e. is preserved by a loop iteration.  Several
 invariants are allowed at different places in the loop body. These
 advanced extensions can be useful for complex control flows, in
 particular with \verb|goto|s.
@@ -1562,9 +1562,9 @@ higher-order logic.
 
   c'est plutot des types avec constructeurs dans les spec algebriques
 
-  
+
 }
-  
+
 
 Logic types may not only be declared but also defined concretely, either under thr form of record types, or of sum types. These definitions may be recursive.
 With record types, the field access notation $t.id$ can be used, and for sum types, a pattern-matching construction is available. The grammar rules for these additional constructions are given Figure~\ref{fig:gram:logictype}
@@ -1639,7 +1639,7 @@ context.
 
   \oldremark{Claude}{
     expliquer mieux
-    
+
     De plus, si l'on oublie la clause reads ça reste
     correct, donc il faudrait prevoir un warning pour un predicat avec un
     type pointeur en argument sans reads...
@@ -1700,8 +1700,7 @@ definitions, like the \verb|List| module above.
 \blocklength{} : \verb|`a *| \ra \verb|size_t|
 \]
 
-\item $\valid$ is a built-in predicate which applies to
-  \notimplemented[only a singleton is allowed]{a set of terms}
+\item $\valid$ is a built-in predicate which applies to a set of terms
   of some pointer type. $\valid(s)$ is true whenever dereferencing any
   $p\in s$ is safe.
 \end{itemize}
@@ -1931,7 +1930,7 @@ which they are supposed to hold.
   \oldremark{Claude}{
 
     et les var locales d'une fonction appelante ?
-    
+
   }
 \item A strong type invariant on a type $\tau$ is supposed to hold at
   any state of execution, and applies to any global variable, local
@@ -2008,7 +2007,7 @@ void reset(S *p) {
 
 Syntax of declaration of model variables and fields is given on
 Figure~\ref{fig:gram:model}. It is presented as additions to regular C
-grammar to variable declarations and struct field declarations. 
+grammar to variable declarations and struct field declarations.
 
 Informal semantics of model variables is as follows:
 \begin{itemize}
