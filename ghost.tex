@@ -6,13 +6,11 @@
   | "/*@" "ghost" ghost-declaration "*/" \
   direct-declarator ::= C-direct-declarator ;
     | direct-declarator "(" parameter-type-list? ")";
-        {"/*@" "ghost" "("parameter-list")" "*/"} ;
-        ; declare fun with ghost args
+        {"/*@" "ghost" "("parameter-list")" "*/"} ; declare fun with ghost args
         \
   postfix-expression ::= C-postfix-expression ;
     | postfix-expression "(" argument-expression-list? ")";
-    {"/*@" "ghost" "(" argument-expression-list ")" "*/"} ;
-    ; call fun with ghost args
+    {"/*@" "ghost" "(" argument-expression-list ")" "*/"} ; call fun with ghost args
     \
   statement ::= C-statement | statements-ghost C-statement \
   statements-ghost ::= "/*@" "ghost" ghost-statement+ "*/" \

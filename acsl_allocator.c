@@ -103,7 +103,8 @@ typedef struct _memory_chunk_list {
     // tail of the list
 } memory_chunk_list;
 
-/*@ logic memory_chunk_list* next_chunk(memory_chunk_list* ptr) = ptr->next ;
+/*@ logic memory_chunk_list* next_chunk(memory_chunk_list* ptr) = 
+  @   ptr->next ;
   @
   @ predicate valid_memory_chunk_list
   @                  (memory_chunk_list* mcl, memory_block* mb) =
@@ -167,7 +168,8 @@ typedef struct _memory_slice_list {
     // tail of the list
 } memory_slice_list;
 
-/*@ logic memory_slice_list* next_slice(memory_slice_list* ptr) = ptr->next ;
+/*@ logic memory_slice_list* next_slice(memory_slice_list* ptr) = 
+  @   ptr->next ;
   @
   @ type invariant inv_memory_slice_list(memory_slice_list* msl) =
   @   msl.packed ==>

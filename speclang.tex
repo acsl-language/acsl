@@ -415,15 +415,11 @@ bitwise operations apply to this representation.
   \end{itemize}
 \end{example}
 
-\subsection{Real numbers and floating point numbers}
+\subsubsection{Transcendental functions}
 
-Floating-point constants and operations are interpreted as
-mathematical real numbers. A C variable of type float or double is
-implicitly promoted to a real. Integers are promoted to reals if necessary.
-\begin{example}
-$2 * 3.5$ is equal to the real number 7
-\end{example}
-Comparisons operators are interpreted as real operators too.
+Classical mathematical operations like exponential, sine, cosine,
+etc. are supposed to be available in some library (see
+Section~\ref{sec:libreal}).
 
 \oldremark{All}{  syntaxe pour abs et power ? a priori non, on peut
   fournir une library pour les reels avec abs(), power(), mais
@@ -432,6 +428,36 @@ Comparisons operators are interpreted as real operators too.
   mais: on pourrait permettre des definition d'operateurs infixes
 
 }
+
+
+\subsection{Real numbers and floating point numbers}
+
+Floating-point constants and operations are interpreted as
+mathematical real numbers :a C variable of type float or double is
+implicitly promoted to a real. Integers are promoted to reals if necessary.
+\begin{example}
+$2 * 3.5$ is equal to the real number 7
+\end{example}
+Unlike the promotion of C integer types to mathematical integers,
+there are special float values which do not naturally map to a real
+number, namely NaN, +Infinity and -Infinity. Since we want a logic
+with total functions, we consider that there are implicit promotion
+functions \verb|real_of_float| and \verb|real_of_double| whose results
+on the 3 specila values above is unspecified.
+
+Usual operators for comparison are interpreted as real operators
+too. In particular, equality operation $\equiv$ of float (or double)
+expressions means equality of the real numbers they represent
+respectively. Or equivalently, $x \equiv y$ for $x,y$ two float
+variables means $\verb|real_of_float|(x) \equiv
+\verb|real_of_float|(y)$ with the mathematical equality of real
+numbers.
+
+Special predicates are also available to express the comparison
+operators of float (resp. double) numbers as in C: \verb|\eq_float|,
+\verb|\gt_float|, \verb|\ge_float|, \verb|\le_float|, \verb|\lt_float|,
+\verb|\ne_float| (resp. for double).
+ 
 
 
 \oldremark{DP+all}{
@@ -445,79 +471,57 @@ Comparisons operators are interpreted as real operators too.
 
 \subsubsection{Casts, infinity and NaNs}
 
-Casting from an integer type or a float type to a float or a double is
+Casting from a C integer type or a float type to a float or a double is
 as in C: same conversion operations applies.
 
-Casting a real number $x$ to a float (resp. a double) results in a
-float value $y$ with the nearest-even rounding mode (see IEEE 754
-norm), which is the closest to $x$ real number which is representable
-in the float (resp. double) type. If the source real number is too
-large, this may also result into one of the special values +infinity
-and -infinity. This semantics ensures that the float result of a C
-operation $e_1 op e_2$ on floats, if the default rounding mode is not
-changed in the program, might be obtained in the logic under the form
-$(float)(e_1 op e_2)$.
-
+Conversion of real numbers to float or double values indeed depend on various possible rounding modes defined by the IEEE754 norm. These modes are defined by a logic type:
+\begin{flushleft}\ttfamily
+type rounding\_mode =  \\
+\quad  Nearest\_even | To\_zero | Round\_up | Round\_down | Nearest\_away
+\end{flushleft}
+Then rounding a real number can be done explicitly using functions
+\begin{flushleft}\ttfamily
+logic float \verb|\round_float|(rounding\_mode m, real x); \\
+logic double \verb|\round_double|(rounding\_mode m, real x);
+\end{flushleft}
+Cast operators \verb|(float)| and \verb|(double)| applied to a
+mathematical integer or real number $x$ are equivalent to apply
+rounding functions above with the nearest-even rounding mode (which is
+the default rounding mode in C programs)
+%(see IEEE 754 norm), which is the closest to $x$ real number
+%which is representable in the float (resp. double) type. 
+If the source real number is too large, this may also result into one
+of the special values +infinity and -infinity. 
 \begin{example}
   We have
-  \verb|(float)0.1| = $13421773 \times 2 ^{-27}$ which is equal to
+  $\verb|(float)0.1| \equiv 13421773 \times 2 ^{-27}$ which is equal to
   $0.10000000149006473916$
 \end{example}
+Notice also that unlike for integers, suffixes $f$ and $d$ are
+meaningfull, because they implicitly add a cast operator as above.
 
-Rounding of real number towards a float with other rounding modes
-might be obtained via specific logic functions given in external
-libraries. As well, classical mathematical operations like
-exponential, sine, cosine, etc. are supposed to be available in some
-library (see Section~\ref{sec:libreal}).
+This semantics of ensures that the float result $r$ of a C operation $e_1
+op e_2$ on floats, if there is no overflow and if the default rounding
+mode is not changed in the program, has the same real value as the
+logic expression $(float)(e_1 op e_2)$. Notice that this is not true for the equality \verb|\eq_float| of floats: \verb|-0.0 + -0.0| in C is equal to the float number \verb|-0.0|, which is not \verb|\eq_float| to \verb|0.0|, which is the value of the logic expression \verb|(float)(-0.0 + -0.0)|.
 
-\begin{verbatim}
-  Il faut pouvoir dire, comme
-  pour les operations entieres, que le resultat d'une operation C sur
-  des float est le cast de l'operation logique:
+Finally, two additional predicates are provided on float and double
+numbers,which check that their argument is respectively NaN or is a
+finite number:
+\begin{flushleft}\ttfamily
+predicate \verb|\is_nan_float|(float x); \\
+predicate \verb|\is_nan_double|(double x); \\
+predicate \verb|\is_finite_float|(float x); \\
+predicate \verb|\is_finite_double|(double x);
+\end{flushleft}
 
-  on peut aussi obtenir Nan, + inf, - inf, et -0
+\oldremark{Claude}{
 
-  mode d'arrondi ?
+on pourrait enonce un certain nombre de proprietes:
 
+\is_finite_float(x) ==> (float)(\real_of_float(x)) == x 
 
-
-  on veut des fonctions predef :
-
-  isNan,
-
-  isFinite,
-
-  \finite_float: float -> prop
-  \finite_double: double -> prop
-
-  \nearest_even_float: real -> float
-  \nearest_even_double: real -> double
-
-  \to_zero
-
-  \round_up_float
-
-  \round_up_double
-
-  \round_down_float
-
-  \round_up
-
-  \nearest_away
-
-
-  option: type rounding_mode = Nearest_even | ...
-
-
-  \round_float : rounding_mode , real -> float
-
-  \round_double
-\end{verbatim}
-
-
-
-
-
+}
 
 \subsubsection{Quantification}
 
