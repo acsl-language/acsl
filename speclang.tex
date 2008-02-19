@@ -610,40 +610,35 @@ the pre-state.
 A simple function contract, having no named behavior, has the following
 form:
 \begin{flushleft}\ttfamily
-/*@ requires $P_1$; \\
-~~@ requires $P_2$; \\
-~~@ assigns $L_1$; \\
-~~@ assigns $L_2$; \\
-~~@ ensures $E_1$; \\
-~~@ ensures $E_2$; \\
-% ~~@ decreases $m$ for $R$; \\
+/*@ requires $P_1$; requires $P_2$; \dots \\
+~~@ assigns $L_1$;  assigns $L_2$;  \dots \\
+~~@ ensures $E_1$;  ensures $E_2$;  \dots \\
 ~~@*/
 \end{flushleft}
-
 The semantics of such a contract is as follows:
 \begin{itemize}
 \item The caller of the function must guarantee that it is called in a
-  state where the property $P_1 \verb|&&| P_2$ holds.
+  state where the property $P_1 \verb|&&| P_2 \verb!&&! \dots$ holds.
 \item The called function returns a state where the property
-  $E_1 \verb|&&| E_2$ holds.
+  $E_1 \verb|&&| E_2 \verb!&&! \dots$ holds.
 \item All memory locations of the pre-state that do not belong to the
-  set $L_1 \cup L_2$ remain allocated and are left unchanged in the
+  set $L_1 \cup L_2 \cup \dots$ remain allocated and are left unchanged in the
   post-state.
-
 \end{itemize}
+
+% TODO : donner une vision plus symétrique appelant/appelé d'un contrat
 
 Notice that the multiplicity of clauses are proposed mainly to improve
 readibility since the contract above is equivalent to the following
 simplified one:
 \begin{flushleft}\ttfamily
-/*@ requires $P_1 \verb|&&| P_2$; \\
-~~@ assigns $L_1,L_2$; \\
-~~@ ensures $E_1 \verb|&&| E_2$; \\
-% ~~@ decreases $m$ for $R$; \\
+/*@ requires $P_1$ \verb|&&| $P_2$ \verb!&&! $\dots$; \\
+~~@ assigns $L_1,L_2,\dots$; \\
+~~@ ensures $E_1$ \verb|&&| $E_2$ \verb!&&! $\dots$; \\
 ~~@*/
 \end{flushleft}
-Also, if no clause \requires is given, it defaults to requiring
-`true', and similarly for \ensures clause. Giving no \assigns clause
+If no clause \requires\ is given, it defaults to 
+\verb!\true!, and similarly for \ensures\ clause. Giving no \assigns\ clause
 means that locations assigned by the function are not specified, so
 the caller has no information at all on this function's side
 effects. See Section~\ref{sec:multiplecontracts} for more details on
@@ -658,33 +653,34 @@ default status of clauses.
 
 \begin{example}
   The following function is given a simple contract for computation of
-  integer square root, rounded to the floor.
+  the integer square root.
 
   \input{isqrt.pp}
-
-  The contract means that the function must not be called with a
-  negative argument, and in return the result satisfies the
-  conjunction of the three predicates given in \ensures{} clauses.
+%
+  The contract means that the function must be called with a
+  nonnegative argument, and returns a value satisfying
+  the conjunction of the three \ensures{} clauses.
 \end{example}
 
 \begin{example}
-  The following function is given a contract to specify it increments
-  the value pointed by the pointer given as argument.
+  The following function is given a contract to specify that it increments
+  the value pointed to by the pointer given as argument.
 
   \input{incrstar.pp}
-
+%
   The contract means that the function must be called with a pointer
-  $p$ that points to a safely allocated memory location (See
-  Section~\ref{sec:pointers} for details on $\valid$ built-in
-  predicate). It does not modify any memory location except the value
-  pointed by $p$, and more precisely this value is incremented by one.
+  \texttt{p} that points to a safely allocated memory location (see
+  Section~\ref{sec:pointers} for details on the $\valid$ built-in
+  predicate). It does not modify any memory location but the one
+  pointed to by \texttt{p}. Finally, the \ensures\ clause specifies that
+  the value \verb!*p! is incremented by one.
 \end{example}
 
 \subsection{Contracts with named behaviors}
 \label{subsec:behaviors}
 
-More generally, a function contract has the following form with named
-behaviors (restricted to two behaviors for readability):
+The general form of a function contract contains several named
+behaviors (restricted to two behaviors, in the following, for readability).
 \begin{flushleft}\ttfamily
 /*@ requires $P$; \\
 % ~~@ assigns $L$; \\
@@ -702,18 +698,17 @@ behaviors (restricted to two behaviors for readability):
 % ~~@ decreases $m$ for $R$; \\
 ~~@*/
 \end{flushleft}
-
 The semantics of such a contract is as follows:
 \begin{itemize}
-\item The caller of the function must guarantee that it is called in a
-  state where the property $P \verb|&&| (A_1 \verb|==>| R_1) \verb|&&|
-  (A_2 \verb|==>| R_2)$ holds.
+\item The caller of the function must guarantee that the call is
+  performed in a state where the property 
+  $P \verb|&&| (A_1 \verb|==>| R_1) \verb|&&| (A_2 \verb|==>| R_2)$ holds.
 \item The called function returns a state where
 % the property $E$ holds  and
 the properties $\old(A_i) \verb|==>| E_i$ hold for each $i$.
 \item For each $i$, if the function is called in a pre-state where
-  $A_i$ holds, then each memory location of that pre-state that do not
-  belong to the set $L_i$ remain allocated and is left unchanged
+  $A_i$ holds, then each memory location of that pre-state that does not
+  belong to the set $L_i$ remains allocated and is left unchanged
   in the post-state.
 % In any case, locations of $L$ are unchanged.
 \end{itemize}
@@ -737,9 +732,8 @@ simplified one:
 % ~~@ decreases $m$ for $R$; \\
 ~~@*/
 \end{flushleft}
-
-Also, a simple contract like in Section~\ref{sec:simplecontracts} is
-indeed equivalent to
+Note that a simple contract (as defined in the previous section) is
+actually equivalent to a single named behavior as follows:
 \begin{flushleft}\ttfamily
 /*@ requires $P$; \\
 ~~@ behavior \textsl{<any name>}: \\
@@ -748,7 +742,6 @@ indeed equivalent to
 ~~@ ~~ensures $E$; \\
 ~~@*/
 \end{flushleft}
-thus simple contracts are just contracts with an anonymous behavior.
 
 
 \begin{example}
@@ -757,16 +750,16 @@ In the following, \texttt{bsearch($t,n,v$)} searches for element $v$
 in array $t$ between indices $0$ and $n-1$.
 
 \input{bsearch.pp}
-
-The precondition is to require that the array is safely allocated for
-at least the index from $0$ to $n-1$. The two named behaviors
-correspond respectively to the succesful behavior and the failing
+%
+The precondition requires array $t$ to be allocated at least from indices $0$
+to $n-1$. The two named behaviors
+correspond respectively to the successful behavior and the failing
 behavior.
 
-The intention is to perform a binary search, which requires that the
-array $t$ is sorted in increasing order: this is the purpose of the
-predicate named \texttt{t\_is\_sorted} in the assumes clause of the
-behavior named \verb|failure| .
+Since the function is performing a binary search, it requires the
+array $t$ to be sorted in increasing order: this is the purpose of the
+predicate named \texttt{t\_is\_sorted} in the \assumes\ clause of the
+behavior named \verb|failure|.
 
 See~\ref{sec:loop_annot} for a continuation of this example.
 \end{example}
@@ -776,34 +769,30 @@ See~\ref{sec:loop_annot} for a continuation of this example.
   \assigns{} clauses for each behavior.
 
   \input{cond_assigns.pp}
-
-  Its contract means that it assigns values pointed by $p$ or by $q$,
+%
+  Its contract means that it assigns values pointed to by $p$ or by $q$,
   conditionally on the sign of $n$.
 \end{example}
-
-
-
 
 
 \subsubsection{Completeness of behaviors}
 
 Notice that in a contract with named behaviors, it is not required that
-the disjunction of the $A_i$ is true, \emph{i.e.} is it is not mandatory to
-provide a ``complete'' set of behaviors. Analogously, it is not
-required that two distinct behaviors are disjoint.
-
-If such conditions are seeked, it is possible to add specific clauses
+the disjunction of the $A_i$ is true, \emph{i.e.} it is not mandatory to
+provide a ``complete'' set of behaviors. 
+If such a condition is seeked, it is possible to add the following clause
 to a contract:
 \begin{flushleft}\ttfamily
 /*@ ... \\
 ~~@ \notimplemented{complete behaviors $b_1,\ldots,b_n$;} \\
 ~~@*/
 \end{flushleft}
-specifies that the set of behaviors is complete \emph{i.e.}
+It specifies that the set of behaviors $b_1,\ldots,b_n$ is complete \emph{i.e.}
+that
 \[
 R \Rightarrow \bigvee_{1\leq i \leq n} A_i
 \]
-is true, where $R$ is the pre-condition of the contract. The
+holds, where $R$ is the precondition of the contract. The
 simplified version of that clause
 \begin{flushleft}\ttfamily
 /*@ ... \\
@@ -812,18 +801,19 @@ simplified version of that clause
 \end{flushleft}
 means that all behaviors given in the contract should be taken into account.
 
-Analogously,
+Similarly, it is not required that two distinct behaviors are disjoint.
+If desired, this can be specified with the following clause:
 \begin{flushleft}\ttfamily
 /*@ ... \\
 ~~@ \notimplemented{disjoint behaviors $b_1,\ldots,b_n$;} \\
 ~~@*/
 \end{flushleft}
-specifies that the given behaviors are pairwise disjoint \emph{i.e.}
-for all distinct $i$ and $j$:
+It means that the given behaviors are pairwise disjoint \emph{i.e.}
+that, for all distinct $i$ and $j$,
 \[
 R \Rightarrow \lnot (A_i \land A_j)
 \]
-is true. The simplified version of that clause
+holds. The simplified version of that clause
 \begin{flushleft}\ttfamily
 /*@ ... \\
 ~~@ \notimplemented{disjoint behaviors;} \\
@@ -884,21 +874,21 @@ means that all behaviors given in the contract should be taken into account.
 }
 
 
-\subsubsection{Error cases}
+% \subsubsection{Error cases}
 
-See Section~\ref{sec:errorhandling} for a discussion about
-behaviors related to error cases.
+% See Section~\ref{sec:errorhandling} for a discussion about
+% behaviors related to error cases.
 
 \subsection{Memory locations}
 \label{sec:locations}
 
 There are several places where one needs to describe a set of memory
-locations: in the above \assigns{} clauses of functions' contracts, or
-in the \reads{} clauses of Section~\ref{sec:logicspec}. More
+locations: in \assigns{} clauses of function contracts, or
+in \reads{} clauses (see Section~\ref{sec:logicspec}). More
 generally, we introduce syntactic constructs to denote \emph{sets of
   terms}. A \emph{memory location} is then any set of terms denoting a set of
-lvalues\index{lvalue}. Moreover, a location given as argument to
-an \assigns{} clause must be a set of modifiable lvalues, as described in
+l-values\index{l-value}. Moreover, a location given as argument to
+an \assigns{} clause must be a set of modifiable l-values, as described in
 Section~\ref{sec:glossary}.
 
 \begin{figure}
@@ -909,26 +899,29 @@ Section~\ref{sec:glossary}.
 \label{fig:gram:locations}
 \end{figure}
 
-The grammar for denoting sets of terms is given in
-Figure~\ref{fig:gram:locations}. The semantics is given as follows,
-where $s$ denotes any tset:
+The grammar for sets of terms is given in
+Figure~\ref{fig:gram:locations}. The semantics is given below,
+where $s$ denotes any \textsl{tset}:
 \begin{itemize}
-\item \verb|\empty| denotes the empty set
-\item a simple term denotes a singleton
-\item $s\ra id$ denotes the set of $x\ra id$ for each $x \in s$
-\item $s.id$ denotes the set of $x.id$ for each $x \in s$
-\item $*s$ denotes the set of $*x$ for each $x \in s$
+\item \verb|\empty| denotes the empty set;
+\item a simple term denotes a singleton set;
+\item $s\ra id$ denotes the set of $x\ra id$ for each $x \in s$;
+\item $s.id$ denotes the set of $x.id$ for each $x \in s$;
+\item $*s$ denotes the set of $*x$ for each $x \in s$;
 \item $s_1[s_2]$ denotes the set of $x_1[x_2]$ for each $x_1 \in s_1$
-  and $x_2 \in s_2$
+  and $x_2 \in s_2$;
 \item $t_1 .. t_2$ denotes the set of integers between $t_1$ and
-  $t_2$, included.
-\item $\union(s_1,\ldots,s_n)$ denotes the union of $s_1,s_2,\ldots $ and $s_n$
-\item $\inter(s_1,\ldots,s_n)$ denotes the intersection of $s_1,s_2,\ldots $ and $s_n$
-\item $s_1+s_2$ denotes the set of $x_1+x_2$ for each $x_1 \in s_1$ and $x_2 \in s_2$
-\item $(s)$ denotes the same set as $s$
-\item $\{ s \mid b ; P \}$ denotes set comprehension: set of terms
-  denoted by $s$ for each values of binders satisfying predicate $P$.
-  Binders $b$ are bound in $s$ and $P$
+  $t_2$, included;
+\item $\union(s_1,\ldots,s_n)$ denotes the union of $s_1,s_2,\ldots $
+  and $s_n$;
+\item $\inter(s_1,\ldots,s_n)$ denotes the intersection of
+  $s_1,s_2,\ldots $ and $s_n$;
+\item $s_1+s_2$ denotes the set of $x_1+x_2$ for each $x_1 \in s_1$
+  and $x_2 \in s_2$;
+\item $(s)$ denotes the same set as $s$;
+\item $\{ s \mid b ; P \}$ denotes set comprehension, that is the
+  union of the sets denoted by $s$ for each value $b$ of binders
+  satisfying predicate $P$ (binders $b$ are bound in both $s$ and $P$).
 \end{itemize}
 
 
