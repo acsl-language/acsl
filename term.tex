@@ -31,7 +31,7 @@
   rel-op ::= "==" | "!=" | "<=" | ">=" | ">" | "<"
        \
   pred ::= "\true" | "\false" ;
-       | term (rel-op term)+ ; comparisons, see remark below
+       | term (rel-op term)+ ; comparisons (see remark)
        | id "(" term ("," term)* ")" ; predicate application
        | "(" pred ")" ; parentheses
        | pred "&&" pred ; conjunction
