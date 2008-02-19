@@ -6,9 +6,7 @@ double max(double t[], int n) {
   do {
     v = t[i++];
     m = v > m ? v : m;
-  }
-  /*@ invariant m == \max(0,i-1,(\lambda integer k ; t[k]));
-    @*/
-  while (i < n);
+    /*@ invariant m == \max(0,i-1,(\lambda integer k ; t[k])); */
+  } while (i < n);
   return m;
 }

@@ -16,7 +16,7 @@ int bsearch(double t[], int n, double v) {
     @   \forall integer k; 0 <= k < n && t[k] == v ==> l <= k <= u;
     @*/
   while (l <= u ) {
-    int m = l + (u-l)/2; // better than (u+l)/2
+    int m = l + (u-l)/2; // better than (l+u)/2
     if (t[m] < v) l = m + 1;
     else if (t[m] > v) u = m - 1;
     else return m; 

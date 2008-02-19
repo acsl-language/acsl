@@ -736,8 +736,11 @@ simplified one:
 % ~~@ decreases $m$ for $R$; \\
 ~~@*/
 \end{flushleft}
-Note that a simple contract (as defined in the previous section) is
-actually equivalent to a single named behavior as follows:
+Note that a simple contract such as
+\begin{flushleft}\ttfamily
+/*@ requires $P$; assigns $L$; ensures $E$; */
+\end{flushleft}
+is actually equivalent to a single named behavior as follows:
 \begin{flushleft}\ttfamily
 /*@ requires $P$; \\
 ~~@ behavior \textsl{<any name>}: \\
@@ -746,7 +749,29 @@ actually equivalent to a single named behavior as follows:
 ~~@ ~~ensures $E$; \\
 ~~@*/
 \end{flushleft}
-
+Similarly, global \assigns\ and \ensures\ clauses are equivalent to a
+single named behavior. More precisely, 
+\begin{flushleft}\ttfamily
+/*@ requires $P$; \\
+~~@ assigns $L$; \\
+~~@ ensures $E$; \\
+~~@ behavior $b_1$: \dots \\
+~~@ behavior $b_2$: \dots \\
+~~@ \vdots \\
+~~@*/
+\end{flushleft}
+is equivalent to 
+\begin{flushleft}\ttfamily
+/*@ requires $P$; \\
+~~@ behavior \textsl{<any name>}: \\
+~~@ ~~assumes \verb|\true|; \\
+~~@ ~~assigns $L$; \\
+~~@ ~~ensures $E$; \\
+~~@ behavior $b_1$: \dots \\
+~~@ behavior $b_2$: \dots \\
+~~@ \vdots \\
+~~@*/
+\end{flushleft}
 
 \begin{example}
 \label{ex:bsearch}
@@ -928,62 +953,45 @@ where $s$ denotes any \textsl{tset}:
   satisfying predicate $P$ (binders $b$ are bound in both $s$ and $P$).
 \end{itemize}
 
-
-Remark: assigns \verb|\nothing| is equivalent to assigns
-\verb|\empty|, it is left for convenience.
+Note that \verb|\assigns \nothing| is equivalent to 
+\verb|\assigns \empty|; it is left for convenience.
 
 \begin{example}
   The following function sets to 0 each cell of an array.
 
   \input{assigns_array.pp}
-
+%
   It is annotated with three equivalent \assigns{} clauses, each one
-  specifying that only the set of cells $\{t[0],\ldots,t[n-1]\}$ are modified.
+  specifying that only the set of cells $\{t[0],\ldots,t[n-1]\}$ is modified.
 \end{example}
 
 \begin{example}
-  The following function increments each values stored in a linked
+  The following function increments each value stored in a linked
   list.
 
   \input{assigns_list.pp}
-
+%
   The \assigns{} clause specifies that the set of modified memory
   locations is the set of fields $q\verb|->hd|$ for each pointer $q$
   reachable from \verb|p| following \verb|next| fields. See
   Section~\ref{sec:logicspec} for details about the declaration of the
-  logic predicate \texttt{reachable}.
-
-
+  predicate \texttt{reachable}.
 \end{example}
-
-
-
-\oldremark{All}{
-
-This is subsumed by ghost parameters to function
-
-\subsection{Contract variables}
-
-\experimental
-
-Binding variables over a complete behavior.
-}
 
 \subsection{Default contracts, multiple contracts}
 \label{sec:multiplecontracts}
 
-In C, a function can be defined only once but declared several times.
+A C function can be defined only once but declared several times.
 It is allowed to annotate each of these declarations with contracts.
 Those contracts are seen as a single contract with the union of the
-requires clauses and the behaviors.
+\requires\ clauses and the behaviors.
 
 On the other hand a function may have no contract at all, or a
-contract with not all clauses. The \verb|requires| and
-the \verb|ensures| clauses default to true when none is given.
-
+contract with missing clauses. Missing \verb|requires| and
+\verb|ensures| clauses default to \verb!\true!.
 If no \verb|assigns| clause is given, it remains unspecified. If the
 function under consideration has only a declaration but no body, then
-that means it potentially modifies ``everything'', hence in practice
+it means that it potentially modifies ``everything'', hence in practice
 it will be impossible to verify anything about programs calling that
 function; in other words giving it a contract is in practice
 mandatory. On the other hand, if that function has a body, giving no
@@ -1017,17 +1025,17 @@ compute an over-approximation of the sets of assigned locations.
 
 Annotations on C statements are of three kinds:
 \begin{itemize}
+\item Assertions: allowed before any C statement or
+  at end of blocks.
 \item Loop annotations: invariant, assigns clause, variant; allowed
   before any loop statement: \verb|while|, \verb|for|, and
   \verb|do...while|.
-\item Assertions and logic labels; allowed before any C statement or
-  at end of blocks.
-\item Statement contracts; allowed before any C statement, specifying
-  their behavior in a similar manner as C functions.
+\item Statement contracts: allowed before any C statement, specifying
+  their behavior in a similar manner to C function contracts.
 \end{itemize}
 
-
 \subsection{Assertions}
+\index{assert@\texttt{assert}}
 
 \begin{figure}[t]
   \begin{cadre}
@@ -1037,18 +1045,20 @@ Annotations on C statements are of three kinds:
   \label{fig:gram:assertions}
 \end{figure}
 
-The syntax of those annotations is given Figure~\ref{fig:gram:assertions} under the form of a addition to the grammar of C statements.
+The syntax of assertions is given Figure~\ref{fig:gram:assertions},
+as an extension of the grammar of C statements. 
 
 \begin{itemize}
-\item  The $\texttt{assert}~p$ clause means that $p$ must hold in the state
-  before the statement.
+\item  
+  $\texttt{assert}~p$  means that $p$ must hold in the current state
+  (the sequence point where the assertion occurs).
 
-\item The form $\texttt{for}~id_1,\ldots,id_k:~\texttt{assert}~p$
-  variant associates the assertion to the named behaviors $id_i$, each
+\item The variant $\texttt{for}~id_1,\ldots,id_k:~\texttt{assert}~p$
+  associates the assertion to the named behaviors $id_i$, each
   of them being a behavior identifier for the current function (or a
   behavior of an enclosing block as defined later in
   Section~\ref{sec:statement_contract}).  It means that this assertion
-  is meant to be valid only for the considered behaviors.
+  must hold only for the considered behaviors.
 \end{itemize}
 
 \oldremark{Claude}{unifier les 2 derniers cas? car a-t-on besoin de
@@ -1059,7 +1069,6 @@ The syntax of those annotations is given Figure~\ref{fig:gram:assertions} under 
 \subsection{Loop annotations}
 \label{sec:loop_annot}
 
-
 \begin{figure}[t]
   \begin{cadre}
     \input{loops.bnf}
@@ -1068,8 +1077,8 @@ The syntax of those annotations is given Figure~\ref{fig:gram:assertions} under 
   \label{fig:gram:loops}
 \end{figure}
 
-The syntax of loop annotations is given Figure~\ref{fig:gram:loops}
-under the form of an addition to the grammar of C statements.
+The syntax of loop annotations is given Figure~\ref{fig:gram:loops},
+as an extension of the grammar of C statements.
 
 \subsubsection{Loop invariants}
 
@@ -1082,42 +1091,44 @@ annotation of the form
 ~~@*/ \\
 ...
 \end{flushleft}
-specifies that
+specifies that the following conditions hold.
 \begin{itemize}
-\item The predicate $I$ is initially true, that is true in the state
-  before entering the loop (more precisely, in the case of a
-  \verb|for| loop: after the initialization expression).
+\item The predicate $I$ holds before entering the loop
+  (in the case of a
+  \verb|for| loop, this means right after the initialization expression).
 \item The predicate $I$ is an inductive invariant, that is if $I$ is
   assumed true in some state where the condition $c$ is also true, and
   if execution of the loop body in that state ends normally at the end
   of the body or with a \texttt{continue} statement, $I$ is true in
-  the resulting state. Notice that if the loop condition has side
+  the resulting state. If the loop condition has side
   effects, these are included in the loop body in a suitable way:
   \begin{itemize}
-  \item for a $\verb|while|~(c)~s$ loop, $I$ must be preserved by the side-effects of $c$ followed by $s$
-  \item for a $\verb|for|(init;c;step)~s$ loop, $I$ must be preserved by the side-effects of $c$ followed by $s$ followed by step
-  \item for a $\verb|do|~s~\verb|while|~(c);$ loop, $I$ must be preserved by $s$ followed by the side-effects of $c$
+  \item for a $\verb|while|~(c)~s$ loop, $I$ must be preserved by the
+    side-effects of $c$ followed by $s$;
+  \item for a $\verb|for|(init;c;step)~s$ loop, $I$ must be preserved
+    by the side-effects of $c$ followed by $s$ followed by step;
+  \item for a $\verb|do|~s~\verb|while|~(c);$ loop, $I$ must be
+    preserved by $s$ followed by the side-effects of $c$.
   \end{itemize}
 
 \item At any loop iteration, any location that was allocated before
-    entering the loop, and is not member of $L$ in the current state,
-    must remain allocated and have the same value as before entering
-    the loop.
-
+  entering the loop, and is not member of $L$ (interpreted in the
+  current state), must remain allocated and has the same value as
+  before entering the loop.
 \end{itemize}
 
-Remarks:
+\paragraph{Remarks}
 \begin{itemize}
 \item \notimplemented[This is not checked]{The $\old$ construct is not
-    allowed} in loop annotations. The \verb|at| form should be used to
-  refer to another state.
+    allowed} in loop annotations. The \verb|\at| form should be used to
+  refer to another state (see Section~\ref{sec:at}).
 \item When a loop exits with \texttt{break} or \texttt{return} or
-  \texttt{goto}, it is not required that the loop invariant hold.
+  \texttt{goto}, it is not required that the loop invariant holds.
 \end{itemize}
 
 \begin{example}
 \label{ex:bsearch2}
-Here is a continuation of example~\ref{ex:bsearch}. Notice the use of
+Here is a continuation of example~\ref{ex:bsearch}. Note the use of
 a loop invariant associated to a function behavior.
 
 \input{bsearch2.pp}
@@ -1125,8 +1136,9 @@ a loop invariant associated to a function behavior.
 \end{example}
 
 \subsubsection{Loop variants}
+\index{variant}\index{termination}
 
-Optionally, a loop annotation may end with a loop variant of the form
+Optionally, a loop annotation may include a loop variant of the form
 \begin{flushleft}\ttfamily
 /*@ loop variant $m$; \\
 ~~@*/ \\
@@ -1137,25 +1149,27 @@ where $m$ is a term of type \verb|integer|.
 The semantics is as follows: for each loop iteration that terminates
 normally or with \texttt{continue}, the value of $m$ at end of the
 iteration must be smaller that its value at the beginning of the
-iteration. Moreover, its value at the beginning must be non-negative.
-
-Notice that it means that the value of $m$ at loop exit might be
-negative. This is OK because it does not compromise termination of the
-loop. A toy example is as follows.
+iteration. Moreover, its value at the beginning must be nonnegative.
+Note that the value of $m$ at loop exit might be
+negative. It does not compromise termination of the
+loop. Here is an example:
 \begin{example}
   \label{ex:loopvariant}
   \input{loopvariantnegative.pp}
 \end{example}
 
-It also possible to specify termination orderings other than the less-than relation on integers, using the additional \verb|for| modifier. This is explained in Section~\ref{sec:termination}.
+It is also possible to specify termination orderings other than the
+usual order on integers, using the additional \verb|for|
+modifier. This is explained in Section~\ref{sec:termination}. 
 
 \subsubsection{General inductive invariants}
 
-It is allowed to pose a inductive invariant not only at the beginning of
-a loop iteration. For example, it makes sense for a \texttt{do $s$
-  while $(c)$;} loop to pose an invariant just after the loop body
-$s$. Such an invariant is just a variant of assertions, as
-shown in the grammar of Figure~\ref{fig:advancedinvariants}
+It is actually allowed to pose an inductive invariant
+anywhere inside a loop body.
+For example, it makes sense for a \texttt{do $s$
+  while $(c)$;} loop to contain an invariant right after statement
+$s$. Such an invariant is a kind of assertions, as
+shown in Figure~\ref{fig:advancedinvariants}.
 
 \begin{figure}[t]
   \begin{cadre}
@@ -1165,10 +1179,10 @@ shown in the grammar of Figure~\ref{fig:advancedinvariants}
   \label{fig:advancedinvariants}
 \end{figure}
 
-
 \begin{example}
-  In the following, the invariant is correct, but it would not be
-  correct if placed as a loop invariant at the beginning of the loop.
+  In the following example, the natural invariant holds at this point.
+  It would be less convenient to set an invariant at the beginning
+  of the loop. 
   \input{dowhile.pp}
 \end{example}
 
