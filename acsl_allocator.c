@@ -30,7 +30,7 @@ struct _memory_slice;
  * index at which to put a chunk.
  */
 typedef struct _memory_block {
-  //@ ghost bool        packed;
+  //@ ghost boolean        packed;
     // ghost field [packed] is meant to be used as a guard that tells when
     // the invariant of a structure of type [memory_block] holds
   unsigned int          size;
@@ -61,7 +61,7 @@ typedef struct _memory_block {
  * whether the chunk is used or not.
  */
 typedef struct _memory_chunk {
-  //@ ghost bool packed;
+  //@ ghost boolean packed;
     // ghost field [packed] is meant to be used as a guard that tells when
     // the invariant of a structure of type [memory_chunk] holds
   unsigned int   offset;
@@ -139,7 +139,7 @@ typedef struct _memory_chunk_list {
  * [chunks] on this memory block.
  */
 typedef struct _memory_slice {
-  //@ ghost bool     packed;
+  //@ ghost boolean     packed;
     // ghost field [packed] is meant to be used as a guard that tells when
     // the invariant of a structure of type [memory_slice] holds
   memory_block*      block;
@@ -159,7 +159,7 @@ typedef struct _memory_slice {
 /* A memory slice list links memory slices, to form a memory pool.
  */
 typedef struct _memory_slice_list {
-  //@ ghost bool     packed;
+  //@ ghost boolean     packed;
     // ghost field [packed] is meant to be used as a guard that tells when
     // the invariant of a structure of type [memory_slice_list] holds
   memory_slice*              slice;
