@@ -13,3 +13,4 @@ main.lof
 *.out
 main.cb*
 pp
+main.raux _whizzy_main.raux main.wpdf _whizzy_main.wpdf

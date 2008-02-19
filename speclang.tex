@@ -369,9 +369,11 @@ is equivalent to
 
 Remark that the size of C types is architecture-dependent. ACSL
 does not enforce these sizes either, hence the semantics of terms
-involving such types is also architecture-dependent (but of course in
-a consistent way as the C code). The sizeof operator may be used in
-the logic.
+involving such types is also architecture-dependent. The
+\texttt{sizeof} operator may be used in the logic and is assumed to
+be consistent with the C code. For instance, it should be possible to
+verify the following code:
+\input{sizeof.pp}
 
 Constants giving maximum and minimum values of those types may be
 given in a library.
@@ -394,21 +396,21 @@ was in the C code.
 \subsubsection{Bitwise operations}
 
 Like arithmetic operations, bitwise operations apply to any
-mathematical integers: any mathematical integer as a unique infinite
-2-complement binary representation with infinitely many 0 (for
-non-negative numbers) or 1 (for negative numbers) on the left. Then
-bitwise operations apply to these representation.
+mathematical integers: any mathematical integer has a unique infinite
+2-complement binary representation with infinitely many zeros (for
+non-negative numbers) or ones (for negative numbers) on the left. Then
+bitwise operations apply to this representation.
 \begin{example} ~
   \begin{itemize}
-  \item \verb|7 & 12| = $\cdots 00111 \verb|&| \cdots 001100$ =
+  \item \verb|7 & 12| = $\cdots 00111$ \verb|&| $\cdots 001100$ =
     $\cdots 00100$ = 4
-  \item \verb+-8 | 5+ = $\cdots 11000 \verb+|+ \cdots 00101$ = $\cdots
+  \item \verb+-8 | 5+ = $\cdots 11000$ \verb+|+ $\cdots 00101$ = $\cdots
     11101$ = -3
-  \item \verb+~5+ = $\verb|~|\cdots 00101$ = $\cdots 111010$ = -6
-  \item \verb+-5 << 2+ = $\cdots 11011 \verb|<<| 2$ = $\cdots
+  \item \verb+~5+ = \verb|~| $\cdots 00101$ = $\cdots 111010$ = -6
+  \item \verb+-5 << 2+ = $\cdots 11011$ \verb|<<| $2$ = $\cdots
     11101100$ = -20
-  \item \verb+5 >> 2+ = $\cdots 00101 \verb|>>| 2$ = $\cdots 0001$ = 1
-  \item \verb+-5 >> 2+ = $\cdots 11011 \verb|>>| 2$ = $\cdots 1110$ =
+  \item \verb+5 >> 2+ = $\cdots 00101$ \verb|>>| $2$ = $\cdots 0001$ = 1
+  \item \verb+-5 >> 2+ = $\cdots 11011$ \verb|>>| $2$ = $\cdots 1110$ =
     -2
   \end{itemize}
 \end{example}
@@ -564,17 +566,19 @@ pour des types de donnees
 
 
 
-The Figure~\ref{fig:gram:contracts} shows a grammar for function
-contracts in general. The grammar for non-terminal \textsl{locations}
-is given below in Section~\ref{sec:locations}, informally they denote
-C l-values\index{lvalue}.
+Figure~\ref{fig:gram:contracts} shows a grammar for function
+contracts. Non-terminal \textsl{location}
+is defined later in Section~\ref{sec:locations} (informally, \textsl{location}
+denotes a set of C l-values\index{l-value}).
 
-We present below first the role of \emph{simple contracts}
-(Section~\ref{sec:simplecontracts}), then more generally contracts
-with \emph{named behaviors} (Section~\ref{subsec:behaviors}). The role
-of \verb|decreases| clause is presented later in
-Section~\ref{sec:termination}. Prior to this, in next section we
-introduce two additional constructs in the grammer for terms.
+This section is organized as follows.
+First, the grammar for terms is extended with two new constructs.
+Then Section~\ref{sec:simplecontracts}
+introduces \emph{simple contracts}.
+Finally, Section~\ref{subsec:behaviors} defines more general contracts
+involving \emph{named behaviors} 
+The \verb|decreases| clause is presented later in
+Section~\ref{sec:termination}. 
 
 \oldremark{Patrick}{pourquoi seuls les ``behavior'' peuvent avoir un
   nom~? Ne peut-t'on pas avoir le ``ident:'' optionnel pour chacune
@@ -587,24 +591,18 @@ introduce two additional constructs in the grammer for terms.
 
 \subsection{Built-in constructs \old{} and \result{}}
 
-Function contracts usually need additional constructs for terms as
-given on figure~\ref{fig:gram:oldandresult}. These are the following:
+Function contracts usually require to refer to function results and
+values in the pre-state. Thus terms are extended with the following new
+constructs (shown in Figure~\ref{fig:gram:oldandresult}).
 \begin{itemize}
 \item $\old(e)$ denotes the value of $e$ in the pre-state of the function.
 \item \result{} denotes the returned value of the function.
 \end{itemize}
 
 $\old(e)$ and $\result$ can be used only in \assigns{} clauses and
-\ensures{} clauses, since \requires{} clauses and \assumes{} refer to
-the pre-state. See Section~\ref{sec:at} for more details on scoping rules for labels.
-
-\oldremark{Claude}{
-
-  \old dans les assigns ? OUI
-
-  loop\_assigns aussi NON, utiliser \at(e,Pre)
-
-}
+\ensures{} clauses, since \requires{} and \assumes{} clauses refer to
+the pre-state. 
+% See Section~\ref{sec:at} for more details on scoping rules for labels.
 
 \subsection{Simple function contracts}
 \label{sec:simplecontracts}
