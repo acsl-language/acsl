@@ -2,7 +2,7 @@
   @ behavior bezoutProperty:
   @   ensures (*p)*x+(*q)*y == \result;
   @*/
-int extended_Euclide(int x, int y, int *p, int *q) {
+int extended_Euclid(int x, int y, int *p, int *q) {
   int a = 1, b = 0, c = 0, d = 1;
   /*@ loop invariant x >= 0 && y >= 0 ;
     @ for bezoutProperty: loop invariant

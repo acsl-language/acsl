@@ -10,14 +10,14 @@ The program
     y--;
   }
 \end{c}
-is not correctly annotated, even if it is true that x remains less
+is not correctly annotated, even if it is true that \texttt{x} remains smaller
 than 11 during the execution. This is because it is not true that the
 property $x<11$ is preserved by the execution of \verb|x++ ; y--;|. A
-correct loop invariant could be \verb|0 <= x < 11 && x+y == 10|, true
-at loop entrance and preserved (under the assumption of the loop
+correct loop invariant could be \verb|0 <= x < 11 && x+y == 10|. It holds
+at loop entrance and is preserved (under the assumption of the loop
 condition \verb|y>0|).
 
-Similarly with general invariants: in
+Similarly, the following general invariants are not inductive:
 \begin{c}
   int x = 0;
   int y = 10;
@@ -29,10 +29,10 @@ Similarly with general invariants: in
     //@ invariant 0 <= y < 10;
   }
 \end{c}
-the propositions given as invariants are correct assertions but
-not inductive invariants: \verb|0 <= y < 10| is not a consequence of
-hypothesis \verb|0 < x < 11| after executing \verb|y--| ; and 
-\verb|0 < x < 11| cannot be deduced from \verb|0 <= y < 10| after looping back
+since \verb|0 <= y < 10| is not a consequence of
+hypothesis \verb|0 < x < 11| after executing \verb|y--|; and 
+\verb|0 < x < 11| cannot be deduced from \verb|0 <= y < 10| after
+looping back 
 through the condition \verb|y>0| and executing \verb|x++|. Correct
 invariants could be:
 \begin{c}

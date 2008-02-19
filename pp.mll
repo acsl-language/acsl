@@ -56,7 +56,7 @@
 	"fresh";
 	"nothing";
 	"result";
-	"let" ;
+	"let" ; "at";
       ];
     List.iter (fun (s,t) -> Hashtbl.add h s t)
       [

@@ -1180,26 +1180,22 @@ shown in Figure~\ref{fig:advancedinvariants}.
 \end{figure}
 
 \begin{example}
-  In the following example, the natural invariant holds at this point.
+  In the following example, the natural invariant holds at this point
+  (\verb!\max! and \verb!\lambda! are introduced later in
+  Section~\ref{sec:higherorder}).
   It would be less convenient to set an invariant at the beginning
   of the loop. 
   \input{dowhile.pp}
 \end{example}
 
-\notimplemented{More generally, such an invariant may occur anywhere inside a
-function's body.} The meaning is just that the invariant is true
-at that point, much like an \texttt{assert}, but moreover impose that
-it is inductive, i.e. is preserved by a loop iteration.  Several
-invariants are allowed at different places in the loop body. These
-advanced extensions can be useful for complex control flows, in
-particular with \verb|goto|s.
-
-Syntactically, such an advanced loop invariant can be placed anywhere
-where an \assert{} clause is allowed. The difference is in the
-semantics: a loop invariant must be \emph{inductive}. This means that
-a proposition given as an invariant must not only be true at the
-corresponding program point for any execution of the program, but it
-must be also preserved independently of the context.
+More generally, loops can be introduced by \verb|goto|s.
+\notimplemented{As a consequence, such invariants may occur anywhere
+inside a function's body.} The meaning is that the invariant
+holds at that point, much like an \texttt{assert}. Moreover, the
+invariant must be inductive, \emph{i.e.} it must be preserved across a
+loop iteration. Several invariants are allowed at different places in
+a loop body. These extensions are useful when dealing with complex
+control flows.
 
 \oldremark{Claude}{TODO(citer une ref
 a propos des invariants inductifs)
@@ -1227,9 +1223,8 @@ The control-flow graph of the code is as follows
 % \draw[->,very thick,shorten >=5mm] (pm.south) -- (proof.north);
 %\end{tikzpicture}
 \end{center}
-
-The invariant is inductively preserved by the two paths that goes from
-node inv to itself.
+The invariant is inductively preserved by the two paths that go from
+node ``inv'' to itself.
 \end{example}
 
 \begin{example}
@@ -1240,7 +1235,7 @@ node inv to itself.
 \label{sec:at}
 
 Statement annotations usually need another additional construct
-$\at(e,id)$ refering to the value of the expression $e$ in the
+$\at(e,id)$ referring to the value of the expression $e$ in the
 state at label $id$. The label $id$ can be either a regular C label,
 or a label added within a ghost statement as described in
 Section~\ref{sec:ghost}. This label must be declared in the same
@@ -1248,19 +1243,18 @@ function as the occurrence of $\at(e,id)$, but unlike \texttt{goto}s,
 more restrictive scoping rules must be respected:
 \begin{itemize}
 \item the label $id$ must occur before the occurrence of  $\at(e,id)$
-  in the source.
-\item the label $id$ must not be inside a inner block.
+  in the source;
+\item the label $id$ must not be inside an inner block.
 \end{itemize}
-These rules are exactly the same rules as the visibility of some local
-variable within a statement (see~\cite{KR88}, Section A11.1)
+These rules are exactly the same rules as for the visibility of local
+variables within C statements (see~\cite{KR88}, Section A11.1)
 
 \subsubsection*{Default logic labels}
 
 There are three predefined logic labels: \verb|Pre|, \verb|Here| and
-\verb|Old|. $\old(e)$ is in fact a syntactic sugar for $\at(e,Old)$.
+\verb|Old|. $\old(e)$ is in fact syntactic sugar for $\at(e,Old)$.
 
 \begin{itemize}
-\item The label \verb|Pre| is visible in all statement annotations, and refers to the pre-state of the function it occurs in.
 \item The label \verb|Here| is visible in all statement annotations,
   where it refers to the state where the annotation appears; and in
   all contracts, and refers to the pre-state for the \texttt{requires}
@@ -1270,21 +1264,23 @@ There are three predefined logic labels: \verb|Pre|, \verb|Here| and
   statement contracts described below in
   Section~\ref{sec:statement_contract}), and refers to the pre-state
   of this contract.
+\item The label \verb|Pre| is visible in all statement annotations, 
+  and refers to the pre-state of the function it occurs in.
 \end{itemize}
 
-Remark that no logic label are visible in global logic declaration
+Note that no logic labels are visible in global logic declarations
 such as lemmas, axioms, definition of predicate or logic
 functions. When such an annotation needs to refer to a given memory
 state, it has to be given a label binder: this is described in
 Section~\ref{sec:logicalstates}.
 
 \begin{example}
-  The code below implements the famous extended Euclide's algorithm
-  for computation of the greatest common divisor of two integers x and
-  y, computing at the same time two \emph{B\'ezout coefficients} $p$
-  and $q$ such that $p\times x+q\times y =gcd(x,y)$.
-
-  The loop invariant for the B\'ezout property needs to refers to the value of $x$ and $y$ in the pre-state of the function
+  The code below implements the famous extended Euclid's algorithm
+  for computing the greatest common divisor of two integers $x$ and
+  $y$, while computing at the same time two \emph{B\'ezout coefficients} $p$
+  and $q$ such that $p\times x+q\times y = \gcd(x,y)$.
+  The loop invariant for the B\'ezout property needs to refer to the
+  value of $x$ and $y$ in the pre-state of the function.
   \input{euclide.pp}
 \end{example}
 
@@ -1299,10 +1295,9 @@ Section~\ref{sec:logicalstates}.
   \label{fig:gram:stcontracts}
 \end{figure}
 
-
 The grammar for statement contracts is given in
-Figure~\ref{fig:gram:stcontracts}. It is very similar to function
-behaviors, but without \decreases{} clause. Additionally, behavior can
+Figure~\ref{fig:gram:stcontracts}. It is similar to function
+contracts, but without \decreases{} clause. Additionally, behavior can
 refer to enclosing named behaviors, with the form \texttt{for $id$ :
   \ldots}. Such behaviors are meant to be valid only for the
 corresponding function behavior, in particular only under the
@@ -1506,6 +1501,7 @@ inconsistency. Of course, tools might provide a way to check
 consistency.
 
 \subsection{Higher-order logic constructions}
+\label{sec:higherorder}
 
 \experimental
 
