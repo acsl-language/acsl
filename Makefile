@@ -16,7 +16,8 @@ DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
 	st_contracts.bnf moreterm.bnf ghost.bnf model.bnf \
 	logic.bnf logictypedecl.bnf higherorder.bnf logicreads.bnf \
 	data_invariants.bnf  \
-	cfg.mps volatile.pp volatile-gram.bnf euclide.pp
+	cfg.mps volatile.pp volatile-gram.bnf euclide.pp \
+	initialized.pp specified.pp
 
 all: main.pdf
 

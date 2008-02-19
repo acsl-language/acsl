@@ -2254,6 +2254,32 @@ is replaced by \verb|g(&x,v)|.
   \input{volatile.pp}
 \end{example}
 
+\section{Undefined values, dangling pointers}
+
+\subsection{Initialization}
+
+\verb|\initialized| is a predicate taking a set of l-values as
+argument and means that each l-value in this set is initialized.
+
+\begin{example}
+  In the following, the assertion is true.
+  \input{initialized.pp}
+\end{example}
+
+\subsection{Unspecified values}
+
+\verb|\specified| is a predicate taking a set of l-values as
+argument and means that each l-value in this set has a \emph{specified
+  value}: its value is not a dangling pointer (that is the address of
+a local variable which is not in the scope anymore)
+
+\begin{example}
+  In the following, the assertion is not true.
+  \input{specified.pp}
+\end{example}
+
+
+
 %\section{Module constructions}
 %
 %\experimental

@@ -50,6 +50,7 @@
       [
 	"valid"; "valid_range"; "lambda" ; "sum" ; "match" ;
 	"base_addr" ; "strlen" ; "max" ; "block_length" ;
+	"initialized" ; "specified" ;
 	"null" ;
 	"old";
 	"fresh";
