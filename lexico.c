@@ -1,7 +1,7 @@
 //@ ensures \result >= 0;
 int dummy();
 
-//@ type intpair = (integer,integer)
+//@ type intpair = (integer,integer);
 
 /*@ predicate lexico(intpair p1, intpair p2) =
   @   \let (x1,y1) = p1 ;

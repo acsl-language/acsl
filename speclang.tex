@@ -1297,19 +1297,21 @@ Section~\ref{sec:logicalstates}.
 
 The grammar for statement contracts is given in
 Figure~\ref{fig:gram:stcontracts}. It is similar to function
-contracts, but without \decreases{} clause. Additionally, behavior can
-refer to enclosing named behaviors, with the form \texttt{for $id$ :
-  \ldots}. Such behaviors are meant to be valid only for the
-corresponding function behavior, in particular only under the
+contracts, but without \decreases{} clause. Additionally, a statement contract
+may refer to enclosing named behaviors, with the form \texttt{for $id$ :
+  \ldots}. Such contracts are only valid for the
+corresponding behaviors, in particular only under the
 corresponding \assumes{} clause.
 
 The clauses \texttt{breaks}, \texttt{continues} and \texttt{returns}
-are specific way for stating a property on the program state when the
-annotated statement terminates abruptly with the corresponding C
-statements, \texttt{break}, \texttt{continue} and \texttt{return}. For the \texttt{returns} case, the \result{} construct is allowed and bound to the value returned (if not a void function).
+state properties on the program state which hold when the
+annotated statement terminates abruptly with the corresponding
+statement (\texttt{break}, \texttt{continue} or \texttt{return}). For
+the \texttt{returns} case, the \result{} construct is allowed and
+bound to the value returned (if not a \texttt{void} function). 
 
 \begin{example}
-  Here is a toy example which illustrates each of these special
+  Here is an example which illustrates each of these special
   clauses for statement contracts.
   \input{abrupt_termination.pp}
 \end{example}
@@ -1349,36 +1351,38 @@ calls.
 %  variant}\index{loop variant} clause, and functions can be annotated
 %with a \decreases{} clause.
 Termination is guaranteed by attaching a measure function to each loop
-and each recursive functions.
-
-By default, a measure is a function into
-integers, and measures are compared using standard less-than ordering
-(Section~\ref{sec:integermeasures}). It is also possible to define
+and each recursive function.
+By default, a measure is an
+integer expression, and measures are compared using the usual ordering
+over integers (Section~\ref{sec:integermeasures}). It is also possible
+to define 
 measures into other domains and/or using a different ordering relation
 (Section~\ref{sec:generalmeasures}).
 
 \subsection{Integer measures}
 \label{sec:integermeasures}
 
-Functions are annotated with integer measures with the form
+Functions are annotated with integer measures with the syntax
 \begin{flushleft}\ttfamily
 //@ decreases $e$ ;
 \end{flushleft}
-and loops are annotated similarly with the form
+and loops are annotated similarly with the syntax
 \begin{flushleft}\ttfamily
 //@ loop variant $e$;
 \end{flushleft}
-where the logic expression $e$ has type \verb|integer|. For recursive calls, or for loops, this expression must decrease for the relation $R$ defined by
+where the logic expression $e$ has type \verb|integer|. For recursive
+calls, or for loops, this expression must decrease for the relation
+$R$ defined by 
 \[
 R(x,y) ::= x > y ~\verb|&&|~ x \geq 0
 \]
 In other words, the measure must be a decreasing sequence of integers
-which remain non-negative, except possibly for the last value of the
+which remain nonnegative, except possibly for the last value of the
 sequence (See example~\ref{ex:loopvariant}).
 
 \begin{example}
   In Example~\ref{ex:bsearch2}, a loop variant \verb|u-l| decreases
-  at each iteration, and remains non-negative, except at the last
+  at each iteration, and remains nonnegative, except at the last
   iteration where it may become negative.
 \end{example}
 
@@ -1390,19 +1394,20 @@ keyword \verb|for|. For functions it becomes
 \begin{flushleft}\ttfamily
 //@ decreases $e$ for $R$;
 \end{flushleft}
-and for loops:
+and for loops
 \begin{flushleft}\ttfamily
 //@ loop variant $e$ for $R$;
 \end{flushleft}
-In those cases, the logic expression $e$ has some type $\tau$ and $R$ must be relation on $\tau$, that is a logic binary predicate declared by the form
+In those cases, the logic expression $e$ has some type $\tau$ and $R$
+must be relation on $\tau$, that is a binary predicate declared as
 \begin{flushleft}\ttfamily
-//@ predicate $R(\tau~x,\tau~y) \cdots$
+//@ predicate $R(\tau~x,~\tau~y) \cdots$
 \end{flushleft}
 (see Section~\ref{sec:logicspec} for details). Of course, to guarantee
 termination, it must be proved that $R$ is a well-founded relation.
 
 \begin{example}
-  The following is a toy example illustrating a variant annotation
+  The following example illustrates a variant annotation
   using a pair of integers, ordered lexicographically.
   \input{lexico.pp}
 \end{example}
@@ -1411,11 +1416,9 @@ termination, it must be proved that $R$ is a well-founded relation.
 
 The precise semantics of measures on recursive calls, especially in
 the general case of mutually recursive functions, is given as follows.
-Each \emph{cluster} of mutually recursive functions must be
-identified: each of them corresponds to a strongly connected component of the
-call graph.
-
-For a given cluster, each function must be annotated with a decreases
+We call \emph{cluster} a set of mutually recursive functions which
+is a strongly connected component of the call graph.
+Within each cluster, each function must be annotated with a \decreases\
 clause with the same relation $R$ (syntactically). Then, in the body
 of any function $f$ of that cluster, any recursive call to a function
 $g$ must occur in a state where the measure attached to $g$ is smaller
@@ -1423,12 +1426,12 @@ $g$ must occur in a state where the measure attached to $g$ is smaller
 applies when $g$ is $f$ itself.
 
 \begin{example}
-  This are the classical factorial and Fibonacci functions
+  Here are the classical factorial and Fibonacci functions:
   \input{fact.pp}
 \end{example}
 
 \begin{example}
-  This example illustrate mutual recursion
+  This example illustrates mutual recursion:
   \input{mutualrec.pp}
 \end{example}
 
