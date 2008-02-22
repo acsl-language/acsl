@@ -1,6 +1,8 @@
-(* $Id: transf.mll,v 1.9 2008-02-19 11:21:36 uid525 Exp $ *)
+(* $Id: transf.mll,v 1.10 2008-02-22 16:40:20 uid562 Exp $ *)
 
-{ open Lexing;; }
+{ open Lexing;;
+  let idx = Buffer.create 5
+}
 
 rule main = parse
     "\\begin{syntax}" {
@@ -38,9 +40,11 @@ and syntax = parse
       main lexbuf }
   | '\'' {
       print_string "\\term{";
+      Buffer.clear idx;
       inquote lexbuf }
   | '"' {
       print_string "\\term{";
+      Buffer.clear idx;
       indoublequote lexbuf }
   | "below" { print_string "\\below"; syntax lexbuf }
   | "epsilon" { print_string "\\emptystring"; syntax lexbuf }
@@ -70,11 +74,13 @@ and syntax = parse
       syntax lexbuf }
 
 and inquote = parse
-    ['A'-'Z' 'a'-'z' '0'-'9'] {
-      print_char (lexeme_char lexbuf 0);
+    ['A'-'Z' 'a'-'z' '0'-'9'] as c {
+      print_char c;
+      Buffer.add_char idx c;
       inquote lexbuf }
   | '\'' {
-      print_string "}";
+      print_string ("}{" ^ Buffer.contents idx ^ "}");
+      Buffer.clear idx;
       syntax lexbuf }
   | _ {
       print_string "\\char";
@@ -82,11 +88,13 @@ and inquote = parse
       inquote lexbuf }
 
 and indoublequote = parse
-    ['A'-'Z' 'a'-'z' '0'-'9'] {
-      print_char (lexeme_char lexbuf 0);
+    ['A'-'Z' 'a'-'z' '0'-'9'] as c {
+      print_char c;
+      Buffer.add_char idx c;
       indoublequote lexbuf }
   | '"' {
-      print_string "}";
+      print_string ("}{" ^ Buffer.contents idx ^ "}");
+      Buffer.clear idx;
       syntax lexbuf }
   | _ {
       print_string "\\char";

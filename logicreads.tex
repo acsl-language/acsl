@@ -1,22 +1,22 @@
 \begin{syntax}
-  logic-function-decl ::= "logic" type-expr poly-id parameters ;
-                          reads-clause ";"
+  logic-function-decl ::= "logic" type-expr poly-id;
+  parameters reads-clause ";"
   \
-  logic-predicate-decl ::= "predicate" poly-id parameters ;
-                          reads-clause ";"
+  logic-predicate-decl ::= "predicate" poly-id ;
+  parameters reads-clause ";"
   \
   reads-clause ::= "reads" locations
   \
-  logic-function-def ::= "logic" type-expr poly-id parameters ;
-                   {reads-clause} "=" term ";"
+  logic-function-def ::= "logic" type-expr poly-id;
+                         parameters {reads-clause} "=" term ";"
   \
-  logic-predicate-def ::= "predicate" poly-id parameters ; 
-                          {reads-clause} "=" pred ";"
+  logic-predicate-def ::= "predicate" poly-id ;
+  parameters {reads-clause} "=" pred ";"
   \
   poly-id ::= id ; normal identifier
   | id type-var-binders ; identifier for polymorphic object
-  | id {label-binders} ; normal identifier with labels
-  | id {label-binders} type-var-binders ; polymorphic identifier with labels
+  | id label-binders ; normal identifier with labels
+  | id label-binders type-var-binders ; polymorphic identifier with labels
   \
-  label-binders ::= {"{" id (, id)* "}"}
+  label-binders ::= "{" id (, id)* "}"
 \end{syntax}

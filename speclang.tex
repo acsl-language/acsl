@@ -457,7 +457,7 @@ Special predicates are also available to express the comparison
 operators of float (resp. double) numbers as in C: \verb|\eq_float|,
 \verb|\gt_float|, \verb|\ge_float|, \verb|\le_float|, \verb|\lt_float|,
 \verb|\ne_float| (resp. for double).
- 
+
 
 
 \oldremark{DP+all}{
@@ -489,9 +489,9 @@ mathematical integer or real number $x$ are equivalent to apply
 rounding functions above with the nearest-even rounding mode (which is
 the default rounding mode in C programs)
 %(see IEEE 754 norm), which is the closest to $x$ real number
-%which is representable in the float (resp. double) type. 
+%which is representable in the float (resp. double) type.
 If the source real number is too large, this may also result into one
-of the special values +infinity and -infinity. 
+of the special values +infinity and -infinity.
 \begin{example}
   We have
   $\verb|(float)0.1| \equiv 13421773 \times 2 ^{-27}$ which is equal to
@@ -519,7 +519,7 @@ predicate \verb|\is_finite_double|(double x);
 
 on pourrait enonce un certain nombre de proprietes:
 
-\is_finite_float(x) ==> (float)(\real_of_float(x)) == x 
+\is_finite_float(x) ==> (float)(\real_of_float(x)) == x
 
 }
 
@@ -580,9 +580,9 @@ First, the grammar for terms is extended with two new constructs.
 Then Section~\ref{sec:simplecontracts}
 introduces \emph{simple contracts}.
 Finally, Section~\ref{subsec:behaviors} defines more general contracts
-involving \emph{named behaviors} 
+involving \emph{named behaviors}
 The \verb|decreases| clause is presented later in
-Section~\ref{sec:termination}. 
+Section~\ref{sec:termination}.
 
 \oldremark{Patrick}{pourquoi seuls les ``behavior'' peuvent avoir un
   nom~? Ne peut-t'on pas avoir le ``ident:'' optionnel pour chacune
@@ -605,7 +605,7 @@ constructs (shown in Figure~\ref{fig:gram:oldandresult}).
 
 $\old(e)$ and $\result$ can be used only in \assigns{} clauses and
 \ensures{} clauses, since \requires{} and \assumes{} clauses refer to
-the pre-state. 
+the pre-state.
 % See Section~\ref{sec:at} for more details on scoping rules for labels.
 
 \subsection{Simple function contracts}
@@ -641,7 +641,7 @@ simplified one:
 ~~@ ensures $E_1$ \verb|&&| $E_2$ \verb!&&! $\dots$; \\
 ~~@*/
 \end{flushleft}
-If no clause \requires\ is given, it defaults to 
+If no clause \requires\ is given, it defaults to
 \verb!\true!, and similarly for \ensures\ clause. Giving no \assigns\ clause
 means that locations assigned by the function are not specified, so
 the caller has no information at all on this function's side
@@ -705,7 +705,7 @@ behaviors (restricted to two behaviors, in the following, for readability).
 The semantics of such a contract is as follows:
 \begin{itemize}
 \item The caller of the function must guarantee that the call is
-  performed in a state where the property 
+  performed in a state where the property
   $P \verb|&&| (A_1 \verb|==>| R_1) \verb|&&| (A_2 \verb|==>| R_2)$ holds.
 \item The called function returns a state where
 % the property $E$ holds  and
@@ -750,7 +750,7 @@ is actually equivalent to a single named behavior as follows:
 ~~@*/
 \end{flushleft}
 Similarly, global \assigns\ and \ensures\ clauses are equivalent to a
-single named behavior. More precisely, 
+single named behavior. More precisely,
 \begin{flushleft}\ttfamily
 /*@ requires $P$; \\
 ~~@ assigns $L$; \\
@@ -760,7 +760,7 @@ single named behavior. More precisely,
 ~~@ \vdots \\
 ~~@*/
 \end{flushleft}
-is equivalent to 
+is equivalent to
 \begin{flushleft}\ttfamily
 /*@ requires $P$; \\
 ~~@ behavior \textsl{<any name>}: \\
@@ -808,7 +808,7 @@ See~\ref{sec:loop_annot} for a continuation of this example.
 
 Notice that in a contract with named behaviors, it is not required that
 the disjunction of the $A_i$ is true, \emph{i.e.} it is not mandatory to
-provide a ``complete'' set of behaviors. 
+provide a ``complete'' set of behaviors.
 If such a condition is seeked, it is possible to add the following clause
 to a contract:
 \begin{flushleft}\ttfamily
@@ -953,7 +953,7 @@ where $s$ denotes any \textsl{tset}:
   satisfying predicate $P$ (binders $b$ are bound in both $s$ and $P$).
 \end{itemize}
 
-Note that \verb|\assigns \nothing| is equivalent to 
+Note that \verb|\assigns \nothing| is equivalent to
 \verb|\assigns \empty|; it is left for convenience.
 
 \begin{example}
@@ -1046,10 +1046,10 @@ Annotations on C statements are of three kinds:
 \end{figure}
 
 The syntax of assertions is given Figure~\ref{fig:gram:assertions},
-as an extension of the grammar of C statements. 
+as an extension of the grammar of C statements.
 
 \begin{itemize}
-\item  
+\item
   $\texttt{assert}~p$  means that $p$ must hold in the current state
   (the sequence point where the assertion occurs).
 
@@ -1160,7 +1160,7 @@ loop. Here is an example:
 
 It is also possible to specify termination orderings other than the
 usual order on integers, using the additional \verb|for|
-modifier. This is explained in Section~\ref{sec:termination}. 
+modifier. This is explained in Section~\ref{sec:termination}.
 
 \subsubsection{General inductive invariants}
 
@@ -1184,7 +1184,7 @@ shown in Figure~\ref{fig:advancedinvariants}.
   (\verb!\max! and \verb!\lambda! are introduced later in
   Section~\ref{sec:higherorder}).
   It would be less convenient to set an invariant at the beginning
-  of the loop. 
+  of the loop.
   \input{dowhile.pp}
 \end{example}
 
@@ -1264,7 +1264,7 @@ There are three predefined logic labels: \verb|Pre|, \verb|Here| and
   statement contracts described below in
   Section~\ref{sec:statement_contract}), and refers to the pre-state
   of this contract.
-\item The label \verb|Pre| is visible in all statement annotations, 
+\item The label \verb|Pre| is visible in all statement annotations,
   and refers to the pre-state of the function it occurs in.
 \end{itemize}
 
@@ -1308,7 +1308,7 @@ state properties on the program state which hold when the
 annotated statement terminates abruptly with the corresponding
 statement (\texttt{break}, \texttt{continue} or \texttt{return}). For
 the \texttt{returns} case, the \result{} construct is allowed and
-bound to the value returned (if not a \texttt{void} function). 
+bound to the value returned (if not a \texttt{void} function).
 
 \begin{example}
   Here is an example which illustrates each of these special
@@ -1355,7 +1355,7 @@ and each recursive function.
 By default, a measure is an
 integer expression, and measures are compared using the usual ordering
 over integers (Section~\ref{sec:integermeasures}). It is also possible
-to define 
+to define
 measures into other domains and/or using a different ordering relation
 (Section~\ref{sec:generalmeasures}).
 
@@ -1372,7 +1372,7 @@ and loops are annotated similarly with the syntax
 \end{flushleft}
 where the logic expression $e$ has type \verb|integer|. For recursive
 calls, or for loops, this expression must decrease for the relation
-$R$ defined by 
+$R$ defined by
 \[
 R(x,y) ::= x > y ~\verb|&&|~ x \geq 0
 \]
@@ -1449,37 +1449,47 @@ applies when $g$ is $f$ itself.
 The language of logic expressions used in annotations can be extended
 by declaration of new logic types, and new constants, logic functions
 and predicates. These declarations follows the classical setting of
-\emph{algebraic specifications}, in particular new functions and
+\emph{algebraic specifications}. In particular new functions and
 predicates may be either \emph{defined} by explicit expressions, or
-\emph{axiomatized} by a set of axioms. The grammer for these declarations is given Figure~\ref{fig:gram:logic}.
+\emph{axiomatized} by a set of axioms.
+The grammar for these declarations is given Figure~\ref{fig:gram:logic}.
 
 The difference between a lemma and an axiom is that a lemma is
-supposed to be deductible from axioms: a redundant axiom in some sense.
+supposed to be deductible from axioms. Thus, while axioms are always
+assumed to be true, a complete verification of an ACSL specification
+has to provide a proof for each lemma. On the other hand, it is up to
+the user to ensure that the introduction of axioms does not lead to a
+logical inconsistency.
 
 \subsection{Polymorphic logic types}
-
+\index{type!polymorphic}
+\index{polymorphism}
 \experimental
 
 We consider here an algebraic specification setting based on
 multi-sorted logic, where types can be \emph{polymorphic} that is
-parameterized by other types. For example, one may declare the type of
-polymorphic lists as \input{listdecl.pp} and then can consider for
-example list of integers (\texttt{list <integer>}), list of pointers
+parametrized by other types. For example, one may declare the type of
+polymorphic lists as
+\input{listdecl.pp}
+One can then consider for
+instance list of integers (\texttt{list <integer>}), list of pointers
 (e.g. \texttt{list <char*>}), list of list of reals (\texttt{list
-  <list <real> >}), etc.
+  <list <real> >}\footnote{In this latter case, note that the two
+  '\texttt{>}' must be separated by a space, to avoid confusion with
+  the shift operator.}), etc.
 
-The grammar of Figure~\ref{fig:gram:logic} contains the additional
-rules for declaring polymorphic types, and for polymorphic type
+The grammar of Figure~\ref{fig:gram:logic} contains rules for
+declaring polymorphic types and using polymorphic type
 expressions.
 %Notice that type variables are identifiers preceded by
 %the quote character.
 
 
 \subsection{Recursive logic definitions}
-
-The explicit definitions of logic functions and predicates can be
+\index{recursion}
+Explicit definitions of logic functions and predicates can be
 recursive. Declarations in the same bunch of logic declarations are
-implicitely mutually recursive, so mutually recursive functions are
+implicitly mutually recursive, so that mutually recursive functions are
 possible too.
 
 \begin{example}
@@ -1496,12 +1506,12 @@ possible too.
 Notice that there is no syntactic condition on such recursive
 definitions, such as limitation to primitive recursion like e.g. in
 Coq~\cite{Coq}. In essence, a recursive definition of the form
-$f(args) { e }$ where $f$ occurs in expression $e$ is just a shorcut
-for a declaration of $f$ followed by an axiom $\Forall args, f(args) =
-e$. In other words, recursive definitions are not guaranteed to be
-consistent, in the same way that axioms may introduce
-inconsistency. Of course, tools might provide a way to check
-consistency.
+\verb+f(args) = e;+ where \verb+f+ occurs in expression \verb+e+ is
+just a shorcut for a declaration of \verb+f+ followed by an axiom
+\verb+\forall args; f(args) = e+.  In other words, recursive
+definitions are not guaranteed to be consistent, in the same way that
+axioms may introduce inconsistency. Of course, tools might provide a
+way to check consistency.
 
 \subsection{Higher-order logic constructions}
 \label{sec:higherorder}
@@ -1519,15 +1529,18 @@ consistency.
 Figure~\ref{fig:gram:higherorder} introduces new term constructs for
 higher-order logic.
 \begin{description}
-\item[Abstraction]
+\item[Abstraction]\index{lambda@\Lambda}
   \notimplemented{The term $\Lambda~\tau_1~x_1,\ldots,\tau_n~x_n ~;~ t$}
   denotes the $n$-ary logic function which maps $x_1,\ldots,x_n$ to
   $t$. It has the same precedence as \Forall and \Exists
-\item[Extended quantifiers] Terms
+\item[Extended quantifiers]
+  Terms
   \notimplemented{$\backslash quant(t_1,t_2,t_3)$}
-  where $quant$ is \notimplemented{\texttt{max}},
-  \notimplemented{\texttt{min}}, \notimplemented{\texttt{sum}},
-  \notimplemented{\texttt{product}}, or \notimplemented{\texttt{numof}},
+  where $quant$ is \notimplemented{\texttt{max}}\index{max@\texttt{max}},
+  \notimplemented{\texttt{min}}\index{min@\texttt{min}},
+  \notimplemented{\texttt{sum}}\index{sum@\texttt{sum}},
+  \notimplemented{\texttt{product}}\index{product@\texttt{product}},
+  or \notimplemented{\texttt{numof}}\index{numof@\texttt{numof}},
   are extended quantifications. $t_1$ and $t_2$ must have type
   \verb|integer|, and $t_3$ must be a unary function with an integer
   argument, and a numeric value (integer or real) except for
@@ -1553,11 +1566,12 @@ higher-order logic.
 \end{example}
 
 \subsection{Concrete logic types}
-
+\index{type!concrete}
 \experimental
 
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
+      \index{record}\index{sum}
       \input{logictypedecl.bnf}
     \end{minipage}}
   \caption{Grammar for concrete logic types and pattern-matching}
@@ -1574,8 +1588,13 @@ higher-order logic.
 }
 
 
-Logic types may not only be declared but also defined concretely, either under thr form of record types, or of sum types. These definitions may be recursive.
-With record types, the field access notation $t.id$ can be used, and for sum types, a pattern-matching construction is available. The grammar rules for these additional constructions are given Figure~\ref{fig:gram:logictype}
+Logic types may not only be declared but also be given a
+definition. Defined logic types can be  either under
+record types\index{record}, or sum types\index{sum}. These definitions may be
+recursive.  For record types, the field access notation $t.id$ can be
+used, and for sum types, a pattern-matching construction is
+available. The grammar rules for these additional constructions are
+given in Figure~\ref{fig:gram:logictype}
 
 \oldremark{All}{
 
@@ -1591,7 +1610,7 @@ Example: n-reines.
 \begin{example}
   The declaration
   \input{listdef.pp}
-  introduce a concrete definition of finite lists. The logic definition
+  introduces a concrete definition of finite lists. The logic definition
   \input{listlengthdef.pp}
   defines the length of a list by recursion and pattern-matching.
 \end{example}
@@ -1599,30 +1618,33 @@ Example: n-reines.
 
 \subsection{Hybrid functions and predicates}
 \label{sec:logicalstates}
-
-These are functions or predicates which take both C types and logic
-types as arguments. Such a predicate can either be defined with the
+\index{hybrid!function}
+\index{hybrid!predicate}
+Logic functions and predicates may take both (pure) C types and logic
+types arguments. Such an hybrid predicate (or function)
+can either be defined with the
 same syntax as before, or simply declared, but in the latter case the
 declaration should usually be augmented with a \reads{} clause, with
-the syntax given on Figure~\ref{fig:gram:logicreads} which extend the
+the syntax given on Figure~\ref{fig:gram:logicreads}, which extends the
 one of Figure~\ref{fig:gram:logic}. This feature is useful when a
 function or a predicate is not easily definable, but can be more
 easily axiomatized.
 
-Both with direct logic definitions or with logic declarations and
-axioms, an hybrid function will usually depend on one or more program
-points, because it depends upon memory states, via expressions such as:
+Be it defined either directly by an expression or through a set of axioms,
+an hybrid function (or predicate) usually depends on one or
+more program points, because it depends upon memory states, \emph{via}
+expressions such as:
 \begin{itemize}
-\item pointer dereferencing: \verb|*p|, \verb|p->f|
-\item array accesses: \verb|t[i]|
-\item address-of operator: \verb|&x|
-\item built-in predicates depending on memory: \valid
+\item pointer dereferencing: \verb|*p|, \verb|p->f|;
+\item array access: \verb|t[i]|;
+\item address-of operator: \verb|&x|;
+\item built-in predicate depending on memory: \valid
 % \item others ?
 \end{itemize}
 To make such a definition safe, it is mandatory to add after the
 declared identifier a set of labels, between curly braces. Expressions
 as above must then be enclosed into the \at{} construct to refer to a
-given label. Nevertheless, to ease reading such logic expressions, it
+given label. However, to ease reading of such logic expressions, it
 is allowed to omit a label whenever there is only one label in the
 context.
 
@@ -1634,33 +1656,48 @@ context.
 \label{fig:gram:logicreads}
 \end{figure}
 
+% NdV: exemple redondant avec le suivant.
+% \begin{example}
+%   The following annotations declare a function which returns the number of
+%   positive elements in an array of doubles between the given indexes
+%   and the related axioms.
+%   \input{num_of_pos.pp}
+%   It should be noted that without the reads
+%   clauses, this axiomatization would be inconsistent, since the
+%   function would not depend on the values stored in t, hence the two
+%   last axioms would say both that $a=b+1$ and $a=b$ for some $a$ and
+%   $b$.
+
+%   \oldremark{Claude}{
+%     expliquer mieux
+
+%     De plus, si l'on oublie la clause reads ça reste
+%     correct, donc il faudrait prevoir un warning pour un predicat avec un
+%     type pointeur en argument sans reads...
+%   }
+% \end{example}
+
 
 \begin{example}
-  The following declares a predicate which tells the number of
-  positive elements in an array of doubles, between given indexes
-  \input{num_of_pos.pp}
-  It should be noticed that without the reads
+  The following annotations declare a function which returns the
+  number of occurrences of a given double in an array of doubles
+  between the given indexes, together with the related axioms.
+  It should be noted that without the reads
   clauses, this axiomatization would be inconsistent, since the
-  predicate would not depend on the values stored in t, hence the two
+  function would not depend on the values stored in t, hence the two
   last axioms would say both that $a=b+1$ and $a=b$ for some $a$ and
   $b$.
-
-  \oldremark{Claude}{
-    expliquer mieux
-
-    De plus, si l'on oublie la clause reads ça reste
-    correct, donc il faudrait prevoir un warning pour un predicat avec un
-    type pointeur en argument sans reads...
-  }
+  \input{nb_occ.pp}
 \end{example}
 
-
 \begin{example}
-
-  \input{nb_occ.pp}
-
+  This second example defines a predicate which indicates whether two
+  arrays of the same size are a permutation of each other. It
+  illustrates the use of more than a single label. Thus, the \verb+\at+
+  operator is mandatory here. Indeed the two arrays
+  may come from two distinct memory states. Typically, one of the post
+  condition of a sorting function would be \verb+permut{Pre,Here}(t,t)+.
   \input{permut.pp}
-
 \end{example}
 
 \oldremark{SD7+All}{
@@ -1677,7 +1714,7 @@ parameters but also in an implicit way on the values stored in memory.
 
 \subsection{Specification Modules}
 \label{sec:specmodules}
-
+\index{module}
 
 \notimplemented{Specification modules can be provided} to encapsulate
 several logic definitions, for example
@@ -1685,7 +1722,8 @@ several logic definitions, for example
 Module components are then accessible using a qualified notation like
 \notimplemented{\texttt{List::length}}.
 
-Predefined algebraic specifications can be provided as libraries (see
+Predefined algebraic specifications can be provided as
+libraries\index{library} (see
 section~\ref{chap:lib}), and imported using a construct like
 \input{import.pp} where the file \verb|list.acsl| contains logic
 definitions, like the \verb|List| module above.
@@ -1697,29 +1735,35 @@ definitions, like the \verb|List| module above.
 
 \subsection{Memory blocks and pointer dereferencing}
 \label{subsec:memory}
-
+The following built-in functions and predicate allows to deal with the
+memory state:
 \begin{itemize}
-\item \baseaddr{} base address of an allocated pointer
+\item \baseaddr{}\index{baseaddr@\baseaddr}
+returns the base address of an allocated pointer
 \[
 \baseaddr{} : \verb|`a *| \ra \verb|char*|
 \]
-\item \blocklength{} length of the allocated block of a pointer
+\item \blocklength{}\index{blocklength@\blocklength}
+  returns the length of the allocated block of a pointer
 \[
 \blocklength{} : \verb|`a *| \ra \verb|size_t|
 \]
 
-\item $\valid$ is a built-in predicate which applies to a set of terms
-  of some pointer type. $\valid(s)$ is true whenever dereferencing any
+\item $\valid$\index{valid@\valid}
+  applies to a set of terms (see Section~\ref{sec:locations})
+  of some pointer type. $\valid(s)$ holds whenever dereferencing any
   $p\in s$ is safe.
 \end{itemize}
 Some shortcuts are provided:
 \begin{itemize}
-\item $\verb|\null|$ is an extra notation for the null pointer (i.e. a shortcut for \verb|(void*)0|)
+\item $\verb|\null|$\index{null@\texttt{\textbackslash{}null}} is an
+  extra notation for the
+  null pointer (\emph{i.e.} a shortcut for \verb|(void*)0|)
 % \footnote{or to \texttt{NULL}, if
 %    annotations are pre-processed are the appropriate inclusion of
 %    \texttt{stddef.h} is added}
-\item \notimplemented{$\offset(p)$} returns the offset between
-  p and its base address
+\item \notimplemented{$\offset(p)$}\index{offset@\offset}
+  returns the offset between $p$ and its base address
 
   \begin{eqnarray*}
     \offset &:& \verb|`a *| \ra \verb|size_t|  \\
@@ -1741,15 +1785,17 @@ Some shortcuts are provided:
 
 \experimental
 
-\notimplemented{$\separated(loc_1,..,loc_n)$}: means that for each
+\notimplemented{$\separated(loc_1,..,loc_n)$}\index{separated@\separated}
+means that for each
 $i\neq j$, the intersection of $loc_i$ and $loc_j$ is empty. Each
 $loc_i$ is a set of terms as defined in Section~\ref{sec:locations}.
 
 \subsubsection{Locations as first-class values}
-
+\index{location}
 Locations, as defined in Section~\ref{sec:locations},
 \notimplemented{can be used as first-class values} in
-annotations. They have the \notimplemented{built-in type $loc<A>$}
+annotations. They have the \notimplemented{built-in type
+  $loc<A>$}\index{loc@\texttt{loc} type}
 where $A$ is the type of values in that locations.
 
 \begin{example}
@@ -1761,8 +1807,8 @@ where $A$ is the type of values in that locations.
   This logic function can be used as argument of \separated.
 \end{example}
 
-Note: in other words, a clause assigns l1,..,ln could be transformed
-into an post-condition
+Note that a clause \verb+assigns l1,..,ln+ is equivalent
+to the post-condition
 \[
 \forall char* p; \separated(\union(l1,..,ln),*p) ==> *p == \old(*p)
 \]
@@ -1778,14 +1824,15 @@ into an post-condition
 quid de la pile -> a voir
 
 }
-
+The following built-in predicates allow to deal with allocation and
+deallocation of memory blocks. They can be used in a post-condition
 \begin{itemize}
-\item built-in predicate \fresh, specifying in a post-condition that a
-  pointer was not allocated in the pre-state.
+\item $\fresh(p)$\index{fresh@\fresh},
+indicates that $p$ was not allocated in the pre-state.
 
-\item \notimplemented{built-in predicate \freed}, specifying in a
-  post-condition that a pointer was allocated in the pre-state but not
-  anymore.
+\item \notimplemented{$\freed(p)$\index{freed@\freed}},
+  indicates that $p$ was allocated in the pre-state but that it is not
+  the case in the post-state.
 \end{itemize}
 
 \section{Abnormal termination}
@@ -1793,24 +1840,19 @@ quid de la pile -> a voir
 \experimental
 
 It is used to give behavioral properties to the \verb|main| function
-or to any function that may exit the program, e.g. calling \verb|exit|
-function.
+or to any function that may exit the program, \emph{e.g.} by calling
+the \verb|exit| function.
+Such a behavior can be written under the following form:
 
-Such a behavior can be written with the form
-\begin{flushleft}\ttfamily
-~~~\notimplemented{exit\_behavior}\\
-~~~assumes\\
-~~~assigns\\
-~~~ensures ...\\
-\end{flushleft}
-where in ensures clause, \result is bound to the return code, e.g the
-value returned by \verb|main| or the argument passed to \verb|exit|.
+\input{exitbehavior.bnf}
+
+In an \textsl{ensures-clause}, \result is bound to the return code,
+\emph{e.g} the value returned by \verb|main| or the argument passed
+to \verb|exit|.
 
 \oldremark{PC}{
 
   utilite de la clause assigns ?
-
-  probleme de l'exclusion avec les autres comportements. -> postassumes...
 
 }
 

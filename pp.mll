@@ -115,7 +115,7 @@ rule ctt = parse
       { print_string (if !in_utf8 then utf8 s else "\\&\\&{}"); ctt lexbuf }
   | (">=" | "<=" | ">" | "<" | "!=" | "=="
     | "&&" | "||"
-    | "==>" | "<==>") as s 
+    | "==>" | "<==>") as s
       { print_string (if !in_utf8 then utf8 s else s); ctt lexbuf }
   | "\\end{c}" { () }
   | "\\emph{" [^'}''\n']* '}' { print_string (lexeme lexbuf); ctt lexbuf }
@@ -128,7 +128,9 @@ rule ctt = parse
 	print_string "/*@";
 	ctt lexbuf }
   | "/*"
-      { print_string "\\begin{slshape}\\rmfamily\\color{darkgreen}/*";
+      { print_string "\\begin{slshape}\\rmfamily";
+        if !color then print_string "\\color{darkgreen}";
+        print_string "/*";
 	in_comment := true;
 	ctt lexbuf }
   | "*/" { print_string "*/\\end{slshape}";
@@ -143,9 +145,11 @@ rule ctt = parse
   | "//"
       { in_comment := true;
 	if !in_slashshash then
-	  print_string "\\rmfamily\\color{darkgreen}//"
-	else
-	  print_string "\\begin{slshape}\\rmfamily\\color{darkgreen}//";
+          print_string "\\rmfamily"
+        else
+          print_string "\\begin{slshape}\\rmfamily";
+        if !color then print_string "\\color{darkgreen}";
+        print_string "//";
         in_slashshash := true;
 	ctt lexbuf }
   | eof  { () }

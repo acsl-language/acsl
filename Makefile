@@ -17,7 +17,7 @@ DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
 	logic.bnf logictypedecl.bnf higherorder.bnf logicreads.bnf \
 	data_invariants.bnf  \
 	cfg.mps volatile.pp volatile-gram.bnf euclide.pp \
-	initialized.pp specified.pp
+	initialized.pp specified.pp exitbehavior.bnf
 
 all: main.pdf
 
@@ -75,7 +75,7 @@ check:
 
 clean:
 	rm -rf *~ *.aux *.log *.nav *.out *.snm *.toc *.pp *.bnf \
-               transf trans.ml *.cm?
+               transf trans.ml *.cm? *.idx
 
 # see http://www.pps.jussieu.fr/~beffara/soft/rubber/ for details on rubber.
 rubber: $(DEPS)

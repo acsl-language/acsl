@@ -99,9 +99,10 @@
 \newif\ifspace
 \newif\ifnewentry
 \newcommand{\addspace}{\ifspace \; \spacefalse \fi}
-\newcommand{\term}[1]{\addspace\hbox{\texttt{#1}} \spacetrue}
+\newcommand{\term}[2]{\addspace\hbox{\texttt{#1}%
+\ifthenelse{\equal{#2}{}}{}{\index{#2|texttt@#1}}}\spacetrue}
 \newcommand{\nonterm}[1]{%
-\addspace\hbox{\textsl{#1}\ifnewentry\index{#1@\textsl{#1}!non-terminal}\fi}\spacetrue}
+\addspace\hbox{\textsl{#1}\ifnewentry\index{grammar entries!\textsl{#1}}\fi}\spacetrue}
 \newcommand{\repetstar}{^*\spacetrue}
 \newcommand{\repetplus}{^+\spacetrue}
 \newcommand{\repetone}{^?\spacetrue}
