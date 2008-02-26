@@ -155,7 +155,10 @@ used in term position.
 
 \subsection{Operators precedence}
 
-The precedence of C operators is conservatively extended with additional operators, as shown Figure~\ref{fig:precedence}. In this table, operators are sorted from highest to lowest priority. Operators of same priority are presented on the same line.
+The precedence of C operators is conservatively extended with
+additional operators, as shown in Figure~\ref{fig:precedence}. In this
+table, operators are sorted from highest to lowest priority. Operators
+of same priority are presented on the same line.
 
 
 \begin{figure}[t]
@@ -474,7 +477,9 @@ operators of float (resp. double) numbers as in C: \verb|\eq_float|,
 Casting from a C integer type or a float type to a float or a double is
 as in C: same conversion operations applies.
 
-Conversion of real numbers to float or double values indeed depend on various possible rounding modes defined by the IEEE754 norm. These modes are defined by a logic type:
+Conversion of real numbers to float or double values indeed depend on
+various possible rounding modes defined by the IEEE754 standard. These
+modes are defined by a logic type:
 \begin{flushleft}\ttfamily
 type rounding\_mode =  \\
 \quad  Nearest\_even | To\_zero | Round\_up | Round\_down | Nearest\_away
@@ -868,7 +873,7 @@ means that all behaviors given in the contract should be taken into account.
      la semantique serait:
 
     La condition de d'exclusion mutuelle des cas de behaviors
-    est: pour toute paire de behavior $B_1$ et $B_2$ : post-condition
+    est: pour toute paire de behavior $B_1$ et $B_2$ : postcondition
     supplementaire
 \[
            not ((\old(assumes_1) et postassume_1)
@@ -877,7 +882,7 @@ means that all behaviors given in the contract should be taken into account.
 \]
     La condition de couverture des cas de behaviors est :
 
-    la disjunction des $(\old(assumes_i) et postassume_i)$ est une post-conditionn supplementaire
+    la disjunction des $(\old(assumes_i) et postassume_i)$ est une postconditionn supplementaire
 
 }
 
@@ -887,9 +892,9 @@ means that all behaviors given in the contract should be taken into account.
   d'assumes, mais pas celle de post-assumes.
 
   La possibilité d'ecrire des assumes permettra de reduire la taille
-  des post-conditions actuelles et conduira a moins de repetitions des
+  des postconditions actuelles et conduira a moins de repetitions des
   conditions de behaviors.
-  Par contre, placer les actuelles pre-conditions dans des behaviors
+  Par contre, placer les actuelles preconditions dans des behaviors
   devrait conduire a plus de repetitions dans les clauses requires.
   Il est important pour AIRBUS de pouvoir eviter les repetitions de termes
   dans les proprietes.
@@ -1045,7 +1050,7 @@ Annotations on C statements are of three kinds:
   \label{fig:gram:assertions}
 \end{figure}
 
-The syntax of assertions is given Figure~\ref{fig:gram:assertions},
+The syntax of assertions is given in Figure~\ref{fig:gram:assertions},
 as an extension of the grammar of C statements.
 
 \begin{itemize}
@@ -1077,7 +1082,7 @@ as an extension of the grammar of C statements.
   \label{fig:gram:loops}
 \end{figure}
 
-The syntax of loop annotations is given Figure~\ref{fig:gram:loops},
+The syntax of loop annotations is given in Figure~\ref{fig:gram:loops},
 as an extension of the grammar of C statements.
 
 \subsubsection{Loop invariants}
@@ -1452,7 +1457,7 @@ and predicates. These declarations follows the classical setting of
 \emph{algebraic specifications}. In particular new functions and
 predicates may be either \emph{defined} by explicit expressions, or
 \emph{axiomatized} by a set of axioms.
-The grammar for these declarations is given Figure~\ref{fig:gram:logic}.
+The grammar for these declarations is given in Figure~\ref{fig:gram:logic}.
 
 The difference between a lemma and an axiom is that a lemma is
 supposed to be deductible from axioms. Thus, while axioms are always
@@ -1625,7 +1630,7 @@ types arguments. Such an hybrid predicate (or function)
 can either be defined with the
 same syntax as before, or simply declared, but in the latter case the
 declaration should usually be augmented with a \reads{} clause, with
-the syntax given on Figure~\ref{fig:gram:logicreads}, which extends the
+the syntax given in Figure~\ref{fig:gram:logicreads}, which extends the
 one of Figure~\ref{fig:gram:logic}. This feature is useful when a
 function or a predicate is not easily definable, but can be more
 easily axiomatized.
@@ -1808,7 +1813,7 @@ where $A$ is the type of values in that locations.
 \end{example}
 
 Note that a clause \verb+assigns l1,..,ln+ is equivalent
-to the post-condition
+to the postcondition
 \[
 \forall char* p; \separated(\union(l1,..,ln),*p) ==> *p == \old(*p)
 \]
@@ -1825,7 +1830,7 @@ quid de la pile -> a voir
 
 }
 The following built-in predicates allow to deal with allocation and
-deallocation of memory blocks. They can be used in a post-condition
+deallocation of memory blocks. They can be used in a postcondition
 \begin{itemize}
 \item $\fresh(p)$\index{fresh@\fresh},
 indicates that $p$ was not allocated in the pre-state.
@@ -1860,7 +1865,10 @@ to \verb|exit|.
 
 \experimental
 
-An extended syntax of \assigns clauses allows to give dependencies:
+An extended syntax of \assigns clauses allows to specify data
+dependencies. In the following example, the values assigned to
+locations $loc_1,\ldots,loc_n$ can only use the values from locations
+$loc'_1,\ldots,loc'_k$:
 \begin{flushleft}
 //@ assigns $loc_1,\ldots,loc_n$ \textbackslash{}from $loc'_1,\ldots,loc'_k$ ;
 \end{flushleft}
@@ -1894,20 +1902,20 @@ Useful additional constructs for such functional expressions are constructions  
 \section{Data invariants}
 \label{sec:invariants}
 
-
 Data invariants are properties on data that are supposed to hold
-permanently during the life time of these data. In ACSL, we distinguish
+permanently during the lifetime of these data. In ACSL, we distinguish
 between:
 \begin{itemize}
 \item \emph{global} invariants and \emph{type} invariants: the former
-  apply on global variables, whereas the latter are associated to
-  static types, and apply on any variables of this type.
+  only apply to specified global variables, whereas the latter are
+  associated to static types, and may be applied to any variables of
+  these types;
 \item \emph{strong} invariants and \emph{weak} invariants: strong
-  invariants must be valid really at any any time of the program
-  execution (more precisely at any \emph{sequence point} as defined in
-  the norm), whereas weak invariants are valid
-  at \emph{function boundaries} (function entrance and exit) but
-  can be violated in between.
+  invariants must be valid at any any time during program execution
+  (more precisely at any \emph{sequence point} as defined in the C
+  standard), whereas weak invariants must be valid at \emph{function
+    boundaries} (function entrance and exit) but can be violated in
+  between.
 \end{itemize}
 
 \begin{figure}[t]
@@ -1927,11 +1935,11 @@ to \texttt{weak}.
   In the following example, we declare
   \begin{enumerate}
   \item a weak global invariant \verb|a_is_positive| which specifies that
-    the global variable \texttt{a} should remains positive (weakly, so
+    global variable \texttt{a} should remain positive (weakly, so
     this property might be violated temporarily between functions
-    calls)
-  \item a strong type invariant for type \verb|temperature|
-  \item a weak type invariant on structures \verb|S|.
+    calls);
+  \item a strong type invariant for variables of type \verb|temperature|;
+  \item a weak type invariant for variables of type \verb|struct S|.
   \end{enumerate}
   \input{invariants.pp}
 \end{example}
@@ -1959,40 +1967,44 @@ obsolete
 
 \subsection{Semantics}
 
-The distinction between strong and weak invariants is on the sequence
-points were the property is supposed to hold. The distinction between
-the global invariants and the type invariants is the set of values on
+The distinction between strong and weak invariants has to do with the
+sequence points where the property is supposed to hold. The distinction
+between global and type invariants has to do with the set of values on
 which they are supposed to hold.
 
 \begin{itemize}
-\item Weak global invariants are properties which applies to global
+\item Weak global invariants are properties which apply to global
   data and hold at any function entrance and function exit.
 
-\item Strong global invariants are properties which applies to global
-  data and hold at any step of execution (starting after
-  initialisation of these data).
+\item Strong global invariants are properties which apply to global
+  data and hold at any step during execution (starting after
+  initialization of these data).
 
-\item A weak type invariant on a type $\tau$ is supposed to hold at
-  any function entrance and exit, and applies to any global variable
-  or formal parameter which has static type $\tau$. If the result of
-  the function is of type $\tau$, the result is also supposed to
-  satisfy its invariant at function exit.
+\item A weak type invariant on type $\tau$ must hold at any function
+  entrance and exit, and applies to any global variable or formal
+  parameter which has static type $\tau$. If the result of the
+  function is of type $\tau$, the result must also satisfy its
+  weak invariant at function exit. Notice that it says nothing of fields,
+  array elements, memory locations, etc. of type $\tau$.
+
   \oldremark{Claude}{
 
     et les var locales d'une fonction appelante ?
 
   }
-\item A strong type invariant on a type $\tau$ is supposed to hold at
-  any state of execution, and applies to any global variable, local
+\item A strong type invariant on type $\tau$ must hold at any step
+  during execution, and applies to any global variable, local
   variable, or formal parameter which has static type $\tau$. If the
-  result of the function is of type $\tau$, the result is also
-  supposed to satisfy its strong invariant at function exit
+  result of the function is of type $\tau$, the result must also
+  satisfy its strong invariant at function exit. Again, it says
+  nothing of fields, array elements, memory locations, etc. of type
+  $\tau$.
 
 \end{itemize}
 
 
 \begin{example}
-  The following example illustrates the use of a data invariant on a local static variable
+  The following example illustrates the use of a data invariant on a local static variable.
 
   \input{out_char.pp}
 \end{example}
@@ -2038,13 +2050,11 @@ void reset(S *p) {
 
 \subsection{Model variables and model fields}
 
-
-
-\notimplemented{A model variable is a variable introduced in the
-  specification, whose type is a logic type. Analogously, structures
-  may have \emph{model fields}.  These are used to provide abstract
-  specifications to functions whose concrete implementation must
-  remain private.}
+\notimplemented{A \emph{model variable} is a variable introduced in the
+  specification with the keyword {\texttt{model}}. Its type must be
+  a logic type. Analogously, structures may have \emph{model fields}.
+  These are used to provide abstract specifications to functions whose
+  concrete implementation must remain private.}
 
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
@@ -2055,41 +2065,44 @@ void reset(S *p) {
 \end{figure}
 
 
-Syntax of declaration of model variables and fields is given on
-Figure~\ref{fig:gram:model}. It is presented as additions to regular C
-grammar to variable declarations and struct field declarations.
+The precise syntax for declaring model variables and fields is given
+in Figure~\ref{fig:gram:model}. It is presented as additions to the
+regular C grammar for variable declarations and structure field
+declarations.
 
-Informal semantics of model variables is as follows:
+Informal semantics of model variables is as follows.
 \begin{itemize}
 \item Model variables can only appear in specifications. They are not
-  lvalues, thus cannot be assigned directly (unlike ghost variables,
+  lvalues, thus they cannot be assigned directly (unlike ghost variables,
   see below).
-\item Nevertheless a function contract might say that a model variable
+\item Nevertheless, a function contract might say that a model variable
   is assigned.
 \item When a function contract mentions model variables:
   \begin{itemize}
-  \item the precondition is implicitely existentially quantified over
-    those variables
-  \item the post-conditions are universally quantified over the old
+  \item the precondition is implicitly existentially quantified over
+    those variables;
+  \item the postconditions are universally quantified over the old
     values of model variables, and existentially quantified over the new values.
   \end{itemize}
 \end{itemize}
-Thus, in practice the only way of proving that a function body
+Thus, in practice, the only way to prove that a function body
 satisfies a contract with model variables is to provide an invariant
 relating model variables and concrete variables, as in the example
 below.
 
 \begin{example}\label{ex:model}
-  Here is an example of a specification of a function which generates
+  Here is an example of a specification for a function which generates
   fresh integers. The contract is given in term of a model variable
-  which is intended to represent the set of ``forbidden'' values, e.g. that already have been generated.
-  \input{gen_spec_with_model.pp}
+  which is intended to represent the set of ``forbidden'' values,
+  e.g. the values that have already been generated.
+  \input{gen_spec_with_model.pp} 
   The contract is expressed abstractly, telling that
   \begin{itemize}
-  \item the forbidden set of values is modified
-  \item the result number is not in the set of forbidden values, thus is ``fresh''
-  \item the new set of forbidden contains both the returned value and
-    the previously forbidden values.
+  \item the forbidden set of values is modified;
+  \item the value returned is not in the set of forbidden values, thus
+    it is ``fresh'';
+  \item the new set of forbidden values contains both the value
+    returned and the previous forbidden values.
   \end{itemize}
   An implementation of this function might be as follows, where a
   decision has been made to generate values in increasing order, so
@@ -2102,11 +2115,11 @@ below.
 
 Although the syntax of model variables is close to JML model
 variables, they differ in the sense that the type of a model variable
-is a logic type, not a program type. Also, the semantics above is
-closer to the one of the B machines.  It has to be noticed that
+is a logic type, not a C type. Also, the semantics above is
+closer to the one of B machines.  It has to be noticed that
 program verification with model variables does not have a
-well-establish theoretical background~\cite{marche07,leavens07}, so we
-deliberately don't provide a precise semantics in this document .
+well-established theoretical background~\cite{marche07,leavens07}, so we
+deliberately do not provide a precise semantics in this document .
 
 \section{Ghost variables and statements}
 \label{sec:ghost}

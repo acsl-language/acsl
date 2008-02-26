@@ -4,19 +4,19 @@ Let's consider the following example:
 \begin{c}
   int f(int a, int b) { return a < b; }
 \end{c}
-The following post-conditions are wrong:
+The following postconditions are wrong:
 \begin{itemize}
-\item the obvious post-condition \verb|\result == a < b| is not the
+\item the obvious postcondition \verb|\result == a < b| is not the
   right one because it is 
   actually a shortcut for \verb|\result == a && a < b|.
-\item adding parentheses results in an ill-typed post-condition
+\item adding parentheses results in an ill-typed postcondition
   \verb|\result == (a < b)|, 
   because it tests equality of \verb|\result| which has
   type \verb|int| with \verb|a < b| which has type \verb|boolean|.
 \item similarly, \verb|\result <==> a < b| is not well-typed, because
   it makes an equivalence between an \verb|int| and a predicate.  
 \end{itemize}
-The following are correct post-conditions:
+The following are correct postconditions:
 \begin{itemize}
 \item \verb|\result != 0 <==> a < b| is acceptable because it is an
   equivalence between two predicates.

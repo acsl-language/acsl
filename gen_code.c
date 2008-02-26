@@ -7,7 +7,3 @@ int gen() {
     @*/
   return x++;
 }
-
-
-
-  
