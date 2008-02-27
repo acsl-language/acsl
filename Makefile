@@ -17,7 +17,8 @@ DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
 	logic.bnf logictypedecl.bnf higherorder.bnf logicreads.bnf \
 	data_invariants.bnf  \
 	cfg.mps volatile.pp volatile-gram.bnf euclide.pp \
-	initialized.pp specified.pp exitbehavior.bnf
+	initialized.pp specified.pp exitbehavior.bnf dependencies.bnf \
+	sum2.pp gen_spec_with_ghost.pp
 
 all: main.pdf
 

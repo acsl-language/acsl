@@ -1040,7 +1040,7 @@ Annotations on C statements are of three kinds:
 \end{itemize}
 
 \subsection{Assertions}
-\index{assert@\texttt{assert}}
+\indextt{assert}
 
 \begin{figure}[t]
   \begin{cadre}
@@ -1534,18 +1534,18 @@ way to check consistency.
 Figure~\ref{fig:gram:higherorder} introduces new term constructs for
 higher-order logic.
 \begin{description}
-\item[Abstraction]\index{lambda@\Lambda}
+\item[Abstraction]\indexttbs{lambda}
   \notimplemented{The term $\Lambda~\tau_1~x_1,\ldots,\tau_n~x_n ~;~ t$}
   denotes the $n$-ary logic function which maps $x_1,\ldots,x_n$ to
   $t$. It has the same precedence as \Forall and \Exists
 \item[Extended quantifiers]
   Terms
   \notimplemented{$\backslash quant(t_1,t_2,t_3)$}
-  where $quant$ is \notimplemented{\texttt{max}}\index{max@\texttt{max}},
-  \notimplemented{\texttt{min}}\index{min@\texttt{min}},
-  \notimplemented{\texttt{sum}}\index{sum@\texttt{sum}},
-  \notimplemented{\texttt{product}}\index{product@\texttt{product}},
-  or \notimplemented{\texttt{numof}}\index{numof@\texttt{numof}},
+  where $quant$ is \notimplemented{\texttt{max}}\indexttbs{max}
+  \notimplemented{\texttt{min}}\indexttbs{min}
+  \notimplemented{\texttt{sum}}\indexttbs{sum}
+  \notimplemented{\texttt{product}}\indexttbs{product}
+  or \notimplemented{\texttt{numof}}\indexttbs{numof}
   are extended quantifications. $t_1$ and $t_2$ must have type
   \verb|integer|, and $t_3$ must be a unary function with an integer
   argument, and a numeric value (integer or real) except for
@@ -1566,6 +1566,7 @@ higher-order logic.
 
 
 \begin{example}
+  \label{ex:higherorder}
   Function that sums the element of an array of doubles.
   \input{sum.pp}
 \end{example}
@@ -1743,31 +1744,31 @@ definitions, like the \verb|List| module above.
 The following built-in functions and predicate allows to deal with the
 memory state:
 \begin{itemize}
-\item \baseaddr{}\index{baseaddr@\baseaddr}
+\item \baseaddr{}\indexttbs{baseaddr}
 returns the base address of an allocated pointer
 \[
 \baseaddr{} : \verb|`a *| \ra \verb|char*|
 \]
-\item \blocklength{}\index{blocklength@\blocklength}
+\item \blocklength{}\indexttbs{blocklength}
   returns the length of the allocated block of a pointer
 \[
 \blocklength{} : \verb|`a *| \ra \verb|size_t|
 \]
 
-\item $\valid$\index{valid@\valid}
+\item $\valid$\indexttbs{valid}
   applies to a set of terms (see Section~\ref{sec:locations})
   of some pointer type. $\valid(s)$ holds whenever dereferencing any
   $p\in s$ is safe.
 \end{itemize}
 Some shortcuts are provided:
 \begin{itemize}
-\item $\verb|\null|$\index{null@\texttt{\textbackslash{}null}} is an
+\item $\verb|\null|$\indexttbs{null} is an
   extra notation for the
   null pointer (\emph{i.e.} a shortcut for \verb|(void*)0|)
 % \footnote{or to \texttt{NULL}, if
 %    annotations are pre-processed are the appropriate inclusion of
 %    \texttt{stddef.h} is added}
-\item \notimplemented{$\offset(p)$}\index{offset@\offset}
+\item \notimplemented{$\offset(p)$}\indexttbs{offset}
   returns the offset between $p$ and its base address
 
   \begin{eqnarray*}
@@ -1790,7 +1791,7 @@ Some shortcuts are provided:
 
 \experimental
 
-\notimplemented{$\separated(loc_1,..,loc_n)$}\index{separated@\separated}
+\notimplemented{$\separated(loc_1,..,loc_n)$}\indexttbs{separated}
 means that for each
 $i\neq j$, the intersection of $loc_i$ and $loc_j$ is empty. Each
 $loc_i$ is a set of terms as defined in Section~\ref{sec:locations}.
@@ -1832,10 +1833,10 @@ quid de la pile -> a voir
 The following built-in predicates allow to deal with allocation and
 deallocation of memory blocks. They can be used in a postcondition
 \begin{itemize}
-\item $\fresh(p)$\index{fresh@\fresh},
+\item $\fresh(p)$\indexttbs{fresh}
 indicates that $p$ was not allocated in the pre-state.
 
-\item \notimplemented{$\freed(p)$\index{freed@\freed}},
+\item \notimplemented{$\freed(p)$\indexttbs{freed}},
   indicates that $p$ was allocated in the pre-state but that it is not
   the case in the post-state.
 \end{itemize}
@@ -1865,18 +1866,39 @@ to \verb|exit|.
 
 \experimental
 
-An extended syntax of \assigns clauses allows to specify data
-dependencies. In the following example, the values assigned to
-locations $loc_1,\ldots,loc_n$ can only use the values from locations
-$loc'_1,\ldots,loc'_k$:
-\begin{flushleft}
-//@ assigns $loc_1,\ldots,loc_n$ \textbackslash{}from $loc'_1,\ldots,loc'_k$ ;
-\end{flushleft}
-Moreover, dependencies can be made precise using \emph{functional expressions}:
-\begin{flushleft}
-//@ assigns $loc$ \textbackslash{}from $loc'_1,\ldots,loc'_k$
-    \notimplemented{= term} ;
-\end{flushleft}
+An extended syntax of \assigns clauses, described in
+Figure~\ref{fig:gram:dep} allows to specify data
+dependencies\index{dependency} and
+\emph{functional expressions}\index{functional expression}.
+
+\begin{figure}[t]
+  \fbox{\begin{minipage}{0.97\linewidth}
+      \input{dependencies.bnf}
+    \end{minipage}}
+  \caption{Grammar for dependencies information}
+\label{fig:gram:dep}
+\end{figure}
+
+Such a clause indicates that the assigned values can only depend upon
+the locations mentioned in the \verb+\from+ part of the
+clause. Again, this is an over-approximation: all of the locations
+involved in the computation of the modified values must be present,
+but some of locations might not be used in practice. If the
+\verb+from+ clause is absent, all of the locations reachable at the
+given point of the program are supposed to be used.
+Moreover, for a single location, it is possible to give the precise
+relation between its final value and the value of its
+dependencies. This expression is evaluated in the pre-state of the
+corresponding contract.
+
+\begin{example}
+  The following example is a variation over the \verb+array_sum+
+  function in example~\ref{ex:higherorder}, in which the values of
+  the array are added to a global variable \verb+total+.
+
+  \input{sum2.pp}
+
+\end{example}
 
 \oldremark{All}{
 
@@ -1908,10 +1930,10 @@ between:
 \begin{itemize}
 \item \emph{global} invariants and \emph{type} invariants: the former
   only apply to specified global variables, whereas the latter are
-  associated to static types, and may be applied to any variables of
-  these types;
+  associated to a static type, and apply to any variables of
+  the corresponding type;
 \item \emph{strong} invariants and \emph{weak} invariants: strong
-  invariants must be valid at any any time during program execution
+  invariants must be valid at any time during program execution
   (more precisely at any \emph{sequence point} as defined in the C
   standard), whereas weak invariants must be valid at \emph{function
     boundaries} (function entrance and exit) but can be violated in
@@ -2044,7 +2066,7 @@ void reset(S *p) {
 }
 
 \begin{example}
-  Here is a longer example, the famous Dijkstra's Dutch flag algorithm.
+  Here is a longer example, the famous Dijkstra's Dutch flag algorithm.\\
   \input{flag.pp}
 \end{example}
 
@@ -2056,7 +2078,7 @@ void reset(S *p) {
   These are used to provide abstract specifications to functions whose
   concrete implementation must remain private.}
 
-\begin{figure}[t]
+\begin{figure}[b]
   \fbox{\begin{minipage}{0.97\linewidth}
       \input{model.bnf}
     \end{minipage}}
@@ -2095,7 +2117,7 @@ below.
   fresh integers. The contract is given in term of a model variable
   which is intended to represent the set of ``forbidden'' values,
   e.g. the values that have already been generated.
-  \input{gen_spec_with_model.pp} 
+  \input{gen_spec_with_model.pp}
   The contract is expressed abstractly, telling that
   \begin{itemize}
   \item the forbidden set of values is modified;
@@ -2212,7 +2234,7 @@ program execution. This implies several conditions, including e.g:
   ghost statements. In particular, no ghost \verb|return| can appear
   in the body of a non-ghost function. Similarly, ghost
   \verb|goto|, \verb|break|, and continue \verb|continue| cannot jump
-  outside of the innermost enclosing non-ghost block.
+  outside of the innermost non-ghost enclosing block.
 \end{itemize}
 
 Semantics is specified as follows. First, one has to think that
@@ -2257,15 +2279,16 @@ assigned in ghost code like any C variable. On the other hand, a model
 variable cannot be assigned, but one can state it is modified and can
 express properties about the new value, in a non-deterministic way,
 using logic assertions and invariants.
-
-In other words, one can say that the specifications stating a ghost
-variable modification are executable.
+In other words, one can say that specifications using ghost
+variables modifications are executable.
 
 \begin{example}
   \label{ex:gen_code}
   The example~\ref{ex:model} can also be specified with a ghost
-  variable instead of a model variable, by adding before the return :
-  \verb|//@ ghost forbidden = union(single(\result),forbidden;|
+  variable instead of a model variable:
+
+  \input{gen_spec_with_ghost.pp}
+
 \end{example}
 
 \subsection{Volatile variables}
@@ -2276,7 +2299,7 @@ Volatile variables can not be used in logic terms, since reading such
 a variable may have a side effect, in particular two successive reads
 may return different values.
 
-\begin{figure}[t]
+\begin{figure}[b]
   \fbox{\begin{minipage}{0.97\linewidth}
       \input{volatile-gram.bnf}
     \end{minipage}}

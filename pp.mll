@@ -18,6 +18,7 @@
     | "<==>" -> "\\ensuremath{\\Longleftrightarrow}"
     | "&&" -> "\\ensuremath{\\land}"
     | "||" -> "\\ensuremath{\\lor}"
+    | "!" -> "\\ensuremath{\\neg}"
     | s ->
         Format.eprintf "Cannot convert symbol %s to utf8\n" s;
         unrecognized:= 2; s
@@ -40,7 +41,7 @@
 	"loop" ; "variant" ; "data" ; "strong" ;
 	"ensures" ; "breaks"; "continues"; "returns"; "assigns"; "modifiable" ; "signals" ;
 	"logic" ; "type" ; "predicate" ; "axiom";
-	"normal_behavior" ; "behavior" ; "model";
+	"normal_behavior" ; "behavior" ; "model"; "ghost";
       ];
     h
 
@@ -53,7 +54,7 @@
 	"initialized" ; "specified" ;
 	"null" ;
 	"old";
-	"fresh";
+	"fresh"; "from";
 	"nothing";
 	"result";
 	"let" ; "at";
@@ -114,7 +115,7 @@ rule ctt = parse
   | "&&" as s
       { print_string (if !in_utf8 then utf8 s else "\\&\\&{}"); ctt lexbuf }
   | (">=" | "<=" | ">" | "<" | "!=" | "=="
-    | "&&" | "||"
+    | "||" | "!"
     | "==>" | "<==>") as s
       { print_string (if !in_utf8 then utf8 s else s); ctt lexbuf }
   | "\\end{c}" { () }
