@@ -1,100 +1,10 @@
 \chapter{Libraries}
 \label{chap:lib}
 
-This chapter is devoted to librairies of specification, built upon the ACSL specification language.
-
-Section~\ref{sec:jessie} describes additional predicates propose by the Jessie plugin of Frama-C, to propose a slightly higher level of annotation.
-
-
-%\section{Frama-C base library}
-%
-%\begin{itemize}
-%\item \comparable{}: checks whether two pointers are comparable
-%  as defined in the ANSI standard.
-%  \[
-%  \comparable{} : \verb|`a *| \ra \verb|`b *| \ra \boolean
-%  \]
-%\end{itemize}
-
-\section{Jessie library: logical adressing of memory blocks}
-\label{sec:jessie}
-
-%Jessie is a plugin of the Frama-C platform, which connects to the
-%corresponding jessie tool of the Why platform~\cite{filliatre07cav}
-%for deductive verification of behavioral properties of programs.
-
-The Jessie library is a collection of logic specifications whose
-semantics is well-defined only on source codes free from
-architecture-dependent features. In particular it is currently
-incompatible with pointer casts or unions (although there is ongoing
-work to support some of them~\cite{moy07ccpp}). As a consequence, in
-this particular setting, a valid pointer of some type $\tau*$
-necessarily points to a memory block which contains values of type
-$\tau$.
-
-\subsection{Abstract level of pointer validity}
-
-The Jessie plugin currently assumes the input source code free from
-architecture-dependent features. In particular it currently completely
-disallows pointer casts or unions (although there is ongoing work to
-support some of them~\cite{moy07ccpp}). As a consequence a valid
-pointer of some type $\tau*$ necessarily points to a memory block
-which contains values of type $\tau$. To model that, the jessie library introduce new logic functions:
-\begin{flushleft}
-\integer ~ \notimplemented{\offsetmin(`a *p)}; \\
-\integer ~ \notimplemented{\offsetmax(`a *p)};
-\end{flushleft}
-
-\begin{itemize}
-\item $\offsetmin(p)$ is the minimum integer $i$ such that $(p+i)$ is a
-  valid pointer.
-
-\item $\offsetmax(p)$: the maximum integer $i$ such that $(p+i)$ is a
-  valid pointer
-\end{itemize}
-The following properties hold:
-\begin{eqnarray*}
-\offsetmin(p+i) &=& \offsetmin(p)-i \\
-\offsetmax(p+i) &=& \offsetmax(p)-i
-\end{eqnarray*}
-It also introduce syntactic sugar:
-\begin{eqnarray*}
-\validrange(p,i,j) &:=& \offsetmin(p) <= i \land \offsetmax(p) >= j
-\end{eqnarray*}
-and the ACSL built-in predicate $\valid(p)$ is now equivalent to
-$\validrange(p,0,0)$.
-
-\subsection{Strings}
-
-\experimental
-
-The predicate
-\[
-\integer~\notimplemented{\strlen(char* p)}
-\]
-denotes the length of a 0-terminated C string. It is total function,
-whose value is non-negative if and only if the pointer in argument is
-really a string.
-
-\begin{example}
-  Here is a contract for the \verb|strcpy| function:
-  \input{strcpyspec.pp}
-
-\end{example}
-
-\subsection{Field structures}
-
- "offsetof" "(" ... ")" ; \experimental
-
- "alignof" "(" C-type-expr ")" ; \experimental
-
-\section{Memory leaks}
-
-\experimental
-
-Verification of absence of memory leak is outside the scope of the
-specification language. On the other hand, various models could be set
-up, using for example ghost variables.
+This chapter is devoted to librairies of specification, built upon the
+ACSL specification language.  Section~\ref{sec:jessie} describes
+additional predicates introduced by the Jessie plugin of Frama-C, to
+propose a slightly higher level of annotation.
 
 \section{Libraries of logic specifications}
 \label{sec:speclibraries}
@@ -139,7 +49,82 @@ Finite sets, finite maps, in ZB-style.
 
 }
 
+\section{Jessie library: logical adressing of memory blocks}
+\label{sec:jessie}
 
+%Jessie is a plugin of the Frama-C platform, which connects to the
+%corresponding jessie tool of the Why platform~\cite{filliatre07cav}
+%for deductive verification of behavioral properties of programs.
+
+The Jessie library is a collection of logic specifications whose
+semantics is well-defined only on source codes free from
+architecture-dependent features. In particular it is currently
+incompatible with pointer casts or unions (although there is ongoing
+work to support some of them~\cite{moy07ccpp}). As a consequence, in
+this particular setting, a valid pointer of some type $\tau*$
+necessarily points to a memory block which contains values of type
+$\tau$.
+
+\subsection{Abstract level of pointer validity}
+
+Int the particular setting described above, it is possible to
+introduce the following logic functions:
+\begin{flushleft}
+\integer ~ \notimplemented{\offsetmin(`a *p)}; \\
+\integer ~ \notimplemented{\offsetmax(`a *p)};
+\end{flushleft}
+
+\begin{itemize}
+\item $\offsetmin(p)$ is the minimum integer $i$ such that $(p+i)$ is a
+  valid pointer.
+
+\item $\offsetmax(p)$: the maximum integer $i$ such that $(p+i)$ is a
+  valid pointer
+\end{itemize}
+The following properties hold:
+\begin{eqnarray*}
+\offsetmin(p+i) &=& \offsetmin(p)-i \\
+\offsetmax(p+i) &=& \offsetmax(p)-i
+\end{eqnarray*}
+It also introduce syntactic sugar:
+\begin{eqnarray*}
+\validrange(p,i,j) &:=& \offsetmin(p) <= i \land \offsetmax(p) >= j
+\end{eqnarray*}
+and the ACSL built-in predicate $\valid(p)$ is now equivalent to
+$\validrange(p,0,0)$.
+
+\subsection{Strings}
+
+\experimental
+
+The logic function
+\[
+\integer~\notimplemented{\strlen(char* p)}
+\]
+denotes the length of a 0-terminated C string. It is total function,
+whose value is non-negative if and only if the pointer in argument is
+really a string.
+
+\begin{example}
+  Here is a contract for the \verb|strcpy| function:
+  \input{strcpyspec.pp}
+
+\end{example}
+
+\subsection{Field structures}
+
+\experimental
+
+The \verb+offsetof+ and \verb+alignof+ builtins are available with the
+same syntax and semantics as in gcc.
+
+\section{Memory leaks}
+
+\experimental
+
+Verification of absence of memory leak is outside the scope of the
+specification language. On the other hand, various models could be set
+up, using for example ghost variables.
 
 %%% Local Variables:
 %%% mode: latex
