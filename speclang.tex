@@ -68,10 +68,11 @@ that we will introduce progressively.
 
 Figure~\ref{fig:gram:term} presents the grammar for the basic
 constructs of logic expressions.  In that grammar, we distinguish
-between \emph{predicates} and \emph{terms}, following the usual
-distinction between propositions and terms in classical first-order
-logic.  The grammar for binders and type expressions is given
-separately in Figure~\ref{fig:gram:binders}.
+between \emph{predicates}\index{predicate} and
+\emph{terms}\index{term}, following the usual distinction between
+propositions and terms in classical first-order logic.  The grammar
+for binders and type expressions is given separately in
+Figure~\ref{fig:gram:binders}.
 
 With respect to C pure expressions, the additional constructs are as follows:
 \begin{description}
@@ -244,9 +245,11 @@ The language of logic expressions is typed (as in \emph{multi-sorted}
 first-order logic). Types are either C types or \emph{logic types}
 defined as follows:
 \begin{itemize}
-\item ``mathematical'' types: \verb|integer| for unbounded,
-  mathematical integers, \verb|real| for real numbers, \verb|boolean|
-  for booleans (with values written \verb|\true| and \verb|\false|);
+\item ``mathematical'' types: \verb|integer|\indexttbs{integer} for
+  unbounded, mathematical integers, \verb|real|\indexttbs{real} for
+  real numbers, \verb|boolean|\indexttbs{boolean} for booleans (with
+  values written \verb|\true|\indexttbs{true} and
+  \verb|\false|\indexttbs{false});
 \item logic types introduced by the specification writer (see
   Section~\ref{sec:logicspec}).
 \end{itemize}
@@ -370,13 +373,12 @@ is equivalent to
 
 \subsubsection{Size of C integer types}
 
-Remark that the size of C types is architecture-dependent. ACSL
-does not enforce these sizes either, hence the semantics of terms
-involving such types is also architecture-dependent. The
-\texttt{sizeof} operator may be used in the logic and is assumed to
-be consistent with the C code. For instance, it should be possible to
-verify the following code:
-\input{sizeof.pp}
+Remark that the size of C types is architecture-dependent. ACSL does
+not enforce these sizes either, hence the semantics of terms involving
+such types is also architecture-dependent. The
+\texttt{sizeof}\index{sizeof} operator may be used in the logic and is
+assumed to be consistent with the C code. For instance, it should be
+possible to verify the following code: \input{sizeof.pp}
 
 Constants giving maximum and minimum values of those types may be
 given in a library.
@@ -436,7 +438,7 @@ Section~\ref{sec:libreal}).
 \subsection{Real numbers and floating point numbers}
 
 Floating-point constants and operations are interpreted as
-mathematical real numbers :a C variable of type float or double is
+mathematical real numbers: a C variable of type float or double is
 implicitly promoted to a real. Integers are promoted to reals if necessary.
 \begin{example}
 $2 * 3.5$ is equal to the real number 7
@@ -445,8 +447,9 @@ Unlike the promotion of C integer types to mathematical integers,
 there are special float values which do not naturally map to a real
 number, namely NaN, +Infinity and -Infinity. Since we want a logic
 with total functions, we consider that there are implicit promotion
-functions \verb|real_of_float| and \verb|real_of_double| whose results
-on the 3 specila values above is unspecified.
+functions \verb|real_of_float|\indextt{real\_of\_float} and
+\verb|real_of_double|\indextt{real\_of\_double} whose results
+on the 3 values above is left unspecified.
 
 Usual operators for comparison are interpreted as real operators
 too. In particular, equality operation $\equiv$ of float (or double)
@@ -457,9 +460,13 @@ variables means $\verb|real_of_float|(x) \equiv
 numbers.
 
 Special predicates are also available to express the comparison
-operators of float (resp. double) numbers as in C: \verb|\eq_float|,
-\verb|\gt_float|, \verb|\ge_float|, \verb|\le_float|, \verb|\lt_float|,
-\verb|\ne_float| (resp. for double).
+operators of float (resp. double) numbers as in C:
+\verb|\eq_float|\indexttbs{eq\_float}\indexttbs{eq\_double},
+\verb|\gt_float|\indexttbs{gt\_float}\indexttbs{gt\_double},
+\verb|\ge_float|\indexttbs{ge\_float}\indexttbs{ge\_double},
+\verb|\le_float|\indexttbs{le\_float}\indexttbs{le\_double},
+\verb|\lt_float|\indexttbs{lt\_float}\indexttbs{lt\_double},
+\verb|\ne_float|\indexttbs{ne\_float}\indexttbs{ne\_double} (resp. for double).
 
 
 
@@ -475,10 +482,10 @@ operators of float (resp. double) numbers as in C: \verb|\eq_float|,
 \subsubsection{Casts, infinity and NaNs}
 
 Casting from a C integer type or a float type to a float or a double is
-as in C: same conversion operations applies.
+as in C: the same conversion operations apply.
 
 Conversion of real numbers to float or double values indeed depend on
-various possible rounding modes defined by the IEEE754 standard. These
+various possible rounding modes defined by the IEEE~754 standard. These
 modes are defined by a logic type:
 \begin{flushleft}\ttfamily
 type rounding\_mode =  \\
@@ -486,8 +493,8 @@ type rounding\_mode =  \\
 \end{flushleft}
 Then rounding a real number can be done explicitly using functions
 \begin{flushleft}\ttfamily
-logic float \verb|\round_float|(rounding\_mode m, real x); \\
-logic double \verb|\round_double|(rounding\_mode m, real x);
+  logic float \verb|\round_float|\indexttbs{round\_float}(rounding\_mode m, real x); \\
+  logic double \verb|\round_double|\indexttbs{round\_double}(rounding\_mode m, real x);
 \end{flushleft}
 Cast operators \verb|(float)| and \verb|(double)| applied to a
 mathematical integer or real number $x$ are equivalent to apply
@@ -505,19 +512,23 @@ of the special values +infinity and -infinity.
 Notice also that unlike for integers, suffixes $f$ and $d$ are
 meaningfull, because they implicitly add a cast operator as above.
 
-This semantics of ensures that the float result $r$ of a C operation $e_1
-op e_2$ on floats, if there is no overflow and if the default rounding
-mode is not changed in the program, has the same real value as the
-logic expression $(float)(e_1 op e_2)$. Notice that this is not true for the equality \verb|\eq_float| of floats: \verb|-0.0 + -0.0| in C is equal to the float number \verb|-0.0|, which is not \verb|\eq_float| to \verb|0.0|, which is the value of the logic expression \verb|(float)(-0.0 + -0.0)|.
+This semantics of casts ensures that the float result $r$ of a C operation
+$e_1 op e_2$ on floats, if there is no overflow and if the default
+rounding mode is not changed in the program, has the same real value
+as the logic expression $(float)(e_1 op e_2)$. Notice that this is not
+true for the equality \verb|\eq_float| of floats: \verb|-0.0 + -0.0|
+in C is equal to the float number \verb|-0.0|, which is not
+\verb|\eq_float| to \verb|0.0|, which is the value of the logic
+expression \verb|(float)(-0.0 + -0.0)|.
 
 Finally, two additional predicates are provided on float and double
-numbers,which check that their argument is respectively NaN or is a
-finite number:
+numbers,which check that their argument is NaN or a
+finite number respectively:
 \begin{flushleft}\ttfamily
-predicate \verb|\is_nan_float|(float x); \\
-predicate \verb|\is_nan_double|(double x); \\
-predicate \verb|\is_finite_float|(float x); \\
-predicate \verb|\is_finite_double|(double x);
+predicate \verb|\is_nan_float|\indexttbs{is\_nan\_float}(float x); \\
+predicate \verb|\is_nan_double|\indexttbs{is\_nan\_double}(double x); \\
+predicate \verb|\is_finite_float|\indexttbs{is\_finite\_float}(float x); \\
+predicate \verb|\is_finite_double|\indexttbs{is\_finite\_double}(double x);
 \end{flushleft}
 
 \oldremark{Claude}{
@@ -533,7 +544,7 @@ on pourrait enonce un certain nombre de proprietes:
 Quantification over a variable of type \verb|real| is of course usual
 quantification over real numbers.
 
-Quantification over float (resp. double) types is allowed too, and are
+Quantification over float (resp. double) types is allowed too, and is
 supposed to range over all real numbers representable as floats (resp
 doubles). In particular, this does not include NaN, +infinity and
 -infinity in the considered range.
@@ -554,7 +565,7 @@ pour des types de donnees
 
 \section{Function contracts}
 \label{sec:fn-behavior}
-
+\index{function contract}\index{contract}
 
 
 \begin{figure}[t]
@@ -604,8 +615,9 @@ Function contracts usually require to refer to function results and
 values in the pre-state. Thus terms are extended with the following new
 constructs (shown in Figure~\ref{fig:gram:oldandresult}).
 \begin{itemize}
-\item $\old(e)$ denotes the value of $e$ in the pre-state of the function.
-\item \result{} denotes the returned value of the function.
+\item $\old(e)$\indexttbs{old} denotes the value of $e$ in the
+pre-state of the function.
+\item \result\indexttbs{result} denotes the returned value of the function.
 \end{itemize}
 
 $\old(e)$ and $\result$ can be used only in \assigns{} clauses and
@@ -618,6 +630,7 @@ the pre-state.
 
 A simple function contract, having no named behavior, has the following
 form:
+\indextt{requires}\indextt{assigns}\indextt{ensures}
 \begin{flushleft}\ttfamily
 /*@ requires $P_1$; requires $P_2$; \dots \\
 ~~@ assigns $L_1$;  assigns $L_2$;  \dots \\
@@ -687,7 +700,7 @@ default status of clauses.
 
 \subsection{Contracts with named behaviors}
 \label{subsec:behaviors}
-
+\index{function behavior}\index{behavior}
 The general form of a function contract contains several named
 behaviors (restricted to two behaviors, in the following, for readability).
 \begin{flushleft}\ttfamily
@@ -810,12 +823,13 @@ See~\ref{sec:loop_annot} for a continuation of this example.
 
 
 \subsubsection{Completeness of behaviors}
-
+\label{sec:compl-behav}
 Notice that in a contract with named behaviors, it is not required that
 the disjunction of the $A_i$ is true, \emph{i.e.} it is not mandatory to
 provide a ``complete'' set of behaviors.
 If such a condition is seeked, it is possible to add the following clause
 to a contract:
+\index{complete behaviors}
 \begin{flushleft}\ttfamily
 /*@ ... \\
 ~~@ \notimplemented{complete behaviors $b_1,\ldots,b_n$;} \\
@@ -837,6 +851,7 @@ means that all behaviors given in the contract should be taken into account.
 
 Similarly, it is not required that two distinct behaviors are disjoint.
 If desired, this can be specified with the following clause:
+\index{disjoint behaviors}
 \begin{flushleft}\ttfamily
 /*@ ... \\
 ~~@ \notimplemented{disjoint behaviors $b_1,\ldots,b_n$;} \\
@@ -935,26 +950,27 @@ Section~\ref{sec:glossary}.
 
 The grammar for sets of terms is given in
 Figure~\ref{fig:gram:locations}. The semantics is given below,
-where $s$ denotes any \textsl{tset}:
+where $s$ denotes any \textsl{tset}.
 \begin{itemize}
-\item \verb|\empty| denotes the empty set;
-\item a simple term denotes a singleton set;
-\item $s\ra id$ denotes the set of $x\ra id$ for each $x \in s$;
-\item $s.id$ denotes the set of $x.id$ for each $x \in s$;
-\item $*s$ denotes the set of $*x$ for each $x \in s$;
+\item \verb|\empty|\indexttbs{empty} denotes the empty set.
+\item a simple term denotes a singleton set.
+\item $s\ra id$ denotes the set of $x\ra id$ for each $x \in s$.
+\item $s.id$ denotes the set of $x.id$ for each $x \in s$.
+\item $*s$ denotes the set of $*x$ for each $x \in s$.
 \item $s_1[s_2]$ denotes the set of $x_1[x_2]$ for each $x_1 \in s_1$
-  and $x_2 \in s_2$;
+  and $x_2 \in s_2$.
 \item $t_1 .. t_2$ denotes the set of integers between $t_1$ and
-  $t_2$, included;
-\item $\union(s_1,\ldots,s_n)$ denotes the union of $s_1,s_2,\ldots $
-  and $s_n$;
-\item $\inter(s_1,\ldots,s_n)$ denotes the intersection of
+  $t_2$, included. If $t_2 > t_1$, this the same as \verb+\empty+
+\item $\union(s_1,\ldots,s_n)$\indexttbs{union}
+  denotes the union of $s_1,s_2,\ldots $ and $s_n$;
+\item $\inter(s_1,\ldots,s_n)$\indexttbs{inter} denotes the intersection of
   $s_1,s_2,\ldots $ and $s_n$;
 \item $s_1+s_2$ denotes the set of $x_1+x_2$ for each $x_1 \in s_1$
   and $x_2 \in s_2$;
 \item $(s)$ denotes the same set as $s$;
-\item $\{ s \mid b ; P \}$ denotes set comprehension, that is the
-  union of the sets denoted by $s$ for each value $b$ of binders
+\item $\{ s \mid b ; P \}$ denotes set
+  comprehension\index{comprehension},
+  that is the union of the sets denoted by $s$ for each value $b$ of binders
   satisfying predicate $P$ (binders $b$ are bound in both $s$ and $P$).
 \end{itemize}
 
@@ -1020,7 +1036,7 @@ compute an over-approximation of the sets of assigned locations.
 }
 
 \section{Statement annotations}
-
+\index{annotation}
 \oldremark{Claude}{
   Il faut absolument ajouter des regles de portee, a plusieurs
   endroits dans ce document
@@ -1030,12 +1046,14 @@ compute an over-approximation of the sets of assigned locations.
 
 Annotations on C statements are of three kinds:
 \begin{itemize}
-\item Assertions: allowed before any C statement or
+\item Assertions: \index{assertion}allowed before any C statement or
   at end of blocks.
-\item Loop annotations: invariant, assigns clause, variant; allowed
+\item\index{annotation!loop}\index{loop annotation}
+  Loop annotations: invariant, assigns clause, variant; allowed
   before any loop statement: \verb|while|, \verb|for|, and
   \verb|do...while|.
-\item Statement contracts: allowed before any C statement, specifying
+\item\index{statement contract}\index{contract}
+  Statement contracts: allowed before any C statement, specifying
   their behavior in a similar manner to C function contracts.
 \end{itemize}
 
@@ -1086,7 +1104,7 @@ The syntax of loop annotations is given in Figure~\ref{fig:gram:loops},
 as an extension of the grammar of C statements.
 
 \subsubsection{Loop invariants}
-
+\index{invariant}
 The semantics of loop invariants is defined as follows: a loop
 annotation of the form
 \begin{flushleft}\ttfamily
@@ -1535,7 +1553,7 @@ Figure~\ref{fig:gram:higherorder} introduces new term constructs for
 higher-order logic.
 \begin{description}
 \item[Abstraction]\indexttbs{lambda}
-  \notimplemented{The term $\Lambda~\tau_1~x_1,\ldots,\tau_n~x_n ~;~ t$}
+  \notimplemented{The term $\bslambda~\tau_1~x_1,\ldots,\tau_n~x_n ~;~ t$}
   denotes the $n$-ary logic function which maps $x_1,\ldots,x_n$ to
   $t$. It has the same precedence as \Forall and \Exists
 \item[Extended quantifiers]
@@ -1757,8 +1775,8 @@ returns the base address of an allocated pointer
 
 \item $\valid$\indexttbs{valid}
   applies to a set of terms (see Section~\ref{sec:locations})
-  of some pointer type. $\valid(s)$ holds whenever dereferencing any
-  $p\in s$ is safe.
+  of some pointer type. $\valid(s)$ holds if and only if dereferencing any
+  $p\in s$ is safe. In particular, $\valid(\verb+\empty+)$ holds.
 \end{itemize}
 Some shortcuts are provided:
 \begin{itemize}

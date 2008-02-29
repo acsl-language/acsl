@@ -18,7 +18,7 @@ Variables:
 
 Unary integer operations:
 \[
-\frac{\Gamma \vdash t : \integer}{\Gamma \vdash op~t : \integer} \mbox{ if $op\in \{+,-,\tilde\}$}
+\frac{\Gamma \vdash t : \integer}{\Gamma \vdash op~t : \integer} \mbox{ if $op\in \{+,-,\sim\}$}
 \]
 
 Boolean negation:
@@ -57,7 +57,7 @@ Binary
 
 
 \subsection{Typing rules for locations}
-
+%VP: A-t-on besoin d'un logic environment?
 We consider the typing judgement $\Gamma,\Lambda \vdash s : \tau,b$
 meaning that $s$ is a set of terms of type $tau$, which is moreover a
 set of locations if the boolean $b$ is true.
@@ -65,19 +65,25 @@ $\Gamma$ is the C environment and $\Lambda$ is the logic environment.
 
 Rules:
 \[
-\frac{}{\Gamma \vdash id : \tau,true} \mbox{ if $id:\tau in \Gamma$}
+\frac{}{\Gamma,\Lambda \vdash id : \tau,true} \mbox{ if $id:\tau \in \Gamma$}
 \]
 \[
-\frac{\Gamma\vdash s:\tau*,b}{\vdash *s: \tau,true}
+\frac{}{\Gamma,\Lambda \vdash id : \tau,true} \mbox{ if $id:\tau \in \Lambda$}
 \]
 \[
-\frac{e: struct S* \quad e_2:tset \tau}{\vdash s->id : \tau}
+\frac{\Gamma,\Lambda\vdash s:\tau*,b}{\Gamma,\Lambda \vdash *s: \tau,true}
+\]
+%VP: cette regle ne veut rien dire.
+%\[
+%\frac{e: struct~S* \quad e_2:tset \tau}{\vdash s->id : \tau}
+%\]
+\[
+\frac{\Gamma,b\cup \Lambda \vdash e: tset \tau}
+{\Gamma,\Lambda\vdash \{ e \mid b ; P \} : tset \tau }
 \]
 \[
-\frac{b\cup \Lambda \vdash e: tset \tau}{\vdash \{ e \mid b ; P \} : tset \tau }
-\]
-\[
-\frac{\Gamma\vdash e_1:\tau,b \quad e_2:\tau,b}{\vdash e_1,e_2: \tau,b}
+\frac{\Gamma,\Lambda\vdash e_1:\tau,b \quad \Gamma,\Lambda\vdash e_2:\tau,b}
+{\Gamma,\Lambda\vdash e_1,e_2: \tau,b}
 \]
 
 %%% Local Variables:

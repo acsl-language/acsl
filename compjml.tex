@@ -2,34 +2,34 @@
 \label{sec:comp-jml}
 
 Although we took our inspiration in the Java Modeling Language (aka
-JML~\cite{jmlhomepage}), our Behavioral Interface Specification
-Language (BISL for short) ACSL is notably different from JML in
-crucial ways. ACSL and JML differ mostly in two aspects:
+JML~\cite{jmlhomepage}), ACSL is notably different from JML in
+two crucial aspects:
 
 \begin{itemize}
 \item ACSL is a BISL for C, a low-level structured language, while JML
-  is a BISL for Java, an object-oriented inheritance-based
+  is a BISL for Java, an object-oriented inheritance-based high-level
   language. Not only the language features are not the same but the
-  programming styles and idioms are very different, which makes for
+  programming styles and idioms are very different, which entails also
   different ways of specifying behaviors. In particular, C has no
   inheritance nor exceptions, and no language support for the simplest
   properties on memory (e.g., the size of an allocated memory block).
 \item JML relies on runtime assertion checking (RAC) when typing,
   static analysis and automatic deductive verification fail. The
   example of CCured~\cite{necula02ccured,condit03ccured}, that adds
-  strong typing to C by relying on RAC too, shows it is not possible
+  strong typing to C by relying on RAC too, shows that it is not possible
   to do it in a modular way. Indeed, it is necessary to modify the
   layout of C data structures for RAC, which is not modular. The
   follow-up project Deputy~\cite{condit07deputy} thus reduces the
   checking power of annotations in order to preserve modularity.  On
-  the contrary, we choose not to restrein the power of annotations
+  the contrary, we choose not to restrain the power of annotations
   (e.g., all first order logic formulas are allowed). To that end, we
   rely on manual deductive verification using an interactive theorem
   prover (e.g., Coq) when every other technique failed.
 \end{itemize}
 
 \noindent
-In the following, we further describe these differences.
+In the remainder of this chapter, we describe these differences in
+further details.
 
 \subsection{Low-level language vs. inheritance-based one}
 
@@ -122,9 +122,9 @@ public static void Java\_nullify(char[] a) \{ \\
 \end{flushleft}
 
 On the contrary, the precondition of the same function in C, whose
-definition follows, is more involved. One must remark that the
+definition follows, is more involved. First, remark that the
 C programmer has to add an extra argument for the size of the array,
-or rather a lower bound on this array size. 
+or rather a lower bound on this array size.
 
 \begin{flushleft}\ttfamily
 void C\_nullify(char* a, unsigned int n) \{ \\
@@ -143,8 +143,10 @@ A correct precondition for this function is the following:
 /*@ requires $\mathit{\valid(a + 0..(n-1))}$; */
 \end{flushleft}
 
-It uses predicate $\valid$ defined in Section~\ref{subsec:memory},
-with the meaning that $\valid(a + 0..(-1))$ is always true.
+where predicate $\valid$ is the one defined in Section~\ref{subsec:memory}.
+(note that $\valid(a + 0..(-1))$ is the same as
+$\valid(\verb+\empty+)$ and thus is true regardless of the validity of
+$a$ itself).
 When {\ttfamily n} is null, {\ttfamily a} does
 not need to be valid at all, and when {\ttfamily n} is strictly
 positive, {\ttfamily a} must point to an array of size at least
@@ -168,13 +170,13 @@ To make it easier, it is possible in ACSL to distinguish between the
 to succeed for this behavior to apply, and the \verb|requires| part
 that specifies the additional preconditions that must be true when a
 behavior applies. The specification for our example can then be
-translated into: 
+translated into:
 
 \begin{flushleft}\ttfamily
 /*@ behavior $\mathit{n\_is\_null}$: \\
 ~~@ ~~assumes $\mathit{n == 0}$; \\
 ~~@ behavior $\mathit{n\_is\_not\_null}$: \\
-~~@ ~~assumes $\mathit{n ~!= 0}$; \\
+~~@ ~~assumes $\mathit{n ~> 0}$; \\
 ~~@ ~~requires $\mathit{\valid(a + 0..(n-1))}$; \\
 ~~@*/
 \end{flushleft}
@@ -184,16 +186,26 @@ can be completed with postconditions that belong to one behavior only.
 Contrary to JML, the set of behaviors for a function do not
 necessarily cover all cases of use for this function, as mentioned in
 Section~\ref{subsec:behaviors}. This allows for partial
-specifications, whereas JML behaviors cannot offer such flexibility.
-
+specifications, whereas JML behaviors cannot offer such
+flexibility. Here, Our two behaviors are clearly mutually exclusive,
+and, since \texttt{n} is an \texttt{unsigned int}, our
+they cover all the possible cases. We could have specified that as well, by
+adding the following lines in the contract (see
+Section~\ref{sec:compl-behav}).
+\begin{flushleft}\ttfamily
+/*@~~...\\
+~~@~~disjoint behaviors;\\
+~~@~~complete behaviors;\\
+~~@*/
+\end{flushleft}
 
 \subsubsection*{ACSL contracts vs. JML ones}
 
 To fully understand the difference between specifications in ACSL and
-JML, we detail in the following the requirement on the pre-state and
-the guarantee on the post-state, given behaviors in JML and ACSL.
+JML, we detail in below the requirement on the pre-state and
+the guarantee on the post-state given by behaviors in JML and ACSL.
 
-A JML contract is either a lightweight or an heavyweight one.
+A JML contract is either \emph{lightweight} or \emph{heavyweight}.
 For the purpose of our comparison, it is sufficient to know that a
 lightweight contract has \verb|requires| and \verb|ensures| clauses
 all at the same level, while an heavyweight contract has multiple
@@ -209,21 +221,23 @@ heavyweight styles:
 ~~@ ensures  $Q_1$; \\
 ~~@ ensures  $Q_2$; \\
 ~~@ behavior $x_1$: \\
+~~@ ~~requires $A_1$; \\
 ~~@ ~~requires $R_1$; \\
 ~~@ ~~ensures $E_1$; \\
 ~~@ behavior $x_2$: \\
+~~@ ~~requires $A_2$; \\
 ~~@ ~~requires $R_2$; \\
 ~~@ ~~ensures $E_2$; \\
 ~~@*/
 \end{flushleft}
 It assumes from the pre-state the condition:
 \begin{center}
-{\ttfamily $P_1 ~\&\&~ P_2 ~\&\&~ (R_1 ~||~ R_2)$}
+{\ttfamily $P_1 ~\&\&~ P_2 ~\&\&~ ((A_1 ~\&\&~ R_1) ~||~ (A_2 ~\&\&~ R_2))$}
 \end{center}
 and guarantees that the following condition holds in post-state:
 \begin{center}
-{\ttfamily $Q_1 ~\&\&~ Q_2 ~\&\&~ 
-  (\old(R_1) ==> E_1) ~\&\&~ (\old(R_2) ==> E_2)$}
+{\ttfamily $Q_1 ~\&\&~ Q_2 ~\&\&~
+  (\old(A_1 ~\&\&~ R_1) ==> E_1) ~\&\&~ (\old(A_2 ~\&\&~ R_2) ==> E_2)$}
 \end{center}
 
 
@@ -248,11 +262,11 @@ Here is now an ACSL specification:
 \noindent
 Syntactically, the only difference with the JML specification is the
 addition of the \verb|assumes| clauses.
-Its translation to assume-guarantee is however quite different. 
+Its translation to assume-guarantee is however quite different.
 It assumes from the pre-state the condition:
 
 \begin{center}
-{\ttfamily $P_1 ~\&\&~ P_2 ~\&\&~ 
+{\ttfamily $P_1 ~\&\&~ P_2 ~\&\&~
   (A_1 ==> R_1) ~\&\&~ (A_2 ==> R_2)$}
 \end{center}
 
@@ -260,13 +274,22 @@ It assumes from the pre-state the condition:
 and guarantees that the following condition holds in the post-state:
 
 \begin{center}
-{\ttfamily $Q_1 ~\&\&~ Q_2 ~\&\&~ 
+{\ttfamily $Q_1 ~\&\&~ Q_2 ~\&\&~
   (\old(A_1) ==> E_1) ~\&\&~ (\old(A_2) ==> E_2)$}
 \end{center}
 
+Thus, ACSL allows to distinguish between the clauses that control
+which behavior is active (the \texttt{assumes} clauses) and the
+clauses that are preconditions for a particular behavior (the internal
+\texttt{requires} clauses). In addition, as mentioned above, there is
+by default no requirement in ACSL for the specification to be complete (The
+last part of the JML condition on the pre-state). If desired, this has
+to be precised explicitely with a \verb+complete behaviors+ clause as
+seen in Section~\ref{sec:compl-behav}.
+
 \subsubsection*{ACSL \texttt{assigns} clause}
 
-Beware that in \texttt{assigns} clause, the expressions given refer to
+Beware that in \texttt{assigns} clauses, the given locations refer to
 the post-state, whereas in JML, they refer to the pre-state. The JML
 semantics can be obtained using \verb|\old| construct.
 
@@ -282,17 +305,16 @@ conditions.  This allows complex nesting of behaviors from the user
 point of view, while tools only have to deal with basic contracts. In
 particular, the major tools on JML use this desugaring process, like
 the Common JML tools to do assertion checking, unit testing,
-etc. (seen in~\cite{leavens00jml}) and the tool ESC/Java2 for
-automatic deductive verification of JML specifications (seen
-in~\cite{kiriny07implnotes}).
+etc. (see~\cite{leavens00jml}) and the tool ESC/Java2 for
+automatic deductive verification of JML specifications
+(see~\cite{kiriny07implnotes}).
 
 One issue with such a desugaring approach is the complexity of the
-transformations involved, e.g., see the desugaring of assignable clauses
+transformations involved, as \emph{e.g.} for desugaring assignable clauses
 between multiple \textit{spec-cases} in
 JML~\cite{raghavan00desugaring}.  Another issue is precisely that
 tools only see one global contract, instead of multiple independent
-behaviors, that could be analyzed in more details separately.
-
+behaviors, that could be analyzed separately in more detail.
 Instead, we favor the view that a function implements multiple
 behaviors, that can be analyzed separately if a tool feels like
 it. Therefore, we do not intend to provide a desugaring process.
@@ -304,12 +326,12 @@ specifications~\cite{leavens00preliminary}. This is certainly
 understandable when relying on RAC: methods called should be defined
 so that the runtime can call them, and they should not have
 side-effects in order not to pollute the program they are supposed to
-annotate. 
+annotate.
 
 In our setting, it is desirable to allow calls to logical functions in
 specifications. These functions may be defined, like program ones, but
 they may also be only declared (with a suitable declaration of \reads
-clause) and defined through an axiomatization. 
+clause) and defined through an axiomatization.
 This makes for richer specifications that may be useful either in
 automatic or in manual deductive verification.
 
@@ -329,7 +351,7 @@ might exist.
   decreases            & loop variant \\
   $(\Forall~\tau~x ; P ; Q)$ &   $(\Forall~\tau~x ; P \verb|==>| Q)$ \\
   $(\Exists~\tau~x ; P ; Q)$ &   $(\Exists~\tau~x ; P \verb|&&| Q)$ \\
-  $(\verb|\max|~\tau~x ; a \verb|<=| x \verb|<=| b ; f)$ &   
+  $(\verb|\max|~\tau~x ; a \verb|<=| x \verb|<=| b ; f)$ &
   $\verb|\max|(a,b,\verb|\lambda|~\tau~x ; f)$ \\
   \hline
 \end{tabular}
