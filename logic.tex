@@ -24,8 +24,8 @@
   poly-id ::= id ; normal identifier
   | id type-var-binders ; identifier for polymorphic object
   \
-  logic-const-def ::= {"logic" type-expr;
-    poly-id "=" term ";"}
+  logic-const-def ::= {"logic" type-expr};
+    {poly-id "=" term ";"}
   \
   logic-function-def ::= "logic" type-expr;
   poly-id parameters "=" term ";"

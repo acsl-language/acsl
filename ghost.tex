@@ -7,27 +7,27 @@
   direct-declarator ::= C-direct-declarator ;
     | direct-declarator ;
     "(" parameter-type-list? ")";
-        {"/*@" "ghost";
-          "("parameter-list")";
-          "*/"} ; declare fun with ghost args
+        {"/*@" "ghost"};
+          {"("parameter-list")"};
+          {"*/"} ; declare fun with ghost args
         \
   postfix-expression ::= C-postfix-expression ;
     | postfix-expression ;
      "(" argument-expression-list? ")";
-     {"/*@" "ghost" ;
-       "(" argument-expression-list ")";
-       "*/"} ; call fun with ghost args
+     {"/*@" "ghost"} ;
+     {  "(" argument-expression-list ")"};
+     {  "*/"} ; call fun with ghost args
     \
   statement ::= C-statement | statements-ghost \
   statements-ghost ::= "/*@" "ghost" ghost-statement+ "*/" \
   ghost-selection-statement ::= C-selection-statement ;
     | "if" "(" expression ")" statement;
-      {"/*@" "ghost" "else";
-        C-statement+ ;
-        "*/"} \
+      {"/*@" "ghost" "else"};
+      {  C-statement+ };
+      {  "*/"} \
 
   struct-declaration ::= C-struct-declaration ;
-  | "/*@" "ghost" C-struct-declaration "*/" ; ghost field
+  | {"/*@" "ghost" C-struct-declaration "*/"} ; ghost field
 
 \end{syntax}
 
