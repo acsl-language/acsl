@@ -12,7 +12,7 @@ two crucial aspects:
   programming styles and idioms are very different, which entails also
   different ways of specifying behaviors. In particular, C has no
   inheritance nor exceptions, and no language support for the simplest
-  properties on memory (e.g., the size of an allocated memory block).
+  properties on memory (\emph{e.g}, the size of an allocated memory block).
 \item JML relies on runtime assertion checking (RAC) when typing,
   static analysis and automatic deductive verification fail. The
   example of CCured~\cite{necula02ccured,condit03ccured}, that adds
@@ -22,9 +22,9 @@ two crucial aspects:
   follow-up project Deputy~\cite{condit07deputy} thus reduces the
   checking power of annotations in order to preserve modularity.  On
   the contrary, we choose not to restrain the power of annotations
-  (e.g., all first order logic formulas are allowed). To that end, we
+  (\emph{e.g.}, all first order logic formulas are allowed). To that end, we
   rely on manual deductive verification using an interactive theorem
-  prover (e.g., Coq) when every other technique failed.
+  prover (\emph{e.g.}, Coq) when every other technique failed.
 \end{itemize}
 
 \noindent
@@ -38,7 +38,7 @@ further details.
 JML has a core notion of inheritance of specifications, that duplicates
 in specifications the inheritance feature of Java.  Inheritance
 combined with visibility and modularity account for a number of
-complex features in JML (e.g., \verb|spec_public| modifier, data
+complex features in JML (\emph{e.g}, \verb|spec_public| modifier, data
 groups, represents clauses, etc), that are necessary to express the
 desired inheritance-related specifications while respecting visibility
 and modularity. Since C has no inheritance, these intricacies are
@@ -91,7 +91,7 @@ is sufficient to write an appropriate postcondition:
 
 % \noindent
 % A tool could easily set error conditions aside, by providing an
-% appropriate extension of behaviors, e.g., using a new keyword
+% appropriate extension of behaviors, \emph{e.g}, using a new keyword
 % \verb|failswith|:
 
 % \begin{flushleft}\ttfamily

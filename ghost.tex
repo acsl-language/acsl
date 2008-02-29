@@ -26,6 +26,9 @@
         C-statement+ ;
         "*/"} \
 
+  struct-declaration ::= C-struct-declaration ;
+  | "/*@" "ghost" C-struct-declaration "*/" ; ghost field
+
 \end{syntax}
 
 %%% Local Variables:

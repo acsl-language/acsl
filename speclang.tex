@@ -208,7 +208,7 @@ by explicitly adding parentheses.
 
 The semantics of logic expressions in ACSL is based on
 mathematical first-order
-logic~(\url{http://en.wikipedia.org/wiki/First_order_logic}). In
+logic~\cite{wikipedia-fo-logic}. In
 particular, it is a 2-valued logic with only total functions. Consequently,
 expressions are never ``undefined''.
 This is an important design choice and the specification writer should
@@ -485,8 +485,9 @@ Casting from a C integer type or a float type to a float or a double is
 as in C: the same conversion operations apply.
 
 Conversion of real numbers to float or double values indeed depend on
-various possible rounding modes defined by the IEEE~754 standard. These
-modes are defined by a logic type:
+various possible rounding modes defined by the IEEE~754
+standard~\cite{float-std,wikipedia-float}. These modes are defined by
+a logic type:
 \begin{flushleft}\ttfamily
 type rounding\_mode =  \\
 \quad  Nearest\_even | To\_zero | Round\_up | Round\_down | Nearest\_away
@@ -1186,7 +1187,7 @@ usual order on integers, using the additional \verb|for|
 modifier. This is explained in Section~\ref{sec:termination}.
 
 \subsubsection{General inductive invariants}
-
+\index{invariant}
 It is actually allowed to pose an inductive invariant
 anywhere inside a loop body.
 For example, it makes sense for a \texttt{do $s$
@@ -1256,7 +1257,7 @@ node ``inv'' to itself.
 
 \subsection{Built-in construct \at{}}
 \label{sec:at}
-
+\indexttbs{at}
 Statement annotations usually need another additional construct
 $\at(e,id)$ referring to the value of the expression $e$ in the
 state at label $id$. The label $id$ can be either a regular C label,
@@ -1273,7 +1274,7 @@ These rules are exactly the same rules as for the visibility of local
 variables within C statements (see~\cite{KR88}, Section A11.1)
 
 \subsubsection*{Default logic labels}
-
+\indextt{Pre}\indextt{Here}\indextt{Old}
 There are three predefined logic labels: \verb|Pre|, \verb|Here| and
 \verb|Old|. $\old(e)$ is in fact syntactic sugar for $\at(e,Old)$.
 
@@ -1291,7 +1292,7 @@ There are three predefined logic labels: \verb|Pre|, \verb|Here| and
   and refers to the pre-state of the function it occurs in.
 \end{itemize}
 
-Note that no logic labels are visible in global logic declarations
+Note that no logic label is visible in global logic declarations
 such as lemmas, axioms, definition of predicate or logic
 functions. When such an annotation needs to refer to a given memory
 state, it has to be given a label binder: this is described in
@@ -1309,7 +1310,7 @@ Section~\ref{sec:logicalstates}.
 
 \subsection{Statement contracts}
 \label{sec:statement_contract}
-
+\index{statement contract}\index{contract}
 \begin{figure}[t]
   \begin{cadre}
     \input{st_contracts.bnf}
@@ -1367,7 +1368,7 @@ to refer to local variables.
 
 \section{Termination}
 \label{sec:termination}
-
+\index{termination}
 The property of termination concerns both loops and recursive function
 calls.
 % For that purpose, loops can be annotated with a \texttt{loop
@@ -1384,7 +1385,7 @@ measures into other domains and/or using a different ordering relation
 
 \subsection{Integer measures}
 \label{sec:integermeasures}
-
+\indexttbs{decreases}\indexttbs{variant}
 Functions are annotated with integer measures with the syntax
 \begin{flushleft}\ttfamily
 //@ decreases $e$ ;
@@ -1461,7 +1462,7 @@ applies when $g$ is $f$ itself.
 
 \section{Logic specifications}
 \label{sec:logicspec}
-
+\index{logic specification}\index{specification}
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth} \input{logic.bnf}
     \end{minipage}}
@@ -1613,12 +1614,13 @@ higher-order logic.
 
 
 Logic types may not only be declared but also be given a
-definition. Defined logic types can be  either under
-record types\index{record}, or sum types\index{sum}. These definitions may be
-recursive.  For record types, the field access notation $t.id$ can be
-used, and for sum types, a pattern-matching construction is
-available. The grammar rules for these additional constructions are
-given in Figure~\ref{fig:gram:logictype}
+definition. Defined logic types can be either under record
+types\index{record}\index{type!record}, or sum
+types\index{sum}\index{type!sum}. These definitions may be recursive.
+For record types, the field access notation $t.id$ can be used, and
+for sum types, a pattern-matching construction is available. The
+grammar rules for these additional constructions are given in
+Figure~\ref{fig:gram:logictype}
 
 \oldremark{All}{
 
@@ -1680,7 +1682,7 @@ context.
 \label{fig:gram:logicreads}
 \end{figure}
 
-% NdV: exemple redondant avec le suivant.
+% VP: exemple redondant avec le suivant.
 % \begin{example}
 %   The following annotations declare a function which returns the number of
 %   positive elements in an array of doubles between the given indexes
@@ -1726,7 +1728,7 @@ context.
 
 \oldremark{SD7+All}{
 
-As examplified above, hybrid predicates and functions should be used
+As shown above, hybrid predicates and functions should be used
 with caution, since they do not depend only on the values of their
 parameters but also in an implicit way on the values stored in memory.
 
@@ -1941,7 +1943,8 @@ Useful additional constructs for such functional expressions are constructions  
 
 \section{Data invariants}
 \label{sec:invariants}
-
+\index{data invariant}\index{global invariant}\index{type invariant}
+\index{invariant!data}\index{invariant!global}\index{invariant!type}
 Data invariants are properties on data that are supposed to hold
 permanently during the lifetime of these data. In ACSL, we distinguish
 between:
@@ -1950,7 +1953,9 @@ between:
   only apply to specified global variables, whereas the latter are
   associated to a static type, and apply to any variables of
   the corresponding type;
-\item \emph{strong} invariants and \emph{weak} invariants: strong
+\item \emph{strong} invariants and \emph{weak} invariants:
+  \index{invariant!strong}\index{invariant!weak}
+  strong
   invariants must be valid at any time during program execution
   (more precisely at any \emph{sequence point} as defined in the C
   standard), whereas weak invariants must be valid at \emph{function
@@ -1989,19 +1994,6 @@ to \texttt{weak}.
   montrer un example qui exprime des proprietes d'initialisation de
   variables globales, i.e un tableau contient des valeurs distinctes 2
   a 2.
-
-}
-
-\oldremark{Claude}{
-
-obsolete
-
-\begin{itemize}
-\item Global invariants: invariants on global variables
-\item Type invariants: invariants on struct, union, typedef
-\item \experimental: \notimplemented{\texttt{initially}}:
-  predicates that should hold after global variables initialization
-\end{itemize}
 
 }
 
@@ -2089,7 +2081,7 @@ void reset(S *p) {
 \end{example}
 
 \subsection{Model variables and model fields}
-
+\index{model}
 \notimplemented{A \emph{model variable} is a variable introduced in the
   specification with the keyword {\texttt{model}}. Its type must be
   a logic type. Analogously, structures may have \emph{model fields}.
@@ -2146,7 +2138,7 @@ below.
   \end{itemize}
   An implementation of this function might be as follows, where a
   decision has been made to generate values in increasing order, so
-  that it suffices to record the last value generated. This decision
+  that it is sufficient to record the last value generated. This decision
   is made explicit by an invariant.
   \input{gen_code.pp}
 \end{example}
@@ -2155,15 +2147,15 @@ below.
 
 Although the syntax of model variables is close to JML model
 variables, they differ in the sense that the type of a model variable
-is a logic type, not a C type. Also, the semantics above is
-closer to the one of B machines.  It has to be noticed that
-program verification with model variables does not have a
-well-established theoretical background~\cite{marche07,leavens07}, so we
-deliberately do not provide a precise semantics in this document .
+is a logic type, not a C type. Also, the semantics above is closer to
+the one of B machines~\cite{abrial96:_b_book}. It has to be noticed
+that program verification with model variables does not have a
+well-established theoretical background~\cite{marche07,leavens07}, so
+we deliberately do not provide a precise semantics in this document .
 
 \section{Ghost variables and statements}
 \label{sec:ghost}
-
+\index{ghost}
 Ghost variables and statements are like C variables and statements,
 but visible only in the specifications. They are introduced by the
 \verb|ghost| keyword at the beginning of the annotation
@@ -2209,19 +2201,6 @@ grammar are the following:
   (there are however semantical restrictions for valid
   ghost labelled statements in a switch, see next paragraph for details).
 \end{itemize}
-
-\oldremark{All}{
-
-  On veut autoriser \texttt{/@ .. @/} dans les commentaires C, on a en a besoin
-  pour annoter le code ghost
-
-  preciser aussi que l'on a le droit de mettre des @ en debut
-  de ligne (\texttt{\textbackslash{}n space* @}) et juste avant le \texttt{*/} fermant
-  (ou alors, considerer le caractere \texttt{@} juste comme un 'space' ?)
-
-
-}
-
 
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
@@ -2310,7 +2289,7 @@ variables modifications are executable.
 \end{example}
 
 \subsection{Volatile variables}
-
+\index{volatile}
 \experimental
 
 Volatile variables can not be used in logic terms, since reading such
@@ -2352,7 +2331,7 @@ is replaced by \verb|g(&x,v)|.
 \section{Undefined values, dangling pointers}
 
 \subsection{Initialization}
-
+\indexttbs{initialized}
 \verb|\initialized| is a predicate taking a set of l-values as
 argument and means that each l-value in this set is initialized.
 
@@ -2362,7 +2341,7 @@ argument and means that each l-value in this set is initialized.
 \end{example}
 
 \subsection{Unspecified values}
-
+\indexttbs{specified}
 \verb|\specified| is a predicate taking a set of l-values as
 argument and means that each l-value in this set has a \emph{specified
   value}: its value is not a dangling pointer (that is the address of
