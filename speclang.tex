@@ -646,7 +646,8 @@ The semantics of such a contract is as follows:
   $E_1 \verb|&&| E_2 \verb!&&! \dots$ holds.
 \item All memory locations of the pre-state that do not belong to the
   set $L_1 \cup L_2 \cup \dots$ remain allocated and are left unchanged in the
-  post-state.
+  post-state. The set $L_1 \cup L_2 \cup \dots$ is interpreted in the
+  post-state. 
 \end{itemize}
 
 % TODO : donner une vision plus symétrique appelant/appelé d'un contrat
@@ -1833,10 +1834,10 @@ where $A$ is the type of values in that locations.
   This logic function can be used as argument of \separated.
 \end{example}
 
-Note that a clause \verb+assigns l1,..,ln+ is equivalent
+Note that a clause \verb+assigns+ $l_1,..,l_n$ is equivalent
 to the postcondition
 \[
-\forall char* p; \separated(\union(l1,..,ln),*p) ==> *p == \old(*p)
+\forall char* p; \separated(\union(l_1,..,l_n),*p) ==> *p == \old(*p)
 \]
 
 
