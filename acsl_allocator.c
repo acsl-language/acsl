@@ -45,7 +45,7 @@ typedef struct _memory_block {
     // structure that describes the slicing of a block into chunks
 } memory_block;
 
-/*@ type invariant inv_memory_block(memory_block mb) =
+/*@ strong type invariant inv_memory_block(memory_block mb) =
   @   mb.packed ==>
   @     (0 < mb.size && mb.used <= mb.next <= mb.size
   @     && \offset(mb.data) == 0
@@ -76,7 +76,7 @@ typedef struct _memory_chunk {
     // shortcut for [block->data + offset]
 } memory_chunk;
 
-/*@ type invariant inv_memory_chunk(memory_chunk mc) =
+/*@ strong type invariant inv_memory_chunk(memory_chunk mc) =
   @   mc.packed ==>
   @     (0 < mc.size && valid_memory_block(mc.block)
   @     && mc.offset + mc.size <= mc.block->next) ;
@@ -146,7 +146,7 @@ typedef struct _memory_slice {
   memory_chunk_list* chunks;
 } memory_slice;
 
-/*@ type invariant inv_memory_slice(memory_slice* ms) =
+/*@ strong type invariant inv_memory_slice(memory_slice* ms) =
   @   ms.packed ==>
   @     (valid_memory_block(ms->block) && ms->block->slice == ms
   @     && (ms->chunks == \null
@@ -171,7 +171,7 @@ typedef struct _memory_slice_list {
 /*@ logic memory_slice_list* next_slice(memory_slice_list* ptr) = 
   @   ptr->next ;
   @
-  @ type invariant inv_memory_slice_list(memory_slice_list* msl) =
+  @ strong type invariant inv_memory_slice_list(memory_slice_list* msl) =
   @   msl.packed ==>
   @     (valid_memory_slice(msl->slice)
   @     && (msl->next == \null || 

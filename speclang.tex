@@ -10,7 +10,7 @@ must be noted.
 \begin{itemize}
 \item The at sign (\verb|@|) is a blank character, thus equivalent
   to a space character.
-\item The identifiers may start with the backslash character (\verb|\|).
+\item Identifiers may start with the backslash character (\verb|\|).
 \item Some UTF8 characters may be used in place of some constructs, as
   shown in the following table:
 
@@ -272,7 +272,7 @@ Notes:
   required, \emph{e.g.} \texttt{(int)(x>0)+1}, where \verb|\false| becomes 0
   and \verb|\true| becomes 1.
 \item Quantification can be made over any type: logic types and C
-  types. Quantification over pointers must be carefully used,
+  types. Quantification over pointers must be used carefully,
   since it depends on the memory state where dereferencing is done (see
   Section~\ref{sec:quantification} and
   Section~\ref{sec:logicalstates}).
@@ -301,7 +301,7 @@ remainder of $n$ divided by $d$ then:
 \item $|d\times q| \leq |n|$, and $|q|$ is maximal for this property;
 \item $q$ is zero if $|n|<|d|$;
 \item $q$ is positive if $|n|\geq|d|$ and $n$ and $d$ have the same sign;
-\item $q$ is negative if $|n|\geq|d|$ and $n$ and $d$ have the opposite signs;
+\item $q$ is negative if $|n|\geq|d|$ and $n$ and $d$ have opposite signs;
 \item $q\times d+r = n$;
 \item $|r|<|d|$;
 \item $r$ is zero or has the same sign as $d$.
@@ -394,14 +394,14 @@ given in a library.
 
 \subsubsection{Enum types}
 
-Enum types are also interpreted as mathematical integers. Casting of
-an integer to a enum in the logic must give the same result as if it
+Enum types are also interpreted as mathematical integers. Casting
+an integer into an enum in the logic must give the same result as if it
 was in the C code.
 
 \subsubsection{Bitwise operations}
 
 Like arithmetic operations, bitwise operations apply to any
-mathematical integers: any mathematical integer has a unique infinite
+mathematical integer: any mathematical integer has a unique infinite
 2-complement binary representation with infinitely many zeros (for
 non-negative numbers) or ones (for negative numbers) on the left. Then
 bitwise operations apply to this representation.
@@ -484,7 +484,7 @@ operators of float (resp. double) numbers as in C:
 Casting from a C integer type or a float type to a float or a double is
 as in C: the same conversion operations apply.
 
-Conversion of real numbers to float or double values indeed depend on
+Conversion of real numbers to float or double values indeed depends on
 various possible rounding modes defined by the IEEE~754
 standard~\cite{float-std,wikipedia-float}. These modes are defined by
 a logic type:
@@ -511,7 +511,7 @@ of the special values +infinity and -infinity.
   $0.10000000149006473916$
 \end{example}
 Notice also that unlike for integers, suffixes $f$ and $d$ are
-meaningfull, because they implicitly add a cast operator as above.
+meaningful, because they implicitly add a cast operator as above.
 
 This semantics of casts ensures that the float result $r$ of a C operation
 $e_1 op e_2$ on floats, if there is no overflow and if the default
@@ -1006,7 +1006,7 @@ Note that \verb|\assigns \nothing| is equivalent to
 A C function can be defined only once but declared several times.
 It is allowed to annotate each of these declarations with contracts.
 Those contracts are seen as a single contract with the union of the
-\requires\ clauses and the behaviors.
+\requires\ clauses and behaviors.
 
 On the other hand a function may have no contract at all, or a
 contract with missing clauses. Missing \verb|requires| and
