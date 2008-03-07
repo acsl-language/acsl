@@ -78,6 +78,13 @@ clean:
 	rm -rf *~ *.aux *.log *.nav *.out *.snm *.toc *.pp *.bnf \
                transf trans.ml *.cm? *.idx
 
+.PHONY: implementation rubber
+implementation:
+	mv main.tex main_old.tex
+	sed -e 's/%--//' main_old.tex > main.tex
+	$(MAKE) rubber
+	mv main_old.tex main.tex
+
 # see http://www.pps.jussieu.fr/~beffara/soft/rubber/ for details on rubber.
 rubber: $(DEPS)
 	rubber -d main.tex
