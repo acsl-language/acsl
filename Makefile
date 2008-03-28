@@ -51,11 +51,17 @@ main.pdf: main.tex $(DEPS)
 %.pp: %.c pp
 	./pp -utf8 -c $< > $@
 
+%.tex: %.ctex pp
+	./pp $< > $@
+
 %.bnf: %.tex transf
 	./transf < $< > $@
 
 %.ml: %.mll
 	ocamllex $<
+
+%.pdf: %.tex
+	rubber -d $<
 
 pp: pp.ml
 	ocamlopt -o $@ $^

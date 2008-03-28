@@ -134,7 +134,7 @@ rule ctt = parse
         print_string "/*";
 	in_comment := true;
 	ctt lexbuf }
-  | "*/" { print_string "*/\\end{slshape}";
+  | "*/" { print_string "{}*/\\end{slshape}";
 	   in_comment := false;
 	   ctt lexbuf }
   | "//@"

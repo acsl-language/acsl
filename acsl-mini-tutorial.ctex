@@ -1,0 +1,260 @@
+\documentclass{report}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper=true,pdftex,colorlinks=true,urlcolor=blue,pdfstartview=FitH]{hyperref}
+
+\usepackage[T1]{fontenc}
+\usepackage{times}
+\usepackage{amssymb}
+\usepackage{graphicx}
+%\usepackage{tikz}
+\usepackage{color}
+\usepackage{xspace}
+\usepackage{makeidx}
+%\usepackage{ulem}
+\usepackage[leftbars]{changebar}
+\usepackage{alltt}
+\makeindex
+\input{./macros}
+
+\setlength{\textheight}{240mm}
+\setlength{\topmargin}{-10mm}
+\setlength{\textwidth}{160mm}
+\setlength{\oddsidemargin}{0mm}
+\setlength{\evensidemargin}{0mm}
+
+\renewcommand{\textfraction}{0.01}
+\renewcommand{\topfraction}{0.99}
+\renewcommand{\bottomfraction}{0.99}
+
+\usepackage{fancyhdr}
+\pagestyle{fancyplain}
+\renewcommand{\footrulewidth}{0.4pt}
+\addtolength{\headheight}{2pt}
+\addtolength{\headwidth}{1cm}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+\lhead[\fancyplain{}{\bfseries\thepage}]{\fancyplain{}{\bfseries\rightmark}}
+\chead{}
+\rhead[\fancyplain{}{\bfseries\leftmark}]{\fancyplain{}{\bfseries\thepage}}
+\lfoot{\fancyplain{}{ANSI C Specification Language}}
+\cfoot{}
+\rfoot{\fancyplain{}{CAT RNTL project}}
+
+\begin{document}
+\sloppy
+\hbadness=10000
+
+\begin{titlepage}
+\begin{center}
+\includegraphics[height=14mm]{cealistlogo.jpg}
+\hfill
+\includegraphics[height=14mm]{inriasaclaylogo.png}
+
+\vfill
+
+%\includegraphics[height=60mm]{FramaC.jpg}
+~
+
+\vspace{20mm}
+
+{\Huge\bfseries ACSL Mini-Tutorial}
+
+\bigskip
+
+\vspace{20mm}
+
+{Virgile Prevosto$^1$}
+
+\medskip
+
+\begin{tabular}{l}
+$^1$ CEA LIST, Software Security Laboratory, Saclay, F-91191 \\
+\end{tabular}
+
+\vfill
+
+\begin{flushleft}
+  This work has been supported by the 'CAT' ANR project
+  (ANR-05-RNTL-0030x) and by the ANR CIFRE contract 2005/973.
+\end{flushleft}
+
+\end{center}
+\end{titlepage}
+
+\clearpage
+
+\chapter{Foreword}
+This document is a brief introduction to the ANSI/ISO C Specification
+Language (ACSL). ACSL allows to formally specify the properties of a C
+program, in order to be able to verify that the implementation
+respects these properties. This verification is done \textit{via} some
+tools that are able to analyze ACSL annotations as well as C
+code. This tutorial does not deal with such verification activities,
+but focuses on the most important ACSL constructions and gives an
+intuitive grasp of their semantics, through a short and illustrative
+examples of C code annotated with ACSL formulas. A complete reference
+of the ACSL language can be found in~\cite{ACSLref}. ACSL is inspired
+from the specification language used by Caduceus~\cite{caduceus},
+which is itself derived from the Java Modeling Language (JML, see~\cite{JML}
+
+\chapter{A First ACSL Example}
+\label{chap:first-example}
+The most important ACSL construction is the \textit{function
+  contract}. In its simplest form, a function contract for a C
+function \verb+f+ allows to put
+requirements, also called a pre-condition, over the arguments of
+\verb+f+  and/or to express which properties (a post-condition)
+are ensured at the end of the function. Together, these conditions form a
+contract between \verb+f+ and its callers: each caller must guarantee
+that the pre-condition holds before calling \verb+f+. In exchange, \verb+f+
+guarantees that the post-condition holds when it returns.
+
+As an example, we can take the \texttt{max} function. In English, its
+specification can be expressed as such: it takes two
+\verb+int+ as arguments, and returns the greatest one. Let us see how
+this can be expressed in ACSL:
+
+\begin{c}
+/*@ ensures \result >= x && \result >=y;
+    ensures \result == x || \result == y;
+*/
+int max (int x, int y) { return (x > y) ? x : y; }
+\end{c}
+
+As can be seen above, ACSL annotations are in fact a special kind of C
+comment, the difference with plain comments being that annotations
+begin with '\verb+/*@+' (of course, it is also possible to
+have one-line annotations, introduced by '\verb+//@+'). The function
+contract is written just above the function declaration. It is
+composed of a list of post-conditions, or \verb+ensures+ clauses,
+as \verb+max+ does not have any particular requirement. We could have
+added as a pre-condition the always-true formula, with the
+\verb+requires \true;+ clause, but this is not mandatory. We will see
+real \verb+requires+ clauses in the next examples. The first
+\verb+ensures+ clause expresses the fact that the result of \verb+max+
+is greater than both \verb+x+ and \verb+y+, the arguments of
+\verb+max+. The second clause says that the result is equal to either
+\verb+x+ or \verb+y+. Since both clauses must hold, our ACSL
+specification says indeed that the result of \texttt{max} is indeed
+the greatest of the two arguments of \texttt{max}.
+
+\chapter{Pointers and Arrays}
+Now that we have a \verb+max+ function, we can use it to extract the
+maximal value found in a sequence of \verb+int+s. A first step is to
+write the prototype of the corresponding function with its
+specification.
+
+\section{Basic Specification}
+
+\begin{c}
+/*@ requires n > 0;
+    requires \valid(p+ (0..n-1));
+    ensures \forall int i; 0 <= i <= n-1 ==> \result >= p[i];
+    ensures \exists int i; 0 <= i <= n-1 && \result == p[i];
+*/
+int max_seq(int* p, int n);
+\end{c}
+
+The function takes two arguments: a pointer \verb+p+ to the block containing
+the \verb+int+s, and the number \verb+n+ of elements in the
+sequence. This time, there are pre-conditions on these
+arguments. Namely, we cannot take the maximal value of an empty
+sequence, so that \verb+n+ must be positive. Moreover, The block
+pointed to by \verb+p+ must contain at least \verb+n+ elements. In
+other words, \verb+p[0]+, \verb+p[1]+, ... \verb+p[n-1]+ must all be
+valid dereferences. This is what the second \verb+requires+ clause expresses.
+
+The two \verb+ensures+ clauses are a direct extension of the contract
+of the \verb+max+ function above to more than two values: the result
+is greater or equal than every value in the sequence, and there exists
+an index for which the equality is attained. Note that the formulas in
+the post-condition are only correct under the assumption that the
+pre-condition holds: we need the validity condition to speak about \verb+p[i]+
+is valid, and if \verb+n+ could be \verb+0+, we couldn't always find
+an index where \verb+\result+ is attained.
+
+\section{Advanced specification}
+\noindent\emph{Note: This paragraph can be skipped on a first reading}
+
+In addition, a more advanced ACSL construction allows to give a shorter
+specification of \verb+max_seq+: \verb+\max+ is a built-in constructor
+(together with \verb+\min+, \verb+sum+, and a few other), that returns
+the maximal value taken by a function in an interval of integers.
+With \verb+\max+, and the \verb+\lambda+ construction to write
+functions as first-class expressions, our specification becomes:
+\begin{c}
+/*@ requires n > 0 &&\valid(p + (0..n-1));
+    ensures \result == \max(0,n-1,\lambda integer i; p[i]);
+*/
+int max_seq(int* p, int n);
+\end{c}
+
+\section{Implementation}
+
+The implementation of the \verb+max_seq+ function is pretty
+straightforward. For instance, we can use the following code.
+
+\begin{c}
+int max_seq(int* p, int n) {
+  int res = *p;
+  for(int i = 0; i < n; i++) {
+    if (res < *p) { res = *p; }
+    p++;
+  }
+  return res;
+}
+\end{c}
+In principle, the specification we have given in the preceding section
+is all what is needed to verify that \verb+max_seq+ has the behavior
+we expect. However, it is possible to put some annotations in the
+implementation itself in order to guide the tools that will analyze
+the code. In particular, loops often raise issues with automated
+tools, and we may attempt to provide an invariant of the loop, that is
+a property that is preserved across the loop body. In our case, an
+obvious invariant is that \verb+res+ contains the maximal value seen
+so far, or more formally:
+
+\begin{c}
+int max_seq(int* p, int n) {
+  int res = *p;
+  //@ loop invariant \forall integer j; 0 <= j <= i ==> res >= *(p+j);
+  for(int i = 0; i < n; i++) {
+    if (res < *p) { res = *p; }
+    p++;
+  }
+  return res;
+}
+\end{c}
+
+In addition, in order to prove the second post-condition, it may be
+better to keep track of the index for which the maximal value is
+attained. This can be done in ACSL with ghost code, which allows to
+add some code which does not interfere with the concrete
+implementation but can be used in the logic part.
+The complete specification then becomes:
+
+\begin{c}
+int max_seq(int* p, int n) {
+  int res = *p;
+  //@ ghost int idx = 0;
+  /*@ loop invariant \forall integer j; 0 <= j <= i ==> res >= *(p+j);
+      loop invariant \valid(p+idx) && *(p+idx) == res;
+  */
+  for(int i = 0; i < n; i++) {
+    if (res < *p) {
+      res = *p;
+      //@ ghost idx = i;
+    }
+    p++;
+  }
+  return res;
+}
+\end{c}
+
+
+%\chapter{Structures and Invariants}
+
+\bibliographystyle{plain}
+\bibliography{mini-biblio}
+
+\end{document}
