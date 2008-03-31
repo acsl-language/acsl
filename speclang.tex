@@ -118,11 +118,11 @@ With respect to C pure expressions, the additional constructs are as follows:
 \item[Functional modifier] The composite element modifier is an additional
   operator in relation to the C structure field and array accessors.
   The expression
-  \verb|{| $s$ \verb|for| $id$ \verb|:| $v$ \verb|}| 
+  \verb|{| $s$ \verb|for| $id$ \verb|=| $v$ \verb|}| 
   denotes the same structure than $s$, except for the field $id$ to be
   modified by $v$.
   The equivalent expression for an array is 
-  \verb|{| $t$ \verb|for| \verb|[| $i$ \verb|]| \verb|:| $v$ \verb|}| 
+  \verb|{| $t$ \verb|for| \verb|[| $i$ \verb|]| \verb|=| $v$ \verb|}| 
   which returns the same array than $t$, except for the $i^{th}$ element those value
   is updated to $v$.
   See Section~\ref{sec:func-dep} for an example of use of these operators.
