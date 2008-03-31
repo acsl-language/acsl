@@ -90,8 +90,8 @@ program, in order to be able to formally verify that the implementation
 respects these properties. This verification is done \textit{via}
 tools that are able to take into account ACSL annotations attached to
 the C code. This tutorial does not deal with such verification activities,
-but focuses on the most important ACSL constructions and gives an
-intuitive grasp of their semantics, through a short and illustrative
+but focuses on the most important ACSL constructs and gives an
+intuitive grasp of their semantics, through short and illustrative
 examples of C code annotated with ACSL formulas. A complete reference
 of the ACSL language can be found in~\cite{ACSLref}. ACSL is inspired
 from the specification language used by Caduceus~\cite{caduceus},
@@ -99,15 +99,15 @@ which is itself derived from the Java Modeling Language (JML, see~\cite{JML}).
 
 \chapter{A First ACSL Example}
 \label{chap:first-example}
-The most important ACSL construction is the \textit{function
-  contract}. In its simplest form, a function contract for a C
-function \verb+f+ allows to put
+The most important ACSL concept is the \textit{function
+  contract}. A function contract for a C
+function \verb+f+  is a set of
 requirements over the arguments of
-\verb+f+  and/or to express the properties
+\verb+f+  and/or a set of properties
 that are ensured at the end of the function.
-The formula that expresses the requirements is called a pre-condition,
+The formula that expresses the requirements is called a {\em pre-condition},
 whereas the formula that expresses the properties ensured when \verb|f|
-returns is a post-condition.
+returns is a {\em post-condition}.
 Together, these conditions form a
 contract between \verb+f+ and its callers: each caller must guarantee
 that the pre-condition holds before calling \verb+f+. In exchange, \verb+f+
@@ -125,13 +125,13 @@ this can be expressed in ACSL:
 int max (int x, int y) { return (x > y) ? x : y; }
 \end{c}
 
-As can be seen above, ACSL annotations are in fact a special kind of C
-comment, the difference with plain comments being that annotations
+As can be seen above, ACSL annotations are written in special C
+comments, the difference with plain comments being that annotations
 begin with '\verb+/*@+'. It is also possible to
-have one-line annotations, introduced by '\verb+//@+'. The function
-contract is written just above the function declaration. In this case,
-the contract is
-composed of a list of post-conditions only (\verb+ensures+ clauses),
+write one-line annotations introduced by '\verb+//@+'. The function
+contract is written immediately above the function declaration. 
+In this case, the contract contains only post-conditions 
+(\verb+ensures+ clauses),
 as \verb+max+ does not have any particular requirement.
 %We could have
 %added as a pre-condition the always-true formula, with the
@@ -139,10 +139,10 @@ as \verb+max+ does not have any particular requirement.
 %Less trival \verb+requires+ clauses will be illustrated in the next examples.
 The first \verb+ensures+ clause expresses the fact that the result
 of \verb+max+ is greater than both \verb+x+ and \verb+y+, the arguments of
-\verb+max+. The second clause says that the result is equal to either
+\verb+max+. The second clause mandates that the result is equal to either
 \verb+x+ or \verb+y+. Since both clauses must hold, our ACSL
-specification says indeed that the result of \texttt{max} is indeed
-the greatest of the two arguments of \texttt{max}.
+specification indeed expresses that the result of \texttt{max} is 
+the greatest of its two arguments.
 
 It should be noted already that
 there is an intuitive demarcation between ``complete'' and ``partial''
@@ -179,25 +179,25 @@ int max_seq(int* p, int n);
 The function takes two arguments: a pointer \verb+p+ to the block containing
 the \verb+int+s, and the number \verb+n+ of elements in the
 sequence. This time, there are pre-conditions on these
-arguments. Namely, we cannot take the maximal value of an empty
-sequence, so that \verb+n+ must be positive. Moreover, The block
+arguments. First, it is not possible to compute the maximal value of an empty
+sequence, and so \verb+n+ must be positive. Moreover, the block
 pointed to by \verb+p+ must contain at least \verb+n+ elements. In
 other words, \verb+p[0]+, \verb+p[1]+, ... \verb+p[n-1]+ must all be
 valid memory accesses. This is what the second \verb+requires+ clause expresses.
 
-The two \verb+ensures+ clauses are a direct extension of the contract
+The two \verb+ensures+ clauses can be seen as an extending the contract
 of the \verb+max+ function above to more than two values: the result
 is greater or equal than every value in the sequence, and there exists
 an index for which the equality is attained. Note that the formulas in
-the post-condition are only correct under the assumption that the
+the post-condition only make sense under the assumption that the
 pre-condition holds: we need the validity condition to speak about \verb+p[i]+
-is valid, and if \verb+n+ could be \verb+0+, we couldn't always find
-an index where \verb+\result+ is attained.
+is valid, and if \verb+n+ could be \verb+0+, it would not be possible
+to find an index where \verb+\result+ is attained.
 
 \section{Advanced specification}
-\noindent\emph{Note: This paragraph can be skipped on a first reading}
+\noindent\emph{Note: The remaining of this chapter can be skipped on a first reading}
 
-In addition, a more advanced ACSL construction allows to give a shorter
+In addition, a more advanced ACSL construction allows to provide a shorter
 specification of \verb+max_seq+: \verb+\max+ is a built-in constructor
 (together with \verb+\min+, \verb+sum+, and a few other), that returns
 the maximal value taken by a function in an interval of integers.
@@ -229,10 +229,10 @@ The specification we have given in the preceding section
 defines an expected behavior for the function \verb+max_seq+
 However, at verification time,
 it can be necessary to write additional annotations in the
-implementation itself in order to guide the tools that analyze
-the code. In particular, loops often raise issues with automated
-tools, and we may attempt to help them by providing
-an invariant for the loop, that is,
+implementation itself in order to guide the analyzers.
+In particular, loops are often problematic for automatic tools, and
+we may attempt to help them by providing
+an {\em invariant} for the loop. A loop invariant is
 a property that is preserved across the loop body. In this case, a
 useful invariant for proving that the implementation satisfies the
 formal specification would be that \verb+res+ contains the maximal value seen
@@ -299,7 +299,7 @@ a complete or partial one?
 It may look as it is complete, because it takes great care in making
 sure that \verb|n| is positive, and all the pointer accesses valid, and
 it defines completely the expected result as the mathematical maximum
-of the pointer values.
+of the pointed values.
 Still, there is a loophole that would allow a function to
 implement this specification by the letter without being
 what the specifier probably expected. An implementation for
@@ -324,14 +324,15 @@ int max_seq(int* p, int n);
 \end{c}
 
 The \verb+\old+ keyword does exactly what we intended: instead of
-evaluating \verb+p[i]+ and \verb+[e]+ at the time the function
-returns, we take the value they had at the beginning of the call.
+evaluating \verb+p[i]+ and \verb+p[e]+ at the time the function
+returns, these expressions evaluate to the value they had when the
+function was called.
 
 Better yet, we should have expressed that we did not expect
 \verb|max_seq| to modify any variable in memory other that its
 locals, and in particular not \verb|p[0]|,\verb|p[1]|,\ldots,\verb|p[n-1]|.
-For the latter, this can be expressed using only the \verb+old+ construct
-we have just encountered in a new post-condition:
+For the latter, this can be expressed using only the \verb+\old+ construct
+that was just introduced in an additional post-condition:
 
 \begin{c}
 /*@ requires n > 0;
@@ -343,19 +344,22 @@ we have just encountered in a new post-condition:
 int max_seq(int* p, int n);
 \end{c}
 
-Note that in the two other post-conditions, \verb+\old+ is not needed
-anymore, since the first one guarantees that the locations pointed to
-by \verb+p+ are not modified by the \verb+max_seq+ function.
+Note that in the other two post-conditions, \verb+\old+ is not needed
+anymore, since the first post-condition guarantees that the locations
+pointed to by \verb+p+ are not modified by the \verb+max_seq+ function.
 
-For global variables, it would be tedious to list them all in this way.
+It would be possible, but tedious, to use the same approach to
+specify that global variables do not change during the execution
+of \verb|max_seq|.
 The ACSL language provides a special clause to specify that a
 function is not allowed to change memory locations other than
-the ones explicitly listed. It takes the form of new clauses of a
-function contract, namely the \verb+assign+ clauses. When they are
-absent, the function can modify everything. In presence of such
-clauses, the function can only modify the content of the locations
+the ones explicitly listed. This clause is the \verb+assigns+ clause,
+and it is part of the function contract. When no \verb|assigns| clauses
+are specified, the function is allowed to modify every visible variable.
+In presence of such clauses,
+the function can only modify the content of the locations
 that are explicitly mentioned in these clauses. In our case, we do not
-expect \verb+max_seq+ to have any visible effect, so that the contract
+expect \verb+max_seq+ to have any visible side-effect, so that the contract
 becomes:
 \begin{c}
 /*@ requires n > 0;
@@ -367,22 +371,23 @@ becomes:
 int max_seq(int* p, int n);
 \end{c}
 
-Again, \verb+\old+ is not needed in the post-conditions, since
-\verb+p[i]+ and \verb+p[e]+ must not change during the execution of
+Again, it is not necessary to use \verb+\old+ for the values of
+the expressions \verb+p[i]+ and \verb+p[e]+ in the the post-conditions, 
+since the specification forces them not change during the execution of
 \verb+max_seq+.
 
 An elementary example of function with non-empty assign clauses is the
-swap function, which exchange the content of two pointers (note that
-\verb+//+ introduces a comment in an ACSL specification, which extends
-until the end of the line):
+swap function, which exchange the content of two pointers to integers.
 \begin{c}
 /*@
 requires \valid(p) && \valid(q);
 assigns *p, *q;
-// ensures clause is left as an exercise to the reader.
 */
 void swap (int *p, int *q) { int tmp = *p; *p=*q; *q = tmp; return; }
 \end{c}
+
+The above specification is partial. Transforming it into a complete
+specification by use of a post-condition is left as an exercise to the reader.
 
 %\chapter{Structures and Invariants}
 
