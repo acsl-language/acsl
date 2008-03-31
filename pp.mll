@@ -101,6 +101,7 @@ let beamerspec = ['0'-'9' '-' ',']+
 let beameraction = "uncover" | "visible" | "invisible" | "only" | "onslide"
 
 rule ctt = parse
+  | "\\0"  { print_string "\\verb|\\0|"; ctt lexbuf }
   | '{'  { print_string "\\{"; ctt lexbuf }
   | '}'  { print_string "\\}"; ctt lexbuf }
   | '#'  { print_string "\\verb|#|"; ctt lexbuf }

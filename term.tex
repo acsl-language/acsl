@@ -17,7 +17,9 @@
        | unary-op term ;
        | term bin-op term ;
        | term "[" term "]" ; array access
+       | "{" term "for" "[" term "]" ":" term "}" ; array modifier
        | term "." id  ; structure field access
+       | "{" term "for" id ":" term "}" ; structure field modifier
        | term "->" id ;
        | "(" type-expr ")" term  ; cast
        | id "(" term ("," term)* ")" ; function application

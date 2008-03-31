@@ -115,6 +115,18 @@ With respect to C pure expressions, the additional constructs are as follows:
   the name cannot be reused in other terms or predicates. It is only
   for readibility purposes.
 
+\item[Functional modifier] The composite element modifier is an additional
+  operator in relation to the C structure field and array accessors.
+  The expression
+  \verb|{| $s$ \verb|for| $id$ \verb|:| $v$ \verb|}| 
+  denotes the same structure than $s$, except for the field $id$ to be
+  modified by $v$.
+  The equivalent expression for an array is 
+  \verb|{| $t$ \verb|for| \verb|[| $i$ \verb|]| \verb|:| $v$ \verb|}| 
+  which returns the same array than $t$, except for the $i^{th}$ element those value
+  is updated to $v$.
+  See Section~\ref{sec:func-dep} for an example of use of these operators.
+  
 \item[Logic functions] Applications in terms and in propositions are not
 applications of C functions, but of logic functions or predicates; see
 Section~\ref{sec:logicspec} for detail.
@@ -1884,6 +1896,7 @@ to \verb|exit|.
 }
 
 \section{Dependencies information}
+\label{sec:func-dep}
 
 \experimental
 
@@ -1921,14 +1934,21 @@ corresponding contract.
 
 \end{example}
 
+
+\begin{example}
+  % This exemple is referenced in a previous section.
+  The composite element modifier operators are useful additional constructs for such functional expressions.
+  \input{modifier.pp}
+\end{example}
+
 \oldremark{All}{
 
   Ceci n'est pas au bon endroit, et n'est peut-etre pas du tout utile
 
-Useful additional constructs for such functional expressions are constructions  of functional arrays :
 \begin{itemize}
-\item functional update of array : \notimplemented{$\{ t[i] {\tt<-} e \} $}
-\item functional update of struct : \notimplemented{$\{ s.f {\tt<-} e \} $}
+\item functional  of array : \notimplemented{$\{ t {\tt for} [i] {\tt:} e \} $}
+\item functional update of struct : \notimplemented{$\{ s {\tt for} f {\tt:} e \} $}
+
 \item arrays or structs given extensionaly, syntax like for C
   initializers :  \notimplemented{$\{ t_1, \ldots, t_n \}$}
 \end{itemize}
