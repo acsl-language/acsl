@@ -1,6 +1,6 @@
 \begin{syntax}
-  binders ::= type-expr variable-ident ;
-  ("," type-expr? variable-ident)*
+  binders ::= type-expr variable-ident+ ;
+  ("," type-expr variable-ident+)*
   \
   type-expr ::= logic-type-expr | C-type-expr
   \
