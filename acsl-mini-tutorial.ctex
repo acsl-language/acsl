@@ -331,8 +331,8 @@ function was called.
 Better yet, we should have expressed that we did not expect
 \verb|max_seq| to modify any variable in memory other that its
 locals, and in particular not \verb|p[0]|,\verb|p[1]|,\ldots,\verb|p[n-1]|.
-For the latter, this can be expressed using only the \verb+\old+ construct
-that was just introduced in an additional post-condition:
+For the latter, this can be expressed in an additional post-condition 
+with the \verb+\old+ construct that was just introduced:
 
 \begin{c}
 /*@ requires n > 0;
