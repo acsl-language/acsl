@@ -6,8 +6,8 @@ pp.ml
 *.cm?
 transf transf.ml
 *.bnf
-main.idx 
-main.ilg 
+main.idx
+main.ilg
 main.ind
 main.lof
 *.out
@@ -15,3 +15,4 @@ main.cb*
 pp
 main.raux _whizzy_main.raux main.wpdf _whizzy_main.wpdf
 acsl-mini-tutorial.tex acsl-mini-tutorial.idx acsl-mini-tutorial.cb
+*.ilg *.ind *.cb2
