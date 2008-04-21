@@ -8,7 +8,10 @@ struct list {
   @   root == to || root != \null && reachable(root->next,to) ;
   @*/
 
-//@ assigns { q->hd | struct list *q ; reachable(p,q) } ;
+// The requires clause forbids to give a circular list
+/*@ requires reachable(p,\null);
+  assigns { q->hd | struct list *q ; reachable(p,q) } ;
+*/
 void incr_list(struct list *p) {
   while (p) { p->hd++ ; p = p->next; }
 }

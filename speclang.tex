@@ -118,15 +118,15 @@ With respect to C pure expressions, the additional constructs are as follows:
 \item[Functional modifier] The composite element modifier is an additional
   operator in relation to the C structure field and array accessors.
   The expression
-  \verb|{| $s$ \verb|for| $id$ \verb|=| $v$ \verb|}| 
+  \verb|{| $s$ \verb|for| $id$ \verb|=| $v$ \verb|}|
   denotes the same structure than $s$, except for the field $id$ to be
   modified by $v$.
-  The equivalent expression for an array is 
-  \verb|{| $t$ \verb|for| \verb|[| $i$ \verb|]| \verb|=| $v$ \verb|}| 
+  The equivalent expression for an array is
+  \verb|{| $t$ \verb|for| \verb|[| $i$ \verb|]| \verb|=| $v$ \verb|}|
   which returns the same array than $t$, except for the $i^{th}$ element those value
   is updated to $v$.
   See Section~\ref{sec:func-dep} for an example of use of these operators.
-  
+
 \item[Logic functions] Applications in terms and in propositions are not
 applications of C functions, but of logic functions or predicates; see
 Section~\ref{sec:logicspec} for detail.
@@ -610,7 +610,7 @@ Then Section~\ref{sec:simplecontracts}
 introduces \emph{simple contracts}.
 Finally, Section~\ref{subsec:behaviors} defines more general contracts
 involving \emph{named behaviors}
-The \verb|decreases| clause is presented later in
+The \verb|decreases| and \verb|terminates| clauses are presented later in
 Section~\ref{sec:termination}.
 
 \oldremark{Patrick}{pourquoi seuls les ``behavior'' peuvent avoir un
@@ -1001,6 +1001,7 @@ Note that \verb|\assigns \nothing| is equivalent to
 \end{example}
 
 \begin{example}
+  \label{ex:locations-list}
   The following function increments each value stored in a linked
   list.
 
@@ -1471,6 +1472,57 @@ applies when $g$ is $f$ itself.
 \begin{example}
   This example illustrates mutual recursion:
   \input{mutualrec.pp}
+\end{example}
+
+\subsection{Non-terminating functions}
+\label{sec:non-term-funct}
+\indextt{terminates}
+There are cases where a function is not supposed to terminate. For
+instance, the \verb|main| function of a reactive program might be a
+\verb|while(1)| which indefinitely waits for an event to process. More
+generally, a function can be expected to terminate only if some
+preconditions are met. In those cases, a \verb|terminates| clause can
+be added to the contract of the function, under the following form:
+
+\begin{flushleft}\ttfamily
+//@ terminates $p$;
+\end{flushleft}
+
+or, if the non-termination concerns only a behavior of the function:
+\begin{flushleft}\ttfamily
+  /*@ behavior always\_terminates: assumes $a_1$; \\
+      behavior may\_loop: assumes $a_2$; terminates $p$; \\
+  */
+\end{flushleft}
+
+The semantics of such a clause is as follows: if $p$ holds, then the
+function is guaranteed to terminate (more precisely, its
+termination must be proved). If such a clause is not present (and in
+particular if there is no function contract at all), it
+defaults to \verb|terminates \true;| that is the function is supposed
+to always terminate, which is the expected behavior of most
+functions. If the clause is found in a particular behavior, it applies
+only to this behavior. Hence, the contract above expresses that if
+$a_1$ holds or if $a_2$ and $p$ hold, then the function terminates.
+
+Note that nothing is specified for the case where $p$ does not hold:
+the function may terminate or not. In particular,
+\verb|terminates \false;| does not imply that the function loops
+forever. A possible specification for a function that never terminates
+is the following:
+\begin{verbatim}
+/*@ ensures \false;
+    terminates \false;
+*/
+void f() { while(1); }
+\end{verbatim}
+
+\begin{example}
+  A concrete example of a function that may not always terminate is
+  the \verb|incr_list| function of example \ref{ex:locations-list}. In
+  fact, another acceptable contract for this function is the following one:
+
+\input{terminates_list.pp}
 \end{example}
 
 

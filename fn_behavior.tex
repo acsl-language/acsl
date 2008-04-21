@@ -4,7 +4,7 @@
                 simple-behavior named-behavior * decreases-clause ?}
   \
   simple-behavior ::= (requires-clause | assigns-clause |
-  ensures-clause ) *
+  ensures-clause ) * terminates-clause ?
   \
   named-behavior ::= "behavior" ident ":" behavior-body
   \
@@ -12,6 +12,7 @@
                      {[not in a named behavior]requires-clause}
                     | assigns-clause |
                       ensures-clause ) *
+                    terminates-clause ?
               \
   assumes-clause ::= "assumes" predicate ";"
   \
@@ -24,4 +25,6 @@
   ensures-clause ::= "ensures" predicate ";"
   \
   decreases-clause ::= "decreases" term ("for" ident)? ";"
+  \
+  terminates-clause ::= "terminates" pred ";"
 \end{syntax}

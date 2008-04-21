@@ -41,7 +41,7 @@
 	"loop" ; "variant" ; "data" ; "strong" ;
 	"ensures" ; "breaks"; "continues"; "returns"; "assigns"; "modifiable" ; "signals" ;
 	"logic" ; "type" ; "predicate" ; "axiom";
-	"normal_behavior" ; "behavior" ; "model"; "ghost";
+	"normal_behavior" ; "behavior" ; "model"; "ghost"; "terminates";
       ];
     h
 
