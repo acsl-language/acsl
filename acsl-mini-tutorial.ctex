@@ -358,13 +358,13 @@ in contexts that do not satisfy this condition.
 
 In the following example, the function \verb|f| can be called with
 any argument \verb|c|, but the function is not guaranteed to terminate
-if \verb|c>0|. 
+if \verb|c<=0|. 
 \begin{c}
 /*@
 assigns nothing;
 terminates c>0;
 */
-void f (int c) { while(c); return;}
+void f (int c) { while(!c); return;}
 \end{c}
 
 Another valid contract for the same implementation \verb|f| is 
@@ -376,7 +376,7 @@ non-zero arguments.
 assigns nothing;
 requires c!=0;
 */
-void f (int c) { while(c); return;}
+void f (int c) { while(!c); return;}
 \end{c}
 
 
