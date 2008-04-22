@@ -89,7 +89,7 @@ Language (ACSL). ACSL allows to formally specify the properties of a C
 program, in order to be able to formally verify that the implementation
 respects these properties. This verification is done \textit{via}
 tools that are able to take into account ACSL annotations attached to
-the C code. This tutorial focuses on the most important ACSL constructs 
+the C code. This tutorial focuses on the most important ACSL constructs
 and gives an
 intuitive grasp of their semantics, through short and illustrative
 examples of C code annotated with ACSL formulas. A complete reference
@@ -129,8 +129,8 @@ As can be seen above, ACSL annotations are written in special C
 comments, the difference with plain comments being that annotations
 begin with '\verb+/*@+'. It is also possible to
 write one-line annotations introduced by '\verb+//@+'. The function
-contract is written immediately above the function declaration. 
-In this case, the contract contains only post-conditions 
+contract is written immediately above the function declaration.
+In this case, the contract contains only post-conditions
 (\verb+ensures+ clauses),
 as \verb+max+ does not have any particular requirement.
 %We could have
@@ -141,7 +141,7 @@ The first \verb+ensures+ clause expresses the fact that the result
 of \verb+max+ is greater than both \verb+x+ and \verb+y+, the arguments of
 \verb+max+. The second clause mandates that the result is equal to either
 \verb+x+ or \verb+y+. Since both clauses must hold, our ACSL
-specification indeed expresses that the result of \texttt{max} is 
+specification indeed expresses that the result of \texttt{max} is
 the greatest of its two arguments.
 
 It should be noted already that
@@ -274,7 +274,7 @@ function was called.
 Better yet, we should have expressed that we did not expect
 \verb|max_seq| to modify any variable in memory other that its
 locals, and in particular not \verb|p[0]|,\verb|p[1]|,\ldots,\verb|p[n-1]|.
-For the latter, this can be expressed in an additional post-condition 
+For the latter, this can be expressed in an additional post-condition
 with the \verb+\old+ construct that was just introduced:
 
 \begin{c}
@@ -314,7 +314,7 @@ becomes:
 int max_seq(int* p, int n);
 \end{c}
 Again, it is not necessary to use \verb+\old+ for the values of
-the expressions \verb+p[i]+ and \verb+p[e]+ in the the post-conditions, 
+the expressions \verb+p[i]+ and \verb+p[e]+ in the the post-conditions,
 since the specification forces them not to change during the execution of
 \verb+max_seq+.
 
@@ -351,48 +351,109 @@ property, that can be specified in its contract using the
 Because many functions are in practice implicitely expected to terminate,
 the default in ACSL is to expect functions to terminate in all the contexts
 that satisfy their pre-conditions. It is possible to relax a particular
-function's specification by providing a formula that describes 
+function's specification by providing a formula that describes
 the conditions in which the function is guaranteed to terminate.
 An implementation is then allowed not to terminate when it is called
 in contexts that do not satisfy this condition.
 
 In the following example, the function \verb|f| can be called with
 any argument \verb|c|, but the function is not guaranteed to terminate
-if \verb|c<=0|. 
+if \verb|c<=0|.
 \begin{c}
 /*@
-assigns nothing;
+assigns \nothing;
 terminates c>0;
 */
 void f (int c) { while(!c); return;}
 \end{c}
 
-Another valid contract for the same implementation \verb|f| is 
+Another valid contract for the same implementation \verb|f| is
 the following, where the function implicitely guarantees to terminate
 whenever it is applied, but expects to be called only with
 non-zero arguments.
 \begin{c}
 /*@
-assigns nothing;
+assigns \nothing;
 requires c!=0;
 */
 void f (int c) { while(!c); return;}
 \end{c}
 
-
-
-
-
-
 \chapter{Behaviors}
+The functions that we have seen so far had a quite simple
+specification. In particular, their post-conditions were simple
+relations. Specifications may be more complicated. Take for instance
+the following \verb|extremum| function, which computes either the
+maximum or the minimum of its \verb|int| arguments depending on the
+\verb|kind| which is passed to it:
+
+\begin{c}
+typedef enum { Max, Min } kind;
+int extremum (kind k, int x, int y) {
+  return ((k == Max ? x > y : x < y) ? x: y);
+}
+\end{c}
+
+What could be a complete specification of \verb|extremum|? First, we
+should require that \verb|k| is either \verb|Max| or \verb|Min|. Then,
+as for \verb|max|, the result is either \verb|x| or \verb|y|. More
+precisely, if \verb|k| is equal to \verb|Max| then the result is the
+greatest one, and if \verb|k| is equal to \verb|Min|, then the result
+is the smallest one. All of this can be summed up in the following
+ACSL contract:
+
+\begin{c}
+/*@ requires k == Max || k == Min;
+    assigns \nothing;
+    ensures \result == x || \result == y;
+    ensures k == Max ==> \result >= x && \result >= y;
+    ensures k == Min ==> \result <= x && \result <= y;
+*/
+int extremum (kind k, int x, int y);
+\end{c}
+
+However, this might not be the clearest way to express this
+specification. Namely, we would like to say that \verb|extremum| has
+two distinct modes of operation. These are called \emph{behaviors} in
+ACSL. A function can have several behaviors in addition to a general
+specification. A behavior can have additional \verb|assigns| and
+\verb|ensures| clauses, but in addition, it can also have
+\verb|assumes| clauses, which indicate when the behavior is triggered.
+
+In our case, the first three clauses of the contract remain the same,
+but the last two post-conditions can be expressed as two behaviors,
+\verb|is_max| and \verb|is_min|, whose \verb|assume| clauses are
+respectively \verb|k==Max| and \verb|k==Min|. In addition, we would
+like to state that \verb|is_min| and \verb|is_max| describes
+completely the set of behaviors of the function, and that they are
+mutually exclusive. This is done by the \verb|complete_behaviors| and
+the \verb|disjoint_behaviors| clauses respectively.
+\begin{c}
+/*@ requires k == Max || k == Min;
+    assigns \nothing;
+    ensures \result == x || \result == y;
+    behavior is_max:
+      assumes k == Max;
+      ensures \result >= x && \result >= y;
+    behavior is_min:
+      assumes k == Min;
+      ensures \result <= x && \result <= y;
+    complete_behaviors is_max, is_min;
+    disjoint_behaviors is_max, is_min;
+*/
+int extremum (kind k, int x, int y);
+\end{c}
+
+\chapter{Predicates and Logic Functions}
 
 \chapter{Structures and Invariants}
 
 \chapter{Verification activities}
 
-{\bf transition...However, at verification time,
+The preceding examples have shown us how to write the specification of
+a C function in ACSL. However, at verification time,
 it can be necessary to write additional annotations in the
-implementation itself in order to guide the analyzers.}
+implementation itself in order to guide the analyzers.
 In particular, loops are often problematic for automatic tools, and
 we may attempt to help them by providing
 an {\em invariant} for the loop. A loop invariant is
@@ -458,3 +519,6 @@ int max_seq(int* p, int n) {
 \bibliography{mini-biblio}
 
 \end{document}
+Local Variables:
+mode: latex
+End:

@@ -41,7 +41,8 @@
 	"loop" ; "variant" ; "data" ; "strong" ;
 	"ensures" ; "breaks"; "continues"; "returns"; "assigns"; "modifiable" ; "signals" ;
 	"logic" ; "type" ; "predicate" ; "axiom";
-	"normal_behavior" ; "behavior" ; "model"; "ghost"; "terminates";
+	"exit_behavior" ; "behavior" ; "model"; "ghost"; "terminates";
+        "disjoint_behaviors"; "complete_behaviors";
       ];
     h
 
