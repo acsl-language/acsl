@@ -61,7 +61,8 @@ main.pdf: main.tex $(DEPS)
 	ocamllex $<
 
 %.pdf: %.tex
-	rubber -d $<
+	pdflatex $<
+	pdflatex $<
 
 pp: pp.ml
 	ocamlopt -o $@ $^
