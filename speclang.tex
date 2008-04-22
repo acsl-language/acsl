@@ -1490,22 +1490,13 @@ be added to the contract of the function, under the following form:
 //@ terminates $p$;
 \end{flushleft}
 
-or, if the non-termination concerns only a behavior of the function:
-\begin{flushleft}\ttfamily
-  /*@ behavior always\_terminates: assumes $a_1$; \\
-      behavior may\_loop: assumes $a_2$; terminates $p$; \\
-  */
-\end{flushleft}
-
 The semantics of such a clause is as follows: if $p$ holds, then the
 function is guaranteed to terminate (more precisely, its
 termination must be proved). If such a clause is not present (and in
 particular if there is no function contract at all), it
 defaults to \verb|terminates \true;| that is the function is supposed
 to always terminate, which is the expected behavior of most
-functions. If the clause is found in a particular behavior, it applies
-only to this behavior. Hence, the contract above expresses that if
-$a_1$ holds or if $a_2$ and $p$ hold, then the function terminates.
+functions.
 
 Note that nothing is specified for the case where $p$ does not hold:
 the function may terminate or not. In particular,
