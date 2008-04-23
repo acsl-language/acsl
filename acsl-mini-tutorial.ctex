@@ -269,7 +269,6 @@ The \verb+\old+ keyword does exactly what we intended: instead of
 evaluating \verb+p[i]+ and \verb+p[e]+ at the time the function
 returns, these expressions evaluate to the value they had when the
 function was called.
-
 Better yet, we should have expressed that we did not expect
 \verb|max_seq| to modify any variable in memory other that its
 locals, and in particular not \verb|p[0]|,\verb|p[1]|,\ldots,\verb|p[n-1]|.
