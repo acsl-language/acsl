@@ -446,7 +446,96 @@ int extremum (kind k, int x, int y);
 
 \chapter{Predicates and Logic Functions}
 
-\chapter{Structures and Invariants}
+So far, we have only used logical built-ins operators and relations.
+It is often needed to define new logic predicates and logic
+functions. For instance, if we define (simply) linked lists as such:
+\begin{c}
+  typedef struct _list { int element; struct _list* next; } list;
+\end{c}
+
+there are some common properties of lists that we want to be able to
+deal with in the logic. In particular, the notion of reachability (can
+a given node be attained from some root through a chain of \verb|next|
+fields) plays an important role. It can be defined in ACSL through the
+following annotation:
+\begin{c}
+  /*@ predicate reachable(list* root, list* node) =
+        root == node ||
+        \valid(root) && reachable(root -> next, node);
+    */
+\end{c}
+
+We define a binary predicate over lists, which holds when the two
+pointers are equal or, if the pointer \verb|root| is valid, when \verb|node|
+can be proved reachable from \verb|root->next|. In addition, this
+predicate can be used to discriminate between circular and
+finite lists: in a finite list, we will ultimately reach
+\verb|\null|;
+
+\begin{c}
+  /*@ predicate finite(list* root) = reachable(root,\null); */
+\end{c}
+
+Similarly, we can define a logical function computing the length of a
+\verb|\null| terminated list. This time, we have to avoid circular
+lists, since the notion of length has little meaning for them. But
+logical functions are \emph{total}, {\it i.e.} they always return a
+value. A possible way to overcome this issue is to use an axiomatic
+definition for \verb|length|:
+\begin{c}
+  /*@ logic integer length(list* l); */
+
+  /*@ axiom length_nil: length(\null) == 0; */
+
+  /*@ axiom length_cons:
+        \forall list* l, integer n;
+          finite(l) && \valid(l) ==>
+            length(l) == length(l->next) + 1
+   */
+\end{c}
+This way, it is possible to speak about \verb|length(l)| for any list
+\verb|l|, but if \verb|l| is circular, the value of this expression
+will remain undefined: the only way to prove that \verb|length(l)==n|
+for a given \verb|n| is to prove first \verb|finite(l)|.
+
+Now that we know how to define logic predicates and logic functions,
+we can go back to our maximum example, this time on (finite) lists. A
+possible specification for \verb|max_list| would be the following:
+\begin{c}
+  /*@
+      requires \valid(l);
+      assigns \nothing;
+      terminates finite(root);
+      ensures
+       \forall list* l;
+         \valid(l) && reachable(root,l) ==>
+           \result >= l->element;
+      ensures
+       \exists list* l;
+         \valid(l) && reachable(root,l) && \result == l->element;
+  */
+  int max_list(list* root);
+\end{c}
+As with arrays, we have as pre-condition that the list is non-empty.
+The post-conditions are also quite similar to the ones of \verb|max_array|,
+except that indices have been replaced by the reachability of the node
+from the root of the list. In addition, we find a \verb|terminates|
+clause, that indicates that the implementation may loop forever on
+circular lists (but could choose not to, even though this would imply
+an huge overhead in this setting). A possible implementation is thus
+the following:
+\begin{c}
+  int max_list(list* root) {
+    int max = root->element;
+    while(root->next) {
+      root = root -> next;
+      if (root->element > max) max = root->element;
+    }
+    return max;
+  }
+\end{c}
+
+%\chapter{Types Invariants}
 
 \chapter{Verification activities}
 
