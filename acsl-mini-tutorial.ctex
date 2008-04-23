@@ -114,7 +114,7 @@ that the pre-condition holds before calling \verb+f+. In exchange, \verb+f+
 guarantees that the post-condition holds when it returns.
 
 Let us consider the example of the \texttt{max} function. Informally, its
-specification can be expressed thus: the function \texttt{max} takes two
+specification can be expressed this way: the function \texttt{max} takes two
 \verb+int+ as arguments, and returns the greatest one. Let us see how
 this can be expressed in ACSL:
 
@@ -130,7 +130,7 @@ comments, the difference with plain comments being that annotations
 begin with '\verb+/*@+'. It is also possible to
 write one-line annotations introduced by '\verb+//@+'. The function
 contract is written immediately above the function declaration.
-In this case, the contract contains only post-conditions
+In this example, the contract contains only post-conditions
 (\verb+ensures+ clauses),
 as \verb+max+ does not have any particular requirement.
 %We could have
@@ -146,15 +146,14 @@ the greatest of its two arguments.
 
 It should be noted already that
 there is an intuitive demarcation between ``complete'' and ``partial''
-specifications. The above specification for \verb|max| can be thought to be
-``complete'', meaning that any function that satisfies the
+specifications. The above specification for \verb|max| can be thought
+of as ``complete'', meaning that any function that satisfies the
 specification should be deemed a satisfactory implementation for \verb|max|.
 Partial specifications on the other hand express some of the properties that
-are expected to be true from the implementation, but it is not sufficient
-for an implementation to satisfy them to be satisfactory. Generally speaking,
-partial formal
-specifications are the most likely to be encountered in practice for
-real life examples, complemented by informal specifications.
+are expected to hold for any implementation, but satisfying them is
+not sufficient for an implementation to be satisfactory. Generally speaking,
+partial formal specifications are the most likely to be encountered in
+practice for real-life examples, complemented by informal specifications.
 For instance, the above specification for \verb|max| is in fact
 partial, for reasons that will become clearer later.
 
@@ -200,9 +199,9 @@ to find an index where \verb+\result+ is attained.
 
 In addition, a more advanced ACSL construction allows to provide a shorter
 specification of \verb+max_seq+: \verb+\max+ is a built-in constructor
-(together with \verb+\min+, \verb+sum+, and a few other), that returns
+(together with \verb+\min+, \verb+\sum+, and a few others), that returns
 the maximal value taken by a function in an interval of integers.
-With \verb+\max+, and the \verb+\lambda+ construction to write
+With \verb+\max+ and the \verb+\lambda+ construction to write
 functions as first-class expressions, our specification becomes:
 \begin{c}
 /*@ requires n > 0 &&\valid(p + (0..n-1));
@@ -235,20 +234,20 @@ from the preceding section may require additional work.
 \chapter{Assigns clauses}
 
 The reader is invited at this point to pause and ponder the following
-important question: is the above specification for a function \verb|max_seq|
+important question: is the above specification of the function \verb|max_seq|
 a complete or partial one?
 
-It may look as it is complete, because it takes great care in making
+It may seem complete, because it takes great care in making
 sure that \verb|n| is positive, and all the pointer accesses valid, and
 it defines completely the expected result as the mathematical maximum
 of the pointed values.
 Still, there is a loophole that would allow a function to
 implement this specification by the letter without being
-what the specifier probably expected. An implementation for
+what the specifier probably expected. Indeed, an implementation for
 \verb|max_seq| could zero all the locations
 \verb|p[0]|,\verb|p[1]|,\ldots,\verb|p[n-1]|, return zero,
-and all the post-conditions in the specification from
-section \ref{basic_max_seq} would be satisfied.
+and would still satisfy the post-conditions in the specification from
+section \ref{basic_max_seq}.
 
 The loophole is that the post-condition constrains the result of the function
 to be the maximum of the pointed values {\em at the time the function
@@ -274,8 +273,8 @@ function was called.
 Better yet, we should have expressed that we did not expect
 \verb|max_seq| to modify any variable in memory other that its
 locals, and in particular not \verb|p[0]|,\verb|p[1]|,\ldots,\verb|p[n-1]|.
-For the latter, this can be expressed in an additional post-condition
-with the \verb+\old+ construct that was just introduced:
+The latter condition can be expressed in an additional post-condition,
+using the \verb+\old+ construct that was just introduced:
 
 \begin{c}
 /*@ requires n > 0;
@@ -315,10 +314,10 @@ int max_seq(int* p, int n);
 \end{c}
 Again, it is not necessary to use \verb+\old+ for the values of
 the expressions \verb+p[i]+ and \verb+p[e]+ in the the post-conditions,
-since the specification forces them not to change during the execution of
+since the specification forces them to stay unchanged during the execution of
 \verb+max_seq+.
 
-An example of function with a non-empty \verb|assign| clause is the
+An example of a function with a non-empty \verb|assign| clause is the
 swap function below, which exchange the content of two pointers to integers.
 \begin{c}
 /*@
@@ -328,27 +327,27 @@ assigns *p, *q;
 void swap (int *p, int *q) { int tmp = *p; *p=*q; *q = tmp; return; }
 \end{c}
 
-The specification given above for the \verb|swap| function is partial.
+The specification of the \verb|swap| function given above is partial.
 Transforming it into a complete
-specification by use of a post-condition is left as an exercise to the reader.
+specification by adding a post-condition is left as an exercise for the reader.
 
 \chapter{Termination}
 
 There is yet another property that is implicitely expected from
-a satisfactory implementation of \verb|max_seq|. It is
-that this function, called on arguments that satisfy its pre-conditions,
+a satisfactory implementation of \verb|max_seq|. Namely,
+this function, when called with arguments that satisfy its pre-conditions,
 should eventually terminate (and return a result that satisfies
 its post-conditions). The \verb|assigns| clause in itself
 only guarantees that each time the function terminates, only the
 specified locations may have been modified. Similarly, the
 post-conditions only apply when the function terminates, and so
 a function that never terminates would for instance satisfy the
-\verb|assigns| et \verb|ensures| parts of the specification
+\verb|assigns| and \verb|ensures| parts of the specification
 for \verb|max_seq|. The termination of the function is a separate
-property, that can be specified in its contract using the
+property that can be specified in its contract using the
 \verb|terminates| clause.
 
-Because many functions are in practice implicitely expected to terminate,
+Because in practice many functions are implicitely expected to terminate,
 the default in ACSL is to expect functions to terminate in all the contexts
 that satisfy their pre-conditions. It is possible to relax a particular
 function's specification by providing a formula that describes
@@ -367,9 +366,9 @@ terminates c>0;
 void f (int c) { while(!c); return;}
 \end{c}
 
-Another valid contract for the same implementation \verb|f| is
-the following, where the function implicitely guarantees to terminate
-whenever it is applied, but expects to be called only with
+Another valid contract for the same implementation of \verb|f| is
+the following one, where the function implicitely guarantees to terminate
+whenever it is called, but expects to be called only with
 non-zero arguments.
 \begin{c}
 /*@
@@ -545,7 +544,7 @@ it can be necessary to write additional annotations in the
 implementation itself in order to guide the analyzers.
 In particular, loops are often problematic for automatic tools, and
 we may attempt to help them by providing
-an {\em invariant} for the loop. A loop invariant is
+an {\em invariant} for each loop. A loop invariant is
 a property that is preserved across the loop body. In this case, a
 useful invariant for proving that the implementation satisfies the
 formal specification would be that \verb+res+ contains the maximal value seen
@@ -568,20 +567,21 @@ int max_seq(int* p, int n) {
 }
 \end{c}
 
-The other part of the invariant property that should be expressed formally
-is that there exists an element in \verb|p[0]|,\verb|p[1]|,\ldots,\verb|p[n-1]|
-that is equal to \verb|res|. In other words, this second part
-expresses that there exists an integer \verb|e| such that \verb|0 <= e < n|
-and \verb|p[e] == res|.
-In order to prove the existence of such an integer~\verb|e|,
-the simplest way is to keep track of the index for which the maximal
-value is attained. This can be done in ACSL with {\em ghost code}.
-Ghost code is code written in a syntax very close to C, inside
-\verb|//@ ghost ..| or \verb|/*@ ghost .. */| comments,
-and that is not allowed to interfere with the concrete
-implementation. The variables defined and assigned
-in ghost code ({\em ghost variables}) can be used in the
-ACSL properties.
+The other part of the invariant property that should be expressed
+formally is that there exists an element in
+\verb|p[0]|,\verb|p[1]|,\ldots,\verb|p[n-1]| that is equal to
+\verb|res|. In other words, this second part expresses that there
+exists an integer \verb|e| such that \verb|0 <= e < n| and
+\verb|p[e] == res|.  In order to prove the existence of such an
+integer~\verb|e|, the simplest way is to keep track of the index for
+which the maximal value is attained. This can be done in ACSL with
+extra statements called {\em ghost code}.  Ghost code is C code
+written inside \verb|//@ ghost ..| or \verb|/*@ ghost .. */|
+comments. The original program must have exactly the same behavior
+with and without ghost code. In other word,
+ghost code must not interfere with the concrete
+implementation. The variables defined and assigned in ghost code ({\em
+  ghost variables}) can be used in the ACSL properties.
 
 The complete annotated function \verb|max_seq| then becomes:
 
