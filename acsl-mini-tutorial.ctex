@@ -542,11 +542,81 @@ a C function in ACSL. However, at verification time,
 it can be necessary to write additional annotations in the
 implementation itself in order to guide the analyzers.
 
+\section{Assertions}
+The simplest form of code annotation is an \emph{assertion}. This is
+simply a property that must be verified whenever a given program point
+is reached. Some assertions may be discharged directly by the
+analyzers, while other ones may generate additional pre-conditions.
+
+Let us now take a simple example. The function sqsum below is meant to
+compute the sum of the squares of the elements of an array.
+As usual, we have to give some pre-conditions to ensure the validity of
+the pointer accesses, and a post-condition expressing what the intended
+result is:
+\begin{c}
+/*@ requires n >= 0;
+    requires \valid(p+ (0..n-1));
+    assigns \nothing;
+    ensures \result == \sum(0,n-1,\lambda integer i; p[i]*p[i]);
+*/
+int sqsum(int* p, int n);
+\end{c}
+A possible implementation is the following:
+\begin{c}
+int sqsum(int* p, int n) {
+  int S=0, tmp;
+  for(int i = 0; i < n; i++) {
+    tmp = p[i] * p[i];
+    S += tmp;
+  }
+  return S;
+}
+\end{c}
+
+This implementation seems to be correct with respect to the
+specification. However, this is not the case. Indeed, the
+specification operates on mathematical (unbounded) \verb|integer|s,
+while the C statements uses normal (bounded) \verb|int|. If there is
+an overflow, the post-condition will not hold. In order to overcome
+this issue, a possible solution is to add some assertions before each
+\verb|int| operation ensuring that there is no overflow. In
+fact, in the annotations, all operations are implicitely done in the
+\verb|integer| domain, so that we can compare their result to
+\verb|INT_MAX|. The comparison to \verb|INT_MIN| is not necessary
+here. Indeed, the first computation is a square, and for the second,
+since we have added an assertion saying that
+\verb|tmp| is non-negative (since there is no overflow, this is the
+case). we are sure that we add a non-negative value to \verb|S|.
+The code with its annotations is the following:
+\begin{c}
+#include <limits.h>
+
+int sqsum(int* p, int n) {
+  int S=0, tmp;
+  for(int i = 0; i < n; i++) {
+    //@ assert p[i] * p[i] <= INT_MAX;
+    tmp = p[i] * p[i];
+    //@ assert tmp >= 0;
+    //@ assert S + tmp <= INT_MAX;
+    S += tmp;
+
+  }
+  return S;
+}
+\end{c}
+
+The assertion about \verb|tmp| could be discharged automatically, but
+the two other ones would lead to the generation of additional
+pre-conditions that would need to be verified for each call to \verb|sqsum|.
+
 \section{Loop Invariants}
-In particular, loops are often problematic for automatic tools, and
+
+Another kind of code annotations is related to loops.
+Loops are often problematic for automatic tools, and
 we may attempt to help them by providing
-an {\em invariant} for each loop. A loop invariant is
-a property that is preserved across the loop body. In this case, a
+an {\em invariant} for each loop. A loop invariant can be seen as a
+special case of assertion, which is preserved across the loop body.
+If we come back to the \verb|max_seq| function, an
 useful invariant for proving that the implementation satisfies the
 formal specification would be that \verb+res+ contains the maximal value seen
 so far.
@@ -601,29 +671,6 @@ int max_seq(int* p, int n) {
     p++;
   }
   return res;
-}
-\end{c}
-
-\section{Assertions}
-
-\begin{c}
-#include <limits.h>
-/*@ requires n >= 0;
-    requires \valid(p+ (0..n-1));
-    assigns \nothing;
-    ensures S == \sum(0,n-1,\lambda integer i; p[i]*p[i]);
-*/
-int sqsum(int* p, int n) {
-  int S=0, tmp;
-  for(int i = 0; i < n; i++) {
-    //@ assert p[i] * p[i] <= INT_MAX;
-    tmp = p[i] * p[i];
-    //@ assert tmp >= 0;
-    //@ assert S + tmp <= INT_MAX;
-    S += tmp;
-    
-  }
-  return S;
 }
 \end{c}
 
