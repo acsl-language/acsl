@@ -543,12 +543,35 @@ it can be necessary to write additional annotations in the
 implementation itself in order to guide the analyzers.
 
 \section{Assertions}
-The simplest form of code annotation is an \emph{assertion}. This is
-simply a property that must be verified whenever a given program point
-is reached. Some assertions may be discharged directly by the
-analyzers, while other ones may generate additional pre-conditions.
+The simplest form of code annotation is an \emph{assertion}. An
+assertion is a property that must be verified each time the execution
+reaches a given program point. Some assertions may be discharged
+directly by one analyzer or another. When this happens, it means that
+the analyzer has concluded that there was no possibility of the
+assertion not being respected when the arguments satisfy the
+function's pre-conditions. Conversely, when the analyzer is not able
+to determine that an assertion always holds, it may be able to produce
+a pre-condition for the function that would, if it was added to the
+function's contract, ensure that the assertion was verified.
 
-Let us now take a simple example. The function sqsum below is meant to
+In the following example, the first assertion can be verified automatically
+by many analyzers, whereas the second one can't. An analyzer may
+suggest to add the pre-condition \verb|tmp > 0| to \verb|f|'s contract.
+
+\begin{c}
+/*@ requires n >= 0 && n < 100;
+*/
+int f(int n)
+{
+  int tmp = 100 - n;
+  //@ assert tmp > 0;
+  //@ assert tmp < 100;
+  return tmp;
+}
+\end{c}
+
+Let us now move on to a more interesting example.
+The function \verb|sqsum| below is meant to
 compute the sum of the squares of the elements of an array.
 As usual, we have to give some pre-conditions to ensure the validity of
 the pointer accesses, and a post-condition expressing what the intended
@@ -576,17 +599,20 @@ int sqsum(int* p, int n) {
 This implementation seems to be correct with respect to the
 specification. However, this is not the case. Indeed, the
 specification operates on mathematical (unbounded) \verb|integer|s,
-while the C statements uses normal (bounded) \verb|int|. If there is
-an overflow, the post-condition will not hold. In order to overcome
+while the C statements uses modulo arithmetic within the \verb|int| type.
+If there is an overflow, the post-condition will not hold. In order 
+to overcome
 this issue, a possible solution is to add some assertions before each
 \verb|int| operation ensuring that there is no overflow. In
-fact, in the annotations, all operations are implicitely done in the
-\verb|integer| domain, so that we can compare their result to
-\verb|INT_MAX|. The comparison to \verb|INT_MIN| is not necessary
-here. Indeed, the first computation is a square, and for the second,
-since we have added an assertion saying that
-\verb|tmp| is non-negative (since there is no overflow, this is the
-case). we are sure that we add a non-negative value to \verb|S|.
+the annotations, the arithmetic operations \verb|+|,\verb|-|,\ldots
+are the mathematical addition, substraction,\ldots
+in the \verb|integer| domain. It is therefore possible to compare 
+their results to \verb|INT_MAX|. 
+%The comparison to \verb|INT_MIN| is not necessary
+%here. Indeed, the first computation is a square, and for the second,
+%since we have added an assertion saying that
+%\verb|tmp| is non-negative (since there is no overflow, this is the
+%case). we are sure that we add a non-negative value to \verb|S|.
 The code with its annotations is the following:
 \begin{c}
 #include <limits.h>
@@ -599,24 +625,38 @@ int sqsum(int* p, int n) {
     //@ assert tmp >= 0;
     //@ assert S + tmp <= INT_MAX;
     S += tmp;
-
   }
   return S;
 }
 \end{c}
 
-The assertion about \verb|tmp| could be discharged automatically, but
-the two other ones would lead to the generation of additional
-pre-conditions that would need to be verified for each call to \verb|sqsum|.
+The assertion concerning \verb|tmp| may be discharged automatically
+by some analyzers, but
+the other two assertions would require \verb|sqsum|'s contract
+to be completed with additional pre-conditions. Ideally, the necessary
+pre-conditions will be infered automatically from
+the assertions by an analyzer. 
+Even if they are not, and if the pre-conditions need
+to be written by hand, it is still useful to write
+the assertions first. 
+In cases like this one, it is easier to get the assertions right
+than the corresponding pre-conditions. Some analyzers may then
+be able to check that the assertions are verified under the
+pre-conditions, providing trust in the latter.
+
+Note: to some analyzers, 
+checking the assertions once the corresponding pre-conditions
+are provided is much easier 
+than infering the pre-conditions from the assertions.  
 
 \section{Loop Invariants}
 
-Another kind of code annotations is related to loops.
-Loops are often problematic for automatic tools, and
-we may attempt to help them by providing
+Another kind of code annotations is dedicated to the analysis of loops.
+The treatment of loops is a difficult part of static analysis, and
+many analyzers need to be provided with hints in the form of
 an {\em invariant} for each loop. A loop invariant can be seen as a
 special case of assertion, which is preserved across the loop body.
-If we come back to the \verb|max_seq| function, an
+If we look back to the \verb|max_seq| function, a
 useful invariant for proving that the implementation satisfies the
 formal specification would be that \verb+res+ contains the maximal value seen
 so far.
