@@ -541,6 +541,8 @@ The preceding examples have shown us how to write the specification of
 a C function in ACSL. However, at verification time,
 it can be necessary to write additional annotations in the
 implementation itself in order to guide the analyzers.
+
+\section{Loop Invariants}
 In particular, loops are often problematic for automatic tools, and
 we may attempt to help them by providing
 an {\em invariant} for each loop. A loop invariant is
@@ -602,6 +604,28 @@ int max_seq(int* p, int n) {
 }
 \end{c}
 
+\section{Assertions}
+
+\begin{c}
+#include <limits.h>
+/*@ requires n >= 0;
+    requires \valid(p+ (0..n-1));
+    assigns \nothing;
+    ensures S == \sum(0,n-1,\lambda integer i; p[i]*p[i]);
+*/
+int sqsum(int* p, int n) {
+  int S=0, tmp;
+  for(int i = 0; i < n; i++) {
+    //@ assert p[i] * p[i] <= INT_MAX;
+    tmp = p[i] * p[i];
+    //@ assert tmp >= 0;
+    //@ assert S + tmp <= INT_MAX;
+    S += tmp;
+    
+  }
+  return S;
+}
+\end{c}
 
 \bibliographystyle{plain}
 \bibliography{mini-biblio}

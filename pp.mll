@@ -30,7 +30,7 @@
     let h = Hashtbl.create 97 in
     List.iter (fun s -> Hashtbl.add h s ())
       [
-	"auto"; "break"; "case"; "continue"; "new";
+	"auto"; "assert"; "break"; "case"; "continue"; "new";
 	"default"; "do"; "else"; "for"; "goto"; "if";
 	"return"; "switch"; "while";
 	"class" ; "interface" ;
