@@ -65,7 +65,7 @@ main.pdf: main.tex $(DEPS)
 	pdflatex $<
 
 pp: pp.ml
-	ocamlopt -o $@ $^
+	ocamlopt -o $@ str.cmxa $^
 
 transf: transf.cmo transfmain.cmo
 	ocamlc -o $@ $^
@@ -80,6 +80,13 @@ transfmain.cmo: transf.cmo
 check:
 	gcc -c *.c
 	for f in *.c ; do ../../bin/toplevel.byte $$f ; done
+
+tutorial-check: acsl-mini-tutorial.tex
+	@for f in *-tut.c; do \
+            echo "***Starting analysis of $$f"; \
+            gcc -c -std=c99 $$f; \
+            ../../bin/toplevel.byte -pp-annot $$f; \
+        done
 
 clean:
 	rm -rf *~ *.aux *.log *.nav *.out *.snm *.toc *.pp *.bnf \

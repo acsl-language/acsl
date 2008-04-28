@@ -74,8 +74,8 @@ $^1$ CEA LIST, Software Security Laboratory, Saclay, F-91191 \\
 \vfill
 
 \begin{flushleft}
-  This work has been supported by the 'CAT' ANR project
-  (ANR-05-RNTL-0030x) and by the ANR CIFRE contract 2005/973.
+  This work has been partially supported by the CAT ANR project
+  (ANR-05-RNTL-0030x) and by the FP6 European project Open TC.
 \end{flushleft}
 
 \end{center}
@@ -118,7 +118,7 @@ specification can be expressed this way: the function \texttt{max} takes two
 \verb+int+ as arguments, and returns the greatest one. Let us see how
 this can be expressed in ACSL:
 
-\begin{c}
+\begin{c}[max-tut.c]
 /*@ ensures \result >= x && \result >= y;
     ensures \result == x || \result == y;
 */
@@ -166,7 +166,7 @@ specification.
 \section{Basic Specification}
 \label{basic_max_seq}
 
-\begin{c}
+\begin{c}[max_seq-tut.c]
 /*@ requires n > 0;
     requires \valid(p+ (0..n-1));
     ensures \forall int i; 0 <= i <= n-1 ==> \result >= p[i];
@@ -203,7 +203,7 @@ specification of \verb+max_seq+: \verb+\max+ is a built-in constructor
 the maximal value taken by a function in an interval of integers.
 With \verb+\max+ and the \verb+\lambda+ construction to write
 functions as first-class expressions, our specification becomes:
-\begin{c}
+\begin{c}[max_seq2-tut.c]
 /*@ requires n > 0 &&\valid(p + (0..n-1));
     ensures \result == \max(0,n-1,\lambda integer i; p[i]);
 */
@@ -215,7 +215,7 @@ int max_seq(int* p, int n);
 The implementation of the \verb+max_seq+ function is pretty
 straightforward. For instance, we can use the following code.
 
-\begin{c}
+\begin{c}[max_seq-tut.c,max_seq2-tut.c,max_seq_old-tut.c,max_seq_old2-tut.c,max_seq_assigns-tut.c]
 int max_seq(int* p, int n) {
   int res = *p;
   for(int i = 0; i < n; i++) {
@@ -256,7 +256,7 @@ the returned result to be the maximum of the pointed values as they
 were when the function was called. This can be written:
 
 
-\begin{c}
+\begin{c}[max_seq_old-tut.c]
 /*@ requires n > 0;
     requires \valid(p+ (0..n-1));
     ensures \forall int i; 0 <= i <= n-1 ==> \result >= \old(p[i]);
@@ -275,10 +275,10 @@ locals, and in particular not \verb|p[0]|,\verb|p[1]|,\ldots,\verb|p[n-1]|.
 The latter condition can be expressed in an additional post-condition,
 using the \verb+\old+ construct that was just introduced:
 
-\begin{c}
+\begin{c}[max_seq_old2-tut.c]
 /*@ requires n > 0;
     requires \valid(p+ (0..n-1));
-    ensures \forall int i; 0 <= i <= n-1 ==> p[i] == \old(p[i])|
+    ensures \forall int i; 0 <= i <= n-1 ==> p[i] == \old(p[i]);
     ensures \forall int i; 0 <= i <= n-1 ==> \result >= p[i];
     ensures \exists int e; 0 <= e <= n-1 && \result == p[e];
 */
@@ -302,7 +302,7 @@ the function can only modify the content of the locations
 that are explicitly mentioned in these clauses. In our case, we do not
 expect \verb+max_seq+ to have any visible side-effect, so that the contract
 becomes:
-\begin{c}
+\begin{c}[max_seq_assigns-tut.c,max_seq_inv-tut.c,max_seq_ghost-tut.c]
 /*@ requires n > 0;
     requires \valid(p+ (0..n-1));
     assigns \nothing;
@@ -318,7 +318,7 @@ since the specification forces them to stay unchanged during the execution of
 
 An example of a function with a non-empty \verb|assign| clause is the
 swap function below, which exchange the content of two pointers to integers.
-\begin{c}
+\begin{c}[swap-tut.c]
 /*@
 requires \valid(p) && \valid(q);
 assigns *p, *q;
@@ -357,7 +357,7 @@ in contexts that do not satisfy this condition.
 In the following example, the function \verb|f| can be called with
 any argument \verb|c|, but the function is not guaranteed to terminate
 if \verb|c<=0|.
-\begin{c}
+\begin{c}[non_terminating-tut.c]
 /*@
 assigns \nothing;
 terminates c>0;
@@ -369,7 +369,7 @@ Another valid contract for the same implementation of \verb|f| is
 the following one, where the function implicitely guarantees to terminate
 whenever it is called, but expects to be called only with
 non-zero arguments.
-\begin{c}
+\begin{c}[non_terminating2-tut.c]
 /*@
 assigns \nothing;
 requires c!=0;
@@ -385,7 +385,7 @@ the following \verb|extremum| function, which computes either the
 maximum or the minimum of its \verb|int| arguments depending on the
 \verb|kind| which is passed to it:
 
-\begin{c}
+\begin{c}[extremum-tut.c,extremum2-tut.c]
 typedef enum { Max, Min } kind;
 int extremum (kind k, int x, int y) {
   return ((k == Max ? x > y : x < y) ? x: y);
@@ -400,7 +400,7 @@ greatest one, and if \verb|k| is equal to \verb|Min|, then the result
 is the smallest one. All of this can be summed up in the following
 ACSL contract:
 
-\begin{c}
+\begin{c}[extremum-tut.c]
 /*@ requires k == Max || k == Min;
     assigns \nothing;
     ensures \result == x || \result == y;
@@ -426,7 +426,7 @@ like to state that \verb|is_min| and \verb|is_max| describes
 completely the set of behaviors of the function, and that they are
 mutually exclusive. This is done by the \verb|complete_behaviors| and
 the \verb|disjoint_behaviors| clauses respectively.
-\begin{c}
+\begin{c}[extremum2-tut.c]
 /*@ requires k == Max || k == Min;
     assigns \nothing;
     ensures \result == x || \result == y;
@@ -447,7 +447,7 @@ int extremum (kind k, int x, int y);
 So far, we have only used logical built-ins operators and relations.
 It is often needed to define new logic predicates and logic
 functions. For instance, if we define (simply) linked lists as such:
-\begin{c}
+\begin{c}[max_list-tut.c,type_invariant-tut.c,global_invariant-tut.c]
   typedef struct _list { int element; struct _list* next; } list;
 \end{c}
 
@@ -456,23 +456,43 @@ deal with in the logic. In particular, the notion of reachability (can
 a given node be attained from some root through a chain of \verb|next|
 fields) plays an important role. It can be defined in ACSL through the
 following annotation:
-\begin{c}
-  /*@ predicate reachable(list* root, list* node) =
+\begin{c}[max_list-tut.c,type_invariant-tut.c,global_invariant-tut.c]
+  /*@ predicate reachable{L}(list* root, list* node) =
         root == node ||
         \valid(root) && reachable(root -> next, node);
     */
 \end{c}
 
-We define a binary predicate over lists, which holds when the two
+The \verb|{L}| notation indicates that the predicate takes as
+parameter a label, which represent a memory state of the program. Indeed,
+as soon as we deal with pointers or arrays, we must refer to a
+particular memory state: \verb|reachable| has no absolute meaning, it
+must be tied to a point of the program. In a case like this, there is no
+need to explicitely instantiate the label when we use
+\verb|reachable|: the memory state to which it refers will usually be
+inferred from the context ({\it e.g.} for a precondition, it is the
+state at the start of the function, and for a post-condition, it is
+the state just before returning to the caller). More complex predicate
+may relate two or more memory states, but such definitions are out of
+scope in this tutorial.
+
+We have just defined a binary predicate over lists, which holds when the two
 pointers are equal or, if the pointer \verb|root| is valid, when \verb|node|
 can be proved reachable from \verb|root->next|. In addition, this
 predicate can be used to discriminate between circular and
 finite lists: in a finite list, we will ultimately reach
 \verb|\null|;
 
-\begin{c}
-  /*@ predicate finite(list* root) = reachable(root,\null); */
+\begin{c}[max_list-tut.c,type_invariant-tut.c,global_invariant-tut.c]
+  /*@ predicate finite{L}(list* root) = reachable(root,\null); */
 \end{c}
+
+We can note that \verb|finite| is also parameterized by a label
+\verb|L|. In fact, it is implicitely the memory state in which
+\verb|reachable| itself is evaluated. It would have been possible to
+make that explicit by writing \verb|reachable{L}(root,\null)| instead,
+but this is not necessary here, as \verb|L| denotes the only state in
+the environment at this level.
 
 Similarly, we can define a logical function computing the length of a
 \verb|\null| terminated list. This time, we have to avoid circular
@@ -480,15 +500,15 @@ lists, since the notion of length has little meaning for them. But
 logical functions are \emph{total}, {\it i.e.} they always return a
 value. A possible way to overcome this issue is to use an axiomatic
 definition for \verb|length|:
-\begin{c}
-  /*@ logic integer length(list* l); */
+\begin{c}[max_list-tut.c,type_invariant-tut.c,global_invariant-tut.c]
+  /*@ logic integer length{L}(list* l); */
 
-  /*@ axiom length_nil: length(\null) == 0; */
+  /*@ axiom length_nil{L}: length(\null) == 0; */
 
-  /*@ axiom length_cons:
+  /*@ axiom length_cons{L}:
         \forall list* l, integer n;
           finite(l) && \valid(l) ==>
-            length(l) == length(l->next) + 1
+            length(l) == length(l->next) + 1;
    */
 \end{c}
 This way, it is possible to speak about \verb|length(l)| for any list
@@ -499,9 +519,9 @@ for a given \verb|n| is to prove first \verb|finite(l)|.
 Now that we know how to define logic predicates and logic functions,
 we can go back to our maximum example, this time on (finite) lists. A
 possible specification for \verb|max_list| would be the following:
-\begin{c}
+\begin{c}[max_list-tut.c]
   /*@
-      requires \valid(l);
+      requires \valid(root);
       assigns \nothing;
       terminates finite(root);
       ensures
@@ -522,7 +542,7 @@ clause, that indicates that the implementation may loop forever on
 circular lists (but could choose not to, even though this would imply
 an huge overhead in this setting). A possible implementation is thus
 the following:
-\begin{c}
+\begin{c}[max_list-tut.c]
   int max_list(list* root) {
     int max = root->element;
     while(root->next) {
@@ -533,7 +553,118 @@ the following:
   }
 \end{c}
 
-%\chapter{Types Invariants}
+\chapter{Data Invariants}
+\noindent\textbf{This chapter can be skipped on a first reading.}
+
+\section{Type Invariants}
+The specification of the \verb|max_list| function given above is
+complete, but it could be written differently. In fact, if we are
+writing a program that manipulates \verb|NULL|-terminated linked
+lists, a lot a function will rely on the fact that the manipulated
+lists are finite. This means that each function must have a
+precondition or a \verb|terminates| clause similar to the one of
+\verb|max_list|, but also that the functions that build lists must
+ensure (with a post-condition) that the returned list is
+finite. Writing all these clauses might be tedious for a large set of
+functions. Thus, ACSL provide a way to express that all the elements
+of a given datatype respects some \emph{type invariants}. By default,
+these invariants are \emph{weak invariants} in the ACSL sense, that
+is, they must be valid at the entrance and at the exit of each
+function, but can be temporarily broken inside a function's body
+(provided they are restored before the function returns, or before
+calling another function which relies on them). ACSL has also a notion
+of \emph{strong invariant}, which must hold at every point of the
+program, but they are harder to use in practice, and beyond the scope
+of this tutorial.
+
+In our \verb|list| example, we can impose that each list is finite
+with the following annotation:
+
+\begin{c}[type_invariant-tut.c,global_invariant-tut.c]
+/*@ type invariant finite_list(list* root) = finite(root); */
+\end{c}
+
+The type invariant is a unary predicate. The type of its argument is
+the static type to which the invariant applies (in our case pointers
+to list). With this invariant, we can get rid of the \verb|terminates|
+clause in the specification of \verb|max_list|, since we are
+guaranteed that only finite lists will be passed to the function. Its
+specification will thus be the following:
+\begin{c}[type_invariant-tut.c]
+  /*@
+      requires \valid(root);
+      assigns \nothing;
+      ensures
+       \forall list* l;
+         \valid(l) && reachable(root,l) ==>
+           \result >= l->element;
+      ensures
+       \exists list* l;
+         \valid(l) && reachable(root,l) && \result == l->element;
+  */
+  int max_list(list* root);
+\end{c}
+
+\section{Global Invariants}
+
+There is another kind of data invariant in ACSL, called
+\emph{global invariant}. As indicated by its name, a global invariant
+is a property of global variables that must hold at each entrance or
+exit of a function (for weak invariants) or at each point of the
+program (for strong invariants). For instance, suppose that we have a
+global list \verb|GList| that is always non-empty and maintained in
+decreasing order, so that \verb|max_list(GList)| can be replaced in
+the code by \verb|if(GList) GList->element|. A possible way to express that in
+ACSL is the following:
+
+\begin{c}[global_invariant-tut.c]
+/*@
+  predicate sorted_decreasing{L}(list* root) =
+    root == \null ||
+     (\valid(root) && root->next == \null) ||
+     (\valid(root) && \valid(root->next) &&
+        root->element >= root->next->element &&
+        sorted_decreasing(root->next));
+*/
+
+list* GList;
+
+/*@ global invariant glist_sorted: sorted_decreasing(GList); */
+
+void insert_GList(int x);
+\end{c}
+
+Because of the invariant of \verb|GList|, a partial specification of
+\verb|insert_GList| is that it can assume that GList is a sorted list,
+and that it must ensure that it is still the case when it
+returns. A complete specification, for instance that all the
+elements that were present at the entrance of the function are still
+there, and that \verb|x| is present (inserted according to the
+ordering since the global invariant must still hold)
+can be expressed as such:
+\begin{c}[global_invariant-tut.c]
+/*@ logic integer count(int x,list* l); */
+
+/*@ axiom count_nil: \forall int x; count(x,\null) == 0; */
+
+/*@ axiom count_cons_head{L}:
+  \forall int x,list* l;
+    \valid(l) && l->element == x ==>
+       count(x,l) == count(x,l->next)+1;
+*/
+
+/*@ axiom count_cons_tail{L}:
+  \forall int x, list* l;
+     \valid(l) && l->element != x ==>
+        count(x,l) == count(x,l->next);
+*/
+
+/*@ ensures \forall int y; y != x ==>
+               count(y,GList) == count(y,\old(GList));
+    ensures count(x,GList) == count(x,\old(GList))+1;
+*/
+void insert_GList(int x);
+\end{c}
 
 \chapter{Verification activities}
 
@@ -558,7 +689,7 @@ In the following example, the first assertion can be verified automatically
 by many analyzers, whereas the second one can't. An analyzer may
 suggest to add the pre-condition \verb|tmp > 0| to \verb|f|'s contract.
 
-\begin{c}
+\begin{c}[assert-tut.c]
 /*@ requires n >= 0 && n < 100;
 */
 int f(int n)
@@ -576,7 +707,7 @@ compute the sum of the squares of the elements of an array.
 As usual, we have to give some pre-conditions to ensure the validity of
 the pointer accesses, and a post-condition expressing what the intended
 result is:
-\begin{c}
+\begin{c}[sqsum-tut.c,sqsum2-tut.c]
 /*@ requires n >= 0;
     requires \valid(p+ (0..n-1));
     assigns \nothing;
@@ -585,7 +716,7 @@ result is:
 int sqsum(int* p, int n);
 \end{c}
 A possible implementation is the following:
-\begin{c}
+\begin{c}[sqsum-tut.c]
 int sqsum(int* p, int n) {
   int S=0, tmp;
   for(int i = 0; i < n; i++) {
@@ -600,21 +731,21 @@ This implementation seems to be correct with respect to the
 specification. However, this is not the case. Indeed, the
 specification operates on mathematical (unbounded) \verb|integer|s,
 while the C statements uses modulo arithmetic within the \verb|int| type.
-If there is an overflow, the post-condition will not hold. In order 
+If there is an overflow, the post-condition will not hold. In order
 to overcome
 this issue, a possible solution is to add some assertions before each
 \verb|int| operation ensuring that there is no overflow. In
 the annotations, the arithmetic operations \verb|+|,\verb|-|,\ldots
 are the mathematical addition, substraction,\ldots
-in the \verb|integer| domain. It is therefore possible to compare 
-their results to \verb|INT_MAX|. 
+in the \verb|integer| domain. It is therefore possible to compare
+their results to \verb|INT_MAX|.
 %The comparison to \verb|INT_MIN| is not necessary
 %here. Indeed, the first computation is a square, and for the second,
 %since we have added an assertion saying that
 %\verb|tmp| is non-negative (since there is no overflow, this is the
 %case). we are sure that we add a non-negative value to \verb|S|.
 The code with its annotations is the following:
-\begin{c}
+\begin{c}[sqsum2-tut.c]
 #include <limits.h>
 
 int sqsum(int* p, int n) {
@@ -635,19 +766,19 @@ by some analyzers, but
 the other two assertions would require \verb|sqsum|'s contract
 to be completed with additional pre-conditions. Ideally, the necessary
 pre-conditions will be infered automatically from
-the assertions by an analyzer. 
+the assertions by an analyzer.
 Even if they are not, and if the pre-conditions need
 to be written by hand, it is still useful to write
-the assertions first. 
+the assertions first.
 In cases like this one, it is easier to get the assertions right
 than the corresponding pre-conditions. Some analyzers may then
 be able to check that the assertions are verified under the
 pre-conditions, providing trust in the latter.
 
-Note: to some analyzers, 
+Note: to some analyzers,
 checking the assertions once the corresponding pre-conditions
-are provided is much easier 
-than infering the pre-conditions from the assertions.  
+are provided is much easier
+than infering the pre-conditions from the assertions.
 
 \section{Loop Invariants}
 
@@ -666,7 +797,7 @@ Part of the formal invariant that we are trying to build
 is that at any iteration \verb|j|, the variable \verb|res| is greater or
 equal to \verb|p[0]|,\verb|p[1]|,\ldots,\verb|p[j]|.
 This part of the invariant is written:
-\begin{c}
+\begin{c}[max_seq_inv-tut.c]
 int max_seq(int* p, int n) {
   int res = *p;
   //@ loop invariant \forall integer j; 0 <= j <= i ==> res >= *(p+j);
@@ -696,7 +827,7 @@ implementation. The variables defined and assigned in ghost code ({\em
 
 The complete annotated function \verb|max_seq| then becomes:
 
-\begin{c}
+\begin{c}[max_seq_ghost-tut.c]
 int max_seq(int* p, int n) {
   int res = *p;
   //@ ghost int e = 0;
@@ -720,4 +851,5 @@ int max_seq(int* p, int n) {
 \end{document}
 Local Variables:
 mode: latex
+ispell-local-dictionary: english
 End:

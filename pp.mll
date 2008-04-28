@@ -39,7 +39,8 @@
 	"throws" ; "extends" ; "implements" ; "reads" ;
 	"requires"; "assumes" ; "invariant"; "representation";
 	"loop" ; "variant" ; "data" ; "strong" ;
-	"ensures" ; "breaks"; "continues"; "returns"; "assigns"; "modifiable" ; "signals" ;
+	"ensures" ; "breaks"; "continues"; "returns"; "assigns";
+        "modifiable" ; "signals" ; "global";
 	"logic" ; "type" ; "predicate" ; "axiom";
 	"exit_behavior" ; "behavior" ; "model"; "ghost"; "terminates";
         "disjoint_behaviors"; "complete_behaviors";
@@ -94,56 +95,100 @@
 
   let end_tt () = print_string "\\end{flushleft}"
 
+  let cout = ref []
+
+  let seen_files = Hashtbl.create 7
+
+  let seen_file s =
+    Hashtbl.mem seen_files s || (Hashtbl.add seen_files s (); false)
+
+  let c_output s =
+    let filename = Str.regexp "[a-zA-Z_0-9.-]+" in
+    try
+      let pos = ref 0 in
+      while true do
+        let _ = Str.search_forward filename s !pos in
+        let file = Str.matched_string s in
+        let flag = if seen_file file then Open_append else Open_trunc in
+        pos:=Str.match_end () + 1;
+        try
+          cout:=
+            (open_out_gen [Open_wronly; flag; Open_creat] 0o644 file) :: !cout
+        with Sys_error s ->
+          Printf.eprintf "Warning: could not open file %s:\n%s\n" file s
+      done;
+    with Not_found -> ()
+
+  let out_c_lexeme s =
+    List.iter (fun x -> output_string x s) !cout
+
+  let close_c_output () =
+    List.iter (fun x -> flush x; close_out x) !cout;
+    cout := []
 }
 
 let space = [' ' '\t']
 let ident = ['a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z' '_' '0'-'9']*
+let filename = ['a'-'z' 'A'-'Z' '_' '0'-'9' '.' '-']+
 let beamerspec = ['0'-'9' '-' ',']+
 let beameraction = "uncover" | "visible" | "invisible" | "only" | "onslide"
 
+let c_files =
+  (space* '[' space* filename (space* ',' space* filename)* space* ']')? space*
+
 rule ctt = parse
-  | "\\0"  { print_string "\\verb|\\0|"; ctt lexbuf }
-  | '{'  { print_string "\\{"; ctt lexbuf }
-  | '}'  { print_string "\\}"; ctt lexbuf }
-  | '#'  { print_string "\\verb|#|"; ctt lexbuf }
-  | '_'  { print_string "\\_{}"; ctt lexbuf }
-  | '&'  { print_string "\\&{}"; ctt lexbuf }
-  | '%'  { print_string "\\%{}"; ctt lexbuf }
+  | "\\0"  { print_string "\\verb|\\0|"; out_c_lexeme "\\0"; ctt lexbuf }
+  | '{'  { print_string "\\{"; out_c_lexeme "{"; ctt lexbuf }
+  | '}'  { print_string "\\}"; out_c_lexeme "}"; ctt lexbuf }
+  | '#'  { print_string "\\verb|#|"; out_c_lexeme "#"; ctt lexbuf }
+  | '_'  { print_string "\\_{}"; out_c_lexeme "_"; ctt lexbuf }
+  | '&'  { print_string "\\&{}"; out_c_lexeme "&"; ctt lexbuf }
+  | '%'  { print_string "\\%{}"; out_c_lexeme "%"; ctt lexbuf }
   | '\n' { if !in_slashshash then begin
 	     print_string "\\end{slshape}";
 	     in_slashshash := false ; in_comment := false
 	   end;
-	   print_string "~\\\\\n"; ctt lexbuf }
+	   print_string "~\\\\\n";
+           out_c_lexeme "\n";
+           ctt lexbuf }
   | "&&" as s
-      { print_string (if !in_utf8 then utf8 s else "\\&\\&{}"); ctt lexbuf }
+      { print_string (if !in_utf8 then utf8 s else "\\&\\&{}");
+        out_c_lexeme s;
+        ctt lexbuf }
   | (">=" | "<=" | ">" | "<" | "!=" | "=="
     | "||" | "!"
     | "==>" | "<==>") as s
-      { print_string (if !in_utf8 then utf8 s else s); ctt lexbuf }
+      { print_string (if !in_utf8 then utf8 s else s);
+        out_c_lexeme s; ctt lexbuf }
   | "\\end{c}" { () }
-  | "\\emph{" [^'}''\n']* '}' { print_string (lexeme lexbuf); ctt lexbuf }
+  | "\\emph{" [^'}''\n']* as s '}' { print_string (lexeme lexbuf);
+                                     out_c_lexeme s;
+                                     ctt lexbuf }
   | "\\" beameraction "<" beamerspec ">"
-      { print_string (lexeme lexbuf); ctt lexbuf
-      }
+      { print_string (lexeme lexbuf); ctt lexbuf }
   | "/*@"
       { print_string "\\begin{slshape}";
 	if !color then print_string "\\color{blue}";
 	print_string "/*@";
+        out_c_lexeme "/*@";
 	ctt lexbuf }
   | "/*"
       { print_string "\\begin{slshape}\\rmfamily";
         if !color then print_string "\\color{darkgreen}";
         print_string "/*";
+        out_c_lexeme "/*";
 	in_comment := true;
 	ctt lexbuf }
   | "*/" { print_string "{}*/\\end{slshape}";
 	   in_comment := false;
+           out_c_lexeme "*/";
 	   ctt lexbuf }
   | "//@"
       { in_slashshash := true;
 	print_string "\\begin{slshape}";
 	if !color then print_string "\\color{blue}";
 	print_string "//@";
+        out_c_lexeme "//@";
 	ctt lexbuf }
   | "//"
       { in_comment := true;
@@ -153,18 +198,21 @@ rule ctt = parse
           print_string "\\begin{slshape}\\rmfamily";
         if !color then print_string "\\color{darkgreen}";
         print_string "//";
+        out_c_lexeme "//";
         in_slashshash := true;
 	ctt lexbuf }
   | eof  { () }
-  | '-'  { print_string "$-$"; ctt lexbuf }
-  | "::" { print_string ":\\hspace*{-0.1em}:"; ctt lexbuf }
-  | " "  { print_string "~"; ctt lexbuf }
-  | "\t"  { print_string "~~~~~~~~"; ctt lexbuf } (* tab is 8 spaces *)
+  | '-'  { print_string "$-$"; out_c_lexeme "-"; ctt lexbuf }
+  | "::" { print_string ":\\hspace*{-0.1em}:"; out_c_lexeme "::"; ctt lexbuf }
+  | " "  { print_string "~"; out_c_lexeme " "; ctt lexbuf }
+  | "\t"  { print_string "~~~~~~~~"; out_c_lexeme "\t"; ctt lexbuf }
+      (* tab is 8 spaces *)
   | "[" (ident as s) "]"
       { if !in_comment then print_string "{\\ttfamily " else print_string "[";
 	print_ident s;
 	if !in_comment then print_string "}" else print_string "]";
-	ctt lexbuf
+	out_c_lexeme (lexeme lexbuf);
+        ctt lexbuf
       }
   | ident as s
 	{ if not !in_comment && is_c_keyword s then
@@ -177,6 +225,7 @@ rule ctt = parse
 		  print_string "}"
 		  end else *)
               print_ident s;
+          out_c_lexeme s;
 	  ctt lexbuf
 	}
   | "\\" (ident as s)
@@ -191,14 +240,16 @@ rule ctt = parse
 	  with Not_found -> print_string (lexeme lexbuf)
 	else
           print_string (lexeme lexbuf);
+        out_c_lexeme (lexeme lexbuf);
 	ctt lexbuf
       }
   | _
-      { print_string (lexeme lexbuf); ctt lexbuf }
+      { print_string (lexeme lexbuf); out_c_lexeme (lexeme lexbuf); ctt lexbuf }
 
 and pp = parse
-  | "\\begin{c}" space* "\n"
-      { begin_tt (); ctt lexbuf; end_tt (); pp lexbuf }
+  | "\\begin{c}" (c_files as s) "\n"
+      { c_output s; begin_tt (); ctt lexbuf;
+        end_tt (); close_c_output(); pp lexbuf }
   | "é" { print_string "\\'e"; pp lexbuf }
   | "è" { print_string "\\`e"; pp lexbuf }
   | "à" { print_string "\\`a"; pp lexbuf }

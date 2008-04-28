@@ -1,7 +1,7 @@
 int a;
-//@ data invariant a_is_positive: a >= 0 ;
+//@ global invariant a_is_positive: a >= 0 ;
 
-typedef double temperature; 
+typedef double temperature;
 /*@ strong type invariant temp_in_celsius(temperature t) =
   @   t >= -273.15 ;
   @*/
