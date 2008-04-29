@@ -436,8 +436,8 @@ the \verb|disjoint_behaviors| clauses respectively.
     behavior is_min:
       assumes k == Min;
       ensures \result <= x && \result <= y;
-    complete_behaviors is_max, is_min;
-    disjoint_behaviors is_max, is_min;
+    complete behaviors is_max, is_min;
+    disjoint behaviors is_max, is_min;
 */
 int extremum (kind k, int x, int y);
 \end{c}

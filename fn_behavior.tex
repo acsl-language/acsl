@@ -3,8 +3,9 @@
     named behaviors, except for global requires clause(s)]
                 simple-behavior named-behavior * decreases-clause ?}
   \
-  simple-behavior ::= (requires-clause | assigns-clause |
-  ensures-clause ) * terminates-clause ?
+  simple-behavior ::= simple-clauses * terminates-clause? simple-clauses*
+  \
+  simple-clauses ::= requires-clause | assigns-clause | ensures-clause
   \
   named-behavior ::= "behavior" ident ":" behavior-body
   \
