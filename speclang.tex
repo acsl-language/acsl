@@ -846,7 +846,7 @@ to a contract:
 \index{complete behaviors}
 \begin{flushleft}\ttfamily
 /*@ ... \\
-~~@ \notimplemented{complete behaviors $b_1,\ldots,b_n$;} \\
+~~@ complete behaviors $b_1,\ldots,b_n$; \\
 ~~@*/
 \end{flushleft}
 It specifies that the set of behaviors $b_1,\ldots,b_n$ is complete \emph{i.e.}
@@ -858,7 +858,7 @@ holds, where $R$ is the precondition of the contract. The
 simplified version of that clause
 \begin{flushleft}\ttfamily
 /*@ ... \\
-~~@ \notimplemented{complete behaviors;} \\
+~~@ complete behaviors; \\
 ~~@*/
 \end{flushleft}
 means that all behaviors given in the contract should be taken into account.
@@ -868,7 +868,7 @@ If desired, this can be specified with the following clause:
 \index{disjoint behaviors}
 \begin{flushleft}\ttfamily
 /*@ ... \\
-~~@ \notimplemented{disjoint behaviors $b_1,\ldots,b_n$;} \\
+~~@ disjoint behaviors $b_1,\ldots,b_n$; \\
 ~~@*/
 \end{flushleft}
 It means that the given behaviors are pairwise disjoint \emph{i.e.}
@@ -879,7 +879,7 @@ R \Rightarrow \lnot (A_i \land A_j)
 holds. The simplified version of that clause
 \begin{flushleft}\ttfamily
 /*@ ... \\
-~~@ \notimplemented{disjoint behaviors;} \\
+~~@ disjoint behaviors; \\
 ~~@*/
 \end{flushleft}
 means that all behaviors given in the contract should be taken into account.

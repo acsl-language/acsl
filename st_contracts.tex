@@ -2,8 +2,7 @@
   statement ::= "/*@" statement-contract "*/" statement
   \
   statement-contract ::= {("for" id ("," id)*)?}
-    {[can only have a simple behavior or named behaviors.
-      cf remark on fig~\ref{fig:gram:contracts}]simple-behavior named-behavior}*
+    simple-behavior named-behavior*
     {abrupt-clause*}
   \
   abrupt-clause ::= {"breaks" predicate ";"} ;
