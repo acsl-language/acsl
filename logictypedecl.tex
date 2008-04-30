@@ -17,7 +17,7 @@
   | {"\match" term "{" match-cases "}" } ; pattern-matching
   | {"(" term ("," term)+ ")"} ; tuples
   | {"{" ("." id "=" term ";")+ "}"} ; records
-  | {"\let" "(" id (, id)+ ")" "=" term ";" term} 
+  | {"\let" "(" id (, id)+ ")" "=" term ";" term}
   \
   match-cases ::= { match-case+ }
   \
@@ -26,8 +26,8 @@
   pat ::= id ; constant constructor
     | id "(" pat ( "," pat)* ")" ; non-constant constructor
     | pat "|" pat ; or pattern
-    | "_" ; any pattern 
-    | cte ; numeric constant
+    | "_" ; any pattern
+    | cst ; numeric constant
     | "{" ("."id "=" pat)* "}" ; record pattern
     | "(" pat ( "," pat )* ")" ; tuple pattern
     | pat "as" id ; pattern binding
