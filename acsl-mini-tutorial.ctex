@@ -371,8 +371,8 @@ whenever it is called, but expects to be called only with
 non-zero arguments.
 \begin{c}[non_terminating2-tut.c]
 /*@
-assigns \nothing;
 requires c!=0;
+assigns \nothing;
 */
 void f (int c) { while(!c); return;}
 \end{c}
