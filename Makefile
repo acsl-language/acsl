@@ -88,6 +88,12 @@ tutorial-check: acsl-mini-tutorial.tex
             ../../bin/toplevel.byte -pp-annot $$f; \
         done
 
+acsl-mini-tutorial.html: acsl-mini-tutorial.tex
+	hevea -fix $<
+
+#acsl_tutorial_index.html: acsl-mini-tutorial.html
+#	hacha -o $@ $<
+
 clean:
 	rm -rf *~ *.aux *.log *.nav *.out *.snm *.toc *.pp *.bnf \
                transf trans.ml *.cm? *.idx

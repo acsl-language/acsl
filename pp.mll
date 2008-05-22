@@ -91,7 +91,8 @@
     String.iter print_ident_char
 
   let begin_tt () =
-    print_string "\\begin{flushleft}\\ttfamily\\upshape\\parindent 0pt\n"
+    print_string "\\begin{flushleft}\\ttfamily\\upshape\\begin{latexonly}\
+                  \\parindent 0pt\\end{latexonly}\n"
 
   let end_tt () = print_string "\\end{flushleft}"
 

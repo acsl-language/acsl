@@ -17,3 +17,4 @@ main.raux _whizzy_main.raux main.wpdf _whizzy_main.wpdf
 acsl-mini-tutorial.tex acsl-mini-tutorial.idx acsl-mini-tutorial.cb
 *.ilg *.ind *.cb2
 *-tut.c
+acsl-mini-tutorial.haux acsl-mini-tutorial.html acsl-mini-tutorial.htoc

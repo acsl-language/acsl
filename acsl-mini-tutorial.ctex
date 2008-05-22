@@ -13,8 +13,10 @@
 %\usepackage{ulem}
 \usepackage[leftbars]{changebar}
 \usepackage{alltt}
-\makeindex
+\usepackage{hevea}
 \input{./macros}
+
+\htmlprefix{ACSL Tutorial: }
 
 \setlength{\textheight}{240mm}
 \setlength{\topmargin}{-10mm}
@@ -36,29 +38,56 @@
 \lhead[\fancyplain{}{\bfseries\thepage}]{\fancyplain{}{\bfseries\rightmark}}
 \chead{}
 \rhead[\fancyplain{}{\bfseries\leftmark}]{\fancyplain{}{\bfseries\thepage}}
-\lfoot{\fancyplain{}{ANSI C Specification Language}}
+\lfoot{\fancyplain{}{ACSL tutorial}}
 \cfoot{}
-\rfoot{\fancyplain{}{CAT RNTL project}}
+\rfoot{}
+
+\ifhevea%
+\makeatletter%
+\renewenvironment{document}{%
+\@end{document}%
+\@atbegindocument%
+\@restartoutput\unskip%
+\@print{<#def title>ACSL Tutorial</#def>
+<#def meta><meta name="GENERATOR" content="hevea }%
+\@getprint{\usebox{\@heveaversion}}\@print{"></#def>
+<#head>
+}%
+\usebox{\@toplinks}\usebox{\@linkstext}%
+\cutdef*[\thecuttingdepth]{\cuttingunit}%
+\renewcommand{\addstyle}[1]{\hva@warn{\addstyle{} must be used in document preamble}}%
+\@open@par%Open first paragraph
+}{%
+\@clearstyle\@footnoteflush{\@footnotelevel}\cutend*\title@flush@hook%
+\@atenddocument%
+\@final@footer%
+\@clearstyle%
+\@print{<#foot>}%
+\@raise@enddocument}%
+\makeatother%
+\fi
 
 \begin{document}
 \sloppy
+\begin{latexonly}
 \hbadness=10000
-
+\end{latexonly}
 \begin{titlepage}
 \begin{center}
+\begin{latexonly}
 \includegraphics[height=14mm]{cealistlogo.jpg}
 \hfill
 \includegraphics[height=14mm]{inriasaclaylogo.png}
 
 \vfill
-
+\end{latexonly}
 %\includegraphics[height=60mm]{FramaC.jpg}
 ~
 
 \vspace{20mm}
 
 {\Huge\bfseries ACSL Mini-Tutorial}
-
+\begin{latexonly}
 \bigskip
 
 \vspace{20mm}
@@ -77,13 +106,13 @@ $^1$ CEA LIST, Software Security Laboratory, Saclay, F-91191 \\
   This work has been partially supported by the CAT ANR project
   (ANR-05-RNTL-0030x) and by the FP6 European project Open TC.
 \end{flushleft}
-
+\end{latexonly}
 \end{center}
 \end{titlepage}
 
 \clearpage
 
-\chapter{Foreword}
+\chapter{Foreword}\cutname{acsl_tutorial_intro.html}
 This document is a brief introduction to the ANSI/ISO C Specification
 Language (ACSL). ACSL allows to formally specify the properties of a C
 program, in order to be able to formally verify that the implementation
@@ -97,7 +126,7 @@ of the ACSL language can be found in~\cite{ACSLref}. ACSL is inspired
 from the specification language used by Caduceus~\cite{caduceus},
 which is itself derived from the Java Modeling Language (JML, see~\cite{JML}).
 
-\chapter{A First ACSL Example}
+\chapter{A First ACSL Example}\cutname{acsl_tutorial_first_example.html}
 \label{chap:first-example}
 The most important ACSL concept is the \textit{function
   contract}. A function contract for a C
@@ -157,7 +186,7 @@ practice for real-life examples, complemented by informal specifications.
 For instance, the above specification for \verb|max| is in fact
 partial, for reasons that will become clearer later.
 
-\chapter{Pointers and Arrays}
+\chapter{Pointers and Arrays}\cutname{acsl_tutorial_pointer.html}
 Now that we have specified a \verb+max+ function, we can use it to extract the
 maximal value found in a sequence of \verb+int+s. A first step is to
 write the prototype of the corresponding function with its
@@ -231,7 +260,7 @@ We will see later in this document that actually verifying
 that the function \verb+max_seq+ implements the specification
 from the preceding section may require additional work.
 
-\chapter{Assigns clauses}
+\chapter{Assigns clauses}\cutname{acsl_tutorial_assigns.html}
 
 The reader is invited at this point to pause and ponder the following
 important question: is the above specification of the function \verb|max_seq|
@@ -330,7 +359,7 @@ The specification of the \verb|swap| function given above is partial.
 Transforming it into a complete
 specification by adding a post-condition is left as an exercise for the reader.
 
-\chapter{Termination}
+\chapter{Termination}\cutname{acsl_tutorial_termination.html}
 
 There is yet another property that is implicitely expected from
 a satisfactory implementation of \verb|max_seq|. Namely,
@@ -377,7 +406,7 @@ assigns \nothing;
 void f (int c) { while(!c); return;}
 \end{c}
 
-\chapter{Behaviors}
+\chapter{Behaviors}\cutname{acsl_tutorial_behavior.html}
 The functions that we have seen so far had a quite simple
 specification. In particular, their post-conditions were simple
 relations. Specifications may be more complicated. Take for instance
@@ -443,6 +472,7 @@ int extremum (kind k, int x, int y);
 \end{c}
 
 \chapter{Predicates and Logic Functions}
+\cutname{acsl_tutorial_logic.html}
 
 So far, we have only used logical built-ins operators and relations.
 It is often needed to define new logic predicates and logic
@@ -553,7 +583,7 @@ the following:
   }
 \end{c}
 
-\chapter{Data Invariants}
+\chapter{Data Invariants}\cutname{acsl_tutorial_invariant.html}
 \noindent\textbf{This chapter can be skipped on a first reading.}
 
 \section{Type Invariants}
@@ -666,7 +696,7 @@ can be expressed as such:
 void insert_GList(int x);
 \end{c}
 
-\chapter{Verification activities}
+\chapter{Verification activities}\cutname{acsl_tutorial_verification.html}
 
 The preceding examples have shown us how to write the specification of
 a C function in ACSL. However, at verification time,
