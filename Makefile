@@ -62,6 +62,8 @@ main.pdf: main.tex $(DEPS)
 
 %.pdf: %.tex
 	pdflatex $<
+	bibtex $(<:.tex=)
+	pdflatex $<
 	pdflatex $<
 
 pp: pp.ml
