@@ -717,7 +717,7 @@ function's contract, ensure that the assertion was verified.
 
 In the following example, the first assertion can be verified automatically
 by many analyzers, whereas the second one can't. An analyzer may
-suggest to add the pre-condition \verb|tmp > 0| to \verb|f|'s contract.
+suggest to add the pre-condition \verb|n > 0| to \verb|f|'s contract.
 
 \begin{c}[assert-tut.c]
 /*@ requires n >= 0 && n < 100;
