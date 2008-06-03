@@ -3,7 +3,7 @@
   parameters reads-clause ";"
   \
   logic-predicate-decl ::= "predicate" poly-id ;
-  parameters reads-clause ";"
+  parameters? reads-clause ";"
   \
   reads-clause ::= "reads" locations
   \
@@ -11,7 +11,7 @@
                          parameters {reads-clause} "=" term ";"
   \
   logic-predicate-def ::= "predicate" poly-id ;
-  parameters {reads-clause} "=" pred ";"
+  parameters? {reads-clause} "=" pred ";"
   \
   poly-id ::= id ; normal identifier
   | id type-var-binders ; identifier for polymorphic object
