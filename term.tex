@@ -41,7 +41,7 @@
        | pred "==>" pred ; implication
        | pred "<==>" pred ; equivalence
        | "!" pred ; negation
-       | {pred "^^" pred }; exclusive or
+       | pred "^^" pred ; exclusive or
        | term "?" pred ":" pred ;
        | { pred "?" pred ":" pred };
        | { "\let" id "=" term ";" pred }; local binding

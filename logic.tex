@@ -1,5 +1,5 @@
 \begin{syntax}
-  C-global-decl ::= "/*@" logic-decl{[Only one declaration per annotation]+} "*/"
+  C-global-decl ::= "/*@"+ "*/"
   \
   logic-decl ::= logic-type-decl ;
           | logic-const-decl | logic-const-def ;
@@ -24,8 +24,8 @@
   poly-id ::= id ; normal identifier
   | id type-var-binders ; identifier for polymorphic object
   \
-  logic-const-def ::= {"logic" type-expr};
-    {poly-id "=" term ";"}
+  logic-const-def ::= "logic" type-expr;
+    poly-id "=" term ";"
   \
   logic-function-def ::= "logic" type-expr;
   poly-id parameters "=" term ";"
@@ -34,7 +34,7 @@
   "predicate";
   poly-id parameters? "=" pred ";"
   \
-  logic-const-decl ::= { "logic" type-expr poly-id ";"}
+  logic-const-decl ::=  "logic" type-expr poly-id ";"
   \
   logic-function-decl ::=
   "logic" type-expr;

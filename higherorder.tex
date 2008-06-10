@@ -1,7 +1,7 @@
 \begin{syntax}
-term ::= {"\lambda" binders ";" term} ; abstraction
-| {extended-quantifier "(" term "," term "," term ")"}
+term ::= "\lambda" binders ";" term ; abstraction
+| extended-quantifier "(" term "," term "," term ")"
 \
-extended-quantifier ::= {"\max"} | {"\min"} | {"\sum"} | {"\product"}
-                      | {"\numof"}
+extended-quantifier ::= "\max" | "\min" | "\sum" | "\product"
+                      | "\numof"
 \end{syntax}

@@ -1227,8 +1227,8 @@ shown in Figure~\ref{fig:advancedinvariants}.
 \end{example}
 
 More generally, loops can be introduced by \verb|goto|s.
-\notimplemented{As a consequence, such invariants may occur anywhere
-inside a function's body.} The meaning is that the invariant
+As a consequence, such invariants may occur anywhere
+inside a function's body. The meaning is that the invariant
 holds at that point, much like an \texttt{assert}. Moreover, the
 invariant must be inductive, \emph{i.e.} it must be preserved across a
 loop iteration. Several invariants are allowed at different places in
@@ -1613,17 +1613,17 @@ Figure~\ref{fig:gram:higherorder} introduces new term constructs for
 higher-order logic.
 \begin{description}
 \item[Abstraction]\indexttbs{lambda}
-  \notimplemented{The term $\bslambda~\tau_1~x_1,\ldots,\tau_n~x_n ~;~ t$}
+  The term $\bslambda~\tau_1~x_1,\ldots,\tau_n~x_n ~;~ t$
   denotes the $n$-ary logic function which maps $x_1,\ldots,x_n$ to
   $t$. It has the same precedence as \Forall and \Exists
 \item[Extended quantifiers]
   Terms
-  \notimplemented{$\backslash quant(t_1,t_2,t_3)$}
-  where $quant$ is \notimplemented{\texttt{max}}\indexttbs{max}
-  \notimplemented{\texttt{min}}\indexttbs{min}
-  \notimplemented{\texttt{sum}}\indexttbs{sum}
-  \notimplemented{\texttt{product}}\indexttbs{product}
-  or \notimplemented{\texttt{numof}}\indexttbs{numof}
+  $\backslash quant(t_1,t_2,t_3)$
+  where $quant$ is \texttt{max}\indexttbs{max}
+  \texttt{min}\indexttbs{min}
+  \texttt{sum}\indexttbs{sum}
+  \texttt{product}\indexttbs{product}
+  or \texttt{numof}\indexttbs{numof}
   are extended quantifications. $t_1$ and $t_2$ must have type
   \verb|integer|, and $t_3$ must be a unary function with an integer
   argument, and a numeric value (integer or real) except for
@@ -2148,12 +2148,12 @@ void reset(S *p) {
 \end{example}
 
 \subsection{Model variables and model fields}
-\index{model}
-\notimplemented{A \emph{model variable} is a variable introduced in the
-  specification with the keyword {\texttt{model}}. Its type must be
-  a logic type. Analogously, structures may have \emph{model fields}.
-  These are used to provide abstract specifications to functions whose
-  concrete implementation must remain private.}
+\index{model} \notimplemented{A \emph{model variable} is a variable
+  introduced in the specification with the keyword
+  {\texttt{model}}}. Its type must be a logic type. Analogously,
+\notimplemented {structures may have \emph{model fields}}.  These are
+used to provide abstract specifications to functions whose concrete
+implementation must remain private.
 
 \begin{figure}[b]
   \fbox{\begin{minipage}{0.97\linewidth}
@@ -2279,10 +2279,11 @@ grammar are the following:
 
 
 \paragraph{Semantics of Ghost Code}
-
-The question of semantics is essential for ghost code. Informally, the
+\label{sec:semantics-ghost-code}
+The question of semantics is essential for ghost code.
+\notimplemented[Not checked in the current implementation]{Informally, the
 semantics requires that ghost statements do not change the regular
-program execution. This implies several conditions, including e.g:
+program execution} This implies several conditions, including e.g:
 \begin{itemize}
 \item Ghost code cannot modify a non-ghost C variable.
 \item Ghost code cannot modify a non-ghost structure field.
@@ -2310,10 +2311,9 @@ or non-ghost. Then, the semantics is that memory side-effects of ghost
 code must always be in the ghost heap or the ghost stack.
 
 Notice that this semantics is not statically decidable.
-\notimplemented[No check is currently made to ensure that ghost code
-doesn't modify the behavior of the non-ghost program.]{It is left to
-tools to provide approximations, correct in the sense that any code
-statically detected as ghost must be semantically ghost.}
+\notimplemented{It is left to tools to provide approximations},
+correct in the sense that any code
+statically detected as ghost must be semantically ghost.
 
 \begin{example}
   The following example shows some invalid assignments of ghost pointers:
@@ -2355,7 +2355,7 @@ variables modifications are executable.
 
 \end{example}
 
-\subsection{Volatile variables}
+\subsection{Volatile variables}\label{sec:volatile-variables}
 \index{volatile}
 \experimental
 
@@ -2377,7 +2377,7 @@ construct, described by the grammar of Figure~\ref{fig:gram:volatile}, has
 the following shape:
 \begin{flushleft}\ttfamily
 volatile $\tau$ x;\\
-//@ volatile x reads f writes g;
+\notimplemented{//@ volatile x reads f writes g;}
 \end{flushleft}
 where \verb|f| and \verb|g| are ghost functions with the following prototypes:
 \begin{flushleft}\ttfamily
@@ -2399,7 +2399,7 @@ is replaced by \verb|g(&x,v)|.
 
 \subsection{Initialization}
 \indexttbs{initialized}
-\verb|\initialized| is a predicate taking a set of l-values as
+\notimplemented{\texttt{\textbackslash{}initialized}} is a predicate taking a set of l-values as
 argument and means that each l-value in this set is initialized.
 
 \begin{example}
@@ -2409,7 +2409,8 @@ argument and means that each l-value in this set is initialized.
 
 \subsection{Unspecified values}
 \indexttbs{specified}
-\verb|\specified| is a predicate taking a set of l-values as
+\notimplemented{\texttt{\textbackslash{}specified}}
+is a predicate taking a set of l-values as
 argument and means that each l-value in this set has a \emph{specified
   value}: its value is not a dangling pointer (that is the address of
 a local variable which is not in the scope anymore)

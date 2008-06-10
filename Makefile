@@ -102,10 +102,17 @@ clean:
 
 .PHONY: implementation rubber
 implementation:
-	mv main.tex main_old.tex
+	mv main.tex main_old.tex; fi
 	sed -e 's/%--//' main_old.tex > main.tex
-	$(MAKE) rubber
-	mv main_old.tex main.tex
+	@if $(MAKE) rubber; then \
+	   mv main_old.tex main.tex; \
+           mv main.pdf acsl-implementation.pdf; \
+           echo "implementation manual generated"; \
+         else \
+           mv main_old.tex main.tex; \
+           echo "Error while processing document See main.log for details"; \
+           exit 2; \
+        fi
 
 # see http://www.pps.jussieu.fr/~beffara/soft/rubber/ for details on rubber.
 rubber: $(DEPS)

@@ -46,6 +46,22 @@ as in the following line:
 \notimplemented[Additional remarks on the feature may appear as footnote]%
 {This feature is not currently supported by Frama-C}
 \end{quote}
+
+As a summary, the features that are not currently implemented into
+Frama-C include in particular:
+\begin{itemize}
+\item some built-in predicates and logical functions;
+\item abrupt termination clauses in statement contracts
+  (section~\ref{sec:statement_contract});
+\item definition of logical types (section~\ref{sec:logicspec});
+\item specification modules (section~\ref{sec:specmodules});
+\item model variables and Model fields (section~\ref{ex:model});
+\item only basic support for ghost code is provided (section~\ref{sec:ghost});
+\item verification of non interference of ghost code
+  (p.~\pageref{sec:semantics-ghost-code});
+\item specification of volatile variables
+  (section~\ref{sec:volatile-variables});
+\end{itemize}
 }%
 {}
 
