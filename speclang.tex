@@ -954,6 +954,13 @@ l-values\index{l-value}. Moreover, a location given as argument to
 an \assigns{} clause must be a set of modifiable l-values, as described in
 Section~\ref{sec:glossary}.
 
+\begin{remark}{PB+VP}
+  préciser le statut de \textbackslash{}result: est-ce une modifiable
+  l-value ou pas? D'un côté, ce n'en est pas vraiment une en C, mais
+  on aimerait peut-être pouvoir écrire des assigns un peu raffinés
+  comme \verb|assigns \result.a \from i = i;|
+\end{remark}
+
 \begin{figure}
   \fbox{\begin{minipage}{0.97\textwidth}
       \input{loc.bnf}
