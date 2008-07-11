@@ -39,6 +39,7 @@
 \setlength{\textwidth}{160mm}
 \setlength{\oddsidemargin}{0mm}
 \setlength{\evensidemargin}{0mm}
+\newcommand{\version}{1.3}
 
 \renewcommand{\textfraction}{0.01}
 \renewcommand{\topfraction}{0.99}
@@ -79,7 +80,7 @@
 
 \bigskip
 
-{\LARGE Preliminary design (version 1.2, \today)}
+{\LARGE Preliminary design (version \version, \today)}
 
 \vspace{20mm}
 
@@ -115,9 +116,9 @@ This is a preliminary design of the ACSL language, a deliverable of
 the task 7.2 of the ANR RNTL project CAT
 (\url{http://www.rntl.org/projet/resume2005/cat.htm}). In this
 project, a reference implementation of ACSL is provided: the Frama-C
-platform (\url{http://www.frama-c.cea.fr}).
+platform (\url{http://frama-c.cea.fr}).
 
-This is the version 1.2 of ACSL design. Several features may still
+This is the version \version{} of ACSL design. Several features may still
 evolve in the future. In particular, some features in this document
 are considered \emph{experimental}, meaning that their syntax and
 semantics is not already fixed.  These features are marked with
@@ -228,6 +229,19 @@ as much as possible of ACSL.
 
 \input{acsl_allocator.pp}
 
+\section{Changes}
+
+\subsection{Version 1.3}
+\begin{itemize}
+\item Functional update of structures
+\item Terminates clause in function behaviors
+\item Typos reported by David Mentre
+
+\end{itemize}
+
+\subsection{Version 1.2}
+This is the first public release of this document.
+
 \cleardoublepage
 \addcontentsline{toc}{chapter}{\bibname}
 \bibliographystyle{plain}
@@ -244,6 +258,7 @@ as much as possible of ACSL.
 \cleardoublepage
 \addcontentsline{toc}{chapter}{\indexname}
 \printindex
+
 
 \end{document}
 

@@ -102,7 +102,7 @@ clean:
 
 .PHONY: implementation rubber
 implementation:
-	mv main.tex main_old.tex; fi
+	mv main.tex main_old.tex
 	sed -e 's/%--//' main_old.tex > main.tex
 	@if $(MAKE) rubber; then \
 	   mv main_old.tex main.tex; \
