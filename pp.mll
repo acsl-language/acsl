@@ -33,7 +33,7 @@
 	"auto"; "assert"; "break"; "case"; "continue"; "new";
 	"default"; "do"; "else"; "for"; "goto"; "if";
 	"return"; "switch"; "while";
-	"class" ; "interface" ;
+	"class" ; "interface" ; "ensures";
 	"public" ; "private" ; "static" ; "struct" ;
 	"typedef"; "union";
 	"throws" ; "extends" ; "implements" ; "reads" ;
@@ -59,7 +59,7 @@
 	"fresh"; "from";
 	"nothing";
 	"result";
-	"let" ; "at";
+	"let" ; "at"; "true"; "false"; "result"
       ];
     List.iter (fun (s,t) -> Hashtbl.add h s t)
       [
@@ -131,14 +131,19 @@
 let space = [' ' '\t']
 let ident = ['a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z' '_' '0'-'9']*
 let filename = ['a'-'z' 'A'-'Z' '_' '0'-'9' '.' '-']+
-let beamerspec = ['0'-'9' '-' ',']+
-let beameraction = "uncover" | "visible" | "invisible" | "only" | "onslide"
+let beamerspec = ['0'-'9' '-' ',''a'-'z''@']+
+let beameraction = "uncover" | "visible" | "invisible" | "only" | "onslide" | "action"
 
 let c_files =
   (space* '[' space* filename (space* ',' space* filename)* space* ']')? space*
 
 rule ctt = parse
   | "\\0"  { print_string "\\verb|\\0|"; out_c_lexeme "\\0"; ctt lexbuf }
+      (* At last, one use of trigraphs: it let us insert raw braces in
+         the latex output
+       *)
+  | "??<" { print_string "{"; ctt lexbuf }
+  | "??>" { print_string "}"; ctt lexbuf }
   | '{'  { print_string "\\{"; out_c_lexeme "{"; ctt lexbuf }
   | '}'  { print_string "\\}"; out_c_lexeme "}"; ctt lexbuf }
   | '#'  { print_string "\\verb|#|"; out_c_lexeme "#"; ctt lexbuf }
