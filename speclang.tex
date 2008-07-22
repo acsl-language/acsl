@@ -251,7 +251,7 @@ consistent assertions. For example, when introducing the following lemma
 a premise is added to require \verb|y| to be non zero.
 
 
-\subsection{Typing}
+\subsection{Typing}\label{sec:typing}
 
 The language of logic expressions is typed (as in \emph{multi-sorted}
 first-order logic). Types are either C types or \emph{logic types}
@@ -1849,7 +1849,9 @@ Some shortcuts are provided:
 \begin{itemize}
 \item $\verb|\null|$\indexttbs{null} is an
   extra notation for the
-  null pointer (\emph{i.e.} a shortcut for \verb|(void*)0|)
+  null pointer (\emph{i.e.} a shortcut for \verb|(void*)0|). Note that
+  as in C itself (see \cite{standardc99}, par. 6.3.2.3),
+  the constant \verb|0| can have any pointer type.
 % \footnote{or to \texttt{NULL}, if
 %    annotations are pre-processed are the appropriate inclusion of
 %    \texttt{stddef.h} is added}

@@ -4,25 +4,22 @@ Let's consider the following example:
 \begin{c}
   int f(int a, int b) { return a < b; }
 \end{c}
-The following postconditions are wrong:
 \begin{itemize}
 \item the obvious postcondition \verb|\result == a < b| is not the
-  right one because it is 
+  right one because it is
   actually a shortcut for \verb|\result == a && a < b|.
-\item adding parentheses results in an ill-typed postcondition
-  \verb|\result == (a < b)|, 
-  because it tests equality of \verb|\result| which has
-  type \verb|int| with \verb|a < b| which has type \verb|boolean|.
-\item similarly, \verb|\result <==> a < b| is not well-typed, because
-  it makes an equivalence between an \verb|int| and a predicate.  
-\end{itemize}
-The following are correct postconditions:
-\begin{itemize}
-\item \verb|\result != 0 <==> a < b| is acceptable because it is an
-  equivalence between two predicates.
+\item adding parentheses results in a correct post-condition
+  \verb|\result == (a < b)|. Note however that there is an implicit
+  conversion (see Sec.~\ref{sec:typing})
+  from the \verb|int| (the type of \verb|\result|) to
+  \verb|boolean| (the type of \verb|(a<b)|)
+\item an equivalent post-condition, which does not rely on implicit
+  conversion, is \verb|(\result != 0) == (a<b)|. Both pairs of
+  parentheses are mandatory.
 \item \verb|\result == (integer)(a<b)| is also acceptable because it compares
   two integers. The cast towards \verb|integer| enforces
   \verb|a<b| to be understood as a boolean term. Notice that a cast
-  towards \verb|int| would also be acceptable. 
+  towards \verb|int| would also be acceptable.
+\item \verb|\result != 0 <==> a < b| is acceptable because it is an
+  equivalence between two predicates.
 \end{itemize}
-
