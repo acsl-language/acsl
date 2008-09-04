@@ -100,8 +100,8 @@ clean:
 	rm -rf *~ *.aux *.log *.nav *.out *.snm *.toc *.pp *.bnf \
                transf trans.ml *.cm? *.idx
 
-.PHONY: implementation rubber
-implementation:
+#.PHONY: implementation rubber
+acsl-implementation.pdf: $(DEPS)
 	mv main.tex main_old.tex
 	sed -e 's/%--//' main_old.tex > main.tex
 	@if $(MAKE) rubber; then \
