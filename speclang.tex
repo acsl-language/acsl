@@ -522,8 +522,15 @@ of the special values +infinity and -infinity.
   $\verb|(float)0.1| \equiv 13421773 \times 2 ^{-27}$ which is equal to
   $0.10000000149006473916$
 \end{example}
-Notice also that unlike for integers, suffixes $f$ and $d$ are
+Notice also that unlike for integers, suffixes $f$ and $l$ are
 meaningful, because they implicitly add a cast operator as above.
+
+\begin{remark}{Claude}
+  ne devrait-on pas ajouter le suffixe d dans la logique ?
+
+  par ex. 0.1d -> (double)0.1
+
+\end{remark}
 
 This semantics of casts ensures that the float result $r$ of a C operation
 $e_1 op e_2$ on floats, if there is no overflow and if the default
