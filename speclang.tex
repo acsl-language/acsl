@@ -47,6 +47,9 @@ must be noted.
       \hline
     \end{tabular}
   \end{center}
+\item Comments can be put inside ACSL annotations. They use the C++
+  format, {\it i.e.} begin with \texttt{//} and extend to the end of
+  current line.
 \end{itemize}
 
 In this document, we use UTF8 characters in the examples, to improve readability.
@@ -1885,7 +1888,7 @@ Some shortcuts are provided:
 
 \experimental
 
-\notimplemented{$\separated(loc_1,..,loc_n)$}\indexttbs{separated}
+$\separated(loc_1,..,loc_n)$\indexttbs{separated}
 means that for each
 $i\neq j$, the intersection of $loc_i$ and $loc_j$ is empty. Each
 $loc_i$ is a set of terms as defined in Section~\ref{sec:locations}.
