@@ -2261,9 +2261,9 @@ grammar are the following:
   end of the line (the ghost code itself is placed inside a C
   comment. \verb|/* ... */| would thus lead to incorrect C code).
 \item It is however possible to write multi-line annotations for ghost
-  code. These annotations are enclosed between \notimplemented{{\texttt{/@}} and
-  {\texttt{@/}}}. As in normal annotations, \verb|@|s at the beginning of a
-  line and at the end of the comment (before the final \verb|@/|) are
+  code. These annotations are enclosed between \notimplemented{{\texttt{/*@}} and
+  {\texttt{*/}}}. As in normal annotations, \verb|@|s at the beginning of a
+  line and at the end of the comment (before the final \verb|*/|) are
   considered as blank.
   \oldremark{Claude}{
     faudrait supprimer ca. Je propose de maniere generale que le code
