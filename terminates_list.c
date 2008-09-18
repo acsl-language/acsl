@@ -1,14 +1,14 @@
 struct list {
   int hd;
   struct list* next;
-}
+};
 
 // We give an axiomatic definition of the reachability predicate,
 // which is equivalent to the definition seen above.
 /*@ predicate reachable(struct list* root, struct list* to); */
 /*@ axiom reachable_self: \forall struct list* p; reachable(p,p); */
-/*@ axiom reachable_next:
-      \forall struct list* root,to;
+/*@ axiom reachable_next{L}:
+      \forall struct list* root,*to;
       \valid(root) && reachable(root->next,to) ==>
           reachable(root,to); */
 

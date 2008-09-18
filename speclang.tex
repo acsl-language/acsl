@@ -502,10 +502,11 @@ as in C: the same conversion operations apply.
 Conversion of real numbers to float or double values indeed depends on
 various possible rounding modes defined by the IEEE~754
 standard~\cite{float-std,wikipedia-float}. These modes are defined by
-a logic type:
+a logic type (see section~\ref{sec:concrete-logic-types}):
 \begin{flushleft}\ttfamily
-type rounding\_mode =  \\
-\quad  Nearest\_even | To\_zero | Round\_up | Round\_down | Nearest\_away
+/*@ type rounding\_mode =  \\
+\quad  Nearest\_even | To\_zero | Round\_up | Round\_down | Nearest\_away\\
+*/
 \end{flushleft}
 Then rounding a real number can be done explicitly using functions
 \begin{flushleft}\ttfamily
@@ -987,6 +988,7 @@ where $s$ denotes any \textsl{tset}.
 \item $s\ra id$ denotes the set of $x\ra id$ for each $x \in s$.
 \item $s.id$ denotes the set of $x.id$ for each $x \in s$.
 \item $*s$ denotes the set of $*x$ for each $x \in s$.
+\item \notimplemented{$\&s$ denotes the set of $\&x$ for each $x \in s$.}
 \item $s_1[s_2]$ denotes the set of $x_1[x_2]$ for each $x_1 \in s_1$
   and $x_2 \in s_2$.
 \item $t_1 .. t_2$ denotes the set of integers between $t_1$ and
@@ -1560,7 +1562,7 @@ has to provide a proof for each lemma. On the other hand, it is up to
 the user to ensure that the introduction of axioms does not lead to a
 logical inconsistency.
 
-\subsection{Polymorphic logic types}
+\subsection{Polymorphic logic types}\label{sec:polym-logic-types}
 \index{type!polymorphic}
 \index{polymorphism}
 \experimental
@@ -1665,7 +1667,7 @@ higher-order logic.
   \input{sum.pp}
 \end{example}
 
-\subsection{Concrete logic types}
+\subsection{Concrete logic types}\label{sec:concrete-logic-types}
 \index{type!concrete}
 \experimental
 
@@ -1893,30 +1895,11 @@ means that for each
 $i\neq j$, the intersection of $loc_i$ and $loc_j$ is empty. Each
 $loc_i$ is a set of terms as defined in Section~\ref{sec:locations}.
 
-\subsubsection{Locations as first-class values}
-\index{location}
-Locations, as defined in Section~\ref{sec:locations},
-\notimplemented{can be used as first-class values} in
-annotations. They have the \notimplemented{built-in type
-  $loc<A>$}\index{loc@\texttt{loc} type}
-where $A$ is the type of values in that locations.
-
-\begin{example}
-  Here is an example where we defined the \emph{footprint} of a
-  structure.
-
-  \input{footprint.pp}
-
-  This logic function can be used as argument of \separated.
-\end{example}
-
 Note that a clause \verb+assigns+ $l_1,..,l_n$ is equivalent
 to the postcondition
 \[
-\forall char* p; \separated(\union(l_1,..,l_n),*p) ==> *p == \old(*p)
+\forall char* p; \separated(\union(\&l_1,..,\&l_n),p) ==> *p == \old(*p)
 \]
-
-
 
 \subsection{Allocation and deallocation}
 
@@ -1937,6 +1920,33 @@ indicates that $p$ was not allocated in the pre-state.
   indicates that $p$ was allocated in the pre-state but that it is not
   the case in the post-state.
 \end{itemize}
+
+\section{Sets as first-class values}
+\index{location}
+Sets of terms, as defined in Section~\ref{sec:locations},
+can be used as first-class values in
+annotations. All the elements of such a set must share the same type
+(modulo the usual implicit conversions).
+Sets have the built-in type $set<A>$\index{set@\texttt{set} type}
+where $A$ is the type of terms contained in the set.
+
+In addition, it is possible to consider sets of pointers to values of
+different types. In this case, \notimplemented[Currently mixing
+pointers of different types in such a set leads to a \texttt{set<void*>}
+value. The expansion must be done manually.]{the set is of type $set<char*>$ and
+each of its elements $e$ is converted to $(char*)e + (0..sizeof(*e)-1)$}.
+
+\begin{example}
+  Here is an example where we defined the \emph{footprint} of a
+  structure, that is the set of locations that can be accessed from an
+  object of this type.
+
+  \input{footprint.pp}
+
+  This logic function can be used as argument of \separated or in
+  assigns clause.
+\end{example}
+
 
 \section{Abnormal termination}
 

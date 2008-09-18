@@ -18,7 +18,8 @@ DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
 	data_invariants.bnf  \
 	cfg.mps volatile.pp volatile-gram.bnf euclide.pp \
 	initialized.pp specified.pp exitbehavior.bnf dependencies.bnf \
-	sum2.pp modifier.pp gen_spec_with_ghost.pp terminates_list.pp
+	sum2.pp modifier.pp gen_spec_with_ghost.pp terminates_list.pp \
+        glob_var_masked.pp glob_var_masked_sol.pp
 
 all: main.pdf
 
@@ -80,7 +81,7 @@ transfmain.cmo: transf.cmo
 .PHONY: clean rubber
 
 check:
-	gcc -c *.c
+	gcc -c -std=c99 *.c
 	for f in *.c ; do ../../bin/toplevel.byte $$f ; done
 
 tutorial-check: acsl-mini-tutorial.tex
