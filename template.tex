@@ -1,0 +1,30 @@
+\section{Specification Templates}\label{sec:spec-templ}
+This section describes some common issues that may occur when writing
+an ACSL specification and proposes some solution to overcome them
+
+\subsection{Accessing to a C variable that is masked}
+
+In some situation, it is necessary to use in the specification a C
+variable that is masked at the given program point. For instance, a
+function contract may need to refer to a global variable that has the
+same name as a function parameter, as in the following code:
+
+\input{glob_var_masked.pp}
+
+In order to write the \verb|assigns| clause for \verb|f|, we must
+access the global variable \verb|x|, since \verb|f| calls \verb|g|,
+which can modify \verb|x|. This is not possible with C scoping rules,
+as \verb|x| refers to the parameter of \verb|f| in the scope of the
+function.
+
+A solution is to use a ghost pointer to \verb|x|, giving
+rise to the following code:
+
+\input{glob_var_masked_sol.pp}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-PDF-mode: t
+%%% TeX-master: "main"
+%%% End:
