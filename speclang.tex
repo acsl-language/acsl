@@ -529,12 +529,12 @@ of the special values +infinity and -infinity.
 Notice also that unlike for integers, suffixes $f$ and $l$ are
 meaningful, because they implicitly add a cast operator as above.
 
-\begin{remark}{Claude}
-  ne devrait-on pas ajouter le suffixe d dans la logique ?
+% \begin{remark}{Claude}
+%   ne devrait-on pas ajouter le suffixe d dans la logique ?
 
-  par ex. 0.1d -> (double)0.1
+%   par ex. 0.1d -> (double)0.1
 
-\end{remark}
+% \end{remark}
 
 This semantics of casts ensures that the float result $r$ of a C operation
 $e_1 op e_2$ on floats, if there is no overflow and if the default
@@ -988,7 +988,7 @@ where $s$ denotes any \textsl{tset}.
 \item $s\ra id$ denotes the set of $x\ra id$ for each $x \in s$.
 \item $s.id$ denotes the set of $x.id$ for each $x \in s$.
 \item $*s$ denotes the set of $*x$ for each $x \in s$.
-\item \notimplemented{$\&s$ denotes the set of $\&x$ for each $x \in s$.}
+\item $\&s$ denotes the set of $\&x$ for each $x \in s$.
 \item $s_1[s_2]$ denotes the set of $x_1[x_2]$ for each $x_1 \in s_1$
   and $x_2 \in s_2$.
 \item $t_1 .. t_2$ denotes the set of integers between $t_1$ and
@@ -1498,7 +1498,7 @@ applies when $g$ is $f$ itself.
 
 % clause 'terminates P' specifie que si P est vrai dans le pre-state,
 % alors la fonction ou le statement objet du contrat se termine en temps
-% fini. 
+% fini.
 
 % pas de valeur par defaut
 
@@ -1967,9 +1967,9 @@ Thus, the \separated predicate satisfies the following property:
 \[
 \begin{array}{l}
 \separated(l_1 : set<\tau_1*>,l_2 : set<\tau_2*>) \texttt{<==>} \\
-\quad \forall \tau_1* p; \forall \tau_2* q; 
+\quad \forall \tau_1* p; \forall \tau_2* q;
    p \in l_1 \land q \in l_2 \ra \\
-\qquad    \forall \integer i,j; 
+\qquad    \forall \integer i,j;
       0 \leq i < \sizeof(\tau_1) \land 0 \leq j < \sizeof(\tau_2) \ra
       (\verb|char*|)p + i \neq (\verb|char*|)q + j
     \end{array}
