@@ -1492,6 +1492,22 @@ applies when $g$ is $f$ itself.
   \input{mutualrec.pp}
 \end{example}
 
+% \subsection{Function termination}
+
+% TODO: a mettre plutot dans les contrats
+
+% clause 'terminates P' specifie que si P est vrai dans le pre-state,
+% alors la fonction ou le statement objet du contrat se termine en temps
+% fini. 
+
+% pas de valeur par defaut
+
+% Patrick propose plutot la negation: 'diverges P' car ce que l'on veut
+% specifier c'est que la fonction ne boucle indefiniment.
+
+% en faveur de prendre 'diverges' : c'est comme ca en JML.
+
+
 \subsection{Non-terminating functions}
 \label{sec:non-term-funct}
 \indextt{terminates}
@@ -1895,11 +1911,7 @@ means that for each
 $i\neq j$, the intersection of $loc_i$ and $loc_j$ is empty. Each
 $loc_i$ is a set of terms as defined in Section~\ref{sec:locations}.
 
-Note that a clause \verb+assigns+ $l_1,..,l_n$ is equivalent
-to the postcondition
-\[
-\forall char* p; \separated(\union(\&l_1,..,\&l_n),p) ==> *p == \old(*p)
-\]
+
 
 \subsection{Allocation and deallocation}
 
@@ -1943,9 +1955,30 @@ each of its elements $e$ is converted to $(char*)e + (0..sizeof(*e)-1)$}.
 
   \input{footprint.pp}
 
+  Notice that in the first definition, since union is made with a set<char*> and a set<int*>,
+  the result is a set<char*> (accordingly to typing of union). In
+  other words, the two definitions above are equivalent.
+
   This logic function can be used as argument of \separated or in
   assigns clause.
 \end{example}
+
+Thus, the \separated predicate satisfies the following property:
+\[
+\begin{array}{l}
+\separated(l_1 : set<\tau_1*>,l_2 : set<\tau_2*>) \texttt{<==>} \\
+\quad \forall \tau_1* p; \forall \tau_2* q; 
+   p \in l_1 \land q \in l_2 \ra \\
+\qquad    \forall \integer i,j; 
+      0 \leq i < \sizeof(\tau_1) \land 0 \leq j < \sizeof(\tau_2) \ra
+      (\verb|char*|)p + i \neq (\verb|char*|)q + j
+    \end{array}
+\]
+and a clause \verb+assigns+ $l_1,..,l_n$ is equivalent
+to the postcondition
+\[
+\forall char* p; \separated(\union(\&l_1,..,\&l_n),p) ==> *p == \old(*p)
+\]
 
 
 \section{Abnormal termination}

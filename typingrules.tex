@@ -56,10 +56,10 @@ Binary
 (to be continued)
 
 
-\subsection{Typing rules for locations}
+\subsection{Typing rules for sets}
 %VP: A-t-on besoin d'un logic environment?
 We consider the typing judgement $\Gamma,\Lambda \vdash s : \tau,b$
-meaning that $s$ is a set of terms of type $tau$, which is moreover a
+meaning that $s$ is a set of terms of type $\tau$, which is moreover a
 set of locations if the boolean $b$ is true.
 $\Gamma$ is the C environment and $\Lambda$ is the logic environment.
 
@@ -74,9 +74,10 @@ Rules:
 \frac{\Gamma,\Lambda\vdash s:\tau*,b}{\Gamma,\Lambda \vdash *s: \tau,true}
 \]
 %VP: cette regle ne veut rien dire.
-%\[
-%\frac{e: struct~S* \quad e_2:tset \tau}{\vdash s->id : \tau}
-%\]
+%CM maintenant si, si l'environnement donne les types des champs
+\[
+\frac{id:\tau \quad s: set<struct~S*>}{\vdash s->id : set<\tau>}
+\]
 \[
 \frac{\Gamma,b\cup \Lambda \vdash e: tset \tau}
 {\Gamma,\Lambda\vdash \{ e \mid b ; P \} : tset \tau }
