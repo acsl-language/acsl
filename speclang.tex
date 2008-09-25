@@ -1566,17 +1566,65 @@ void f() { while(1); }
 The language of logic expressions used in annotations can be extended
 by declaration of new logic types, and new constants, logic functions
 and predicates. These declarations follows the classical setting of
-\emph{algebraic specifications}. In particular new functions and
-predicates may be either \emph{defined} by explicit expressions, or
-\emph{axiomatized} by a set of axioms.
+\emph{algebraic specifications}. 
 The grammar for these declarations is given in Figure~\ref{fig:gram:logic}.
 
-The difference between a lemma and an axiom is that a lemma is
-supposed to be deductible from axioms. Thus, while axioms are always
-assumed to be true, a complete verification of an ACSL specification
-has to provide a proof for each lemma. On the other hand, it is up to
-the user to ensure that the introduction of axioms does not lead to a
-logical inconsistency.
+\subsection{Predicate and function definitions}
+
+New functions and predicates can be \emph{defined} by explicit
+expressions.
+
+\begin{todo}
+  TO COMPLETE: examples...
+\end{todo}
+\subsection{Axiomatic definitions}
+
+Instead of an explicit definition, one may introduce an \emph{axiomatic}
+definition, which amounts to declare the expected profile and a set
+of axioms.
+
+\begin{todo}
+  example
+\end{todo}
+
+It is up to the user to ensure that the introduction of axioms does
+not lead to a logical inconsistency.
+
+Axioms can also be given as \emph{lemmas}, meaning that they are
+deducible from others axioms.  Thus, while axioms are always assumed
+to be true, a complete verification of an ACSL specification has to
+provide a proof for each lemma.
+
+\begin{example}
+  The following axiomatization 
+  \input{sign.pp} 
+  is inconsistent since
+  it implies \texttt{sign(0.0) == 1} and \texttt{sign(0.0) == -1},
+  hence \texttt{-1 == 1}
+\end{example}
+
+\subsection{Inductive predicates}
+
+\experimental
+
+\begin{todo}
+  description
+\end{todo}
+
+\begin{example}
+  \input{isgcd.pp}
+\end{example}
+
+Notice that there is no syntactic condition on such inductive
+definitions. In essence, an inductive definition of the form $P(args)
+\{ \verb|case |c_1:a_1 \ldots \verb|case |c_n:a_n \}$ is just a
+shortcut for a declaration of \verb+P+ followed by $n$ axioms
+\verb+c_1:a_1,\ldots,c_n:a_n+.  In other words, recursive definitions
+are not guaranteed to be consistent, in the same way that axioms may
+introduce inconsistency. Of course, tools might provide a way to check
+consistency: a standard syntactic criterion for ensuring consistency
+of such a definition is to require that each $a_i$ contains exactly
+one positive occurrence of $P$ (definite Horn clauses, \url{http://en.wikipedia.org/wiki/Horn_clause}).
 
 \subsection{Polymorphic logic types}\label{sec:polym-logic-types}
 \index{type!polymorphic}

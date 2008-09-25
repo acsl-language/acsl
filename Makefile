@@ -19,7 +19,7 @@ DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
 	cfg.mps volatile.pp volatile-gram.bnf euclide.pp \
 	initialized.pp specified.pp exitbehavior.bnf dependencies.bnf \
 	sum2.pp modifier.pp gen_spec_with_ghost.pp terminates_list.pp \
-        glob_var_masked.pp glob_var_masked_sol.pp
+        glob_var_masked.pp glob_var_masked_sol.pp sign.pp isgcd.pp
 
 all: main.pdf
 
