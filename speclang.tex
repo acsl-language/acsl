@@ -1308,7 +1308,7 @@ variables within C statements (see~\cite{KR88}, Section A11.1)
 \subsubsection*{Default logic labels}
 \indextt{Pre}\indextt{Here}\indextt{Old}
 There are three predefined logic labels: \verb|Pre|, \verb|Here| and
-\verb|Old|. $\old(e)$ is in fact syntactic sugar for $\at(e,Old)$.
+\verb|Old|. $\old(e)$\indexttbs{old} is in fact syntactic sugar for $\at(e,Old)$.
 
 \begin{itemize}
 \item The label \verb|Here| is visible in all statement annotations,
@@ -1355,17 +1355,20 @@ Section~\ref{sec:logicalstates}.
 The grammar for statement contracts is given in
 Figure~\ref{fig:gram:stcontracts}. It is similar to function
 contracts, but without \decreases{} clause. Additionally, a statement contract
-may refer to enclosing named behaviors, with the form \texttt{for $id$ :
-  \ldots}. Such contracts are only valid for the
+may refer to enclosing named behaviors, with the form \texttt{for $id$:\ldots}. 
+Such contracts are only valid for the
 corresponding behaviors, in particular only under the
 corresponding \assumes{} clause.
 
 The clauses \texttt{breaks}, \texttt{continues} and \texttt{returns}
 state properties on the program state which hold when the
 annotated statement terminates abruptly with the corresponding
-statement (\texttt{break}, \texttt{continue} or \texttt{return}). For
-the \texttt{returns} case, the \result{} construct is allowed and
-bound to the value returned (if not a \texttt{void} function).
+statement (\texttt{break}, \texttt{continue} or \texttt{return}).
+Inside these clauses, the construct $\old(e)$\indexttbs{old} is
+allowed and denotes, like for statement contracts \texttt{assigns} 
+and \texttt{ensures}, the value of $e$ in the pre-state of the statement.
+For the \texttt{returns} case, the \result\indexttbs{result} construct is allowed and
+bounds to the returned value (if not a \texttt{void} function).
 
 \begin{example}
   Here is an example which illustrates each of these special
@@ -1387,7 +1390,7 @@ to refer to local variables.
 
   De toute facon, il faut detailler
 
-  Garder l'idee principal: on veut des annotations qui parlent a la
+  Garder l'idee principale: on veut des annotations qui parlent a la
   fois de \result et des variables locales.
 
   A-t-on besoin de mettre cela pour toute expression ?
