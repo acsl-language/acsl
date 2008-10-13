@@ -7,7 +7,7 @@ int f(int x) {
       @ returns (\result+2) % 11 != 0 && (\result+1) % 7 != 0 
       @         && \result % 5 == 0 && \result == \old(x)-2;
       @ ensures (x+3) % 11 != 0 && (x+2) % 7 != 0 && (x+1) % 5 != 0
-      @         && \result == \old(x)-3;
+      @         && x == \old(x)-3;
       @*/
     {
       if (x % 11 == 0) break;
