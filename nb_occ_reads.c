@@ -4,22 +4,30 @@
  * (in a given memory state labelled L)
  */
 
-/* Notice that without label {L}, this declaration would be rejected. 
- * With {L}, each occurrence of t[e] is indeed a shortcut for \at(t[e],L).
- */
 /*@ logic integer nb_occ{L}(double t[], integer i, integer j, 
-  @                         double e) {
-  @  axiom nb_occ_empty:
+  @                         double e) 
+  @   reads t[..];
+  @*/
+/* Notice that without label {L}, t[..] would be rejected. 
+ * With {L}, it is indeed a shortcut for \at(t[..],L).
+ */
+
+/*@ axiom nb_occ_empty{L} :
   @   \forall double t[], integer i, integer j, double e;
   @     i > j ==> nb_occ(t,i,j,e) == 0;
-  @  axiom nb_occ_true:
+  @*/
+// without {L}, term nb_occ(t,i,j,e) would be rejected 
+
+/*@ axiom nb_occ_true{L} :
   @   \forall double t[], integer i, integer j, double e;
   @     i <= j && t[i] == e ==> 
   @       nb_occ(t,i,j,e) == nb_occ(t,i,j-1,e) + 1;
-  @  axiom nb_occ_false:
+  @*/
+// without {L}, term t[i] would be rejected, here it is \at(t[i],L)
+
+/*@ axiom nb_occ_false{L} :
   @   \forall double t[], integer i, integer j, double e;
   @     i <= j && t[i] != e ==> 
   @       nb_occ(t,i,j,e) == nb_occ(t,i,j-1,e);
-  @ }
   @*/
 

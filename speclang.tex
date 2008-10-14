@@ -708,13 +708,12 @@ default status of clauses.
   nonnegative argument, and returns a value satisfying
   the conjunction of the three \ensures{} clauses.
 % [Patrick B.] START proposition:
-  Inside these \ensures{} clauses, the use of the construct $\old(x)$ 
-  is not necessary, even if the function modifies the formal operand $x$, because
-  function calls modify a copy of the effective operands, and 
-  the effective operands remain unaltered.
-  In fact, $x$ denotes the effective operand of $isqrt$ calls which
-  has the same value interpreted in the pre-state than in the
-  post-state.
+  Inside these \ensures{} clauses, the use of the construct $\old(x)$
+  is not necessary, even if the function modifies the formal operand
+  $x$, because function calls modify a copy of the effective operands,
+  and the effective operands remain unaltered.  In fact, $x$ denotes
+  the effective operand of $isqrt$ calls which has the same value
+  interpreted in the pre-state than in the post-state.
 % END proposition
 
 \end{example}
@@ -1321,9 +1320,10 @@ There are three predefined logic labels: \verb|Pre|, \verb|Here| and
 \verb|Old|. $\old(e)$\indexttbs{old} is in fact syntactic sugar for $\at(e,Old)$.
 
 \begin{itemize}
+
 \item The label \verb|Here| is visible in all statement annotations,
   where it refers to the state where the annotation appears; and in
-  all contracts, where it refers to the pre-state for the \texttt{requires}
+  all contracts, where it refers to the pre-state for the \texttt{requires} and the \texttt{assumes, variant, terminates, ...}
   clause and the post-state for other clauses. 
 % [Patrick B.] START question:
 % Est-ce pour permettre l'écriture d'une sorte de ``post assume'' ?
@@ -1366,6 +1366,14 @@ Section~\ref{sec:logicalstates}.
   The loop invariant for the B\'ezout property needs to refer to the
   value of $x$ and $y$ in the pre-state of the function.
   \input{euclide.pp}
+\end{example}
+
+\begin{example}
+  TODO
+%: example of use of \old( ... \at(e,Here) ... )
+
+%  (with other solution \let x = e in ... \old( ... x ...)
+
 \end{example}
 
 \subsection{Statement contracts}
@@ -1609,6 +1617,7 @@ expressions.
 \begin{todo}
   TO COMPLETE: examples...
 \end{todo}
+
 \subsection{Axiomatic definitions}
 
 Instead of an explicit definition, one may introduce an \emph{axiomatic}
@@ -1636,8 +1645,6 @@ provide a proof for each lemma.
 \end{example}
 
 \subsection{Inductive predicates}
-
-\experimental
 
 \begin{todo}
   description
@@ -1819,15 +1826,10 @@ Example: n-reines.
 \label{sec:logicalstates}
 \index{hybrid!function}
 \index{hybrid!predicate}
+
 Logic functions and predicates may take both (pure) C types and logic
 types arguments. Such an hybrid predicate (or function)
-can either be defined with the
-same syntax as before, or simply declared, but in the latter case the
-declaration should usually be augmented with a \reads{} clause, with
-the syntax given in Figure~\ref{fig:gram:logicreads}, which extends the
-one of Figure~\ref{fig:gram:logic}. This feature is useful when a
-function or a predicate is not easily definable, but can be more
-easily axiomatized.
+can either be defined with the same syntax as before (or axiomatized).
 
 Be it defined either directly by an expression or through a set of axioms,
 an hybrid function (or predicate) usually depends on one or
@@ -1846,6 +1848,37 @@ as above must then be enclosed into the \at{} construct to refer to a
 given label. However, to ease reading of such logic expressions, it
 is allowed to omit a label whenever there is only one label in the
 context.
+
+\begin{example}
+  The following annotations declare a function which returns the
+  number of occurrences of a given double in an array of doubles
+  between the given indexes, together with the related axioms.
+  It should be noted that without the reads
+  clauses, this axiomatization would be inconsistent, since the
+  function would not depend on the values stored in t, hence the two
+  last axioms would say both that $a=b+1$ and $a=b$ for some $a$ and
+  $b$.
+  \input{nb_occ.pp}
+\end{example}
+
+\begin{example}
+  This second example defines a predicate which indicates whether two
+  arrays of the same size are a permutation of each other. It
+  illustrates the use of more than a single label. Thus, the \verb+\at+
+  operator is mandatory here. Indeed the two arrays
+  may come from two distinct memory states. Typically, one of the post
+  condition of a sorting function would be \verb+permut{Pre,Here}(t,t)+.
+  \input{permut.pp}
+\end{example}
+
+
+\subsection{\texttt{reads} clauses}
+
+declaration can be augmented with a \reads{} clause, with
+the syntax given in Figure~\ref{fig:gram:logicreads}, which extends the
+one of Figure~\ref{fig:gram:logic}. This feature is useful when a
+function or a predicate is not easily definable, but can be more
+easily axiomatized.
 
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
@@ -1886,7 +1919,7 @@ context.
   function would not depend on the values stored in t, hence the two
   last axioms would say both that $a=b+1$ and $a=b$ for some $a$ and
   $b$.
-  \input{nb_occ.pp}
+  \input{nb_occ_reads.pp}
 \end{example}
 
 \begin{example}
@@ -1896,15 +1929,15 @@ context.
   operator is mandatory here. Indeed the two arrays
   may come from two distinct memory states. Typically, one of the post
   condition of a sorting function would be \verb+permut{Pre,Here}(t,t)+.
-  \input{permut.pp}
+  \input{permut_reads.pp}
 \end{example}
 
 \oldremark{SD7+All}{
 
-As shown above, hybrid predicates and functions should be used
-with caution, since they do not depend only on the values of their
-parameters but also in an implicit way on the values stored in memory.
-
+  As shown above, hybrid predicates and functions declared with reads
+  clauses should be used with caution, since they do not depend only
+  on the values of their parameters but also in an implicit way on the
+  values stored in memory.
 
   reutiliser l'exemple en question ? (en le faisant mieux)
 
