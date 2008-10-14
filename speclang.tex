@@ -707,6 +707,16 @@ default status of clauses.
   The contract means that the function must be called with a
   nonnegative argument, and returns a value satisfying
   the conjunction of the three \ensures{} clauses.
+% [Patrick B.] START proposition:
+  Inside these \ensures{} clauses, the use of the construct $\old(x)$ 
+  is not necessary, even if the function modifies the formal operand $x$, because
+  function calls modify a copy of the effective operands, and 
+  the effective operands remain unaltered.
+  In fact, $x$ denotes the effective operand of $isqrt$ calls which
+  has the same value interpreted in the pre-state than in the
+  post-state.
+% END proposition
+
 \end{example}
 
 \begin{example}
@@ -1313,14 +1323,30 @@ There are three predefined logic labels: \verb|Pre|, \verb|Here| and
 \begin{itemize}
 \item The label \verb|Here| is visible in all statement annotations,
   where it refers to the state where the annotation appears; and in
-  all contracts, and refers to the pre-state for the \texttt{requires}
-  clause and the post-state for other clauses. It is also visible in
-  data invariants, presented in Section~\ref{sec:invariants}.
+  all contracts, where it refers to the pre-state for the \texttt{requires}
+  clause and the post-state for other clauses. 
+% [Patrick B.] START question:
+% Est-ce pour permettre l'écriture d'une sorte de ``post assume'' ?
+% Dans ce cas, as-t'on droit d'utiliser la construction suivante :
+% ``\at(Here,\result)'' dans une assume ?
+% Est-ce la même chose pour la clause ``terminates'' des contrats de
+% fonctions ?
+% Même question pour la clause ``variant'' des contrats de fonction et
+% d'instructions ?
+% END question.
+It is also visible in data invariants, presented in Section~\ref{sec:invariants}.
+% [Patrick B.] START question:
+% Et alors, que désigne cette étiquette dans ce genre de propriétés ?
+% END question.
 \item The label \verb|Old| is visible in \verb|assigns| and
   \verb|ensures| clauses of all contracts (both for functions and for
   statement contracts described below in
   Section~\ref{sec:statement_contract}), and refers to the pre-state
   of this contract.
+% [Patrick B.] START remarque:
+% ``Old'' peut également s'utiliser dans les clauses relatives aux
+% terminaisons abruptes. Ce n'est pas dit ici. 
+% END remarque
 \item The label \verb|Pre| is visible in all statement annotations,
   and refers to the pre-state of the function it occurs in.
 \end{itemize}
@@ -1364,9 +1390,11 @@ The clauses \texttt{breaks}, \texttt{continues} and \texttt{returns}
 state properties on the program state which hold when the
 annotated statement terminates abruptly with the corresponding
 statement (\texttt{break}, \texttt{continue} or \texttt{return}).
+% [Patrick B.] START proposition:
 Inside these clauses, the construct $\old(e)$\indexttbs{old} is
 allowed and denotes, like for statement contracts \texttt{assigns} 
 and \texttt{ensures}, the value of $e$ in the pre-state of the statement.
+% END proposition
 For the \texttt{returns} case, the \result\indexttbs{result} construct is allowed and
 bounds to the returned value (if not a \texttt{void} function).
 
