@@ -283,7 +283,7 @@ Notes:
 \item Unlike in C, there is a distinction between booleans and
   integers. There is an implicit promotion from integers to booleans,
   thus one may write \verb|x && y| instead of \verb|x != 0 && y != 0|.
-  If the reverse conversion is needed, an explicit cast is
+  If the reverse conversion is needed, an explicit cast\index{cast} is
   required, \emph{e.g.} \texttt{(int)(x>0)+1}, where \verb|\false| becomes 0
   and \verb|\true| becomes 1.
 \item Quantification can be made over any type: logic types and C
@@ -338,7 +338,7 @@ remainder of $n$ divided by $d$ then:
 Hexadecimal and octal constants are always non-negative. Suffixes
 \texttt{u} and \texttt{l} for C constants are allowed but meaningless.
 
-\subsubsection{Casts and overflows}
+\subsubsection{Casts and  overflows}\index{cast}
 
 In logic expressions, casting from mathematical integers
 to an integral C type $t$ (such as \texttt{char}, \texttt{short},
@@ -409,7 +409,7 @@ given in a library.
 
 \subsubsection{Enum types}
 
-Enum types are also interpreted as mathematical integers. Casting
+Enum types are also interpreted as mathematical integers. Casting\index{cast}
 an integer into an enum in the logic must give the same result as if it
 was in the C code.
 
@@ -496,7 +496,7 @@ operators of float (resp. double) numbers as in C:
 
 \subsubsection{Casts, infinity and NaNs}
 
-Casting from a C integer type or a float type to a float or a double is
+Casting\index{cast} from a C integer type or a float type to a float or a double is
 as in C: the same conversion operations apply.
 
 Conversion of real numbers to float or double values indeed depends on
