@@ -669,8 +669,8 @@ The semantics of such a contract is as follows:
   $E_1 \verb|&&| E_2 \verb!&&! \dots$ holds.
 \item All memory locations of the pre-state that do not belong to the
   set $L_1 \cup L_2 \cup \dots$ remain allocated and are left unchanged in the
-  post-state. The set $L_1 \cup L_2 \cup \dots$ is interpreted in the
-  post-state.
+  post-state. The set $L_1 \cup L_2 \cup \dots$ itself is interpreted in the
+  pre-state.
 \end{itemize}
 
 % TODO : donner une vision plus symétrique appelant/appelé d'un contrat
@@ -1350,6 +1350,8 @@ It is also visible in data invariants, presented in Section~\ref{sec:invariants}
 % END remarque
 \item The label \verb|Pre| is visible in all statement annotations,
   and refers to the pre-state of the function it occurs in.
+\item The label \verb|Post| is visible in assigns and ensures clauses
+
 \end{itemize}
 
 Note that no logic label is visible in global logic declarations
