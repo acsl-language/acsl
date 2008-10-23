@@ -1180,6 +1180,10 @@ specifies that the following conditions hold.
   entering the loop, and is not member of $L$ (interpreted in the
   current state), must remain allocated and has the same value as
   before entering the loop.
+% [Patrick B.] START proposition:
+  In fact, the \texttt{loop assigns} clause specifies an inductive 
+  invariant for the locations wich are not member of $L$.
+% END proposition:
 \end{itemize}
 
 \paragraph{Remarks}
@@ -1189,6 +1193,10 @@ specifies that the following conditions hold.
   refer to another state (see Section~\ref{sec:at}).
 \item When a loop exits with \texttt{break} or \texttt{return} or
   \texttt{goto}, it is not required that the loop invariant holds.
+% [Patrick B.] START proposition:
+  In such cases, locations that are not member of $L$ can be disallocated
+  or assigned between the end of the previous iteration and the exit statement.  
+% END proposition:
 \end{itemize}
 
 \begin{example}
