@@ -1323,7 +1323,7 @@ These rules are exactly the same rules as for the visibility of local
 variables within C statements (see~\cite{KR88}, Section A11.1)
 
 \subsubsection*{Default logic labels}
-\indextt{Pre}\indextt{Here}\indextt{Old}
+\indextt{Pre}\indextt{Here}\indextt{Old}\indextt{Post}
 There are three predefined logic labels: \verb|Pre|, \verb|Here| and
 \verb|Old|. $\old(e)$\indexttbs{old} is in fact syntactic sugar for $\at(e,Old)$.
 
@@ -1333,20 +1333,7 @@ There are three predefined logic labels: \verb|Pre|, \verb|Here| and
   where it refers to the state where the annotation appears; and in
   all contracts, where it refers to the pre-state for the \texttt{requires} and the \texttt{assumes, variant, terminates, ...}
   clause and the post-state for other clauses. 
-% [Patrick B.] START question:
-% Est-ce pour permettre l'écriture d'une sorte de ``post assume'' ?
-% Si oui, il serait bon de remettre au goût du jour l'exemple fwrite-malloc.c
-% Dans ce cas, as-t'on le droit d'utiliser la construction suivante :
-% ``\at(Here,\result)'' dans une clause assume (ce n'est jamais dit) ?
-% Est-ce la même chose pour la clause ``terminates'' des contrats de
-% fonctions ?
-% Même question pour la clause ``variant'' des contrats de fonction et
-% d'instructions ?
-% END question.
 It is also visible in data invariants, presented in Section~\ref{sec:invariants}.
-% [Patrick B.] START question:
-% Et alors, que désigne cette étiquette dans ce genre de propriétés ?
-% END question.
 \item The label \verb|Old| is visible in \verb|assigns| and
   \verb|ensures| clauses of all contracts (both for functions and for
   statement contracts described below in
@@ -1358,7 +1345,7 @@ It is also visible in data invariants, presented in Section~\ref{sec:invariants}
 % END remarque
 \item The label \verb|Pre| is visible in all statement annotations,
   and refers to the pre-state of the function it occurs in.
-\item The label \verb|Post| is visible in assigns and ensures clauses
+\item The label \verb|Post| is visible in verb|assigns| and \verb|ensures| clauses.
 
 \end{itemize}
 
