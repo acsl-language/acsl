@@ -1324,8 +1324,8 @@ variables within C statements (see~\cite{KR88}, Section A11.1)
 
 \subsubsection*{Default logic labels}
 \indextt{Pre}\indextt{Here}\indextt{Old}\indextt{Post}
-There are three predefined logic labels: \verb|Pre|, \verb|Here| and
-\verb|Old|. $\old(e)$\indexttbs{old} is in fact syntactic sugar for $\at(e,Old)$.
+There are four predefined logic labels: \verb|Pre|, \verb|Here|,
+\verb|Old| and \verb|Post|. $\old(e)$\indexttbs{old} is in fact syntactic sugar for $\at(e,Old)$.
 
 \begin{itemize}
 
@@ -1345,7 +1345,7 @@ It is also visible in data invariants, presented in Section~\ref{sec:invariants}
 % END remarque
 \item The label \verb|Pre| is visible in all statement annotations,
   and refers to the pre-state of the function it occurs in.
-\item The label \verb|Post| is visible in verb|assigns| and \verb|ensures| clauses.
+\item The label \verb|Post| is visible in \verb|assigns| and \verb|ensures| clauses.
 
 \end{itemize}
 
