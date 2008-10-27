@@ -1596,12 +1596,12 @@ void f() { while(1); }
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth} \input{logic.bnf}
     \end{minipage}}
-  \caption{Grammar for logic declarations}
+  \caption{Grammar for global logic definitions}
 \label{fig:gram:logic}
 \end{figure}
 
 The language of logic expressions used in annotations can be extended
-by declaration of new logic types, and new constants, logic functions
+by declarations of new logic types, and new constants, logic functions
 and predicates. These declarations follows the classical setting of
 \emph{algebraic specifications}. 
 The grammar for these declarations is given in Figure~\ref{fig:gram:logic}.
@@ -1609,29 +1609,78 @@ The grammar for these declarations is given in Figure~\ref{fig:gram:logic}.
 \subsection{Predicate and function definitions}
 
 New functions and predicates can be \emph{defined} by explicit
-expressions.
+expressions, given after an equal sign.
 
-\begin{todo}
-  TO COMPLETE: examples...
-\end{todo}
+\begin{example}
+  The following definitions \input{signdef.pp} illustrate the
+  definition of a new predicate \texttt{is\_positive} with an integer
+  parameter, and a new logic function \texttt{sign} with a real
+  parameter returning an integer.
+\end{example}
+
+\subsection{Lemmas}
+
+Lemmas are user-given propositions, a facility that might help theorem
+provers to establish validity of ACSL specifications.
+
+\begin{example}
+  The following lemma
+  \input{mean.pp}
+  is a useful hint for program like binary search.
+\end{example}
+
+Of course, a complete verification of an ACSL specification has to
+provide a proof for each lemma.
+
+
+\subsection{Inductive predicates}
+\index{inductive predicates}
+
+A predicate may also be defined by an inductive definition. An
+inductive definition of a predicate $P$ has the form
+\begin{flushleft}\ttfamily
+/*@ inductive $P(x_1,\ldots,x_n)$ \{ \\
+~~@   case $c_1$ : $p_1$; \\
+...\\
+~~@   case $c_k$ : $p_k$; \\
+~~@ \}
+~~@*/ \\
+\end{flushleft}
+where each $c_i$ is an identifier and each $p_i$ is a proposition.
+
+The semantics of such a definition is that $P$ is the least fixpoint
+of the cases, i.e. is the smallest predicate (in the sense that it is
+false the most often) satisfying the propositions $p_1,\ldots,p_k$.
+With this general form, the existence of a least fixpoint is not
+guaranteed, so tools might enforce syntactic conditions on the form of
+inductive definitions. A standard syntactic restriction could be to
+allow only propositions $p_i$ of the form
+\begin{flushleft}\ttfamily
+forall $y_1,\ldots,y_m$, $h_1$ ==> $\cdots$ ==> $h_l$ ==> $P(t_1,\ldots,t_n)$
+\end{flushleft}
+where $P$ occurs only positively in hypothesis $h_1,\ldots,h_l$
+(definite Horn clauses,
+\url{http://en.wikipedia.org/wiki/Horn_clause}).
+
+\begin{example}
+  The following introduce a predicate $\texttt{isgcd}(x,y,d)$ meaning
+  that $d$ is the greatest common divisor of $x$ and $y$.
+  \input{isgcd.pp}
+\end{example}
 
 \subsection{Axiomatic definitions}
 
-Instead of an explicit definition, one may introduce an \emph{axiomatic}
-definition, which amounts to declare the expected profile and a set
-of axioms.
+Instead of an explicit definition, one may introduce an
+\emph{axiomatic} definition for a predicate or a logic function, which
+amounts to declare the expected profile and a set of axioms.
 
 \begin{todo}
-  example
+  example TODO
 \end{todo}
 
+Like inductive definitions, there is no syntactic conditions which would guarantee axiomatic definitions to be consistent.
 It is up to the user to ensure that the introduction of axioms does
 not lead to a logical inconsistency.
-
-Axioms can also be given as \emph{lemmas}, meaning that they are
-deducible from others axioms.  Thus, while axioms are always assumed
-to be true, a complete verification of an ACSL specification has to
-provide a proof for each lemma.
 
 \begin{example}
   The following axiomatization 
@@ -1640,27 +1689,6 @@ provide a proof for each lemma.
   it implies \texttt{sign(0.0) == 1} and \texttt{sign(0.0) == -1},
   hence \texttt{-1 == 1}
 \end{example}
-
-\subsection{Inductive predicates}
-
-\begin{todo}
-  description
-\end{todo}
-
-\begin{example}
-  \input{isgcd.pp}
-\end{example}
-
-Notice that there is no syntactic condition on such inductive
-definitions. In essence, an inductive definition of the form $P(args)
-\{ \verb|case |c_1:a_1 \ldots \verb|case |c_n:a_n \}$ is just a
-shortcut for a declaration of \verb+P+ followed by $n$ axioms
-\verb+c_1:a_1,\ldots,c_n:a_n+.  In other words, recursive definitions
-are not guaranteed to be consistent, in the same way that axioms may
-introduce inconsistency. Of course, tools might provide a way to check
-consistency: a standard syntactic criterion for ensuring consistency
-of such a definition is to require that each $a_i$ contains exactly
-one positive occurrence of $P$ (definite Horn clauses, \url{http://en.wikipedia.org/wiki/Horn_clause}).
 
 \subsection{Polymorphic logic types}\label{sec:polym-logic-types}
 \index{type!polymorphic}
@@ -1705,14 +1733,14 @@ possible too.
 %\end{example}
 
 Notice that there is no syntactic condition on such recursive
-definitions, such as limitation to primitive recursion like e.g. in
-Coq~\cite{Coq}. In essence, a recursive definition of the form
-\verb+f(args) = e;+ where \verb+f+ occurs in expression \verb+e+ is
-just a shorcut for a declaration of \verb+f+ followed by an axiom
-\verb+\forall args; f(args) = e+.  In other words, recursive
-definitions are not guaranteed to be consistent, in the same way that
-axioms may introduce inconsistency. Of course, tools might provide a
-way to check consistency.
+definitions, such as limitation to primitive recursion. In essence, a
+recursive definition of the form \verb+f(args) = e;+ where \verb+f+
+occurs in expression \verb+e+ is just a shortcut for axiomatic declaration of
+\verb+f+ with an axiom \verb+\forall args; f(args) = e+.  In
+other words, recursive definitions are not guaranteed to be
+consistent, in the same way that axiomatics may introduce
+inconsistency. Of course, tools might provide a way to check
+consistency.
 
 \subsection{Higher-order logic constructions}
 \label{sec:higherorder}
