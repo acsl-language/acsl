@@ -1,25 +1,17 @@
 \begin{syntax}
-  C-global-decl ::= "/*@"+ "*/"
+  C-global-decl ::= "/*@" logic-def+ "*/"
   \
-  logic-decl ::= logic-type-decl ;
-          | logic-const-decl | logic-const-def ;
-          | logic-predicate-decl ;
+  logic-def ::= logic-const-def ;
           | logic-predicate-def ;
-          | logic-function-decl ;
           | logic-function-def ;
-          | lemma-def
+          | lemma-def ;
   \
   type-var ::= id
   \
-  type-var-binders ::= "<" type-var (, type-var)* ">"
-  \
-  logic-type-decl ::= "type" logic-type ";" ;
-  \
-  logic-type ::= id ;
-  | id type-var-binders ; polymorphic type
-  \
   logic-type-expr ::= type-var ; type variable
   | id "<" type-expr (, type-expr)* ">" ; polymorphic type
+  \
+  type-var-binders ::= "<" type-var (, type-var)* ">"
   \
   poly-id ::= id ; normal identifier
   | id type-var-binders ; identifier for polymorphic object
@@ -34,20 +26,9 @@
   "predicate";
   poly-id parameters? "=" pred ";"
   \
-  logic-const-decl ::=  "logic" type-expr poly-id ";"
-  \
-  logic-function-decl ::=
-  "logic" type-expr;
-  poly-id parameters ";"
-  \
-  logic-predicate-decl ::=
-  "predicate";
-  poly-id parameters? ";"
-  \
   parameters ::= "(" parameter (, parameter)* ")"
   \
   parameter ::= type-expr variable-ident
   \
-  lemma-def ::= "axiom" poly-id ":" pred ";" ;
-  | "lemma" poly-id ":" pred ";" ;
+  lemma-decl ::= "lemma" poly-id ":" pred ";" 
 \end{syntax}

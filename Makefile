@@ -15,13 +15,14 @@ DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
 	term.bnf binders.bnf fn_behavior.bnf oldandresult.bnf at.bnf loc.bnf \
 	assertions.bnf loops.bnf generalinvariants.bnf \
 	st_contracts.bnf moreterm.bnf ghost.bnf model.bnf \
-	logic.bnf logictypedecl.bnf higherorder.bnf logicreads.bnf \
+	logic.bnf inductive.bnf logicdecl.bnf \
+	logictypedecl.bnf higherorder.bnf logicreads.bnf \
 	data_invariants.bnf  \
 	cfg.mps volatile.pp volatile-gram.bnf euclide.pp \
 	initialized.pp specified.pp exitbehavior.bnf dependencies.bnf \
 	sum2.pp modifier.pp gen_spec_with_ghost.pp terminates_list.pp \
         glob_var_masked.pp glob_var_masked_sol.pp sign.pp signdef.pp \
-	mean.pp isgcd.pp
+	oldat.pp mean.pp isgcd.pp
 
 all: main.pdf
 

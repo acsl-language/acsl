@@ -1,0 +1,8 @@
+\begin{syntax}
+  logic-def ::= inductive-def
+  \
+  inductive-def ::= "inductive";
+  poly-id parameters? "{" indcase* "}"
+  \
+  indcase ::= "case" id ":" pred ";"
+\end{syntax}

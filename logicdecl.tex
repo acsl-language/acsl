@@ -1,0 +1,29 @@
+\begin{syntax}
+  logic-def ::= axiomatic-decl
+  \
+  axiomatic-decl ::= "axiomatic" id "{" logic-decl* "}"
+  \
+  logic-decl ::= logic-def ;
+  | logic-type-decl ;
+  | logic-const-decl ;
+  | logic-predicate-decl ;
+  | logic-function-decl ;
+  | axiom-decl 
+  \
+  logic-type-decl ::= "type" logic-type ";" ;
+  \
+  logic-type ::= id ;
+  | id type-var-binders ; polymorphic type
+  \
+  logic-const-decl ::=  "logic" type-expr poly-id ";"
+  \
+  logic-function-decl ::=
+  "logic" type-expr;
+  poly-id parameters ";"
+  \
+  logic-predicate-decl ::=
+  "predicate";
+  poly-id parameters? ";"
+  \
+  axiom-decl ::= "axiom" poly-id ":" pred ";" 
+\end{syntax}

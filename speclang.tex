@@ -1365,10 +1365,19 @@ Section~\ref{sec:logicalstates}.
 \end{example}
 
 \begin{example}
-  TODO
-%: example of use of \old( ... \at(e,Here) ... )
+  Here is a toy example illustrating tricky issues with \verb|\at| and
+  labels: 
 
-%  (with other solution \let x = e in ... \old( ... x ...)
+  \input{oldat.pp} 
+
+  The two ensures clauses are equivalent. The
+  simpler clause \verb|t[i] == \old(t[i]) + 1| would be wrong because
+  in \verb|\old(t[i])|, \verb|i| denotes the value of $i$ n the
+  pre-state.
+
+  Also, the assigns clause \verb|i,t[i]| would be wrong too because
+  again in \verb|t[i]|, the value of $i$ in the pre-state is
+  considered.
 
 \end{example}
 
@@ -1635,8 +1644,18 @@ provide a proof for each lemma.
 \subsection{Inductive predicates}
 \index{inductive predicates}
 
-A predicate may also be defined by an inductive definition. An
-inductive definition of a predicate $P$ has the form
+A predicate may also be defined by an inductive definition. The
+grammar for those style of definitions is given on
+Figure~\ref{fig:gram:inductive}.
+\index{inductive definitions}
+\begin{figure}[t]
+  \fbox{\begin{minipage}{0.97\linewidth} \input{inductive.bnf}
+    \end{minipage}}
+  \caption{Grammar for inductive definitions}
+\label{fig:gram:inductive}
+\end{figure}
+
+In general, an inductive definition of a predicate $P$ has the form
 \begin{flushleft}\ttfamily
 /*@ inductive $P(x_1,\ldots,x_n)$ \{ \\
 ~~@   case $c_1$ : $p_1$; \\
@@ -1670,16 +1689,27 @@ where $P$ occurs only positively in hypothesis $h_1,\ldots,h_l$
 \subsection{Axiomatic definitions}
 
 Instead of an explicit definition, one may introduce an
-\emph{axiomatic} definition for a predicate or a logic function, which
-amounts to declare the expected profile and a set of axioms.
+\emph{axiomatic} definitions for a set of types, predicates and logic
+functions, which amounts to declare the expected profiles and a set of
+axioms. The grammar for those constructions is given on
+Figure~\ref{fig:gram:logicdecl}.
+
+\index{axiomatic}
+\begin{figure}[t]
+  \fbox{\begin{minipage}{0.97\linewidth} \input{logicdecl.bnf}
+    \end{minipage}}
+  \caption{Grammar for axiomatic declarations}
+\label{fig:gram:logicdecl}
+\end{figure}
 
 \begin{todo}
   example TODO
 \end{todo}
 
-Like inductive definitions, there is no syntactic conditions which would guarantee axiomatic definitions to be consistent.
-It is up to the user to ensure that the introduction of axioms does
-not lead to a logical inconsistency.
+Like inductive definitions, there is no syntactic conditions which
+would guarantee axiomatic definitions to be consistent. It is usually
+up to the user to ensure that the introduction of axioms does not lead
+to a logical inconsistency.
 
 \begin{example}
   The following axiomatization
