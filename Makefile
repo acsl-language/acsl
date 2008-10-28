@@ -107,7 +107,7 @@ clean:
 acsl-implementation.pdf: $(DEPS)
 	mv main.tex main_old.tex
 	sed -e 's/%--//' main_old.tex > main.tex
-	@if $(MAKE) rubber; then \
+	@if $(MAKE) all; then \
 	   mv main_old.tex main.tex; \
            mv main.pdf acsl-implementation.pdf; \
            echo "implementation manual generated"; \
