@@ -635,7 +635,7 @@ Section~\ref{sec:termination}.
 
 \subsection{Built-in constructs \old{} and \result{}}
 
-Function contracts usually require to refer to function results and
+Post-conditions usually require to refer to function results and
 values in the pre-state. Thus terms are extended with the following new
 constructs (shown in Figure~\ref{fig:gram:oldandresult}).
 \begin{itemize}
@@ -644,9 +644,8 @@ pre-state of the function.
 \item \result\indexttbs{result} denotes the returned value of the function.
 \end{itemize}
 
-$\old(e)$ and $\result$ can be used only in \assigns{} clauses and
-\ensures{} clauses, since \requires{} and \assumes{} clauses refer to
-the pre-state.
+$\old(e)$ and $\result$ can be used only in \ensures{} clauses, since
+the other clauses already refer to the pre-state.
 % See Section~\ref{sec:at} for more details on scoping rules for labels.
 
 \subsection{Simple function contracts}
@@ -1181,7 +1180,7 @@ specifies that the following conditions hold.
   current state), must remain allocated and has the same value as
   before entering the loop.
 % [Patrick B.] START proposition:
-  In fact, the \texttt{loop assigns} clause specifies an inductive 
+  In fact, the \texttt{loop assigns} clause specifies an inductive
   invariant for the locations wich are not member of $L$.
 % END proposition:
 \end{itemize}
@@ -1195,7 +1194,7 @@ specifies that the following conditions hold.
   \texttt{goto}, it is not required that the loop invariant holds.
 % [Patrick B.] START proposition:
   In such cases, locations that are not member of $L$ can be disallocated
-  or assigned between the end of the previous iteration and the exit statement.  
+  or assigned between the end of the previous iteration and the exit statement.
 % END proposition:
 \end{itemize}
 
@@ -1332,7 +1331,7 @@ There are four predefined logic labels: \verb|Pre|, \verb|Here|,
 \item The label \verb|Here| is visible in all statement annotations,
   where it refers to the state where the annotation appears; and in
   all contracts, where it refers to the pre-state for the \texttt{requires} and the \texttt{assumes, variant, terminates, ...}
-  clause and the post-state for other clauses. 
+  clause and the post-state for other clauses.
 It is also visible in data invariants, presented in Section~\ref{sec:invariants}.
 \item The label \verb|Old| is visible in \verb|assigns| and
   \verb|ensures| clauses of all contracts (both for functions and for
@@ -1341,7 +1340,7 @@ It is also visible in data invariants, presented in Section~\ref{sec:invariants}
   of this contract.
 % [Patrick B.] START remarque:
 % ``Old'' peut également s'utiliser dans les clauses relatives aux
-% terminaisons abruptes des contrats d'instructions. Ce n'est pas dit ici. 
+% terminaisons abruptes des contrats d'instructions. Ce n'est pas dit ici.
 % END remarque
 \item The label \verb|Pre| is visible in all statement annotations,
   and refers to the pre-state of the function it occurs in.
@@ -1387,7 +1386,7 @@ Section~\ref{sec:logicalstates}.
 The grammar for statement contracts is given in
 Figure~\ref{fig:gram:stcontracts}. It is similar to function
 contracts, but without \decreases{} clause. Additionally, a statement contract
-may refer to enclosing named behaviors, with the form \texttt{for $id$:\ldots}. 
+may refer to enclosing named behaviors, with the form \texttt{for $id$:\ldots}.
 Such contracts are only valid for the
 corresponding behaviors, in particular only under the
 corresponding \assumes{} clause.
@@ -1398,7 +1397,7 @@ annotated statement terminates abruptly with the corresponding
 statement (\texttt{break}, \texttt{continue} or \texttt{return}).
 % [Patrick B.] START proposition:
 Inside these clauses, the construct $\old(e)$\indexttbs{old} is
-allowed and denotes, like for statement contracts \texttt{assigns} 
+allowed and denotes, like for statement contracts \texttt{assigns}
 and \texttt{ensures}, the value of $e$ in the pre-state of the statement.
 % END proposition
 For the \texttt{returns} case, the \result\indexttbs{result} construct is allowed and
@@ -1603,7 +1602,7 @@ void f() { while(1); }
 The language of logic expressions used in annotations can be extended
 by declarations of new logic types, and new constants, logic functions
 and predicates. These declarations follows the classical setting of
-\emph{algebraic specifications}. 
+\emph{algebraic specifications}.
 The grammar for these declarations is given in Figure~\ref{fig:gram:logic}.
 
 \subsection{Predicate and function definitions}
@@ -1683,8 +1682,8 @@ It is up to the user to ensure that the introduction of axioms does
 not lead to a logical inconsistency.
 
 \begin{example}
-  The following axiomatization 
-  \input{sign.pp} 
+  The following axiomatization
+  \input{sign.pp}
   is inconsistent since
   it implies \texttt{sign(0.0) == 1} and \texttt{sign(0.0) == -1},
   hence \texttt{-1 == 1}
