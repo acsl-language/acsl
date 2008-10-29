@@ -302,7 +302,7 @@ The following integer arithmetic operations apply to
 \emph{mathematical integers}: addition, subtraction, multiplication,
 unary minus. The value of a C variable of an integral type is promoted
 to a mathematical integer. As a consequence, there is no such thing as
-``overflow'' in logic expressions.
+``arithmetic overflow'' in logic expressions.
 
 Division and modulo are also mathematical operations, which coincide
 with the corresponding C operations on C machine integers, thus
@@ -966,7 +966,7 @@ means that all behaviors given in the contract should be taken into account.
 
 There are several places where one needs to describe a set of memory
 locations: in \assigns{} clauses of function contracts, or
-in \reads{} clauses (see Section~\ref{sec:logicspec}). More
+in \verb|\separated| predicate (see Section~\ref{sec:separated}). More
 generally, we introduce syntactic constructs to denote \emph{sets of
   terms}. A \emph{memory location} is then any set of terms denoting a set of
 l-values\index{l-value}. Moreover, a location given as argument to
@@ -1036,8 +1036,8 @@ Note that \verb|\assigns \nothing| is equivalent to
   The \assigns{} clause specifies that the set of modified memory
   locations is the set of fields $q\verb|->hd|$ for each pointer $q$
   reachable from \verb|p| following \verb|next| fields. See
-  Section~\ref{sec:logicspec} for details about the declaration of the
-  predicate \texttt{reachable}.
+  Section~\ref{sec:inductivepredicates} for details about the
+  declaration of the predicate \texttt{reachable}.
 \end{example}
 
 \subsection{Default contracts, multiple contracts}
@@ -1370,12 +1370,12 @@ Section~\ref{sec:logicalstates}.
 
   \input{oldat.pp} 
 
-  The two ensures clauses are equivalent. The
-  simpler clause \verb|t[i] == \old(t[i]) + 1| would be wrong because
-  in \verb|\old(t[i])|, \verb|i| denotes the value of $i$ n the
+  The two \verb|ensures| clauses are equivalent. The simpler clause
+  \verb|t[i] == \old(t[i]) + 1| would be wrong because in
+  \verb|\old(t[i])|, \verb|i| denotes the value of $i$ n the
   pre-state.
 
-  Also, the assigns clause \verb|i,t[i]| would be wrong too because
+  Also, the \verb|assigns| clause \verb|i,t[i]| would be wrong too because
   again in \verb|t[i]|, the value of $i$ in the pre-state is
   considered.
 
@@ -1620,7 +1620,7 @@ New functions and predicates can be \emph{defined} by explicit
 expressions, given after an equal sign.
 
 \begin{example}
-  The following definitions \input{signdef.pp} illustrate the
+  The following definitions \input{signdef.pp} illustrates the
   definition of a new predicate \texttt{is\_positive} with an integer
   parameter, and a new logic function \texttt{sign} with a real
   parameter returning an integer.
@@ -1642,6 +1642,7 @@ provide a proof for each lemma.
 
 
 \subsection{Inductive predicates}
+\label{sec:inductivepredicates}
 \index{inductive predicates}
 
 A predicate may also be defined by an inductive definition. The
@@ -1674,9 +1675,9 @@ guaranteed, so tools might enforce syntactic conditions on the form of
 inductive definitions. A standard syntactic restriction could be to
 allow only propositions $p_i$ of the form
 \begin{flushleft}\ttfamily
-forall $y_1,\ldots,y_m$, $h_1$ ==> $\cdots$ ==> $h_l$ ==> $P(t_1,\ldots,t_n)$
+\verb|\forall| $y_1,\ldots,y_m$, $h_1$ ==> $\cdots$ ==> $h_l$ ==> $P(t_1,\ldots,t_n)$
 \end{flushleft}
-where $P$ occurs only positively in hypothesis $h_1,\ldots,h_l$
+where $P$ occurs only positively in hypotheses $h_1,\ldots,h_l$
 (definite Horn clauses,
 \url{http://en.wikipedia.org/wiki/Horn_clause}).
 
@@ -1684,7 +1685,12 @@ where $P$ occurs only positively in hypothesis $h_1,\ldots,h_l$
   The following introduce a predicate $\texttt{isgcd}(x,y,d)$ meaning
   that $d$ is the greatest common divisor of $x$ and $y$.
   \input{isgcd.pp}
+  This definition uses definite Horn clauses, hence is consistent.
 \end{example}
+
+Example~\ref{ex:locations-list} already introduced an inductive definition of
+reachability in linked-lists, and was also bases on definite Horn
+clauses thus consistent.
 
 \subsection{Axiomatic definitions}
 
@@ -1702,9 +1708,11 @@ Figure~\ref{fig:gram:logicdecl}.
 \label{fig:gram:logicdecl}
 \end{figure}
 
-\begin{todo}
-  example TODO
-\end{todo}
+\begin{example}
+  The following axiomatization introduce a theory of finite lists of
+  integers a la LISP.
+  \input{intlists.pp}  
+\end{example}
 
 Like inductive definitions, there is no syntactic conditions which
 would guarantee axiomatic definitions to be consistent. It is usually
@@ -1897,21 +1905,30 @@ expressions such as:
 % \item others ?
 \end{itemize}
 To make such a definition safe, it is mandatory to add after the
-declared identifier a set of labels, between curly braces. Expressions
+declared identifier a set of labels, between curly braces, as shown on
+Figure~\ref{fig:gram:logiclabels}. Expressions
 as above must then be enclosed into the \at{} construct to refer to a
 given label. However, to ease reading of such logic expressions, it
 is allowed to omit a label whenever there is only one label in the
 context.
 
+\begin{figure}[t]
+  \fbox{\begin{minipage}{0.97\linewidth}
+      \input{logiclabels.bnf}
+    \end{minipage}}
+  \caption{Grammar for logic declarations with labels}
+\label{fig:gram:logiclabels}
+\end{figure}
+
+
 \begin{example}
   The following annotations declare a function which returns the
   number of occurrences of a given double in an array of doubles
-  between the given indexes, together with the related axioms.
-  It should be noted that without the reads
-  clauses, this axiomatization would be inconsistent, since the
-  function would not depend on the values stored in t, hence the two
-  last axioms would say both that $a=b+1$ and $a=b$ for some $a$ and
-  $b$.
+  between the given indexes, together with the related axioms.  It
+  should be noted that without labels, this axiomatization would be
+  inconsistent, since the function would not depend on the values
+  stored in t, hence the two last axioms would say both that $a=b+1$
+  and $a=b$ for some $a$ and $b$.  
   \input{nb_occ.pp}
 \end{example}
 
@@ -1921,10 +1938,11 @@ context.
   illustrates the use of more than a single label. Thus, the \verb+\at+
   operator is mandatory here. Indeed the two arrays
   may come from two distinct memory states. Typically, one of the post
-  condition of a sorting function would be \verb+permut{Pre,Here}(t,t)+.
+  condition of a sorting function would be \verb+permut{Pre,Post}(t,t)+.
   \input{permut.pp}
 \end{example}
 
+\oldremark{Claude}{Obsolete
 
 \subsection{\texttt{reads} clauses}
 
@@ -1933,14 +1951,6 @@ the syntax given in Figure~\ref{fig:gram:logicreads}, which extends the
 one of Figure~\ref{fig:gram:logic}. This feature is useful when a
 function or a predicate is not easily definable, but can be more
 easily axiomatized.
-
-\begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\linewidth}
-      \input{logicreads.bnf}
-    \end{minipage}}
-  \caption{Grammar for logic declarations with reads clauses}
-\label{fig:gram:logicreads}
-\end{figure}
 
 % VP: exemple redondant avec le suivant.
 % \begin{example}
@@ -1996,7 +2006,7 @@ easily axiomatized.
   reutiliser l'exemple en question ? (en le faisant mieux)
 
 }
-
+}
 
 \subsection{Specification Modules}
 \label{sec:specmodules}
@@ -2065,6 +2075,7 @@ Some shortcuts are provided:
 \end{itemize}
 
 \subsection{Separation}
+\label{sec:separated}
 
 %pointer separation :
 %\[

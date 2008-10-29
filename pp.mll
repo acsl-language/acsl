@@ -38,10 +38,11 @@
 	"typedef"; "union";
 	"throws" ; "extends" ; "implements" ; "reads" ;
 	"requires"; "assumes" ; "invariant"; "representation";
-	"loop" ; "variant" ; "data" ; "strong" ;
+	"decreases" ; "loop" ; "variant" ; "data" ; "strong" ;
 	"ensures" ; "breaks"; "continues"; "returns"; "assigns";
         "modifiable" ; "signals" ; "global";
-	"logic" ; "type" ; "predicate" ; "axiom";
+	"logic" ; "type" ; "predicate" ; "axiom"; "lemma" ; 
+	"axiomatic" ; "inductive" ;
 	"exit_behavior" ; "behavior" ; "model"; "ghost"; "terminates";
         "disjoint_behaviors"; "complete_behaviors";
       ];

@@ -141,12 +141,13 @@ Section~\ref{sec:multiplecontracts}).
   \item \emph{global invariant}\,: this is allowed at the level of
     global declarations. See section~\ref{sec:invariants}.
 
-  \item \emph{type invariant}\,: this allows both structure or union
-    invariants, and invariants on type names introduced by \typedef.
-    See section~\ref{sec:invariants}.
+  \item \emph{type invariant}\,: this allows to declare both structure
+    or union invariants, and invariants on type names introduced by
+    \typedef.  See section~\ref{sec:invariants}.
 
-  \item \emph{logic specifications}\,: logic type introduction, introduction
-    or definition of logic functions or predicates, axioms. Such an
+  \item \emph{logic specifications}\,: definitions of logic functions
+    or predicates, lemmas, axiomatizations by declaration of new logic
+    types, logic functions, predicates with axioms they satisfy. Such an
     annotation is placed at the level of global declarations.
 
   \end{itemize}
@@ -173,8 +174,8 @@ Section~\ref{sec:multiplecontracts}).
     \Do\ldots \While. See Section~\ref{sec:loop_annot}.
 
   \item \emph{statement contract}\,: very similar to a function contract, and
-    placed before a statement or a block.  Semantical condition must
-    be checked (normal termination only, no goto going inside, no goto
+    placed before a statement or a block.  Semantical conditions must
+    be checked (no goto going inside, no goto
     going outside).  See Section~\ref{sec:statement_contract}.
     \oldremark{Patrick}{
       as-t'on droit au \old dans le \ensures de
@@ -183,8 +184,9 @@ Section~\ref{sec:multiplecontracts}).
     }
 
   \item \emph{ghost code}\,: regular C code, only visible from the
-    specification, that is only allowed to modify ghost variables. See
-    section~\ref{sec:ghost}. This includes ghost braces for enclosing blocks.
+    specifications, that is only allowed to modify ghost
+    variables. See section~\ref{sec:ghost}. This includes ghost braces
+    for enclosing blocks.
 
   \end{itemize}
 
@@ -207,7 +209,9 @@ Additional keywords of the specification language start with a
 backslash, if they are used in position of a term or a predicate
 (which are defined in the following).  Otherwise they do not start
 with a backslash (like \ensures{}) and they remain valid identifiers.
-
+\oldremark{Claude}{
+cas particulier de 'integer' et 'real'  et 'boolean'
+}
 \section{Notations for grammars}
 
 In this document, grammar rules are given in BNF form. In grammar
