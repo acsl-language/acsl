@@ -487,11 +487,21 @@ a given node be attained from some root through a chain of \verb|next|
 fields) plays an important role. It can be defined in ACSL through the
 following annotation:
 \begin{c}[max_list-tut.c,type_invariant-tut.c,global_invariant-tut.c]
-  /*@ predicate reachable{L}(list* root, list* node) =
-        root == node ||
-        \valid(root) && reachable(root -> next, node);
-    */
+  /*@
+  axiomatic Reachable {
+    predicate reachable{L}(list* root, list* node);
+    axiom root_reachable{L}: \forall list* root; reachable(root,root);
+    axiom next_reachable{L}: \forall list* root, *node;
+    \valid(root) && reachable(root->next, node) ==> reachable(root,node);
+  }
+  */
 \end{c}
+
+The notion of reachability is defined in ACSL by an
+\verb|axiomatic|. Namely, an axiomatic is a block of declarations
+which are tied together. In our case, we declare a binary predicate
+\verb|reachable| and give two axioms which indicates under which
+circumstances \verb|reachable| holds.
 
 The \verb|{L}| notation indicates that the predicate takes as
 parameter a label, which represent a memory state of the program. Indeed,
@@ -506,10 +516,15 @@ the state just before returning to the caller). More complex predicate
 may relate two or more memory states, but such definitions are out of
 scope in this tutorial.
 
-We have just defined a binary predicate over lists, which holds when the two
-pointers are equal or, if the pointer \verb|root| is valid, when \verb|node|
-can be proved reachable from \verb|root->next|. In addition, this
-predicate can be used to discriminate between circular and
+The axiom \verb|root_reachable| indicates that \verb|reachable| holds
+as soon as both its arguments are equal. \verb|next_reachable|
+indicates that if \verb|root| is valid and \verb|node| can be proved
+reachable from \verb|root->next|, then it is also reachable from
+\verb|root|. Since the axiomatic ends here, these are the only ways to
+prove that a \verb|node| is reachable from a \verb|root|.
+
+Now, the \verb|reachable| predicate can be used to discriminate
+between circular and
 finite lists: in a finite list, we will ultimately reach
 \verb|\null|;
 
@@ -517,7 +532,11 @@ finite lists: in a finite list, we will ultimately reach
   /*@ predicate finite{L}(list* root) = reachable(root,\null); */
 \end{c}
 
-We can note that \verb|finite| is also parameterized by a label
+Here, it is not necessary to embed \verb|finite| in an axiomatic: no
+additional axiom or other declaration is tied to it, so that we can
+give its definition directly.
+
+We can also note that \verb|finite| is also parameterized by a label
 \verb|L|. In fact, it is implicitely the memory state in which
 \verb|reachable| itself is evaluated. It would have been possible to
 make that explicit by writing \verb|reachable{L}(root,\null)| instead,
@@ -526,20 +545,21 @@ the environment at this level.
 
 Similarly, we can define a logical function computing the length of a
 \verb|\null| terminated list. This time, we have to avoid circular
-lists, since the notion of length has little meaning for them. But
-logical functions are \emph{total}, {\it i.e.} they always return a
-value. A possible way to overcome this issue is to use an axiomatic
-definition for \verb|length|:
+lists, since the notion of length has little meaning for them. In
+order to do that, we can again use an axiomatic:
+
 \begin{c}[max_list-tut.c,type_invariant-tut.c,global_invariant-tut.c]
-  /*@ logic integer length{L}(list* l); */
+  /*@ axiomatic Length {
+    logic integer length{L}(list* l);
 
-  /*@ axiom length_nil{L}: length(\null) == 0; */
+    axiom length_nil{L}: length(\null) == 0;
 
-  /*@ axiom length_cons{L}:
+    axiom length_cons{L}:
         \forall list* l, integer n;
           finite(l) && \valid(l) ==>
             length(l) == length(l->next) + 1;
-   */
+   }
+*/
 \end{c}
 This way, it is possible to speak about \verb|length(l)| for any list
 \verb|l|, but if \verb|l| is circular, the value of this expression
@@ -649,12 +669,18 @@ ACSL is the following:
 
 \begin{c}[global_invariant-tut.c]
 /*@
-  predicate sorted_decreasing{L}(list* root) =
-    root == \null ||
-     (\valid(root) && root->next == \null) ||
-     (\valid(root) && \valid(root->next) &&
-        root->element >= root->next->element &&
-        sorted_decreasing(root->next));
+axiomatic Sorted {
+  predicate sorted_decreasing{L}(list* root);
+  axiom sorted_nil{L}: sorted_decreasing(\null);
+  axiom sorted_singleton{L}:
+  \forall list* root;
+     \valid(root) && root->next == \null ==> sorted_decreasing(root);
+  axiom sorted_next{L}:
+  \forall list* root;
+     \valid(root) && \valid(root->next) &&
+     root->element >= root->next->element &&
+        sorted_decreasing(root->next) ==> sorted_decreasing(root);
+}
 */
 
 list* GList;
@@ -673,20 +699,22 @@ there, and that \verb|x| is present (inserted according to the
 ordering since the global invariant must still hold)
 can be expressed as such:
 \begin{c}[global_invariant-tut.c]
-/*@ logic integer count(int x,list* l); */
+/*@
+axiomatic Count {
+  logic integer count(int x,list* l);
 
-/*@ axiom count_nil: \forall int x; count(x,\null) == 0; */
+  axiom count_nil: \forall int x; count(x,\null) == 0;
 
-/*@ axiom count_cons_head{L}:
+  axiom count_cons_head{L}:
   \forall int x,list* l;
     \valid(l) && l->element == x ==>
        count(x,l) == count(x,l->next)+1;
-*/
 
-/*@ axiom count_cons_tail{L}:
+ axiom count_cons_tail{L}:
   \forall int x, list* l;
      \valid(l) && l->element != x ==>
         count(x,l) == count(x,l->next);
+}
 */
 
 /*@ ensures \forall int y; y != x ==>
