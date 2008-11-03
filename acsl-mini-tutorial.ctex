@@ -112,6 +112,10 @@ $^1$ CEA LIST, Software Security Laboratory, Saclay, F-91191 \\
 
 \clearpage
 
+\begin{htmlonly}
+This document is also available in
+\ahref{download/acsl-tutorial.pdf}{pdf format}.
+\end{htmlonly}
 \chapter{Foreword}\cutname{acsl_tutorial_intro.html}
 This document is a brief introduction to the ANSI/ISO C Specification
 Language (ACSL). ACSL allows to formally specify the properties of a C
