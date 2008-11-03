@@ -25,7 +25,7 @@ DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
 	sign.pp signdef.pp \
 	oldat.pp mean.pp isgcd.pp
 
-all: main.pdf
+all: acsl-implementation.pdf main.pdf
 
 main.ps: main.dvi
 	dvips $^ -o $@
@@ -109,7 +109,7 @@ clean:
 acsl-implementation.pdf: $(DEPS)
 	mv main.tex main_old.tex
 	sed -e 's/%--//' main_old.tex > main.tex
-	@if $(MAKE) all; then \
+	@if $(MAKE) main.pdf; then \
 	   mv main_old.tex main.tex; \
            mv main.pdf acsl-implementation.pdf; \
            echo "implementation manual generated"; \
