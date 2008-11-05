@@ -122,3 +122,6 @@ acsl-implementation.pdf: $(DEPS)
 # see http://www.pps.jussieu.fr/~beffara/soft/rubber/ for details on rubber.
 rubber: $(DEPS)
 	rubber -d main.tex
+
+# Command to produce a diff'ed document. Must be refined to flatten automatically the files
+# latexdiff --type=CFONT --append-textcmd="_,sep,alt,newl,is" --append-safecmd="term,nonterm,indexttbase,indextt,indexttbs,keyword,ensuremath" --config "PICTUREENV=(?:picture|latexonly)[\\w\\d*@]*,MATHENV=(?:syntax),MATHREPL=syntax"  full.tex current/full.tex > diff.tex
