@@ -86,7 +86,7 @@ transfmain.cmo: transf.cmo
 
 check:
 	gcc -c -std=c99 *.c
-	for f in *.c ; do ../../bin/toplevel.byte $$f ; done
+	for f in *.c ; do ../../bin/toplevel.byte -pp-annot $$f ; done
 
 tutorial-check: acsl-mini-tutorial.tex
 	@for f in *-tut.c; do \
