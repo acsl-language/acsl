@@ -1366,9 +1366,9 @@ Section~\ref{sec:logicalstates}.
 
 \begin{example}
   Here is a toy example illustrating tricky issues with \verb|\at| and
-  labels: 
+  labels:
 
-  \input{oldat.pp} 
+  \input{oldat.pp}
 
   The two \verb|ensures| clauses are equivalent. The simpler clause
   \verb|t[i] == \old(t[i]) + 1| would be wrong because in
@@ -1711,7 +1711,7 @@ Figure~\ref{fig:gram:logicdecl}.
 \begin{example}
   The following axiomatization introduce a theory of finite lists of
   integers a la LISP.
-  \input{intlists.pp}  
+  \input{intlists.pp}
 \end{example}
 
 Like inductive definitions, there is no syntactic conditions which
@@ -1928,7 +1928,7 @@ context.
   should be noted that without labels, this axiomatization would be
   inconsistent, since the function would not depend on the values
   stored in t, hence the two last axioms would say both that $a=b+1$
-  and $a=b$ for some $a$ and $b$.  
+  and $a=b$ for some $a$ and $b$.
   \input{nb_occ.pp}
 \end{example}
 
@@ -2342,7 +2342,7 @@ which they are supposed to hold.
 
 
 \begin{example}
-  The following example illustrates the use of a data invariant on a local static variable.
+  \notimplemented{The following example illustrates the use of a data invariant on a local static variable.}
 
   \input{out_char.pp}
 \end{example}
