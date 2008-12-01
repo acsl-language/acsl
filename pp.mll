@@ -60,7 +60,7 @@
 	"fresh"; "from";
 	"nothing";
 	"result";
-	"let" ; "at"; "true"; "false"; "result"
+	"let" ; "at"; "true"; "false"; "result"; "numof"
       ];
     List.iter (fun (s,t) -> Hashtbl.add h s t)
       [
@@ -208,6 +208,7 @@ rule ctt = parse
         out_c_lexeme "//";
         in_slashshash := true;
 	ctt lexbuf }
+  | "//" space* "NOPP-BEGIN" space* "\n"  { nopp lexbuf }
   | eof  { () }
   | '-'  { print_string "$-$"; out_c_lexeme "-"; ctt lexbuf }
   | "::" { print_string ":\\hspace*{-0.1em}:"; out_c_lexeme "::"; ctt lexbuf }
@@ -252,6 +253,11 @@ rule ctt = parse
       }
   | _
       { print_string (lexeme lexbuf); out_c_lexeme (lexeme lexbuf); ctt lexbuf }
+
+and nopp = parse
+    "//" space* "NOPP-END" space* "\n" { ctt lexbuf }
+  | eof { () }
+  | _ { nopp lexbuf}
 
 and pp = parse
   | "\\begin{c}" (c_files as s) "\n"

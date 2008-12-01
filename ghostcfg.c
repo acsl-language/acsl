@@ -2,9 +2,9 @@ int f (int x, int y) {
   //@ ghost int z = x + y;
   switch (x) {
   case 0: return y;
-  //@ ghost 1: z=y;
+  //@ ghost case 1: z=y;
   // above statement is correct.
-  //@ ghost 2: { z++; break; }
+  //@ ghost case 2: { z++; break; }
   // invalid, would bypass the non-ghost default
   default: y++;
   }

@@ -3,8 +3,16 @@ typedef enum { BLUE, WHITE, RED } color;
   @   c == BLUE || c == WHITE || c == RED ;
   @*/
 
-/*@ predicate permut{L1,L2}(color t1[], color t2[], integer n)
-  @   reads \at(t1[..],L1), \at(t2[..],L2);
+/*@ predicate permut{L1,L2}(color t1[], color t2[], integer n) =
+  @  \at(\valid_range(t1,0,n),L1) && \at(\valid_range(t2,0,n),L2) &&
+  @  \numof(0,n,\lambda integer i; \at(t1[i],L1) == BLUE) ==
+  @  \numof(0,n,\lambda integer i; \at(t2[i],L2) == BLUE)
+  @   &&
+  @  \numof(0,n,\lambda integer i; \at(t1[i],L1) == WHITE) ==
+  @  \numof(0,n,\lambda integer i; \at(t2[i],L2) == WHITE)
+  @  &&
+  @  \numof(0,n,\lambda integer i; \at(t1[i],L1) == RED) ==
+  @  \numof(0,n,\lambda integer i; \at(t2[i],L2) == RED);
   @*/
 
 /*@ requires \valid(t+i) && \valid(t+j);
@@ -26,14 +34,14 @@ typedef struct flag {
   @   \forall integer k; 0 <= k < f.n ==> isColor(f.colors[k]) ;
   @*/
 
-/*@ predicate isMonochrome{L}(color t[], integer i, integer j, 
+/*@ predicate isMonochrome{L}(color t[], integer i, integer j,
   @                           color c) =
   @   \forall integer k; i <= k <= j ==> t[k] == c ;
   @*/
 
 /*@ assigns f.colors[0..f.n-1];
-  @ ensures 
-  @   \exists integer b, integer r; 
+  @ ensures
+  @   \exists integer b, integer r;
   @      isMonochrome(f.colors,0,b-1,BLUE) &&
   @      isMonochrome(f.colors,b,r-1,WHITE) &&
   @      isMonochrome(f.colors,r,f.n-1,RED) &&
@@ -56,13 +64,13 @@ void dutch_flag(flag f) {
     @*/
   while (i < r) {
     switch (t[i]) {
-    case BLUE:  
+    case BLUE:
       swap(t, b++, i++);
-      break;	    
-    case WHITE: 
-      i++; 
       break;
-    case RED: 
+    case WHITE:
+      i++;
+      break;
+    case RED:
       swap(t, --r, i);
       break;
     }

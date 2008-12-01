@@ -1,3 +1,6 @@
+//NOPP-BEGIN
+int odd(int x);
+//NOPP-END
 //@ decreases n;
 int even(int n) {
   if (n == 0) return 1;
