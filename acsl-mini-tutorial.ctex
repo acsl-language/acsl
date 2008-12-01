@@ -50,9 +50,11 @@
 \@restartoutput\unskip%
 \@print{<#def title>ACSL Tutorial</#def>
 <#def meta><meta name="GENERATOR" content="hevea }%
-\@getprint{\usebox{\@heveaversion}}\@print{"></#def>
-<#head>
-}%
+\@getprint{\usebox{\@heveaversion}}\@print{"></#def>}
+\@print{<#def quote-text>Computers are good at following instructions,
+         but not at reading your mind.</#def>}
+\@print{<#def quote-author>Donald Knuth</#def>}
+\@print{<#head>}
 \usebox{\@toplinks}\usebox{\@linkstext}%
 \cutdef*[\thecuttingdepth]{\cuttingunit}%
 \renewcommand{\addstyle}[1]{\hva@warn{\addstyle{} must be used in document preamble}}%
@@ -492,20 +494,27 @@ fields) plays an important role. It can be defined in ACSL through the
 following annotation:
 \begin{c}[max_list-tut.c,type_invariant-tut.c,global_invariant-tut.c]
   /*@
-  axiomatic Reachable {
-    predicate reachable{L}(list* root, list* node);
-    axiom root_reachable{L}: \forall list* root; reachable(root,root);
-    axiom next_reachable{L}: \forall list* root, *node;
-    \valid(root) && reachable(root->next, node) ==> reachable(root,node);
+  inductive reachable{L} (list* root, list* node) {
+    case root_reachable:
+         \forall list* root; reachable(root,root);
+    case next_reachable:
+         \forall list* root, *node;
+         \valid(root) ==> reachable(root->next, node) ==>
+         reachable(root,node);
   }
   */
 \end{c}
 
 The notion of reachability is defined in ACSL by an
-\verb|axiomatic|. Namely, an axiomatic is a block of declarations
-which are tied together. In our case, we declare a binary predicate
-\verb|reachable| and give two axioms which indicates under which
-circumstances \verb|reachable| holds.
+\verb|inductive| predicate. Namely, \verb|root_reachable| and
+\verb|next_reachable| can be seen as axioms indicating the cases under which
+\verb|reachable| must hold, and the fact that \verb|reachable| is
+inductive implies that these are the only cases under which it can hold.
+\verb|root_reachable| indicates that \verb|reachable| holds
+as soon as both its arguments are equal. \verb|next_reachable|
+indicates that if \verb|root| is valid and \verb|node| can be proved
+reachable from \verb|root->next|, then it is also reachable from
+\verb|root|.
 
 The \verb|{L}| notation indicates that the predicate takes as
 parameter a label, which represent a memory state of the program. Indeed,
@@ -520,13 +529,6 @@ the state just before returning to the caller). More complex predicate
 may relate two or more memory states, but such definitions are out of
 scope in this tutorial.
 
-The axiom \verb|root_reachable| indicates that \verb|reachable| holds
-as soon as both its arguments are equal. \verb|next_reachable|
-indicates that if \verb|root| is valid and \verb|node| can be proved
-reachable from \verb|root->next|, then it is also reachable from
-\verb|root|. Since the axiomatic ends here, these are the only ways to
-prove that a \verb|node| is reachable from a \verb|root|.
-
 Now, the \verb|reachable| predicate can be used to discriminate
 between circular and
 finite lists: in a finite list, we will ultimately reach
@@ -536,9 +538,8 @@ finite lists: in a finite list, we will ultimately reach
   /*@ predicate finite{L}(list* root) = reachable(root,\null); */
 \end{c}
 
-Here, it is not necessary to embed \verb|finite| in an axiomatic: no
-additional axiom or other declaration is tied to it, so that we can
-give its definition directly.
+Here, it is not necessary to embed \verb|finite| as
+inductive. Instead, we directly give its definition in terms of reachability.
 
 We can also note that \verb|finite| is also parameterized by a label
 \verb|L|. In fact, it is implicitely the memory state in which
@@ -550,7 +551,7 @@ the environment at this level.
 Similarly, we can define a logical function computing the length of a
 \verb|\null| terminated list. This time, we have to avoid circular
 lists, since the notion of length has little meaning for them. In
-order to do that, we can again use an axiomatic:
+order to do that, we can use an axiomatic:
 
 \begin{c}[max_list-tut.c,type_invariant-tut.c,global_invariant-tut.c]
   /*@ axiomatic Length {
@@ -565,6 +566,7 @@ order to do that, we can again use an axiomatic:
    }
 */
 \end{c}
+An axiomatic is merely a set of logical declarations tied together.
 This way, it is possible to speak about \verb|length(l)| for any list
 \verb|l|, but if \verb|l| is circular, the value of this expression
 will remain undefined: the only way to prove that \verb|length(l)==n|
@@ -673,13 +675,12 @@ ACSL is the following:
 
 \begin{c}[global_invariant-tut.c]
 /*@
-axiomatic Sorted {
-  predicate sorted_decreasing{L}(list* root);
-  axiom sorted_nil{L}: sorted_decreasing(\null);
-  axiom sorted_singleton{L}:
+inductive sorted_decreasing{L}(list* root) {
+  case sorted_nil: sorted_decreasing(\null);
+  case sorted_singleton:
   \forall list* root;
      \valid(root) && root->next == \null ==> sorted_decreasing(root);
-  axiom sorted_next{L}:
+  case sorted_next:
   \forall list* root;
      \valid(root) && \valid(root->next) &&
      root->element >= root->next->element &&
@@ -835,12 +836,10 @@ the assertions first.
 In cases like this one, it is easier to get the assertions right
 than the corresponding pre-conditions. Some analyzers may then
 be able to check that the assertions are verified under the
-pre-conditions, providing trust in the latter.
-
-Note: to some analyzers,
+pre-conditions, providing trust in the latter (In fact, to some analyzers,
 checking the assertions once the corresponding pre-conditions
-are provided is much easier
-than infering the pre-conditions from the assertions.
+are provided is much easier than infering the pre-conditions from the
+assertions).
 
 \section{Loop Invariants}
 

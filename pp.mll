@@ -41,10 +41,10 @@
 	"decreases" ; "loop" ; "variant" ; "data" ; "strong" ;
 	"ensures" ; "breaks"; "continues"; "returns"; "assigns";
         "modifiable" ; "signals" ; "global";
-	"logic" ; "type" ; "predicate" ; "axiom"; "lemma" ; 
+	"logic" ; "type" ; "predicate" ; "axiom"; "lemma" ;
 	"axiomatic" ; "inductive" ;
 	"exit_behavior" ; "behavior" ; "model"; "ghost"; "terminates";
-        "disjoint_behaviors"; "complete_behaviors";
+        "disjoint"; "behaviors"; "complete";
       ];
     h
 

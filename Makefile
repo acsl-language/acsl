@@ -95,8 +95,16 @@ tutorial-check: acsl-mini-tutorial.tex
             ../../bin/toplevel.byte -pp-annot $$f; \
         done
 
+acsl-mini-tutorial.pdf: acsl-mini-tutorial.tex mini-biblio.bib
+	pdflatex acsl-mini-tutorial
+	bibtex acsl-mini-tutorial
+	pdflatex acsl-mini-tutorial
+	pdflatex acsl-mini-tutorial
+
 acsl-mini-tutorial.html: acsl-mini-tutorial.tex
-	hevea -fix $<
+	hevea acsl-mini-tutorial.tex
+	bibhva acsl-mini-tutorial
+	hevea -fix acsl-mini-tutorial.tex
 
 #acsl_tutorial_index.html: acsl-mini-tutorial.html
 #	hacha -o $@ $<
