@@ -9,7 +9,7 @@ DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
 	nb_occ_reads.pp permut.pp permut_reads.pp \
 	acsl_allocator.pp gen_spec_with_model.pp gen_code.pp out_char.pp \
 	ghostpointer.pp ghostcfg.pp flag.pp lexico.pp footprint.pp \
-	fwrite-malloc.pp loopvariantnegative.pp \
+	loopvariantnegative.pp \
 	fact.pp mutualrec.pp abrupt_termination.pp \
         advancedloopinvariants.pp inductiveloopinvariants.pp \
 	term.bnf binders.bnf fn_behavior.bnf oldandresult.bnf at.bnf loc.bnf \
@@ -24,6 +24,7 @@ DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
         glob_var_masked.pp glob_var_masked_sol.pp intlists.pp \
 	sign.pp signdef.pp \
 	oldat.pp mean.pp isgcd.pp
+# 	fwrite-malloc.pp 
 
 all: acsl-implementation.pdf main.pdf
 
