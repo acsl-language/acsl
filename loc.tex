@@ -4,6 +4,7 @@
        | tset "->" id ;
        | tset "." id ;
        | "*" tset ;
+       | "&" tset ;
        | tset "[" tset "]" ;
        | term? ".." term? ; range
        | "\union" "(" tset ("," tset)* ")" ; union of locations
