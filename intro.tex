@@ -5,12 +5,13 @@ This document is a reference manual for the ACSL implementation
 provided by the Frama-C framework~\cite{frama-c}.
 ACSL is an acronym for ``ANSI C
 Specification Language''. This is a Behavioral Interface Specification
-Language (a.k.a. BISL) implemented in the \textsc{Frama-C} framework. As
-suggested by its name, it aims at specifying behavioral properties of C
+Language (BISL) implemented in the \textsc{Frama-C} framework. 
+It aims at specifying behavioral properties of C
 source code. The main inspiration for this language comes from the
 specification language of the \textsc{Caduceus}
 tool~\cite{filliatre04icfem,filliatre07cav} for deductive verification
-of behavioral properties of C programs. It is itself inspired from the
+of behavioral properties of C programs. The specification language of
+Caduceus is itself inspired from the
 \emph{Java Modeling Language} (JML~\cite{leavens00jml}) which aims at
 similar goals for Java source code: indeed it aims both at
 \emph{runtime assertion checking} and \emph{static verification} using
@@ -89,11 +90,11 @@ annotations in comments written directly in C source files, so that
 source files remain compilable. Those comments must start by
 \verb|/*@| or \verb|//@| and end as usual in~C.
 
-For some particular context, it might not be possible to modify the
-source code. It is strongly recommended that a tool which implements
-ACSL specifications provides a technical means to store annotations in
-separate files. This is not the purpose of this document to describe
-such technical means.  Nevertheless, some of the specifications,
+In some contexts, it is not possible to modify the source code. 
+It is strongly recommended that a tool which implements
+ACSL specifications provides technical means to store annotations 
+separately from the source. It is not the purpose of this document
+to describe such means.  Nevertheless, some of the specifications,
 namely those at a global level, can be given in separate files:
 logical specifications can be imported (see
 Section~\ref{sec:specmodules}) and a function contract can be attached
@@ -199,9 +200,9 @@ Section~\ref{sec:multiplecontracts}).
 
 \subsection{About preprocessing}
 
-This document considers C source \emph{after} preprocessing. Tools
-must decide what to do for preprocessing phase: what to do with
-annotations, should macro substitution be performed or not, etc.
+This document considers C source \emph{after} preprocessing.
+Tools must decide how they handle preprocessing (what to do with
+annotations, whether macro substitution should be performed, etc.)
 
 \subsection{About keywords}
 

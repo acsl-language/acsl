@@ -158,7 +158,7 @@ Section~\ref{sec:logicspec} for detail.
 
 \end{description}
 
-There is a subtlety with respect to comparison operators: they are
+There is a subtlety regarding comparison operators: they are
 predicates when used in predicate position, and boolean functions when
 used in term position.
 \begin{example}
@@ -242,8 +242,8 @@ particular, the predicates
   \verb!*p! &\verb|==|& \verb!*p!
 \end{eqnarray*}
 are valid, since they are instances of the axiom $\forall x,
-x=x$ of first-order logic. Of course, there is no way to deduce
-anything useful about such terms.
+x=x$ of first-order logic. The reader should not be alarmed, because
+there is no way to deduce anything useful from such terms.
 \oldremark{Anonyme}{Donc on ne peut pas introduire de construction
 non-déterministe comme  $(\texttt{any} x \mid P)$
 }
@@ -301,7 +301,7 @@ Formal typing rules for terms are given in appendix~\ref{sec:typingrules}.
 The following integer arithmetic operations apply to
 \emph{mathematical integers}: addition, subtraction, multiplication,
 unary minus. The value of a C variable of an integral type is promoted
-to a mathematical integer. As a consequence, there is no such thing as
+to a mathematical integer. As a consequence, there is no 
 ``arithmetic overflow'' in logic expressions.
 
 Division and modulo are also mathematical operations, which coincide
@@ -388,15 +388,15 @@ is equivalent to
 
 \subsubsection{Size of C integer types}
 
-Remark that the size of C types is architecture-dependent. ACSL does
+Note that the size of C types is architecture-dependent. ACSL does
 not enforce these sizes either, hence the semantics of terms involving
 such types is also architecture-dependent. The
-\texttt{sizeof}\index{sizeof} operator may be used in the logic and is
+\texttt{sizeof}\index{sizeof} operator may be used in annotations and is
 assumed to be consistent with the C code. For instance, it should be
 possible to verify the following code: \input{sizeof.pp}
 
 Constants giving maximum and minimum values of those types may be
-given in a library.
+provided in a library.
 
 \oldremark{Claude}{we need macros \texttt{max\_range} \texttt{min\_range}
   taking a C integer type as argument, e.g.
@@ -410,16 +410,16 @@ given in a library.
 \subsubsection{Enum types}
 
 Enum types are also interpreted as mathematical integers. Casting\index{cast}
-an integer into an enum in the logic must give the same result as if it
-was in the C code.
+an integer into an enum in the logic gives the same result as 
+if the cast was performed in the C code.
 
 \subsubsection{Bitwise operations}
 
 Like arithmetic operations, bitwise operations apply to any
 mathematical integer: any mathematical integer has a unique infinite
 2-complement binary representation with infinitely many zeros (for
-non-negative numbers) or ones (for negative numbers) on the left. Then
-bitwise operations apply to this representation.
+non-negative numbers) or ones (for negative numbers) on the left.
+Bitwise operations apply to this representation.
 \begin{example} ~
   \begin{itemize}
   \item \verb|7 & 12| = $\cdots 00111$ \verb|&| $\cdots 001100$ =
@@ -460,8 +460,8 @@ $2 * 3.5$ is equal to the real number 7
 \end{example}
 Unlike the promotion of C integer types to mathematical integers,
 there are special float values which do not naturally map to a real
-number, namely NaN, +Infinity and -Infinity. Since we want a logic
-with total functions, we consider that there are implicit promotion
+number, namely NaN, +Infinity and -Infinity. However, ACSL is a logic
+with total functions. There are implicit promotion
 functions \verb|real_of_float|\indextt{real\_of\_float} and
 \verb|real_of_double|\indextt{real\_of\_double} whose results
 on the 3 values above is left unspecified.
@@ -2413,7 +2413,7 @@ Informal semantics of model variables is as follows.
 \item Model variables can only appear in specifications. They are not
   lvalues, thus they cannot be assigned directly (unlike ghost variables,
   see below).
-\item Nevertheless, a function contract might say that a model variable
+\item Nevertheless, a function contract might state that a model variable
   is assigned.
 \item When a function contract mentions model variables:
   \begin{itemize}
@@ -2541,8 +2541,8 @@ program execution} This implies several conditions, including e.g:
   outside of the innermost non-ghost enclosing block.
 \end{itemize}
 
-Semantics is specified as follows. First, one has to think that
-program execution with ghost code involves a \emph{ghost memory heap}
+Semantics is specified as follows. First, the
+execution of a program with ghost code involves a \emph{ghost memory heap}
 and a \emph{ghost stack}, disjoint from the regular heap and stack.
 Ghost variables lie in the ghost heap, so as the ghost field of
 structures. Thus, every memory side-effect can be classified as ghost
@@ -2582,8 +2582,8 @@ assigned in ghost code like any C variable. On the other hand, a model
 variable cannot be assigned, but one can state it is modified and can
 express properties about the new value, in a non-deterministic way,
 using logic assertions and invariants.
-In other words, one can say that specifications using ghost
-variables modifications are executable.
+In other words, specifications using ghost variable assignments
+are executable.
 
 \begin{example}
   \label{ex:gen_code}
@@ -2651,8 +2651,8 @@ argument and means that each l-value in this set is initialized.
 \notimplemented{\texttt{\textbackslash{}specified}}
 is a predicate taking a set of l-values as
 argument and means that each l-value in this set has a \emph{specified
-  value}: its value is not a dangling pointer (that is the address of
-a local variable which is not in the scope anymore)
+  value}: its value is not a dangling pointer (that is, the value
+is not the address of a local variable refered to outside of its scope)
 
 \begin{example}
   In the following, the assertion is not true.
