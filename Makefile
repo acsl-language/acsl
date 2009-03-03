@@ -24,7 +24,34 @@ DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
         glob_var_masked.pp glob_var_masked_sol.pp intlists.pp \
 	sign.pp signdef.pp \
 	oldat.pp mean.pp isgcd.pp
-# 	fwrite-malloc.pp 
+# 	fwrite-malloc.pp
+
+DEPS_MODERN=intro_modern.tex speclang_modern.tex libraries_modern.tex	\
+	compjml_modern.tex div_lemma.c assigns.c invariants.c		\
+	example-lt-modern.tex isqrt.c sizeof.c incrstar.c		\
+	parsing_annot_modern.tex integer-cast-modern.tex max.c		\
+	max_index.c cond_assigns.c bsearch.c bsearch2.c			\
+	assigns_array.c assigns_list.c sum.c listdecl.c listdef.c	\
+	listlengthdef.c import.c listmodule.c strcpyspec.c dowhile.c	\
+	num_of_pos.c nb_occ.c nb_occ_reads.c permut.c permut_reads.c	\
+	acsl_allocator.c gen_spec_with_model.c gen_code.c out_char.c	\
+	ghostpointer.c ghostcfg.c flag.c lexico.c footprint.c		\
+	loopvariantnegative.c fact.c mutualrec.c abrupt_termination.c	\
+	advancedloopinvariants.c inductiveloopinvariants_modern.tex	\
+	term_modern.bnf binders_modern.bnf fn_behavior_modern.bnf	\
+	oldandresult_modern.bnf at_modern.bnf loc_modern.bnf		\
+	assertions_modern.bnf loops_modern.bnf				\
+	generalinvariants_modern.bnf st_contracts_modern.bnf		\
+	moreterm_modern.bnf ghost_modern.bnf model_modern.bnf		\
+	logic_modern.bnf inductive_modern.bnf logicdecl_modern.bnf	\
+	logictypedecl_modern.bnf higherorder_modern.bnf			\
+	logiclabels_modern.bnf logicreads_modern.bnf			\
+	data_invariants_modern.bnf cfg.mps volatile.c			\
+	volatile-gram_modern.bnf euclide.c initialized.c specified.c	\
+	exitbehavior_modern.bnf dependencies_modern.bnf sum2.c		\
+	modifier.c gen_spec_with_ghost.c terminates_list.c		\
+	glob_var_masked.c glob_var_masked_sol.c intlists.c sign.c	\
+	signdef.c oldat.c mean.c isgcd.c
 
 all: acsl-implementation.pdf main.pdf
 
@@ -45,6 +72,26 @@ main.pdf: main.tex $(DEPS)
 	pdflatex main
 	pdflatex main
 
+.PHONY: modern
+
+modern: modern.tex $(DEPS_MODERN) frama-c-book.cls frama-c-cover.pdf
+	pdflatex modern
+	makeindex modern
+	bibtex modern
+	pdflatex modern
+	pdflatex modern
+
+
+frama-c-book.cls: ../frama-c-book.cls
+	rm -f $@
+	cp $< .
+	chmod a-w $@
+
+frama-c-cover.pdf: ../frama-c-cover.pdf
+	rm -f $@
+	cp $< .
+	chmod a-w $@
+
 %.1: %.mp
 	mpost -interaction batchmode $<
 
@@ -61,7 +108,10 @@ main.pdf: main.tex $(DEPS)
 	./pp $< > $@
 
 %.bnf: %.tex transf
-	./transf < $< > $@
+	./transf $< > $@
+
+%_modern.bnf: %.tex transf
+	./transf -modern $< > $@
 
 %.ml: %.mll
 	ocamllex $<
@@ -112,7 +162,7 @@ acsl-mini-tutorial.html: acsl-mini-tutorial.tex
 
 clean:
 	rm -rf *~ *.aux *.log *.nav *.out *.snm *.toc *.pp *.bnf \
-               transf trans.ml *.cm? *.idx
+               transf trans.ml *.cm? *.idx *.ind *.ilg
 
 #.PHONY: implementation rubber
 acsl-implementation.pdf: $(DEPS)

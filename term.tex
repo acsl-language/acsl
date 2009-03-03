@@ -2,7 +2,7 @@
   bin-op ::= "+" | "-" | "*" | "/" | "%" ;
        | "==" | "!=" | "<=" | ">=" | ">" | "<" ;
        | "&&" | "||" |   ; boolean operations
-       | "&" | "|" | {"--->"} | {"<--->"} | "^"; bitwise operations
+       | "&" | "|" | {"-->"} | {"<-->"} | "^"; bitwise operations
        \
   unary-op ::= "+" | "-" ; unary plus and minus
        | "!" ; boolean negation
@@ -19,7 +19,7 @@
        | term "[" term "]" ; array access
        | "{" term "for" "[" term "]" "=" term "}" ; array functional modifier
        | term "." id  ; structure field access
-       | "{" term "for" id "=" term "}" ; structure field functional modifier
+       | "{" term "for" id "=" term "}" ; field functional modifier
        | term "->" id ;
        | "(" type-expr ")" term  ; cast
        | id "(" term ("," term)* ")" ; function application

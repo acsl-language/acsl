@@ -1,0 +1,47 @@
+The program
+\begin{listing}{1}
+  int x = 0;
+  int y = 10;
+
+  /*@ loop invariant 0 <= x < 11;
+    @*/
+  while (y > 0) {
+    x++;
+    y--;
+  }
+\end{listing}
+is not correctly annotated, even if it is true that \lstinline|x|
+remains smaller
+than 11 during the execution. This is because it is not true that the
+property \lstinline|x<11| is preserved by the execution of
+\lstinline|x++ ; y--;|. A
+correct loop invariant could be \lstinline|0 <= x < 11 && x+y == 10|. It holds
+at loop entrance and is preserved (under the assumption of the loop
+condition \lstinline|y>0|).
+
+Similarly, the following general invariants are not inductive:
+\begin{listing}{1}
+  int x = 0;
+  int y = 10;
+
+  while (y > 0) {
+    x++;
+    //@ invariant 0 < x < 11;
+    y--;
+    //@ invariant 0 <= y < 10;
+  }
+\end{listing}
+since \lstinline|0 <= y < 10| is not a consequence of
+hypothesis \lstinline|0 < x < 11| after executing \verb|y--|; and
+\lstinline|0 < x < 11| cannot be deduced from \lstinline|0 <= y < 10| after
+looping back
+through the condition \lstinline|y>0| and executing \lstinline|x++|. Correct
+invariants could be:
+\begin{listing}{1}
+  while (y > 0) {
+    x++;
+    //@ invariant 0 < x < 11 && x+y == 11;
+    y--;
+    //@ invariant 0 <= y < 10 && x+y == 10;
+  }
+\end{listing}

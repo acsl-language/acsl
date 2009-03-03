@@ -1,38 +1,37 @@
 %; whizzy section -pdf -initex "pdflatex -ini"
-\documentclass[a4paper,11pt,twoside,openright]{report}
+\documentclass[a4paper,11pt,twoside,openright]{frama-c-book}
 \usepackage{hevea}
 \usepackage{ifthen}
 
 % true = prints marks signaling the state of the implementation
 % false = prints only the ACSL definition, without remarks on implementation.
 \newboolean{PrintImplementationRq}
-\setboolean{PrintImplementationRq}{false}
-%Do not touch the following line. It is used in a Makefile hack to
-%produce the ACSL document shipped with the Frama-C distribution.
-%--\setboolean{PrintImplementationRq}{true}
+\setboolean{PrintImplementationRq}{true}
 
 % true = remarks about the current state of implementation in Frama-C
 % are in color.
 % false = they are rendered with an underline
 \newboolean{ColorImplementationRq}
-%\setboolean{ColorImplementationRq}{true}
-\setboolean{ColorImplementationRq}{false}
+\setboolean{ColorImplementationRq}{true}
+%\setboolean{ColorImplementationRq}{false}
 
-\usepackage[a4paper=true,pdftex,colorlinks=true,urlcolor=blue,pdfstartview=FitH]{hyperref}
+%Already set in frama-c-book
+%\usepackage[a4paper=true,pdftex,colorlinks=true,urlcolor=blue,pdfstartview=FitH]{hyperref}
 
-\usepackage[T1]{fontenc}
-\usepackage{times}
+%already set in frama-c-book
+%\usepackage[T1]{fontenc}
+%\usepackage{times}
 \usepackage{amssymb}
 \usepackage{graphicx}
 %\usepackage{tikz}
 \usepackage{color}
 \usepackage{xspace}
 \usepackage{makeidx}
-%\usepackage{ulem}
+\usepackage[normalem]{ulem}
 \usepackage[leftbars]{changebar}
 \usepackage{alltt}
 \makeindex
-\input{./macros}
+\input{./macros_modern}
 
 \setlength{\textheight}{240mm}
 \setlength{\topmargin}{-10mm}
@@ -45,25 +44,29 @@
 \renewcommand{\topfraction}{0.99}
 \renewcommand{\bottomfraction}{0.99}
 
-\usepackage{fancyhdr}
-\pagestyle{fancyplain}
-\renewcommand{\footrulewidth}{0.4pt}
-\addtolength{\headheight}{2pt}
-\addtolength{\headwidth}{1cm}
-\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
-\renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
-\lhead[\fancyplain{}{\bfseries\thepage}]{\fancyplain{}{\bfseries\rightmark}}
-\chead{}
-\rhead[\fancyplain{}{\bfseries\leftmark}]{\fancyplain{}{\bfseries\thepage}}
-\lfoot{\fancyplain{}{ANSI/ISO C Specification Language}}
-\cfoot{}
-\rfoot{\fancyplain{}{CAT RNTL project}}
+% already taken care of in frama-c-book
+% \usepackage{fancyhdr}
+% \pagestyle{fancyplain}
+% \renewcommand{\footrulewidth}{0.4pt}
+% \addtolength{\headheight}{2pt}
+% \addtolength{\headwidth}{1cm}
+% \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+% \renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+% \lhead[\fancyplain{}{\bfseries\thepage}]{\fancyplain{}{\bfseries\rightmark}}
+% \chead{}
+% \rhead[\fancyplain{}{\bfseries\leftmark}]{\fancyplain{}{\bfseries\thepage}}
+% \lfoot{\fancyplain{}{ANSI/ISO C Specification Language}}
+% \cfoot{}
+% \rfoot{\fancyplain{}{CAT RNTL project}}
 
 \begin{document}
 \sloppy
 \hbadness=10000
 
-\begin{titlepage}
+\coverpage{ACSL Implementation}
+\cleardoublepage
+%\begin{titlepage}
+\pagestyle{empty}
 \begin{center}
 \includegraphics[height=14mm]{cealistlogo.jpg}
 \hfill
@@ -104,7 +107,7 @@ $^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405
 \end{flushleft}
 
 \end{center}
-\end{titlepage}
+%\end{titlepage}
 
 \clearpage
 \label{chap:contents}
@@ -112,11 +115,11 @@ $^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405
 
 \chapter*{Foreword}
 
-This is a preliminary design of the ACSL language, a deliverable of
-the task 7.2 of the ANR RNTL project CAT
-(\url{http://www.rntl.org/projet/resume2005/cat.htm}). In this
-project, a reference implementation of ACSL is provided: the Frama-C
-platform (\url{http://frama-c.cea.fr}).
+% This is a preliminary design of the ACSL language, a deliverable of
+% the task 7.2 of the ANR RNTL project CAT
+% (\url{http://www.rntl.org/projet/resume2005/cat.htm}). In this
+% project, a reference implementation of ACSL is provided: the Frama-C
+% platform (\url{http://frama-c.cea.fr}).
 
 This is the version \version{} of ACSL design. Several features may still
 evolve in the future. In particular, some features in this document
@@ -141,13 +144,13 @@ Pierre Rousseau,
 Julien Signoles,
 Jean Souyris.
 
-\include{intro}
+\include{intro_modern}
 
-\include{speclang}
+\include{speclang_modern}
 
-\include{libraries}
+\include{libraries_modern}
 
-\include{concl}
+\include{concl_modern}
 
 \appendix
 
@@ -164,7 +167,7 @@ Jean Souyris.
 \begin{description}
 \item[pure expressions] \index{pure expression} In ACSL setting, a
   \emph{pure} expression is a C expression which contains no assignments, no
-  incrementation operator \verb|++| or \verb|--|, no function call,
+  incrementation operator \lstinline|++| or \lstinline|--|, no function call,
   and no access to a volatile object. The set of pure expression is a
   subset of the set of C expressions without side effect (C
   standard~\cite{KR88,standardc99}, \S 5.1.2.3, alinea 2).
@@ -174,9 +177,10 @@ Jean Souyris.
   A \emph{left-value} (\emph{lvalue} for short) is an expression which
   denotes some place in the memory during program execution, either on
   the stack, on the heap, or in the static data segment. It can be
-  either a variable identifier or an expression of the form $*e$,
-  $e[e]$, $e\verb|.|id$ or $e\verb|->|id$, where $e$ is any expression
-  and $id$ a field name. See C standard, \S 6.3.2.1 for a more
+  either a variable identifier or an expression of the form \lstinline|*e|,
+  \lstinline|e[e]|, \lstinline|e.id| or \lstinline|e->id|, where
+  \lstinline |e| is any expression and \lstinline|id| a field name.
+  See C standard, \S 6.3.2.1 for a more
   detailed description of lvalues.
 
   A \emph{modifiable lvalue} is an lvalue allowed in the left part of
@@ -214,21 +218,22 @@ De'tailler (avec un exemple), meme si c'est dans la
 
 \end{description}
 
-\input{compjml}
+\input{compjml_modern}
 
-\input{typingrules}
+\input{typingrules_modern}
 
-\input{template}
+\input{template_modern}
 
 \section{Illustrative example}
 
 This is an attempt to define an example for ACSL, much as the Purse
 example in JML description papers.  It is a memory allocator, whose
-main functions are \verb|memory_alloc| and \verb|memory_free|, to
+main functions are \lstinline|memory_alloc| and \lstinline|memory_free|, to
 respectively allocate and deallocate memory.  The goal is to exercise
 as much as possible of ACSL.
 
-\input{acsl_allocator.pp}
+%\input{acsl_allocator.pp}
+\listinginput{1}{acsl_allocator.c}
 
 \section{Changes}
 
@@ -240,11 +245,11 @@ as much as possible of ACSL.
 
 \subsection{Version 1.4}
 \begin{itemize}
-\item Introduction of \verb|axiomatic| to gather predicates, logic
+\item Introduction of \lstinline|axiomatic| to gather predicates, logic
   functions, and their defining axioms.
 \item added specification templates appendix for common specification issues
 \item use of sets as first-class term as been precised
-\item fixed semantics of predicated \verb|\separated|
+\item fixed semantics of predicated \lstinline|\separated|
 \end{itemize}
 
 \subsection{Version 1.3}

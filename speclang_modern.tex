@@ -17,33 +17,33 @@ must be noted.
   \begin{center}
     \begin{tabular}{|l|l|l|}
       \hline
-      \verb|>=| & \ensuremath{\geq} & 0x2265 \\
+      \lstinline|>=| & \ensuremath{\geq} & 0x2265 \\
       \hline
-      \verb|<=| & \ensuremath{\leq} & 0x2264 \\
+      \lstinline|<=| & \ensuremath{\leq} & 0x2264 \\
       \hline
-      \verb|>| & \ensuremath{>} & 0x003E \\
+      \lstinline|>| & \ensuremath{>} & 0x003E \\
       \hline
-      \verb|<| & \ensuremath{<} & 0x003C \\
+      \lstinline|<| & \ensuremath{<} & 0x003C \\
       \hline
-      \verb|!=| & \ensuremath{\not\equiv} & 0x2262 \\
+      \lstinline|!=| & \ensuremath{\not\equiv} & 0x2262 \\
       \hline
-      \verb|==| & \ensuremath{\equiv} & 0x2261 \\
+      \lstinline|==| & \ensuremath{\equiv} & 0x2261 \\
       \hline
-      \verb|==>| & \ensuremath{\Longrightarrow} & 0x21D2 \\
+      \lstinline|==>| & \ensuremath{\Longrightarrow} & 0x21D2 \\
       \hline
-      \verb|<==>| & \ensuremath{\Longleftrightarrow} & 0x21D4 \\
+      \lstinline|<==>| & \ensuremath{\Longleftrightarrow} & 0x21D4 \\
       \hline
-      \verb|&&| & \ensuremath{\land} & 0x2227 \\
+      \lstinline|&&| & \ensuremath{\land} & 0x2227 \\
       \hline
-      \verb+||+ & \ensuremath{\lor} & 0x2228 \\
+      \lstinline+||+ & \ensuremath{\lor} & 0x2228 \\
       \hline
-      \verb+^^+ & \ensuremath{\oplus} & 0x22BB \\
+      \lstinline+^^+ & \ensuremath{\oplus} & 0x22BB \\
       \hline
-      \verb+!+ & \ensuremath{\neg} & 0x00AC \\
+      \lstinline+!+ & \ensuremath{\neg} & 0x00AC \\
       \hline
-      \verb|\forall| & \ensuremath{\forall} & 0x2200 \\
+      \lstinline|\forall| & \ensuremath{\forall} & 0x2200 \\
       \hline
-      \verb|\exists| & \ensuremath{\exists} & 0x2203 \\
+      \lstinline|\exists| & \ensuremath{\exists} & 0x2203 \\
       \hline
     \end{tabular}
   \end{center}
@@ -52,7 +52,9 @@ must be noted.
   current line.
 \end{itemize}
 
-In this document, we use UTF8 characters in the examples, to improve readability.
+%A bit complicated with listings
+%In this document, we use UTF8 characters in the examples, to improve
+%readability.
 
 \section{Logic expressions}
 \label{sec:expressions}
@@ -63,7 +65,7 @@ correspond to pure C expressions, with additional constructs
 that we will introduce progressively.
 
 \begin{figure}[p]
-  \fbox{\begin{minipage}{0.97\textwidth} \input{term.bnf}
+  \fbox{\begin{minipage}{0.97\textwidth} \input{term_modern.bnf}
     \end{minipage}}
   \caption{Grammar of terms and predicates}
 \label{fig:gram:term}
@@ -79,55 +81,58 @@ Figure~\ref{fig:gram:binders}.
 
 With respect to C pure expressions, the additional constructs are as follows:
 \begin{description}
-\item[Additional connectives] C operators \verb|&&| (UTF8: $\land$),
-  \verb+||+ (UTF8: $\lor$) and \verb|!| (UTF8: $\neg$) are used as logical
-  connectives. There are additional connectives \verb|==>| (UTF8:
-  $\Longrightarrow$) for implication, \verb|<==>| (UTF8:
-  $\Longleftrightarrow$) for equivalence and \verb|^^| (UTF8:
-  $\oplus$) for exclusive
+\item[Additional connectives] C operators \lstinline|&&| (UTF8:
+  $\land$), \lstinline+||+ (UTF8: $\lor$) and \lstinline|!| (UTF8:
+  $\neg$) are used as logical connectives. There are additional
+  connectives \lstinline|==>| (UTF8: $\Longrightarrow$) for
+  implication, \lstinline|<==>| (UTF8: $\Longleftrightarrow$) for
+  equivalence and \lstinline|^^| (UTF8: $\oplus$) for exclusive
   or. These logical connectives all have a bitwise counterpart, either
-  C ones like \verb|&|, \verb+|+, \verb|~| and \verb|^|, or additional
-  ones like bitwise implication \verb|-->| and bitwise
-  equivalence \verb|<-->|.
+  C ones like \lstinline|&|, \lstinline+|+, \lstinline|~| and
+  \lstinline|^|, or additional ones like bitwise implication
+  \lstinline|-->| and bitwise equivalence \lstinline|<-->|.
 
-\item[Quantification] Universal quantification is denoted by $\Forall
-  \tau~x_1,\ldots,x_n; e$ and existential quantification by $\Exists
-  \tau~ x_1,\ldots,x_n; e$.
+\item[Quantification] Universal quantification is denoted by
+  \lstinline|\forall $\tau$ $x_1$,$\ldots$,$x_n$; e| and existential
+  quantification by \lstinline|\exists $\tau$ $x_1$,$\ldots$,$x_n$; e|.
 
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\textwidth} \input{binders.bnf}
+  \fbox{\begin{minipage}{0.97\textwidth} \input{binders_modern.bnf}
     \end{minipage}}
   \caption{Grammar of binders and type expressions}
 \label{fig:gram:binders}
 \end{figure}
 
-\item[Local binding] \notimplemented{$\Let x~\texttt{=}~e_1~\texttt{;}~e_2$
-  introduces the name $x$ for
-  expression $e_1$ which can be used in expression $e_2$.
-}
+\item[Local binding]
+  \begin{notimplementedenv}
+    \lstinline|\let x = $e_1$;$e_2$|
+    introduces the name \lstinline|x| for
+    expression \lstinline|$e_1$| which can be used in expression
+    \lstinline|$e_2$|.
+  \end{notimplementedenv}
 
-\item[Conditional] $c~\verb!?!~e_1~\verb!:!~e_2$. There is a subtlety
+\item[Conditional] \lstinline|c ? $e_1$ : $e_2$|. There is a subtlety
   here: the condition may be either a boolean term or a predicate.  In
   case of a predicate, the two branches must be also predicates, so
   that this construct acts as a connective with the following
-  semantics: $ c \verb!?! e_1 \verb!:! e_2$ is equivalent to $(c
-  \verb|==>| e_1) \verb|&&| (\verb|!| c \verb|==>| e_2)$.
+  semantics: \lstinline|c ? $e_1$ : $e_2$| is equivalent to
+  \lstinline|(c ==> $e_1$) && (! c ==> $e_2$)|.
 
-\item[Syntactic naming] $id \verb|:| e$ is a term or a predicate
-  equivalent to $e$. It is different from local naming with $\Let$:
+\item[Syntactic naming] \lstinline|id : e| is a term or a predicate
+  equivalent to $e$. It is different from local naming with \lstinline|\let|:
   the name cannot be reused in other terms or predicates. It is only
   for readibility purposes.
 
 \item[Functional modifier] The composite element modifier is an additional
   operator in relation to the C structure field and array accessors.
-  The expression
-  \verb|{| $s$ \verb|for| $id$ \verb|=| $v$ \verb|}|
-  denotes the same structure than $s$, except for the field $id$ to be
-  modified by $v$.
+  The expression \lstinline|{ s for id = v }|
+  denotes the same structure than \lstinline|s|, except for the field
+  \lstinline|id| to be modified by \lstinline|v|.
   The equivalent expression for an array is
-  \verb|{| $t$ \verb|for| \verb|[| $i$ \verb|]| \verb|=| $v$ \verb|}|
-  which returns the same array than $t$, except for the $i^{th}$ element those value
-  is updated to $v$.
+  \lstinline|{ t for [ i ] = v }|
+  which returns the same array than \lstinline|t|, except for the
+  \lstinline|i$^{th}$| element those value
+  is updated to \lstinline|v|.
   See Section~\ref{sec:func-dep} for an example of use of these operators.
 
 \item[Logic functions] Applications in terms and in propositions are not
@@ -135,22 +140,22 @@ applications of C functions, but of logic functions or predicates; see
 Section~\ref{sec:logicspec} for detail.
 
 \item[Consecutive comparison operators]
-  The construct $t_1~relop_1~t_2~relop_2~t_3 \cdots t_k$ with
+  The construct
+\lstinline|$t_1$ $relop_1$ $t_2$ $relop_2$ $t_3$ $\cdots$ $t_k$| with
   several consecutive comparison operators is a shortcut for
-  $(t_1~relop_1~t_2) ~\verb|&&|~ (t_2~relop_2~t_3) ~\verb|&&|~ \cdots $.
-  It is required that the $relop_i$ operators must be in
+  \lstinline|($t_1$ $relop_1$ $t_2$) && ($t_2$ $relop_2$ $t_3$) && $\cdots$|.
+  It is required that the \lstinline|$relop_i$| operators must be in
   the same ``direction'', \emph{i.e.} they must all belong either to
-  $\{\verb|<|, \verb|<=|, \verb|==|\}$ or to
-  $\{\verb|>|,\verb|>=|,\verb|==|\}$. Expressions such as
-  \verb|x < y > z| or \verb|x != y != z| are not allowed.
+  $\{$\lstinline|<|, \lstinline|<=|, \lstinline|==|$\}$ or to
+  $\{$\lstinline|>|,\lstinline|>=|,\lstinline|==|$\}$. Expressions such as
+  \lstinline|x < y > z| or \lstinline|x != y != z| are not allowed.
 
   To enforce the same interpretation as in C expressions, one may need
-  to add extra parentheses: $a \verb!==! b \verb!<! c$ is equivalent
-  to $a \verb!==! b \verb|&&| b \verb!<! c$, whereas
-  $a \verb!==! (b \verb!<! c)$ is
-  equivalent to $\Let x \verb!=! b \verb!<! c \verb!;! a \verb!==!
-  x$. This situation raises some issues, see example below.
-
+  to add extra parentheses: \lstinline|a == b < c| is equivalent
+  to \lstinline|a == b && b < c|, whereas
+  \lstinline |a == (b \< c)| is
+  equivalent to \lstinline|\let x != b < c; a == x|.
+  This situation raises some issues, see example below.
 
 \oldremark{Virgile}{Dans le dernier cas, on pourrait vouloir avoir x, y
   et z deux à deux distincts, et eventuellement un prédicat n-aire
@@ -162,7 +167,7 @@ There is a subtlety regarding comparison operators: they are
 predicates when used in predicate position, and boolean functions when
 used in term position.
 \begin{example}
-\input{example-lt.pp}
+\input{example-lt-modern.tex}
 \end{example}
 
 
@@ -183,26 +188,28 @@ of same priority are presented on the same line.
       \hline
       class 	& associativity & operators \\
       \hline
-      selection & left & $\verb|[|\cdots\verb|]|$ \verb|->| \verb|.| \\
-      unary 	& right & \verb|!| \verb|~| \verb|+| \verb|-| \verb|*| \verb|&| (cast) \verb|sizeof| \\
-      multiplicative & left & \verb|*| \verb|/|  \verb|%| \\
-      additive & left & \verb|+| \verb|-| \\
-      shift 	& left & \verb|<<| \verb|>>| \\
-      comparison & left & \verb|<| \verb|<=| \verb|>| \verb|>=| \\
-      comparison & left & \verb|==| \verb|!=| \\
-      bitwise and & left & \verb|&| \\
-      bitwise xor & left & \verb|^| \\
-      bitwise or & left & \verb+|+ \\
-      bitwise implies & left & \verb+-->+ \\
-      bitwise equiv & left & \verb+<-->+ \\
-      connective and     & left & \verb|&&| \\
-      connective xor & left & \verb+^^+ \\
-      connective or & left & \verb+||+ \\
-      connective implies & right & \verb|==>| \\
-      connective equiv & left & \verb|<==>| \\
-      ternary connective & right & $\cdots\verb|?|\cdots\verb|:|\cdots$ \\
+      selection & left & \lstinline|[$\cdots$]| \lstinline|->| \lstinline|.| \\
+      unary 	& right & \lstinline|!| \lstinline|~| \lstinline|+|
+      \lstinline|-| \lstinline|*| \lstinline|&| \lstinline|(cast)|
+      \lstinline|sizeof| \\
+      multiplicative & left & \lstinline|*| \lstinline|/|  \lstinline|%| \\
+      additive & left & \lstinline|+| \lstinline|-| \\
+      shift 	& left & \lstinline|<<| \lstinline|>>| \\
+      comparison & left & \lstinline|<| \lstinline|<=| \lstinline|>| \lstinline|>=| \\
+      comparison & left & \lstinline|==| \lstinline|!=| \\
+      bitwise and & left & \lstinline|&| \\
+      bitwise xor & left & \lstinline|^| \\
+      bitwise or & left & \lstinline+|+ \\
+      bitwise implies & left & \lstinline+-->+ \\
+      bitwise equiv & left & \lstinline+<-->+ \\
+      connective and     & left & \lstinline|&&| \\
+      connective xor & left & \lstinline+^^+ \\
+      connective or & left & \lstinline+||+ \\
+      connective implies & right & \lstinline|==>| \\
+      connective equiv & left & \lstinline|<==>| \\
+      ternary connective & right & \lstinline|$\cdots$?$\cdots$:$\cdots$| \\
       binding & left & \Forall{} \Exists{} \Let{} \\
-      naming & right & \verb|:| \\
+      naming & right & \lstinline|:| \\
       \hline
     \end{tabular}
   \end{center}
@@ -211,10 +218,11 @@ of same priority are presented on the same line.
 \end{figure}
 
 There is a remaining ambiguity between the connective
-\verb|..?..:..| and the labelling operator \verb|:|. Consider for
-instance the
-expression \verb|x?y:z:t|. The precedence table does not indicate
-whether this should be understood as \verb|x?(y:z):t| or \verb|x?y:(z:t)|.
+\lstinline|$\cdots$?$\cdots$:$\cdots$| and the labelling operator
+\lstinline|:|. Consider for instance the
+expression \lstinline|x?y:z:t|. The precedence table does not indicate
+whether this should be understood as \lstinline|x?(y:z):t| or
+\lstinline|x?y:(z:t)|.
 Such a case must be considered as a syntax error, and should be fixed
 by explicitly adding parentheses.
 
@@ -233,14 +241,15 @@ the comprehensive list compiled by Patrice
 Chalin~\cite{chalin05ftfjp,chalin07icse}.)
 
 Having only total functions implies than one can write
-terms such as \verb|1/0|, or \verb|*p| when \verb!p! is null (or more
+terms such as \lstinline|1/0|, or \lstinline|*p| when \lstinline!p! is
+null (or more
 generally
 when it points to a non-properly allocated memory cell). In
 particular, the predicates
-\begin{eqnarray*}
-  \verb!1/0! &\verb|==|& \verb!1/0! \\\relax
-  \verb!*p! &\verb|==|& \verb!*p!
-\end{eqnarray*}
+\begin{tabular}{rcl}
+  \lstinline!1/0! &\lstinline|==|& \lstinline!1/0! \\\relax
+  \lstinline!*p! &\lstinline|==|& \lstinline!*p!
+\end{tabular}
 are valid, since they are instances of the axiom $\forall x,
 x=x$ of first-order logic. The reader should not be alarmed, because
 there is no way to deduce anything useful from such terms.
@@ -250,8 +259,8 @@ non-déterministe comme  $(\texttt{any} x \mid P)$
 As usual, it is up to the specification designer to write
 consistent assertions. For example, when introducing the following lemma
 (see Section~\ref{sec:logicspec}):
-\input{div_lemma.pp}
-a premise is added to require \verb|y| to be non zero.
+\listinginput{1}{div_lemma.c}
+a premise is added to require \lstinline|y| to be non zero.
 
 
 \subsection{Typing}\label{sec:typing}
@@ -260,32 +269,36 @@ The language of logic expressions is typed (as in \emph{multi-sorted}
 first-order logic). Types are either C types or \emph{logic types}
 defined as follows:
 \begin{itemize}
-\item ``mathematical'' types: \verb|integer|\indextt{integer} for
-  unbounded, mathematical integers, \verb|real|\indextt{real} for
-  real numbers, \verb|boolean|\indextt{boolean} for booleans (with
-  values written \verb|\true|\indexttbs{true} and
-  \verb|\false|\indexttbs{false});
+\item ``mathematical'' types: \lstinline|integer|\indextt{integer} for
+  unbounded, mathematical integers, \lstinline|real|\indextt{real} for
+  real numbers, \lstinline|boolean|\indextt{boolean} for booleans (with
+  values written \lstinline|\true|\indexttbs{true} and
+  \lstinline|\false|\indexttbs{false});
 \item logic types introduced by the specification writer (see
   Section~\ref{sec:logicspec}).
 \end{itemize}
 There are implicit coercions for numeric types:
 \begin{itemize}
-\item C integral types \verb|char|, \verb|short|, \verb|int| and
-  \verb|long|, signed or unsigned, are all subtypes of type \verb|integer|;
-\item \verb|integer| is itself a subtype of type \verb|real|;
-\item C types \verb|float| and \verb|double| are subtypes of type \verb|real|.
+\item C integral types \lstinline|char|, \lstinline|short|, \lstinline|int| and
+  \lstinline|long|, signed or unsigned, are all subtypes of type
+\lstinline|integer|;
+\item \lstinline|integer| is itself a subtype of type \lstinline|real|;
+\item C types \lstinline|float| and \lstinline|double| are subtypes of
+  type \lstinline|real|.
 \end{itemize}
 Notes:
 \begin{itemize}
 \item There is a distinction between booleans and predicates. The
-  expression $x<y$ in term position is a boolean, and the same expression
+  expression \lstinline|x<y| in term position is a boolean, and the
+  same expression
   is also allowed in predicate position.
 \item Unlike in C, there is a distinction between booleans and
   integers. There is an implicit promotion from integers to booleans,
-  thus one may write \verb|x && y| instead of \verb|x != 0 && y != 0|.
+  thus one may write \lstinline|x && y| instead of \lstinline|x != 0 && y != 0|.
   If the reverse conversion is needed, an explicit cast\index{cast} is
-  required, \emph{e.g.} \texttt{(int)(x>0)+1}, where \verb|\false| becomes 0
-  and \verb|\true| becomes 1.
+  required, \emph{e.g.} \lstinline|(int)(x>0)+1|, where
+  \lstinline|\false| becomes 0
+  and \lstinline|\true| becomes 1.
 \item Quantification can be made over any type: logic types and C
   types. Quantification over pointers must be used carefully,
   since it depends on the memory state where dereferencing is done (see
@@ -294,7 +307,6 @@ Notes:
 \end{itemize}
 
 Formal typing rules for terms are given in appendix~\ref{sec:typingrules}.
-
 
 \subsection{Integer arithmetic and machine integers}
 
@@ -326,10 +338,10 @@ remainder of $n$ divided by $d$ then:
   The following examples illustrate the results of division and modulo
   depending on the sign of their arguments:
   \begin{itemize}
-  \item \verb|5/3| is 1 and \verb|5%3| is 2;
-  \item \verb|(-5)/3| is -1 and \verb|(-5)%3| is -2;
-  \item \verb|5/(-3)| is -1 and \verb|5%(-3)| is 2;
-  \item \verb|(-5)/(-3)| is 1 and \verb|(-5)%(-3)| is -2.
+  \item \lstinline|5/3| is 1 and \lstinline|5%3| is 2;
+  \item \lstinline|(-5)/3| is -1 and \lstinline|(-5)%3| is -2;
+  \item \lstinline|5/(-3)| is -1 and \lstinline|5%(-3)| is 2;
+  \item \lstinline|(-5)/(-3)| is 1 and \lstinline|(-5)%(-3)| is -2.
   \end{itemize}
 \end{example}
 
@@ -341,20 +353,19 @@ Hexadecimal and octal constants are always non-negative. Suffixes
 \subsubsection{Casts and  overflows}\index{cast}
 
 In logic expressions, casting from mathematical integers
-to an integral C type $t$ (such as \texttt{char}, \texttt{short},
-\texttt{int}, etc.) is allowed and is
+to an integral C type \lstinline|t| (such as \lstinline|char|,
+\lstinline|short|, \lstinline|int|, etc.) is allowed and is
 interpreted as follows: the result is the unique value of the
 corresponding type that is congruent to the mathematical result modulo
 the cardinal of this type, that is $2^{8\times\sizeof(t)}$.
 \begin{example}
-  \texttt{(unsigned char)1000} is $1000 \bmod 256$ i.e. $232$.
+  \lstinline|(unsigned char)1000| is $1000 \bmod 256$ i.e. $232$.
 \end{example}
-
 
 To express in the logic the value of a C
 expression, one has to add all the necessary casts. For
 example, the logic expression denoting the value of the C expression
-$x*y+z$ is \texttt{(int)((int)(x*y)+z)}.
+\lstinline|x*y+z| is \lstinline|(int)((int)(x*y)+z)|.
 \oldremark{Claude}{Si la conjecture suivante est vraie, alors il
   faudrait en parler: Si e1 et e2 sont des expressions d'un type
   entier de C, quels qu'ils soient et si op est une operation binaire
@@ -365,9 +376,7 @@ $x*y+z$ is \texttt{(int)((int)(x*y)+z)}.
   dans la logique
 }
 Note that there is no implicit cast from integers to C integral types.
-\input{integer-cast.pp}
-
-
+\input{integer-cast-modern}
 
 \subsubsection{Quantification on C integral types}
 \label{sec:quantification}
@@ -376,13 +385,13 @@ Quantification over a C integral type corresponds to integer
 quantification over the corresponding interval.
 \begin{example}
 Thus the formula
-  \begin{center}
-    \verb|\forall char c; c <= 1000|
-  \end{center}
+\begin{listing-nonumber}
+\forall char c; c <= 1000
+\end{listing-nonumber}
 is equivalent to
-\begin{center}
-  \verb|\forall integer c; -128 <= c <= 127 ==> c <= 1000|
-\end{center}
+\begin{listing-nonumber}
+\forall integer c; -128 <= c <= 127 ==> c <= 1000
+\end{listing-nonumber}
 \end{example}
 
 
@@ -391,9 +400,11 @@ is equivalent to
 Note that the size of C types is architecture-dependent. ACSL does
 not enforce these sizes either, hence the semantics of terms involving
 such types is also architecture-dependent. The
-\texttt{sizeof}\index{sizeof} operator may be used in annotations and is
+\lstinline|sizeof|\indextt{sizeof} operator may be used in annotations and is
 assumed to be consistent with the C code. For instance, it should be
-possible to verify the following code: \input{sizeof.pp}
+possible to verify the following code:
+
+\listinginput{1}{sizeof.c}
 
 Constants giving maximum and minimum values of those types may be
 provided in a library.
@@ -422,16 +433,12 @@ non-negative numbers) or ones (for negative numbers) on the left.
 Bitwise operations apply to this representation.
 \begin{example} ~
   \begin{itemize}
-  \item \verb|7 & 12| = $\cdots 00111$ \verb|&| $\cdots 001100$ =
-    $\cdots 00100$ = 4
-  \item \verb+-8 | 5+ = $\cdots 11000$ \verb+|+ $\cdots 00101$ = $\cdots
-    11101$ = -3
-  \item \verb+~5+ = \verb|~| $\cdots 00101$ = $\cdots 111010$ = -6
-  \item \verb+-5 << 2+ = $\cdots 11011$ \verb|<<| $2$ = $\cdots
-    11101100$ = -20
-  \item \verb+5 >> 2+ = $\cdots 00101$ \verb|>>| $2$ = $\cdots 0001$ = 1
-  \item \verb+-5 >> 2+ = $\cdots 11011$ \verb|>>| $2$ = $\cdots 1110$ =
-    -2
+  \item \lstinline|7 & 12 == $\cdots$00111 & $\cdots$001100 == $\cdots$00100 == 4|
+  \item \lstinline+-8 | 5 == $\cdots$11000 | $\cdots$00101 == $\cdots$11101 == -3+
+  \item \lstinline+~5 == ~$\cdots 00101$ == $\cdots$111010 == -6+
+  \item \lstinline+-5 << 2 == $\cdots$11011 << 2 == $\cdots$11101100 == -20+
+  \item \lstinline+5 >> 2 == $\cdots$00101 >> 2 == $\cdots$0001 == 1+
+  \item \lstinline+-5 >> 2 == $\cdots$11011 >> 2 == $\cdots$1110 == -2+
   \end{itemize}
 \end{example}
 
@@ -462,26 +469,27 @@ Unlike the promotion of C integer types to mathematical integers,
 there are special float values which do not naturally map to a real
 number, namely NaN, +Infinity and -Infinity. However, ACSL is a logic
 with total functions. There are implicit promotion
-functions \verb|real_of_float|\indextt{real\_of\_float} and
-\verb|real_of_double|\indextt{real\_of\_double} whose results
+functions \lstinline|real_of_float|\indextt{real\_of\_float} and
+\lstinline|real_of_double|\indextt{real\_of\_double} whose results
 on the 3 values above is left unspecified.
 
 Usual operators for comparison are interpreted as real operators
 too. In particular, equality operation $\equiv$ of float (or double)
 expressions means equality of the real numbers they represent
 respectively. Or equivalently, $x \equiv y$ for $x,y$ two float
-variables means $\verb|real_of_float|(x) \equiv
-\verb|real_of_float|(y)$ with the mathematical equality of real
+variables means \lstinline|real_of_float(x) $\equiv$ real_of_float(y)|
+with the mathematical equality of real
 numbers.
 
 Special predicates are also available to express the comparison
 operators of float (resp. double) numbers as in C:
-\verb|\eq_float|\indexttbs{eq\_float}\indexttbs{eq\_double},
-\verb|\gt_float|\indexttbs{gt\_float}\indexttbs{gt\_double},
-\verb|\ge_float|\indexttbs{ge\_float}\indexttbs{ge\_double},
-\verb|\le_float|\indexttbs{le\_float}\indexttbs{le\_double},
-\verb|\lt_float|\indexttbs{lt\_float}\indexttbs{lt\_double},
-\verb|\ne_float|\indexttbs{ne\_float}\indexttbs{ne\_double} (resp. for double).
+\lstinline|\eq_float|\indexttbs{eq\_float}\indexttbs{eq\_double},
+\lstinline|\gt_float|\indexttbs{gt\_float}\indexttbs{gt\_double},
+\lstinline|\ge_float|\indexttbs{ge\_float}\indexttbs{ge\_double},
+\lstinline|\le_float|\indexttbs{le\_float}\indexttbs{le\_double},
+\lstinline|\lt_float|\indexttbs{lt\_float}\indexttbs{lt\_double},
+\lstinline|\ne_float|\indexttbs{ne\_float}\indexttbs{ne\_double}
+(resp. for double).
 
 
 
@@ -503,17 +511,17 @@ Conversion of real numbers to float or double values indeed depends on
 various possible rounding modes defined by the IEEE~754
 standard~\cite{float-std,wikipedia-float}. These modes are defined by
 a logic type (see section~\ref{sec:concrete-logic-types}):
-\begin{flushleft}\ttfamily
-/*@ type rounding\_mode =  \\
-\quad  Nearest\_even | To\_zero | Round\_up | Round\_down | Nearest\_away\\
+\begin{listing-nonumber}
+/*@ type rounding\_mode =
+    Nearest_even | To_zero | Round_up | Round_down | Nearest_away
 */
-\end{flushleft}
+\end{listing-nonumber}
 Then rounding a real number can be done explicitly using functions
-\begin{flushleft}\ttfamily
-  logic float \verb|\round_float|\indexttbs{round\_float}(rounding\_mode m, real x); \\
-  logic double \verb|\round_double|\indexttbs{round\_double}(rounding\_mode m, real x);
-\end{flushleft}
-Cast operators \verb|(float)| and \verb|(double)| applied to a
+\begin{listing-nonumber}
+  logic float \round_float`\indexttbs{round\_float}`(rounding_mode m, real x);
+  logic double \round_double`\indexttbs{round\_double}`(rounding_mode m, real x);
+\end{listing-nonumber}
+Cast operators \lstinline|(float)| and \lstinline|(double)| applied to a
 mathematical integer or real number $x$ are equivalent to apply
 rounding functions above with the nearest-even rounding mode (which is
 the default rounding mode in C programs)
@@ -523,10 +531,11 @@ If the source real number is too large, this may also result into one
 of the special values +infinity and -infinity.
 \begin{example}
   We have
-  $\verb|(float)0.1| \equiv 13421773 \times 2 ^{-27}$ which is equal to
+  \lstinline|(float)0.1| $\equiv 13421773 \times 2 ^{-27}$ which is equal to
   $0.10000000149006473916$
 \end{example}
-Notice also that unlike for integers, suffixes $f$ and $l$ are
+Notice also that unlike for integers, suffixes \lstinline|f| and
+\lstinline|l| are
 meaningful, because they implicitly add a cast operator as above.
 
 % \begin{remark}{Claude}
@@ -536,24 +545,26 @@ meaningful, because they implicitly add a cast operator as above.
 
 % \end{remark}
 
-This semantics of casts ensures that the float result $r$ of a C operation
-$e_1 op e_2$ on floats, if there is no overflow and if the default
+This semantics of casts ensures that the float result \lstinline|r| of
+a C operation \lstinline|$e_1$ op $e_2$| on floats, if there is no
+overflow and if the default
 rounding mode is not changed in the program, has the same real value
-as the logic expression $(float)(e_1 op e_2)$. Notice that this is not
-true for the equality \verb|\eq_float| of floats: \verb|-0.0 + -0.0|
-in C is equal to the float number \verb|-0.0|, which is not
-\verb|\eq_float| to \verb|0.0|, which is the value of the logic
-expression \verb|(float)(-0.0 + -0.0)|.
+as the logic expression \lstinline|(float)($e_1$ op $e_2$)|. Notice
+that this is not
+true for the equality \lstinline|\eq_float| of floats: \lstinline|-0.0 + -0.0|
+in C is equal to the float number \lstinline|-0.0|, which is not
+\lstinline|\eq_float| to \lstinline|0.0|, which is the value of the logic
+expression \lstinline|(float)(-0.0 + -0.0)|.
 
 Finally, two additional predicates are provided on float and double
 numbers,which check that their argument is NaN or a
 finite number respectively:
-\begin{flushleft}\ttfamily
-predicate \verb|\is_nan_float|\indexttbs{is\_nan\_float}(float x); \\
-predicate \verb|\is_nan_double|\indexttbs{is\_nan\_double}(double x); \\
-predicate \verb|\is_finite_float|\indexttbs{is\_finite\_float}(float x); \\
-predicate \verb|\is_finite_double|\indexttbs{is\_finite\_double}(double x);
-\end{flushleft}
+\begin{listing}{1}
+predicate \is_nan_float`\indexttbs{is\_nan\_float}`(float x);
+predicate \is_nan_double`\indexttbs{is\_nan\_double}`(double x);
+predicate \is_finite_float`\indexttbs{is\_finite\_float}`(float x);
+predicate \is_finite_double`\indexttbs{is\_finite\_double}`(double x);
+\end{listing}
 
 \oldremark{Claude}{
 
@@ -565,7 +576,7 @@ on pourrait enonce un certain nombre de proprietes:
 
 \subsubsection{Quantification}
 
-Quantification over a variable of type \verb|real| is of course usual
+Quantification over a variable of type \lstinline|real| is of course usual
 quantification over real numbers.
 
 Quantification over float (resp. double) types is allowed too, and is
@@ -594,7 +605,7 @@ pour des types de donnees
 
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\textwidth}
-      \input{fn_behavior.bnf}
+      \input{fn_behavior_modern.bnf}
     \end{minipage}}
     \caption{Grammar of function contracts}
   \label{fig:gram:contracts}
@@ -602,9 +613,9 @@ pour des types de donnees
 
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\textwidth}
-      \input{oldandresult.bnf}
+      \input{oldandresult_modern.bnf}
     \end{minipage}}
-    \caption{\old and \result in terms}
+    \caption{\protect\old and \protect\result in terms}
   \label{fig:gram:oldandresult}
 \end{figure}
 
@@ -615,13 +626,12 @@ contracts. Non-terminal \textsl{location}
 is defined later in Section~\ref{sec:locations} (informally, \textsl{location}
 denotes a set of C l-values\index{l-value}).
 
-This section is organized as follows.
-First, the grammar for terms is extended with two new constructs.
-Then Section~\ref{sec:simplecontracts}
-introduces \emph{simple contracts}.
+This section is organized as follows.  First, the grammar for terms is
+extended with two new constructs.  Then
+Section~\ref{sec:simplecontracts} introduces \emph{simple contracts}.
 Finally, Section~\ref{subsec:behaviors} defines more general contracts
-involving \emph{named behaviors}
-The \verb|decreases| and \verb|terminates| clauses are presented later in
+involving \emph{named behaviors} The \lstinline|decreases| and
+\lstinline|terminates| clauses are presented later in
 Section~\ref{sec:termination}.
 
 \oldremark{Patrick}{pourquoi seuls les ``behavior'' peuvent avoir un
@@ -633,18 +643,18 @@ Section~\ref{sec:termination}.
   (id : f)
 }
 
-\subsection{Built-in constructs \old{} and \result{}}
+\subsection{Built-in constructs \protect\old{} and \protect\result{}}
 
 Post-conditions usually require to refer to function results and
 values in the pre-state. Thus terms are extended with the following new
 constructs (shown in Figure~\ref{fig:gram:oldandresult}).
 \begin{itemize}
-\item $\old(e)$\indexttbs{old} denotes the value of $e$ in the
-pre-state of the function.
+\item \lstinline|\old(e)|\indexttbs{old} denotes the value of
+  \lstinline|e| in the pre-state of the function.
 \item \result\indexttbs{result} denotes the returned value of the function.
 \end{itemize}
 
-$\old(e)$ and $\result$ can be used only in \ensures{} clauses, since
+\lstinline|\old(e)| and \result{} can be used only in \ensures{} clauses, since
 the other clauses already refer to the pre-state.
 % See Section~\ref{sec:at} for more details on scoping rules for labels.
 
@@ -654,18 +664,18 @@ the other clauses already refer to the pre-state.
 A simple function contract, having no named behavior, has the following
 form:
 \indextt{requires}\indextt{assigns}\indextt{ensures}
-\begin{flushleft}\ttfamily
-/*@ requires $P_1$; requires $P_2$; \dots \\
-~~@ assigns $L_1$;  assigns $L_2$;  \dots \\
-~~@ ensures $E_1$;  ensures $E_2$;  \dots \\
-~~@*/
-\end{flushleft}
+\begin{listing}{1}
+/*@ requires $P_1$; requires $P_2$; `\dots`
+  @ assigns $L_1$;  assigns $L_2$;  `\dots`
+  @ ensures $E_1$;  ensures $E_2$;  `\dots`
+  @*/
+\end{listing}
 The semantics of such a contract is as follows:
 \begin{itemize}
 \item The caller of the function must guarantee that it is called in a
-  state where the property $P_1 \verb|&&| P_2 \verb!&&! \dots$ holds.
+  state where the property \lstinline|$P_1$ && $P_2$ && `\dots`| holds.
 \item The called function returns a state where the property
-  $E_1 \verb|&&| E_2 \verb!&&! \dots$ holds.
+  \lstinline|$E_1$ && $E_2$ && `\dots`| holds.
 \item All memory locations of the pre-state that do not belong to the
   set $L_1 \cup L_2 \cup \dots$ remain allocated and are left unchanged in the
   post-state. The set $L_1 \cup L_2 \cup \dots$ itself is interpreted in the
@@ -677,14 +687,15 @@ The semantics of such a contract is as follows:
 Notice that the multiplicity of clauses are proposed mainly to improve
 readibility since the contract above is equivalent to the following
 simplified one:
-\begin{flushleft}\ttfamily
-/*@ requires $P_1$ \verb|&&| $P_2$ \verb!&&! $\dots$; \\
-~~@ assigns $L_1,L_2,\dots$; \\
-~~@ ensures $E_1$ \verb|&&| $E_2$ \verb!&&! $\dots$; \\
-~~@*/
-\end{flushleft}
+\begin{listing}{1}
+/*@ requires $P_1$ && $P_2$ && `\dots`;
+  @ assigns $L_1$,$L_2$,`\dots`;
+  @ ensures $E_1$ && $E_2$ && `\dots`;
+  @*/
+\end{listing}
 If no clause \requires\ is given, it defaults to
-\verb!\true!, and similarly for \ensures\ clause. Giving no \assigns\ clause
+\lstinline!\true!, and similarly for \ensures\ clause.
+Giving no \assigns\ clause
 means that locations assigned by the function are not specified, so
 the caller has no information at all on this function's side
 effects. See Section~\ref{sec:multiplecontracts} for more details on
@@ -701,17 +712,17 @@ default status of clauses.
   The following function is given a simple contract for computation of
   the integer square root.
 
-  \input{isqrt.pp}
+  \listinginput{1}{isqrt.c}
 %
   The contract means that the function must be called with a
   nonnegative argument, and returns a value satisfying
   the conjunction of the three \ensures{} clauses.
 % [Patrick B.] START proposition:
-  Inside these \ensures{} clauses, the use of the construct $\old(x)$
+  Inside these \ensures{} clauses, the use of the construct \lstinline|\old(x)|
   is not necessary, even if the function modifies the formal operand
-  $x$, because function calls modify a copy of the effective operands,
-  and the effective operands remain unaltered.  In fact, $x$ denotes
-  the effective operand of $isqrt$ calls which has the same value
+  \lstinline|x|, because function calls modify a copy of the effective operands,
+  and the effective operands remain unaltered.  In fact, \lstinline|x| denotes
+  the effective operand of \lstinline|isqrt| calls which has the same value
   interpreted in the pre-state than in the post-state.
 % END proposition
 
@@ -721,46 +732,56 @@ default status of clauses.
   The following function is given a contract to specify that it increments
   the value pointed to by the pointer given as argument.
 
-  \input{incrstar.pp}
+  \listinginput{1}{incrstar.c}
 %
   The contract means that the function must be called with a pointer
-  \texttt{p} that points to a safely allocated memory location (see
-  Section~\ref{sec:pointers} for details on the $\valid$ built-in
+  \lstinline|p| that points to a safely allocated memory location (see
+  Section~\ref{sec:pointers} for details on the \valid{} built-in
   predicate). It does not modify any memory location but the one
-  pointed to by \texttt{p}. Finally, the \ensures\ clause specifies that
-  the value \verb!*p! is incremented by one.
+  pointed to by \lstinline|p|. Finally, the \ensures\ clause specifies that
+  the value \lstinline!*p! is incremented by one.
 \end{example}
 
 \subsection{Contracts with named behaviors}
 \label{subsec:behaviors}
 \index{function behavior}\index{behavior}
 The general form of a function contract contains several named
-behaviors (restricted to two behaviors, in the following, for readability).
-\begin{flushleft}\ttfamily
-/*@ requires $P$; \\
-% ~~@ assigns $L$; \\
-% ~~@ ensures $E$; \\
-~~@ behavior $b_1$: \\
-~~@ ~~assumes $A_1$; \\
-~~@ ~~\notimplemented{requires $R_1$}; \\
-~~@ ~~assigns $L_1$; \\
-~~@ ~~ensures $E_1$; \\
-~~@ behavior $b_2$:  \\
-~~@ ~~assumes $A_2$; \\
-~~@ ~~\notimplemented{requires $R_2$};  \\
-~~@ ~~assigns $L_2$; \\
-~~@ ~~ensures $E_2$; \\
-% ~~@ decreases $m$ for $R$; \\
-~~@*/
-\end{flushleft}
+behaviors (restricted to two behaviors, in the following, for
+readability).
+\lstset{firstnumber=auto}
+\begin{lstlisting}[style=c,basicstyle=\lp@basic,numbers=left,name=behaviors]
+/*@ requires $P$;
+  @ behavior $b_1$:
+  @ assumes $A_1$;
+\end{lstlisting}
+\begin{notimplementedenv}
+\begin{lstlisting}[style=c,basicstyle=\lp@basic,numbers=left,name=behaviors]
+  @   requires $R_1$;
+\end{lstlisting}
+\end{notimplementedenv}
+\begin{listing}{last}
+  @   assigns $L_1$;
+  @   ensures $E_1$;
+  @ behavior $b_2$:
+  @   assumes $A_2$;
+\end{listing}
+\begin{notimplementedenv}
+\begin{listing}{last}
+  @   requires $R_2$;
+\end{listing}
+\end{notimplementedenv}
+\begin{listing}{last}
+  @   assigns $L_2$;
+  @   ensures $E_2$;
+  @*/
+\end{listing}
 The semantics of such a contract is as follows:
 \begin{itemize}
 \item The caller of the function must guarantee that the call is
   performed in a state where the property
-  $P \verb|&&| (A_1 \verb|==>| R_1) \verb|&&| (A_2 \verb|==>| R_2)$ holds.
+  \lstinline|$P$ && ($A_1$ ==> $R_1$) && ($A_2$ ==> $R_2$)| holds.
 \item The called function returns a state where
-% the property $E$ holds  and
-the properties $\old(A_i) \verb|==>| E_i$ hold for each $i$.
+the properties \lstinline|\old($A_i$) ==> $E_i$| hold for each $i$.
 \item For each $i$, if the function is called in a pre-state where
   $A_i$ holds, then each memory location of that pre-state that does not
   belong to the set $L_i$ remains allocated and is left unchanged
@@ -772,74 +793,66 @@ Notice that the \requires{} clauses in the behaviors are proposed
 mainly to improve readibility (to avoid some duplication of
 formulas), since the contract above is equivalent to the following
 simplified one:
-\begin{flushleft}\ttfamily
-/*@ requires $P \verb|&&| (A_1 \verb|==>| R_1) \verb|&&| (A_2 \verb|==>| R_2)$; \\
-% ~~@ assigns $L$; \\
-% ~~@ ensures $E$; \\
-~~@ behavior $b_1$: \\
-~~@ ~~assumes $A_1$; \\
-~~@ ~~assigns $L_1$; \\
-~~@ ~~ensures $E_1$; \\
-~~@ behavior $b_2$:  \\
-~~@ ~~assumes $A_2$; \\
-~~@ ~~assigns $L_2$; \\
-~~@ ~~ensures $E_2$; \\
-% ~~@ decreases $m$ for $R$; \\
-~~@*/
-\end{flushleft}
+\begin{listing}{1}
+/*@ requires $P$ && ($A_1$ ==> $R_1$) && ($A_2$ ==> $R_2$);
+  @ assigns $L_1$,$L_2$;
+  @ ensures \old($A_1$) ==> $E_1$ && \old($A_2$) ==> $E_2$;
+  @*/
+\end{listing}
 Note that a simple contract such as
-\begin{flushleft}\ttfamily
+\begin{listing}{1}
 /*@ requires $P$; assigns $L$; ensures $E$; */
-\end{flushleft}
+\end{listing}
 is actually equivalent to a single named behavior as follows:
-\begin{flushleft}\ttfamily
-/*@ requires $P$; \\
-~~@ behavior \textsl{<any name>}: \\
-~~@ ~~assumes \verb|\true|; \\
-~~@ ~~assigns $L$; \\
-~~@ ~~ensures $E$; \\
-~~@*/
-\end{flushleft}
+\begin{listing}{1}
+/*@ requires $P$;
+  @ behavior <any name>:
+  @   assumes \true;
+  @   assigns $L$;
+  @   ensures $E$; \\
+  @*/
+\end{listing}
 Similarly, global \assigns\ and \ensures\ clauses are equivalent to a
 single named behavior. More precisely,
-\begin{flushleft}\ttfamily
-/*@ requires $P$; \\
-~~@ assigns $L$; \\
-~~@ ensures $E$; \\
-~~@ behavior $b_1$: \dots \\
-~~@ behavior $b_2$: \dots \\
-~~@ \vdots \\
-~~@*/
-\end{flushleft}
+\begin{listing}{1}
+/*@ requires $P$;
+  @ assigns $L$;
+  @ ensures $E$;
+  @ behavior $b_1$: `\dots`
+  @ behavior $b_2$: `\dots`
+  @ `\vdots`
+  @*/
+\end{listing}
 is equivalent to
-\begin{flushleft}\ttfamily
-/*@ requires $P$; \\
-~~@ behavior \textsl{<any name>}: \\
-~~@ ~~assumes \verb|\true|; \\
-~~@ ~~assigns $L$; \\
-~~@ ~~ensures $E$; \\
-~~@ behavior $b_1$: \dots \\
-~~@ behavior $b_2$: \dots \\
-~~@ \vdots \\
-~~@*/
-\end{flushleft}
+\begin{listing}{1}
+/*@ requires $P$;
+  @ behavior <any name>:
+  @   assumes \true;
+  @   assigns $L$;
+  @   ensures $E$;
+  @ behavior $b_1$: `\dots`
+  @ behavior $b_2$: `\dots`
+  @ `\vdots`
+  @*/
+\end{listing}
 
 \begin{example}
 \label{ex:bsearch}
-In the following, \texttt{bsearch($t,n,v$)} searches for element $v$
-in array $t$ between indices $0$ and $n-1$.
+In the following, \lstinline|bsearch(t,n,v)| searches for element \lstinline|v|
+in array \lstinline|t| between indices \lstinline|0| and \lstinline|n-1|.
 
-\input{bsearch.pp}
+\listinginput{1}{bsearch.c}
 %
-The precondition requires array $t$ to be allocated at least from indices $0$
-to $n-1$. The two named behaviors
+The precondition requires array \lstinline|t| to be allocated at least
+from indices \lstinline|0|
+to \lstinline|n-1|. The two named behaviors
 correspond respectively to the successful behavior and the failing
 behavior.
 
 Since the function is performing a binary search, it requires the
-array $t$ to be sorted in increasing order: this is the purpose of the
-predicate named \texttt{t\_is\_sorted} in the \assumes\ clause of the
-behavior named \verb|failure|.
+array \lstinline|t| to be sorted in increasing order: this is the purpose of the
+predicate named \lstinline|t_is_sorted| in the \assumes\ clause of the
+behavior named \lstinline|failure|.
 
 See~\ref{sec:loop_annot} for a continuation of this example.
 \end{example}
@@ -848,10 +861,11 @@ See~\ref{sec:loop_annot} for a continuation of this example.
   The following function illustrates the importance of different
   \assigns{} clauses for each behavior.
 
-  \input{cond_assigns.pp}
+  \listinginput{1}{cond_assigns.c}
 %
-  Its contract means that it assigns values pointed to by $p$ or by $q$,
-  conditionally on the sign of $n$.
+  Its contract means that it assigns values pointed to by
+  \lstinline|p| or by \lstinline|q|,
+  conditionally on the sign of \lstinline|n|.
 \end{example}
 
 
@@ -863,44 +877,44 @@ provide a ``complete'' set of behaviors.
 If such a condition is seeked, it is possible to add the following clause
 to a contract:
 \index{complete behaviors}
-\begin{flushleft}\ttfamily
-/*@ ... \\
-~~@ complete behaviors $b_1,\ldots,b_n$; \\
-~~@*/
-\end{flushleft}
+\begin{listing-nonumber}
+/*@ `\dots`
+  @ complete behaviors $b_1$,$\ldots$,$b_n$;
+  @*/
+\end{listing-nonumber}
 It specifies that the set of behaviors $b_1,\ldots,b_n$ is complete \emph{i.e.}
 that
-\[
-R \Rightarrow \bigvee_{1\leq i \leq n} A_i
-\]
+\begin{listing-nonumber}
+R ==> ($A_1$ || $A_2$ || ... || $A_n$)
+\end{listing-nonumber}
 holds, where $R$ is the precondition of the contract. The
 simplified version of that clause
-\begin{flushleft}\ttfamily
-/*@ ... \\
-~~@ complete behaviors; \\
-~~@*/
-\end{flushleft}
+\begin{listing-nonumber}
+/*@ `\dots`
+  @ complete behaviors;
+  @*/
+\end{listing-nonumber}
 means that all behaviors given in the contract should be taken into account.
 
 Similarly, it is not required that two distinct behaviors are disjoint.
 If desired, this can be specified with the following clause:
 \index{disjoint behaviors}
-\begin{flushleft}\ttfamily
-/*@ ... \\
-~~@ disjoint behaviors $b_1,\ldots,b_n$; \\
-~~@*/
-\end{flushleft}
+\begin{listing-nonumber}
+/*@ ...
+  @ disjoint behaviors $b_1,\ldots,b_n$;
+  @*/
+\end{listing-nonumber}
 It means that the given behaviors are pairwise disjoint \emph{i.e.}
 that, for all distinct $i$ and $j$,
-\[
-R \Rightarrow \lnot (A_i \land A_j)
-\]
+\begin{listing-nonumber}
+R ==> ! ($A_i$ && $A_j$)
+\end{listing-nonumber}
 holds. The simplified version of that clause
-\begin{flushleft}\ttfamily
-/*@ ... \\
-~~@ disjoint behaviors; \\
-~~@*/
-\end{flushleft}
+\begin{listing-nonumber}
+/*@ ...
+  @ disjoint behaviors;
+  @*/
+\end{listing-nonumber}
 means that all behaviors given in the contract should be taken into account.
 
 \oldremark{Abandonne}{
@@ -966,7 +980,7 @@ means that all behaviors given in the contract should be taken into account.
 
 There are several places where one needs to describe a set of memory
 locations: in \assigns{} clauses of function contracts, or
-in \verb|\separated| predicate (see Section~\ref{sec:separated}). More
+in \lstinline|\separated| predicate (see Section~\ref{sec:separated}). More
 generally, we introduce syntactic constructs to denote \emph{sets of
   terms}. A \emph{memory location} is then any set of terms denoting a set of
 l-values\index{l-value}. Moreover, a location given as argument to
@@ -981,7 +995,7 @@ Section~\ref{sec:glossary}.
 
 \begin{figure}
   \fbox{\begin{minipage}{0.97\textwidth}
-      \input{loc.bnf}
+      \input{loc_modern.bnf}
     \end{minipage}}
   \caption{Grammar for sets of terms}
 \label{fig:gram:locations}
@@ -991,39 +1005,49 @@ The grammar for sets of terms is given in
 Figure~\ref{fig:gram:locations}. The semantics is given below,
 where $s$ denotes any \textsl{tset}.
 \begin{itemize}
-\item \verb|\empty|\indexttbs{empty} denotes the empty set.
+\item \lstinline|\empty|\indexttbs{empty} denotes the empty set.
 \item a simple term denotes a singleton set.
-\item $s\ra id$ denotes the set of $x\ra id$ for each $x \in s$.
-\item $s.id$ denotes the set of $x.id$ for each $x \in s$.
-\item $*s$ denotes the set of $*x$ for each $x \in s$.
-\item $\&s$ denotes the set of $\&x$ for each $x \in s$.
-\item $s_1[s_2]$ denotes the set of $x_1[x_2]$ for each $x_1 \in s_1$
+\item \lstinline|s->id| denotes the set of \lstinline|x->id| for each
+  \lstinline|x $\in$ s|.
+\item \lstinline|s.id| denotes the set of \lstinline|x.id| for each
+  \lstinline|x $\in$ s|.
+\item \lstinline|*s| denotes the set of \lstinline|*x| for each
+  \lstinline|x $\in$ s|.
+\item \lstinline|&s| denotes the set of \lstinline|&x| for each
+  \lstinline|x $\in$ s|.
+\item \lstinline|$s_1$[$s_2$]| denotes the set of
+\lstinline|$x_1$[$x_2$]| for each $x_1 \in s_1$
   and $x_2 \in s_2$.
-\item $t_1 .. t_2$ denotes the set of integers between $t_1$ and
-  $t_2$, included. If $t_1 > t_2$, this the same as \verb+\empty+
-\item $\union(s_1,\ldots,s_n)$\indexttbs{union}
+\item \lstinline|$t_1$ .. $t_2$| denotes the set of integers between $t_1$ and
+  $t_2$, included. If $t_1 > t_2$, this the same as \lstinline+\empty+
+\item \lstinline|\union($s_1$,$\ldots$,$s_n$)|\indexttbs{union}
   denotes the union of $s_1,s_2,\ldots $ and $s_n$;
-\item $\inter(s_1,\ldots,s_n)$\indexttbs{inter} denotes the intersection of
-  $s_1,s_2,\ldots $ and $s_n$;
-\item $s_1+s_2$ denotes the set of $x_1+x_2$ for each $x_1 \in s_1$
+\item \lstinline|\inter($s_1$,$\ldots$,$s_n$)|\indexttbs{inter}
+  denotes the intersection of $s_1,s_2,\ldots $ and $s_n$;
+\item \lstinline|$s_1$+$s_2$| denotes the set of
+  \lstinline|$x_1$+$x_2$| for each $x_1 \in s_1$
   and $x_2 \in s_2$;
-\item $(s)$ denotes the same set as $s$;
-\item $\{ s \mid b ; P \}$ denotes set
+\item \lstinline|(s)| denotes the same set as \lstinline|s|;
+\item \lstinline+{ s | b ; P }+ denotes set
   comprehension\index{comprehension},
-  that is the union of the sets denoted by $s$ for each value $b$ of binders
-  satisfying predicate $P$ (binders $b$ are bound in both $s$ and $P$).
+  that is the union of the sets denoted by \lstinline|s| for each
+  value \lstinline|b| of binders
+  satisfying predicate \lstinline|P|
+  (binders \lstinline|b| are bound in both \lstinline|s| and \lstinline|P|).
 \end{itemize}
 
-Note that \verb|\assigns \nothing| is equivalent to
-\verb|\assigns \empty|; it is left for convenience.
+Note that \lstinline|assigns \nothing| is equivalent to
+\lstinline|assigns \empty|; it is left for convenience.
 
 \begin{example}
   The following function sets to 0 each cell of an array.
 
-  \input{assigns_array.pp}
+  \listinginput{1}{assigns_array.c}
 %
   It is annotated with three equivalent \assigns{} clauses, each one
-  specifying that only the set of cells $\{t[0],\ldots,t[n-1]\}$ is modified.
+  specifying that only the set of cells
+  \lstinline|{t[0],$\ldots$,t[n-1]\}|
+  is modified.
 \end{example}
 
 \begin{example}
@@ -1031,11 +1055,12 @@ Note that \verb|\assigns \nothing| is equivalent to
   The following function increments each value stored in a linked
   list.
 
-  \input{assigns_list.pp}
+  \listinginput{1}{assigns_list.c}
 %
   The \assigns{} clause specifies that the set of modified memory
-  locations is the set of fields $q\verb|->hd|$ for each pointer $q$
-  reachable from \verb|p| following \verb|next| fields. See
+  locations is the set of fields \lstinline|q->hd| for each pointer
+  \lstinline|q|
+  reachable from \lstinline|p| following \lstinline|next| fields. See
   Section~\ref{sec:inductivepredicates} for details about the
   declaration of the predicate \texttt{reachable}.
 \end{example}
@@ -1049,15 +1074,15 @@ Those contracts are seen as a single contract with the union of the
 \requires\ clauses and behaviors.
 
 On the other hand a function may have no contract at all, or a
-contract with missing clauses. Missing \verb|requires| and
-\verb|ensures| clauses default to \verb!\true!.
-If no \verb|assigns| clause is given, it remains unspecified. If the
+contract with missing clauses. Missing \lstinline|requires| and
+\lstinline|ensures| clauses default to \lstinline!\true!.
+If no \lstinline|assigns| clause is given, it remains unspecified. If the
 function under consideration has only a declaration but no body, then
 it means that it potentially modifies ``everything'', hence in practice
 it will be impossible to verify anything about programs calling that
 function; in other words giving it a contract is in practice
 mandatory. On the other hand, if that function has a body, giving no
-\verb|assigns| clause means in practice that it is left to tools to
+\lstinline|assigns| clause means in practice that it is left to tools to
 compute an over-approximation of the sets of assigned locations.
 
 
@@ -1091,8 +1116,8 @@ Annotations on C statements are of three kinds:
   at end of blocks.
 \item\index{annotation!loop}\index{loop annotation}
   Loop annotations: invariant, assigns clause, variant; allowed
-  before any loop statement: \verb|while|, \verb|for|, and
-  \verb|do...while|.
+  before any loop statement: \lstinline|while|, \lstinline|for|, and
+  \lstinline|do ... while|.
 \item\index{statement contract}\index{contract}
   Statement contracts: allowed before any C statement, specifying
   their behavior in a similar manner to C function contracts.
@@ -1103,7 +1128,7 @@ Annotations on C statements are of three kinds:
 
 \begin{figure}[t]
   \begin{cadre}
-    \input{assertions.bnf}
+    \input{assertions_modern.bnf}
   \end{cadre}
   \caption{Grammar for assertions}
   \label{fig:gram:assertions}
@@ -1114,10 +1139,10 @@ as an extension of the grammar of C statements.
 
 \begin{itemize}
 \item
-  $\texttt{assert}~p$  means that $p$ must hold in the current state
+  \lstinline|assert p|  means that \lstinline|p| must hold in the current state
   (the sequence point where the assertion occurs).
 
-\item The variant $\texttt{for}~id_1,\ldots,id_k:~\texttt{assert}~p$
+\item The variant \lstinline|for $id_1$,$\ldots$,$id_k$: assert p|
   associates the assertion to the named behaviors $id_i$, each
   of them being a behavior identifier for the current function (or a
   behavior of an enclosing block as defined later in
@@ -1135,7 +1160,7 @@ as an extension of the grammar of C statements.
 
 \begin{figure}[t]
   \begin{cadre}
-    \input{loops.bnf}
+    \input{loops_modern.bnf}
   \end{cadre}
   \caption{Grammar for loop annotations}
   \label{fig:gram:loops}
@@ -1148,50 +1173,56 @@ as an extension of the grammar of C statements.
 \index{invariant}
 The semantics of loop invariants is defined as follows: a loop
 annotation of the form
-\begin{flushleft}\ttfamily
-/*@ loop invariant $I$; \\
-~~@ loop assigns $L$; \\
-% ~~@ loop variant $m$ for $R$; \\
-~~@*/ \\
+\begin{listing}{1}
+/*@ loop invariant I;
+  @ loop assigns L;
+  @*/
 ...
-\end{flushleft}
+\end{listing}
 specifies that the following conditions hold.
 \begin{itemize}
-\item The predicate $I$ holds before entering the loop
+\item The predicate \lstinline|I| holds before entering the loop
   (in the case of a
-  \verb|for| loop, this means right after the initialization expression).
-\item The predicate $I$ is an inductive invariant, that is if $I$ is
-  assumed true in some state where the condition $c$ is also true, and
-  if execution of the loop body in that state ends normally at the end
-  of the body or with a \texttt{continue} statement, $I$ is true in
-  the resulting state. If the loop condition has side
-  effects, these are included in the loop body in a suitable way:
+  \lstinline|for| loop, this means right after the initialization expression).
+\item The predicate \lstinline|I| is an inductive invariant, that is
+  if \lstinline|I| is assumed true in some state where the condition
+  \lstinline|c| is also true, and if execution of the loop body in
+  that state ends normally at the end of the body or with a
+  \lstinline{continue} statement, \lstinline|I| is true in the
+  resulting state. If the loop condition has side effects, these are
+  included in the loop body in a suitable way:
   \begin{itemize}
-  \item for a $\verb|while|~(c)~s$ loop, $I$ must be preserved by the
-    side-effects of $c$ followed by $s$;
-  \item for a $\verb|for|(init;c;step)~s$ loop, $I$ must be preserved
-    by the side-effects of $c$ followed by $s$ followed by step;
-  \item for a $\verb|do|~s~\verb|while|~(c);$ loop, $I$ must be
-    preserved by $s$ followed by the side-effects of $c$.
+  \item for a \lstinline|while (c) s| loop, \lstinline|I| must be
+    preserved by the side-effects of \lstinline|c| followed by
+    \lstinline|s|;
+  \item for a \lstinline|for(init;c;step) s| loop, \lstinline|I| must
+    be preserved by the side-effects of \lstinline|c| followed by
+    \lstinline|s| followed by \lstinline|step|;
+  \item for a \lstinline|do s while (c);| loop, \lstinline|I| must be
+    preserved by \lstinline|s| followed by the side-effects of
+    \lstinline|c|.
   \end{itemize}
 
 \item At any loop iteration, any location that was allocated before
-  entering the loop, and is not member of $L$ (interpreted in the
+  entering the loop, and is not member of \lstinline|L| (interpreted in the
   current state), must remain allocated and has the same value as
   before entering the loop.
 % [Patrick B.] START proposition:
-  In fact, the \texttt{loop assigns} clause specifies an inductive
-  invariant for the locations wich are not member of $L$.
+  In fact, the \lstinline|loop assigns| clause specifies an inductive
+  invariant for the locations wich are not member of \lstinline|L|.
 % END proposition:
 \end{itemize}
 
 \paragraph{Remarks}
 \begin{itemize}
-\item \notimplemented[This is not checked]{The $\old$ construct is not
-    allowed} in loop annotations. The \verb|\at| form should be used to
+\item \begin{notimplementedenv}[This is not checked]
+    The \old{} construct is not
+    allowed
+    \end{notimplementedenv}
+ in loop annotations. The \lstinline|\at| form should be used to
   refer to another state (see Section~\ref{sec:at}).
-\item When a loop exits with \texttt{break} or \texttt{return} or
-  \texttt{goto}, it is not required that the loop invariant holds.
+\item When a loop exits with \lstinline{break} or \lstinline{return} or
+  \lstinline{goto}, it is not required that the loop invariant holds.
 % [Patrick B.] START proposition:
   In such cases, locations that are not member of $L$ can be disallocated
   or assigned between the end of the previous iteration and the exit statement.
@@ -1203,7 +1234,7 @@ specifies that the following conditions hold.
 Here is a continuation of example~\ref{ex:bsearch}. Note the use of
 a loop invariant associated to a function behavior.
 
-\input{bsearch2.pp}
+\listinginput{1}{bsearch2.c}
 
 \end{example}
 
@@ -1211,41 +1242,41 @@ a loop invariant associated to a function behavior.
 \index{variant}\index{termination}
 
 Optionally, a loop annotation may include a loop variant of the form
-\begin{flushleft}\ttfamily
-/*@ loop variant $m$; \\
-~~@*/ \\
+\begin{listing-nonumber}
+/*@ loop variant m;
+  @*/
 ...
-\end{flushleft}
-where $m$ is a term of type \verb|integer|.
+\end{listing-nonumber}
+where \lstinline|m| is a term of type \lstinline|integer|.
 
 The semantics is as follows: for each loop iteration that terminates
-normally or with \texttt{continue}, the value of $m$ at end of the
+normally or with \lstinline|continue|, the value of \lstinline|m| at end of the
 iteration must be smaller that its value at the beginning of the
 iteration. Moreover, its value at the beginning must be nonnegative.
-Note that the value of $m$ at loop exit might be
+Note that the value of \lstinline|m| at loop exit might be
 negative. It does not compromise termination of the
 loop. Here is an example:
 \begin{example}
   \label{ex:loopvariant}
-  \input{loopvariantnegative.pp}
+  \listinginput{1}{loopvariantnegative.c}
 \end{example}
 
 It is also possible to specify termination orderings other than the
-usual order on integers, using the additional \verb|for|
+usual order on integers, using the additional \lstinline|for|
 modifier. This is explained in Section~\ref{sec:termination}.
 
 \subsubsection{General inductive invariants}
 \index{invariant}
 It is actually allowed to pose an inductive invariant
 anywhere inside a loop body.
-For example, it makes sense for a \texttt{do $s$
-  while $(c)$;} loop to contain an invariant right after statement
-$s$. Such an invariant is a kind of assertions, as
+For example, it makes sense for a
+\lstinline|do s while (c);| loop to contain an invariant right after statement
+\lstinline|s|. Such an invariant is a kind of assertions, as
 shown in Figure~\ref{fig:advancedinvariants}.
 
 \begin{figure}[t]
   \begin{cadre}
-    \input{generalinvariants.bnf}
+    \input{generalinvariants_modern.bnf}
   \end{cadre}
   \caption{Grammar for general inductive invariants}
   \label{fig:advancedinvariants}
@@ -1253,17 +1284,17 @@ shown in Figure~\ref{fig:advancedinvariants}.
 
 \begin{example}
   In the following example, the natural invariant holds at this point
-  (\verb!\max! and \verb!\lambda! are introduced later in
+  (\lstinline!\max! and \lstinline!\lambda! are introduced later in
   Section~\ref{sec:higherorder}).
   It would be less convenient to set an invariant at the beginning
   of the loop.
-  \input{dowhile.pp}
+  \listinginput{1}{dowhile.c}
 \end{example}
 
-More generally, loops can be introduced by \verb|goto|s.
+More generally, loops can be introduced by \lstinline|goto|s.
 As a consequence, such invariants may occur anywhere
 inside a function's body. The meaning is that the invariant
-holds at that point, much like an \texttt{assert}. Moreover, the
+holds at that point, much like an \lstinline{assert}. Moreover, the
 invariant must be inductive, \emph{i.e.} it must be preserved across a
 loop iteration. Several invariants are allowed at different places in
 a loop body. These extensions are useful when dealing with complex
@@ -1275,7 +1306,7 @@ a propos des invariants inductifs)
 
 \begin{example}
 Here is a program annotated with an invariant inside the loop body:
-\input{advancedloopinvariants.pp}
+\listinginput{1}{advancedloopinvariants.c}
 The control-flow graph of the code is as follows
 \begin{center}
 \includegraphics{cfg.mps}
@@ -1300,41 +1331,47 @@ node ``inv'' to itself.
 \end{example}
 
 \begin{example}
-\input{inductiveloopinvariants.pp}
+\input{inductiveloopinvariants_modern}
 \end{example}
 
-\subsection{Built-in construct \at{}}
+\subsection{Built-in construct \protect\at{}}
 \label{sec:at}
-\indexttbs{at}
-Statement annotations usually need another additional construct
-$\at(e,id)$ referring to the value of the expression $e$ in the
-state at label $id$. The label $id$ can be either a regular C label,
-or a label added within a ghost statement as described in
-Section~\ref{sec:ghost}. This label must be declared in the same
-function as the occurrence of $\at(e,id)$, but unlike \texttt{goto}s,
-more restrictive scoping rules must be respected:
+\indexttbs{at} Statement annotations usually need another additional
+construct \lstinline|\at(e,id)| referring to the value of the
+expression \lstinline|e| in the state at label \lstinline|id|. The
+label \lstinline|id| can be either a regular C label, or a label added
+within a ghost statement as described in Section~\ref{sec:ghost}. This
+label must be declared in the same function as the occurrence of
+\lstinline|\at(e,id)|, but unlike \lstinline|goto|s, more restrictive
+scoping rules must be respected:
 \begin{itemize}
-\item the label $id$ must occur before the occurrence of  $\at(e,id)$
+\item the label \lstinline|id| must occur before the occurrence of
+\lstinline|\at(e,id)|
   in the source;
-\item the label $id$ must not be inside an inner block.
+\item the label \lstinline|id| must not be inside an inner block.
 \end{itemize}
 These rules are exactly the same rules as for the visibility of local
 variables within C statements (see~\cite{KR88}, Section A11.1)
 
 \subsubsection*{Default logic labels}
 \indextt{Pre}\indextt{Here}\indextt{Old}\indextt{Post}
-There are four predefined logic labels: \verb|Pre|, \verb|Here|,
-\verb|Old| and \verb|Post|. $\old(e)$\indexttbs{old} is in fact syntactic sugar for $\at(e,Old)$.
+There are four predefined logic labels: \lstinline|Pre|, \lstinline|Here|,
+\lstinline|Old| and
+\lstinline|Post|. \lstinline|\old(e)|\indexttbs{old} is
+in fact syntactic sugar for \lstinline|\at(e,Old)|.
 
 \begin{itemize}
 
-\item The label \verb|Here| is visible in all statement annotations,
+\item The label \lstinline|Here| is visible in all statement annotations,
   where it refers to the state where the annotation appears; and in
-  all contracts, where it refers to the pre-state for the \texttt{requires} and the \texttt{assumes, variant, terminates, ...}
-  clause and the post-state for other clauses.
+  all contracts, where it refers to the pre-state for the
+  \lstinline|requires| and the \lstinline|assumes|,
+  \lstinline|variant|,
+  \lstinline|terminates|
+  clauses and the post-state for other clauses.
 It is also visible in data invariants, presented in Section~\ref{sec:invariants}.
-\item The label \verb|Old| is visible in \verb|assigns| and
-  \verb|ensures| clauses of all contracts (both for functions and for
+\item The label \lstinline|Old| is visible in \lstinline|assigns| and
+  \lstinline|ensures| clauses of all contracts (both for functions and for
   statement contracts described below in
   Section~\ref{sec:statement_contract}), and refers to the pre-state
   of this contract.
@@ -1342,10 +1379,11 @@ It is also visible in data invariants, presented in Section~\ref{sec:invariants}
 % ``Old'' peut également s'utiliser dans les clauses relatives aux
 % terminaisons abruptes des contrats d'instructions. Ce n'est pas dit ici.
 % END remarque
-\item The label \verb|Pre| is visible in all statement annotations,
+\item The label \lstinline|Pre| is visible in all statement annotations,
   and refers to the pre-state of the function it occurs in.
-\item The label \verb|Post| is visible in \verb|assigns| and \verb|ensures| clauses.
-
+\item The label \lstinline|Post| is visible in
+\lstinline|assigns| and \lstinline|ensures| clauses and refers to the
+post-state of the function it occurs in.
 \end{itemize}
 
 Note that no logic label is visible in global logic declarations
@@ -1361,23 +1399,23 @@ Section~\ref{sec:logicalstates}.
   and $q$ such that $p\times x+q\times y = \gcd(x,y)$.
   The loop invariant for the B\'ezout property needs to refer to the
   value of $x$ and $y$ in the pre-state of the function.
-  \input{euclide.pp}
+  \listinginput{1}{euclide.c}
 \end{example}
 
 \begin{example}
-  Here is a toy example illustrating tricky issues with \verb|\at| and
+  Here is a toy example illustrating tricky issues with \lstinline|\at| and
   labels:
 
-  \input{oldat.pp}
+  \listinginput{1}{oldat.c}
 
-  The two \verb|ensures| clauses are equivalent. The simpler clause
-  \verb|t[i] == \old(t[i]) + 1| would be wrong because in
-  \verb|\old(t[i])|, \verb|i| denotes the value of $i$ n the
+  The two \lstinline|ensures| clauses are equivalent. The simpler clause
+  \lstinline|t[i] == \old(t[i]) + 1| would be wrong because in
+  \lstinline|\old(t[i])|, \lstinline|i| denotes the value of $i$ n the
   pre-state.
 
-  Also, the \verb|assigns| clause \verb|i,t[i]| would be wrong too because
-  again in \verb|t[i]|, the value of $i$ in the pre-state is
-  considered.
+  Also, the \lstinline|assigns| clause \lstinline|i,t[i]| would be
+  wrong too because again in \lstinline|t[i]|, the value of $i$ in the
+  pre-state is considered.
 
 \end{example}
 
@@ -1386,7 +1424,7 @@ Section~\ref{sec:logicalstates}.
 \index{statement contract}\index{contract}
 \begin{figure}[t]
   \begin{cadre}
-    \input{st_contracts.bnf}
+    \input{st_contracts_modern.bnf}
   \end{cadre}
   \caption{Grammar for statement contracts}
   \label{fig:gram:stcontracts}
@@ -1395,30 +1433,31 @@ Section~\ref{sec:logicalstates}.
 The grammar for statement contracts is given in
 Figure~\ref{fig:gram:stcontracts}. It is similar to function
 contracts, but without \decreases{} clause. Additionally, a statement contract
-may refer to enclosing named behaviors, with the form \texttt{for $id$:\ldots}.
+may refer to enclosing named behaviors, with the form
+\lstinline|for $id$:\ldots|.
 Such contracts are only valid for the
 corresponding behaviors, in particular only under the
 corresponding \assumes{} clause.
 
-The clauses \texttt{breaks}, \texttt{continues} and \texttt{returns}
+The clauses \lstinline|breaks|, \lstinline|continues| and \lstinline|returns|
 state properties on the program state which hold when the
 annotated statement terminates abruptly with the corresponding
-statement (\texttt{break}, \texttt{continue} or \texttt{return}).
+statement (\lstinline|break|, \lstinline|continue| or \lstinline|return|).
 % [Patrick B.] START proposition:
-Inside these clauses, the construct $\old(e)$\indexttbs{old} is
-allowed and denotes, like for statement contracts \texttt{assigns}
-and \texttt{ensures}, the value of $e$ in the pre-state of the statement.
+Inside these clauses, the construct \lstinline|\old(e)|\indexttbs{old}
+is allowed and denotes, like for statement contracts
+\lstinline{assigns} and \lstinline{ensures}, the value of
+\lstinline|e| in the pre-state of the statement.
 % END proposition
-For the \texttt{returns} case, the \result\indexttbs{result} construct is allowed and
-bounds to the returned value (if not a \texttt{void} function).
+For the \lstinline|returns| case, the \result\indexttbs{result}
+construct is allowed and bounds to the returned value (if not a
+\lstinline|void| function).
 
 \begin{example}
   Here is an example which illustrates each of these special
   clauses for statement contracts.
-  \input{abrupt_termination.pp}
+  \listinginput{1}{abrupt_termination.c}
 \end{example}
-
-
 
 \oldremark{PC+Claude}{
 
@@ -1465,25 +1504,27 @@ measures into other domains and/or using a different ordering relation
 \label{sec:integermeasures}
 \indexttbs{decreases}\indexttbs{variant}
 Functions are annotated with integer measures with the syntax
-\begin{flushleft}\ttfamily
-//@ decreases $e$ ;
-\end{flushleft}
+\begin{listing-nonumber}
+//@ decreases e;
+\end{listing-nonumber}
 and loops are annotated similarly with the syntax
-\begin{flushleft}\ttfamily
-//@ loop variant $e$;
-\end{flushleft}
-where the logic expression $e$ has type \verb|integer|. For recursive
-calls, or for loops, this expression must decrease for the relation
-$R$ defined by
-\[
-R(x,y) ::= x > y ~\verb|&&|~ x \geq 0
-\]
+\begin{listing-nonumber}
+//@ loop variant e;
+\end{listing-nonumber}
+where the logic expression \lstinline|e| has type
+\lstinline|integer|.
+For recursive calls, or for loops, this expression must decrease for
+the
+relation \lstinline|R| defined by
+\begin{listing-nonumber}
+R(x,y) <==> x > y && x >= 0
+\end{listing-nonumber}
 In other words, the measure must be a decreasing sequence of integers
 which remain nonnegative, except possibly for the last value of the
 sequence (See example~\ref{ex:loopvariant}).
 
 \begin{example}
-  In Example~\ref{ex:bsearch2}, a loop variant \verb|u-l| decreases
+  In example~\ref{ex:bsearch2}, a loop variant \lstinline|u-l| decreases
   at each iteration, and remains nonnegative, except at the last
   iteration where it may become negative.
 \end{example}
@@ -1492,26 +1533,27 @@ sequence (See example~\ref{ex:loopvariant}).
 \label{sec:generalmeasures}
 
 More general measures on other types can be provided, using the
-keyword \verb|for|. For functions it becomes
-\begin{flushleft}\ttfamily
-//@ decreases $e$ for $R$;
-\end{flushleft}
+keyword \lstinline|for|. For functions it becomes
+\begin{listing-nonumber}
+//@ decreases e for R;
+\end{listing-nonumber}
 and for loops
-\begin{flushleft}\ttfamily
-//@ loop variant $e$ for $R$;
-\end{flushleft}
-In those cases, the logic expression $e$ has some type $\tau$ and $R$
+\begin{listing-nonumber}
+//@ loop variant e for R;
+\end{listing-nonumber}
+In those cases, the logic expression \lstinline|e| has some type
+$\tau$ and \lstinline|R|
 must be relation on $\tau$, that is a binary predicate declared as
-\begin{flushleft}\ttfamily
-//@ predicate $R(\tau~x,~\tau~y) \cdots$
-\end{flushleft}
+\begin{listing-nonumber}
+//@ predicate R($\tau$ x, $\tau$ y) $\cdots$
+\end{listing-nonumber}
 (see Section~\ref{sec:logicspec} for details). Of course, to guarantee
-termination, it must be proved that $R$ is a well-founded relation.
+termination, it must be proved that \lstinline|R| is a well-founded relation.
 
 \begin{example}
   The following example illustrates a variant annotation
   using a pair of integers, ordered lexicographically.
-  \input{lexico.pp}
+  \listinginput{1}{lexico.c}
 \end{example}
 
 \subsection{Recursive function calls}
@@ -1521,20 +1563,21 @@ the general case of mutually recursive functions, is given as follows.
 We call \emph{cluster} a set of mutually recursive functions which
 is a strongly connected component of the call graph.
 Within each cluster, each function must be annotated with a \decreases\
-clause with the same relation $R$ (syntactically). Then, in the body
-of any function $f$ of that cluster, any recursive call to a function
-$g$ must occur in a state where the measure attached to $g$ is smaller
-(w.r.t $R$) than the measure of $f$ in the pre-state of $f$. This also
-applies when $g$ is $f$ itself.
+clause with the same relation \lstinline|R| (syntactically). Then, in the body
+of any function \lstinline|f| of that cluster, any recursive call to a function
+\lstinline|g| must occur in a state where the measure attached to
+\lstinline|g| is smaller
+(w.r.t \lstinline|R|) than the measure of \lstinline|f| in the pre-state of \lstinline|f|. This also
+applies when \lstinline|g| is \lstinline|f| itself.
 
 \begin{example}
   Here are the classical factorial and Fibonacci functions:
-  \input{fact.pp}
+  \listinginput{1}{fact.c}
 \end{example}
 
 \begin{example}
   This example illustrates mutual recursion:
-  \input{mutualrec.pp}
+  \listinginput{1}{mutualrec.c}
 \end{example}
 
 % \subsection{Function termination}
@@ -1559,55 +1602,52 @@ applies when $g$ is $f$ itself.
 \experimental
 
 There are cases where a function is not supposed to terminate. For
-instance, the \verb|main| function of a reactive program might be a
-\verb|while(1)| which indefinitely waits for an event to process. More
+instance, the \lstinline|main| function of a reactive program might be a
+\lstinline|while(1)| which indefinitely waits for an event to process. More
 generally, a function can be expected to terminate only if some
-preconditions are met. In those cases, a \verb|terminates| clause can
+preconditions are met. In those cases, a \lstinline|terminates| clause can
 be added to the contract of the function, under the following form:
 
-\begin{flushleft}\ttfamily
-//@ terminates $p$;
-\end{flushleft}
+\begin{listing-nonumber}
+//@ terminates p;
+\end{listing-nonumber}
 
-The semantics of such a clause is as follows: if $p$ holds, then the
+The semantics of such a clause is as follows: if \lstinline|p| holds, then the
 function is guaranteed to terminate (more precisely, its
 termination must be proved). If such a clause is not present (and in
 particular if there is no function contract at all), it
-defaults to \verb|terminates \true;| that is the function is supposed
+defaults to \lstinline|terminates \true;| that is the function is supposed
 to always terminate, which is the expected behavior of most
 functions.
 
-Note that nothing is specified for the case where $p$ does not hold:
+Note that nothing is specified for the case where \lstinline|p| does not hold:
 the function may terminate or not. In particular,
-\verb|terminates \false;| does not imply that the function loops
+\lstinline|terminates \false;| does not imply that the function loops
 forever. A possible specification for a function that never terminates
 is the following:
-\begin{verbatim}
+\begin{listing}{1}
 /*@ ensures \false;
     terminates \false;
 */
 void f() { while(1); }
-\end{verbatim}
+\end{listing}
 
 \begin{example}
   A concrete example of a function that may not always terminate is
-  the \verb|incr_list| function of example \ref{ex:locations-list}. In
-  fact, another acceptable contract for this function is the following one:
-
-\input{terminates_list.pp}
+  the \lstinline|incr_list| function of example \ref{ex:locations-list}. In
+  fact, The following contract is also acceptable for this function:
+\listinginput{1}{terminates_list.c}
 \end{example}
-
 
 \section{Logic specifications}
 \label{sec:logicspec}
 \index{logic specification}\index{specification}
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\linewidth} \input{logic.bnf}
-    \end{minipage}}
+  \fbox{\begin{minipage}{0.97\linewidth}\vfill \input{logic_modern.bnf}
+    \vfill\end{minipage}}
   \caption{Grammar for global logic definitions}
 \label{fig:gram:logic}
 \end{figure}
-
 The language of logic expressions used in annotations can be extended
 by declarations of new logic types, and new constants, logic functions
 and predicates. These declarations follows the classical setting of
@@ -1615,31 +1655,27 @@ and predicates. These declarations follows the classical setting of
 The grammar for these declarations is given in Figure~\ref{fig:gram:logic}.
 
 \subsection{Predicate and function definitions}
-
 New functions and predicates can be \emph{defined} by explicit
 expressions, given after an equal sign.
-
 \begin{example}
-  The following definitions \input{signdef.pp} illustrates the
-  definition of a new predicate \texttt{is\_positive} with an integer
-  parameter, and a new logic function \texttt{sign} with a real
+  The following definitions \listinginput{1}{signdef.c} illustrates the
+  definition of a new predicate \lstinline{is_positive} with an integer
+  parameter, and a new logic function \lstinline{sign} with a real
   parameter returning an integer.
 \end{example}
 
 \subsection{Lemmas}
-
 Lemmas are user-given propositions, a facility that might help theorem
 provers to establish validity of ACSL specifications.
 
 \begin{example}
   The following lemma
-  \input{mean.pp}
+  \listinginput{1}{mean.c}
   is a useful hint for program like binary search.
 \end{example}
 
 Of course, a complete verification of an ACSL specification has to
 provide a proof for each lemma.
-
 
 \subsection{Inductive predicates}
 \label{sec:inductivepredicates}
@@ -1650,41 +1686,42 @@ grammar for those style of definitions is given on
 Figure~\ref{fig:gram:inductive}.
 \index{inductive definitions}
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\linewidth} \input{inductive.bnf}
+  \fbox{\begin{minipage}{0.97\linewidth} \input{inductive_modern.bnf}
     \end{minipage}}
   \caption{Grammar for inductive definitions}
 \label{fig:gram:inductive}
 \end{figure}
 
 In general, an inductive definition of a predicate $P$ has the form
-\begin{flushleft}\ttfamily
-/*@ inductive $P(x_1,\ldots,x_n)$ \{ \\
-~~@   case $c_1$ : $p_1$; \\
-...\\
-~~@   case $c_k$ : $p_k$; \\
-~~@ \}
-~~@*/ \\
-\end{flushleft}
+\begin{listing}{1}
+/*@ inductive P($x_1$,$\ldots$,$x_n$) {
+  @   case $c_1$ : $p_1$;
+...
+  @   case $c_k$ : $p_k$;
+  @ }
+  @*/
+\end{listing}
 where each $c_i$ is an identifier and each $p_i$ is a proposition.
 
-The semantics of such a definition is that $P$ is the least fixpoint
+The semantics of such a definition is that \lstinline|P| is the least fixpoint
 of the cases, i.e. is the smallest predicate (in the sense that it is
 false the most often) satisfying the propositions $p_1,\ldots,p_k$.
 With this general form, the existence of a least fixpoint is not
 guaranteed, so tools might enforce syntactic conditions on the form of
 inductive definitions. A standard syntactic restriction could be to
 allow only propositions $p_i$ of the form
-\begin{flushleft}\ttfamily
-\verb|\forall| $y_1,\ldots,y_m$, $h_1$ ==> $\cdots$ ==> $h_l$ ==> $P(t_1,\ldots,t_n)$
-\end{flushleft}
-where $P$ occurs only positively in hypotheses $h_1,\ldots,h_l$
+\begin{listing-nonumber}
+\forall $y_1,\ldots,y_m$, $h_1$ ==> $\cdots$ ==> $h_l$ ==> P($t_1$,$\ldots$,$t_n$)
+\end{listing-nonumber}
+where \lstinline|P| occurs only positively in hypotheses $h_1,\ldots,h_l$
 (definite Horn clauses,
 \url{http://en.wikipedia.org/wiki/Horn_clause}).
 
 \begin{example}
-  The following introduce a predicate $\texttt{isgcd}(x,y,d)$ meaning
-  that $d$ is the greatest common divisor of $x$ and $y$.
-  \input{isgcd.pp}
+  The following introduce a predicate \lstinline|isgcd(x,y,d)| meaning
+  that \lstinline|d| is the greatest common divisor of \lstinline|x|
+  and \lstinline|y|.
+  \listinginput{1}{isgcd.c}
   This definition uses definite Horn clauses, hence is consistent.
 \end{example}
 
@@ -1702,7 +1739,7 @@ Figure~\ref{fig:gram:logicdecl}.
 
 \index{axiomatic}
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\linewidth} \input{logicdecl.bnf}
+  \fbox{\begin{minipage}{0.97\linewidth} \input{logicdecl_modern.bnf}
     \end{minipage}}
   \caption{Grammar for axiomatic declarations}
 \label{fig:gram:logicdecl}
@@ -1711,7 +1748,7 @@ Figure~\ref{fig:gram:logicdecl}.
 \begin{example}
   The following axiomatization introduce a theory of finite lists of
   integers a la LISP.
-  \input{intlists.pp}
+  \listinginput{1}{intlists.c}
 \end{example}
 
 Like inductive definitions, there is no syntactic conditions which
@@ -1721,10 +1758,10 @@ to a logical inconsistency.
 
 \begin{example}
   The following axiomatization
-  \input{sign.pp}
+  \listinginput{1}{sign.c}
   is inconsistent since
-  it implies \texttt{sign(0.0) == 1} and \texttt{sign(0.0) == -1},
-  hence \texttt{-1 == 1}
+  it implies \lstinline|sign(0.0) == 1| and \lstinline|sign(0.0) == -1|,
+  hence \lstinline|-1 == 1|
 \end{example}
 
 \subsection{Polymorphic logic types}\label{sec:polym-logic-types}
@@ -1736,11 +1773,11 @@ We consider here an algebraic specification setting based on
 multi-sorted logic, where types can be \emph{polymorphic} that is
 parametrized by other types. For example, one may declare the type of
 polymorphic lists as
-\input{listdecl.pp}
+\listinginput{1}{listdecl.c}
 One can then consider for
-instance list of integers (\texttt{list <integer>}), list of pointers
-(e.g. \texttt{list <char*>}), list of list of reals (\texttt{list
-  <list <real> >}\footnote{In this latter case, note that the two
+instance list of integers (\lstinline|list <integer>|), list of pointers
+(e.g. \lstinline|list <char*>|), list of list of reals
+(\lstinline|list<list <real> >|\footnote{In this latter case, note that the two
   '\texttt{>}' must be separated by a space, to avoid confusion with
   the shift operator.}), etc.
 
@@ -1760,9 +1797,9 @@ possible too.
 
 \begin{example}
   The following logic declaration
-  \input{max_index.pp}
-  defines a logic function which returns the maximal index $i$ between
-  $0$ and $n-1$ such that $t[i]=0$.
+  \listinginput{1}{max_index.c}
+  defines a logic function which returns the maximal index \lstinline|i| between
+  \lstinline|0| and \lstinline|n-1| such that \lstinline|t[i]=0|.
 \end{example}
 
 %\begin{example} The following introduce $n$-ary trees using list of children.
@@ -1771,13 +1808,13 @@ possible too.
 
 Notice that there is no syntactic condition on such recursive
 definitions, such as limitation to primitive recursion. In essence, a
-recursive definition of the form \verb+f(args) = e;+ where \verb+f+
-occurs in expression \verb+e+ is just a shortcut for axiomatic declaration of
-\verb+f+ with an axiom \verb+\forall args; f(args) = e+.  In
-other words, recursive definitions are not guaranteed to be
-consistent, in the same way that axiomatics may introduce
-inconsistency. Of course, tools might provide a way to check
-consistency.
+recursive definition of the form \lstinline+f(args) = e;+ where
+\lstinline+f+ occurs in expression \lstinline+e+ is just a shortcut
+for axiomatic declaration of \lstinline+f+ with an axiom
+\lstinline+\forall args; f(args) = e+.  In other words, recursive
+definitions are not guaranteed to be consistent, in the same way that
+axiomatics may introduce inconsistency. Of course, tools might provide
+a way to check consistency.
 
 \subsection{Higher-order logic constructions}
 \label{sec:higherorder}
@@ -1785,8 +1822,8 @@ consistency.
 \experimental
 
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\linewidth}
-      \input{higherorder.bnf}
+  \fbox{\begin{minipage}{0.98\linewidth}
+      \input{higherorder_modern.bnf}
     \end{minipage}}
   \caption{Grammar for higher-order constructs}
 \label{fig:gram:higherorder}
@@ -1796,32 +1833,40 @@ Figure~\ref{fig:gram:higherorder} introduces new term constructs for
 higher-order logic.
 \begin{description}
 \item[Abstraction]\indexttbs{lambda}
-  The term $\bslambda~\tau_1~x_1,\ldots,\tau_n~x_n ~;~ t$
+  The term \lstinline|\lambda $\tau_1$ $x_1$,$\ldots$,$\tau_n$ $x_n$; t|
   denotes the $n$-ary logic function which maps $x_1,\ldots,x_n$ to
-  $t$. It has the same precedence as \Forall and \Exists
+  \lstinline|t|. It has the same precedence as \Forall and \Exists
 \item[Extended quantifiers]
   Terms
   $\backslash quant(t_1,t_2,t_3)$
-  where $quant$ is \texttt{max}\indexttbs{max}
-  \texttt{min}\indexttbs{min}
-  \texttt{sum}\indexttbs{sum}
-  \texttt{product}\indexttbs{product}
-  or \texttt{numof}\indexttbs{numof}
+  where $quant$ is \lstinline|max|\indexttbs{max}
+  \lstinline|min|\indexttbs{min}
+  \lstinline|sum|\indexttbs{sum}
+  \lstinline|product|\indexttbs{product}
+  or \lstinline|numof|\indexttbs{numof}
   are extended quantifications. $t_1$ and $t_2$ must have type
-  \verb|integer|, and $t_3$ must be a unary function with an integer
+  \lstinline|integer|, and $t_3$ must be a unary function with an integer
   argument, and a numeric value (integer or real) except for
-  \verb|\numof| for which it should have a boolean value. Their
+  \lstinline|\numof| for which it should have a boolean value. Their
   meanings are given as follows:
-  \begin{eqnarray*}
-    \verb|\max|(i,j,f) &=& \max \{ f(i),f(i+1), \ldots, f(j) \} \\
-    \verb|\min|(i,j,f) &=& \min \{ f(i),f(i+1), \ldots, f(j) \} \\
-    \verb|\sum|(i,j,f) &=& f(i)+f(i+1)+\cdots+f(j) \\
-    \verb|\product|(i,j,f) &=& f(i)\times f(i+1) \times \cdots \times f(j) \\
-    \verb|\numof|(i,j,f) &=& \# \{ k \mid i \leq k \leq j ~\verb|&&|~ f(k) \} \\
-&=& \verb|\sum|(i,j,\verb|\lambda|~\verb|integer|~k ; f(k) ? 1 : 0)
-  \end{eqnarray*}
-  If $i>j$ then \verb|\sum| and \verb|\numof| above are 0,
-  \verb|\product| is 1, and \verb|\max| and \verb|\min| are
+  \begin{tabular}{rcl}
+    \lstinline|\max(i,j,f)| &=&
+    $\max \{ \lstinline|f(i)|,\lstinline|f(i+1)|, \ldots, \lstinline|f(j)| \}$\\
+    \lstinline|\min(i,j,f)| &=&
+    $\min \{ \lstinline|f(i)|,\lstinline|f(i+1)|, \ldots, \lstinline|f(j)| \}$\\
+    \lstinline|\sum(i,j,f)| &=&
+    $\lstinline|f(i)|+\lstinline|f(i+1)|+\cdots+\lstinline|f(j)|$ \\
+    \lstinline|\product(i,j,f)| &=&
+    $\lstinline|f(i)|\times\lstinline|f(i+1)|\times\cdots\times\lstinline|f(j)|$
+    \\
+    \lstinline|\numof(i,j,f)| &=&
+    $\#\{ \lstinline|k| \mid \lstinline|i| \leq \lstinline|k| \leq
+          \lstinline|j| \land \lstinline|f(k)| \}$ \\
+&=& \lstinline|\sum(i,j,\lambda integer k ; f(k) ? 1 : 0)|
+  \end{tabular}
+
+  If \lstinline|i>j| then \lstinline|\sum| and \lstinline|\numof| above are 0,
+  \lstinline|\product| is 1, and \lstinline|\max| and \lstinline|\min| are
   unspecified (see Section~\ref{sec:twovaluedlogic}).
 \end{description}
 
@@ -1829,7 +1874,7 @@ higher-order logic.
 \begin{example}
   \label{ex:higherorder}
   Function that sums the element of an array of doubles.
-  \input{sum.pp}
+  \listinginput{1}{sum.c}
 \end{example}
 
 \subsection{Concrete logic types}\label{sec:concrete-logic-types}
@@ -1837,9 +1882,9 @@ higher-order logic.
 \experimental
 
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\linewidth}
+  \fbox{\begin{minipage}{0.98\linewidth}
       \index{record}\index{sum}
-      \input{logictypedecl.bnf}
+      \input{logictypedecl_modern.bnf}
     \end{minipage}}
   \caption{Grammar for concrete logic types and pattern-matching}
 \label{fig:gram:logictype}
@@ -1877,9 +1922,9 @@ Example: n-reines.
 
 \begin{example}
   The declaration
-  \input{listdef.pp}
+  \listinginput{1}{listdef.c}
   introduces a concrete definition of finite lists. The logic definition
-  \input{listlengthdef.pp}
+  \listinginput{1}{listlengthdef.c}
   defines the length of a list by recursion and pattern-matching.
 \end{example}
 
@@ -1898,9 +1943,9 @@ an hybrid function (or predicate) usually depends on one or
 more program points, because it depends upon memory states, \emph{via}
 expressions such as:
 \begin{itemize}
-\item pointer dereferencing: \verb|*p|, \verb|p->f|;
-\item array access: \verb|t[i]|;
-\item address-of operator: \verb|&x|;
+\item pointer dereferencing: \lstinline|*p|, \lstinline|p->f|;
+\item array access: \lstinline|t[i]|;
+\item address-of operator: \lstinline|&x|;
 \item built-in predicate depending on memory: \valid
 % \item others ?
 \end{itemize}
@@ -1914,7 +1959,7 @@ context.
 
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
-      \input{logiclabels.bnf}
+      \input{logiclabels_modern.bnf}
     \end{minipage}}
   \caption{Grammar for logic declarations with labels}
 \label{fig:gram:logiclabels}
@@ -1927,24 +1972,24 @@ context.
   between the given indexes, together with the related axioms.  It
   should be noted that without labels, this axiomatization would be
   inconsistent, since the function would not depend on the values
-  stored in t, hence the two last axioms would say both that $a=b+1$
-  and $a=b$ for some $a$ and $b$.
-  \input{nb_occ.pp}
+  stored in t, hence the two last axioms would say both that \lstinline|a==b+1|
+  and \lstinline|a==b| for some \lstinline|a| and \lstinline|b|.
+  \listinginput{1}{nb_occ.c}
 \end{example}
 
 \begin{example}
   This second example defines a predicate which indicates whether two
   arrays of the same size are a permutation of each other. It
-  illustrates the use of more than a single label. Thus, the \verb+\at+
+  illustrates the use of more than a single label. Thus, the \lstinline|\at|
   operator is mandatory here. Indeed the two arrays
   may come from two distinct memory states. Typically, one of the post
-  condition of a sorting function would be \verb+permut{Pre,Post}(t,t)+.
-  \input{permut.pp}
+  condition of a sorting function would be \lstinline|permut{Pre,Post}(t,t)|.
+  \listinginput{1}{permut.c}
 \end{example}
 
 \oldremark{Claude}{Obsolete
 
-\subsection{\texttt{reads} clauses}
+\subsection{\protect\reads{} clauses}
 
 declaration can be augmented with a \reads{} clause, with
 the syntax given in Figure~\ref{fig:gram:logicreads}, which extends the
@@ -1983,7 +2028,7 @@ easily axiomatized.
   function would not depend on the values stored in t, hence the two
   last axioms would say both that $a=b+1$ and $a=b$ for some $a$ and
   $b$.
-  \input{nb_occ_reads.pp}
+  \listinginput{1}{nb_occ_reads.c}
 \end{example}
 
 \begin{example}
@@ -1992,8 +2037,8 @@ easily axiomatized.
   illustrates the use of more than a single label. Thus, the \verb+\at+
   operator is mandatory here. Indeed the two arrays
   may come from two distinct memory states. Typically, one of the post
-  condition of a sorting function would be \verb+permut{Pre,Here}(t,t)+.
-  \input{permut_reads.pp}
+  condition of a sorting function would be \lstinline+permut{Pre,Here}(t,t)+.
+  \listinginput{1}{permut_reads.c}
 \end{example}
 
 \oldremark{SD7+All}{
@@ -2014,15 +2059,15 @@ easily axiomatized.
 
 \notimplemented{Specification modules can be provided} to encapsulate
 several logic definitions, for example
-\input{listmodule.pp}
+\listinginput{1}{listmodule.c}
 Module components are then accessible using a qualified notation like
-\notimplemented{\texttt{List::length}}.
+\begin{notimplementedenv}\lstinline|List::length|\end{notimplementedenv}.
 
 Predefined algebraic specifications can be provided as
 libraries\index{library} (see
 section~\ref{chap:lib}), and imported using a construct like
-\input{import.pp} where the file \verb|list.acsl| contains logic
-definitions, like the \verb|List| module above.
+\listinginput{1}{import.c} where the file \verb|list.acsl| contains logic
+definitions, like the \lstinline|List| module above.
 
 
 
@@ -2034,43 +2079,46 @@ definitions, like the \verb|List| module above.
 The following built-in functions and predicate allows to deal with the
 memory state:
 \begin{itemize}
-\item \baseaddr{}\indexttbs{baseaddr}
+\item \baseaddr\indexttbs{base\_addr}
 returns the base address of an allocated pointer
-\[
-\baseaddr{} : \verb|`a *| \ra \verb|char*|
-\]
-\item \blocklength{}\indexttbs{blocklength}
+\begin{listing-nonumber}
+\base_addr : $\alpha$ * $\ra$ char*
+\end{listing-nonumber}
+\item \blocklength\indexttbs{block\_length}
   returns the length of the allocated block of a pointer
-\[
-\blocklength{} : \verb|`a *| \ra \verb|size_t|
-\]
+\begin{listing-nonumber}
+\block_length : $\alpha$ * $\ra$ size_t
+\end{listing-nonumber}
 
-\item $\valid$\indexttbs{valid}
+\item \valid\indexttbs{valid}
   applies to a set of terms (see Section~\ref{sec:locations})
-  of some pointer type. $\valid(s)$ holds if and only if dereferencing any
-  $p\in s$ is safe. In particular, $\valid(\verb+\empty+)$ holds.
+  of some pointer type. \lstinline|\valid(s)| holds if and only if
+ dereferencing any $p\in \lstinline|s|$ is safe. In particular,
+\lstinline|\valid(\empty)| holds.
 \end{itemize}
 Some shortcuts are provided:
 \begin{itemize}
-\item $\verb|\null|$\indexttbs{null} is an
+\item \lstinline|\null|\indexttbs{null} is an
   extra notation for the
   null pointer (\emph{i.e.} a shortcut for \verb|(void*)0|). Note that
   as in C itself (see \cite{standardc99}, par. 6.3.2.3),
-  the constant \verb|0| can have any pointer type.
+  the constant \lstinline|0| can have any pointer type.
 % \footnote{or to \texttt{NULL}, if
 %    annotations are pre-processed are the appropriate inclusion of
 %    \texttt{stddef.h} is added}
-\item \notimplemented{$\offset(p)$}\indexttbs{offset}
-  returns the offset between $p$ and its base address
+\item \begin{notimplementedenv}\lstinline|\offset(p)|\end{notimplementedenv}%
+  \indexttbs{offset}
+  returns the offset between \lstinline|p| and its base address
 
-  \begin{eqnarray*}
-    \offset &:& \verb|`a *| \ra \verb|size_t|  \\
-    \offset(p) &=& (\verb|char*|)p - \baseaddr(p)
-  \end{eqnarray*}
-  the following property holds: for any set of pointers $s$, $\valid(s)$ if and only if for all $p\in s$:
-  \[
-    \offset(p) \geq 0 \land \offset(p) + \verb|sizeof|(*p) \leq \blocklength(p)
-\]
+  \begin{tabular}{rcl}
+    \lstinline|\offset| &:& \lstinline|$\alpha$ * $\ra$ size_t| \\
+    \lstinline|\offset(p)| &=& \lstinline|(char*)p - \base_addr(p)|
+  \end{tabular}
+  the following property holds: for any set of pointers
+\lstinline|s|, \lstinline|\valid(s)| if and only if for all \lstinline|p$\in$s|:
+  \begin{listing-nonumber}
+    \offset(p) >= 0 && \offset(p) + sizeof(*p) <= \block_length(p)
+  \end{listing-nonumber}
 
 \end{itemize}
 
@@ -2084,11 +2132,10 @@ Some shortcuts are provided:
 
 \experimental
 
-$\separated(loc_1,..,loc_n)$\indexttbs{separated}
+\lstinline|\separated($loc_1$,..,$loc_n$)|\indexttbs{separated}
 means that for each
 $i\neq j$, the intersection of $loc_i$ and $loc_j$ is empty. Each
 $loc_i$ is a set of terms as defined in Section~\ref{sec:locations}.
-
 
 
 \subsection{Allocation and deallocation}
@@ -2103,11 +2150,12 @@ quid de la pile -> a voir
 The following built-in predicates allow to deal with allocation and
 deallocation of memory blocks. They can be used in a postcondition
 \begin{itemize}
-\item $\fresh(p)$\indexttbs{fresh}
-indicates that $p$ was not allocated in the pre-state.
+\item \lstinline|\fresh(p)|\indexttbs{fresh}
+indicates that \lstinline|p| was not allocated in the pre-state.
 
-\item \notimplemented{$\freed(p)$\indexttbs{freed}},
-  indicates that $p$ was allocated in the pre-state but that it is not
+\item \begin{notimplementedenv}\lstinline|\freed(p)|\end{notimplementedenv}%
+\indexttbs{freed},
+  indicates that \lstinline|p| was allocated in the pre-state but that it is not
   the case in the post-state.
 \end{itemize}
 
@@ -2117,62 +2165,63 @@ Sets of terms, as defined in Section~\ref{sec:locations},
 can be used as first-class values in
 annotations. All the elements of such a set must share the same type
 (modulo the usual implicit conversions).
-Sets have the built-in type $set<A>$\index{set@\texttt{set} type}
-where $A$ is the type of terms contained in the set.
+Sets have the built-in type \lstinline|set<A>|\index{set@\texttt{set} type}
+where \lstinline|A| is the type of terms contained in the set.
 
 In addition, it is possible to consider sets of pointers to values of
-different types. In this case, \notimplemented[Currently mixing
-pointers of different types in such a set leads to a \texttt{set<void*>}
-value. The expansion must be done manually.]{the set is of type $set<char*>$ and
-each of its elements $e$ is converted to $(char*)e + (0..sizeof(*e)-1)$}.
+different types. In this case, the set is of type
+\lstinline|set<char*>| and
+each of its elements \lstinline|e| is converted to
+\lstinline|(char*)e + (0..sizeof(*e)-1)|.
 
 \begin{example}
   Here is an example where we defined the \emph{footprint} of a
   structure, that is the set of locations that can be accessed from an
   object of this type.
 
-  \input{footprint.pp}
+  \listinginput{1}{footprint.c}
 
-  Notice that in the first definition, since union is made with a set<char*> and a set<int*>,
-  the result is a set<char*> (accordingly to typing of union). In
+  Notice that in the first definition, since union is made with a
+  \lstinline|set<char*>| and a \lstinline|set<int*>|,
+  the result is a \lstinline|set<char*>| (accordingly to typing of union). In
   other words, the two definitions above are equivalent.
 
   This logic function can be used as argument of \separated or in
   assigns clause.
 \end{example}
 
-Thus, the \separated predicate satisfies the following property:
-\[
-\begin{array}{l}
-\separated(l_1 : set<\tau_1*>,l_2 : set<\tau_2*>) \texttt{<==>} \\
-\quad \forall \tau_1* p; \forall \tau_2* q;
-   p \in l_1 \land q \in l_2 \ra \\
-\qquad    \forall \integer i,j;
-      0 \leq i < \sizeof(\tau_1) \land 0 \leq j < \sizeof(\tau_2) \ra
-      (\verb|char*|)p + i \neq (\verb|char*|)q + j
-    \end{array}
-\]
-and a clause \verb+assigns+ $l_1,..,l_n$ is equivalent
-to the postcondition
-\[
-\forall char* p; \separated(\union(\&l_1,..,\&l_n),p) ==> *p == \old(*p)
-\]
+Thus, the \separated predicate satisfies the following property (with
+$l_1$ of type \lstinline|set<$\tau_1$*>| and $l_2$ of type
+\lstinline|set<$\tau_2$*>|)
+\begin{listing}{1}
+\separated($l_1$,$l_2$) <==>
+  (\forall \tau_1* p; \forall \tau_2* q;
+     \subset(p,$l_1$) && \subset(q,$l_2$) ==>
+       (\forall \integer i,j;
+         0 <= i < \sizeof($\tau_1$) && 0 <= j < \sizeof($\tau_2$) ==>
+           (char*)p + i != (char*)q + j))
+\end{listing}
 
+and a clause \lstinline|assigns $l_1$,...,$l_n$| is equivalent
+to the postcondition
+\begin{listing-nonumber}
+\forall char* p; \separated(\union(&$l_1$,...,&$l_n$),p) ==> *p == \old(*p)
+\end{listing-nonumber}
 
 \section{Abnormal termination}
 
 \experimental
 
-It is used to give behavioral properties to the \verb|main| function
+It is used to give behavioral properties to the \lstinline|main| function
 or to any function that may exit the program, \emph{e.g.} by calling
-the \verb|exit| function.
+the \lstinline|exit| function.
 Such a behavior can be written under the following form:
 
-\input{exitbehavior.bnf}
+\input{exitbehavior_modern.bnf}
 
 In an \textsl{ensures-clause}, \result is bound to the return code,
-\emph{e.g} the value returned by \verb|main| or the argument passed
-to \verb|exit|.
+\emph{e.g} the value returned by \lstinline|main| or the argument passed
+to \lstinline|exit|.
 
 \oldremark{PC}{
 
@@ -2192,7 +2241,7 @@ dependencies\index{dependency} and
 
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
-      \input{dependencies.bnf}
+      \input{dependencies_modern.bnf}
     \end{minipage}}
   \caption{Grammar for dependencies information}
 \label{fig:gram:dep}
@@ -2211,11 +2260,11 @@ dependencies. This expression is evaluated in the pre-state of the
 corresponding contract.
 
 \begin{example}
-  The following example is a variation over the \verb+array_sum+
+  The following example is a variation over the \lstinline+array_sum+
   function in example~\ref{ex:higherorder}, in which the values of
-  the array are added to a global variable \verb+total+.
+  the array are added to a global variable \lstinline+total+.
 
-  \input{sum2.pp}
+  \listinginput{1}{sum2.c}
 
 \end{example}
 
@@ -2223,7 +2272,7 @@ corresponding contract.
 \begin{example}
   % This exemple is referenced in a previous section.
   The composite element modifier operators are useful additional constructs for such functional expressions.
-  \input{modifier.pp}
+  \listinginput{1}{modifier.c}
 \end{example}
 
 \oldremark{All}{
@@ -2271,7 +2320,7 @@ between:
 
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
-      \input{data_invariants.bnf}
+      \input{data_invariants_modern.bnf}
     \end{minipage}}
   \caption{Grammar for declarations of data invariants}
 \label{fig:gram:datainvariants}
@@ -2285,14 +2334,14 @@ to \texttt{weak}.
 \begin{example}
   In the following example, we declare
   \begin{enumerate}
-  \item a weak global invariant \verb|a_is_positive| which specifies that
-    global variable \texttt{a} should remain positive (weakly, so
+  \item a weak global invariant \lstinline|a_is_positive| which specifies that
+    global variable \lstinline|a| should remain positive (weakly, so
     this property might be violated temporarily between functions
     calls);
-  \item a strong type invariant for variables of type \verb|temperature|;
-  \item a weak type invariant for variables of type \verb|struct S|.
+  \item a strong type invariant for variables of type \lstinline|temperature|;
+  \item a weak type invariant for variables of type \lstinline|struct S|.
   \end{enumerate}
-  \input{invariants.pp}
+  \listinginput{1}{invariants.c}
 \end{example}
 
 \oldremark{SD8}{
@@ -2344,7 +2393,7 @@ which they are supposed to hold.
 \begin{example}
   \notimplemented{The following example illustrates the use of a data invariant on a local static variable.}
 
-  \input{out_char.pp}
+  \listinginput{1}{out_char.c}
 \end{example}
 
 
@@ -2383,20 +2432,20 @@ void reset(S *p) {
 
 \begin{example}
   Here is a longer example, the famous Dijkstra's Dutch flag algorithm.\\
-  \input{flag.pp}
+  \listinginput{1}{flag.c}
 \end{example}
 
 \subsection{Model variables and model fields}
 \index{model} \notimplemented{A \emph{model variable} is a variable
   introduced in the specification with the keyword
-  {\texttt{model}}}. Its type must be a logic type. Analogously,
+  \lstinline|model|}. Its type must be a logic type. Analogously,
 \notimplemented {structures may have \emph{model fields}}.  These are
 used to provide abstract specifications to functions whose concrete
 implementation must remain private.
 
 \begin{figure}[b]
   \fbox{\begin{minipage}{0.97\linewidth}
-      \input{model.bnf}
+      \input{model_modern.bnf}
     \end{minipage}}
   \caption{Grammar for declarations of model variables and fields}
 \label{fig:gram:model}
@@ -2433,7 +2482,7 @@ below.
   fresh integers. The contract is given in term of a model variable
   which is intended to represent the set of ``forbidden'' values,
   e.g. the values that have already been generated.
-  \input{gen_spec_with_model.pp}
+  \listinginput{1}{gen_spec_with_model.c}
   The contract is expressed abstractly, telling that
   \begin{itemize}
   \item the forbidden set of values is modified;
@@ -2446,7 +2495,7 @@ below.
   decision has been made to generate values in increasing order, so
   that it is sufficient to record the last value generated. This decision
   is made explicit by an invariant.
-  \input{gen_code.pp}
+  \listinginput{1}{gen_code.c}
 \end{example}
 
 \paragraph{Remarks}
@@ -2464,8 +2513,9 @@ we deliberately do not provide a precise semantics in this document .
 \index{ghost}
 Ghost variables and statements are like C variables and statements,
 but visible only in the specifications. They are introduced by the
-\verb|ghost| keyword at the beginning of the annotation
-(i.e. \verb|/*@ ghost ... */| or \verb|//@ ghost ...| for a one-line
+\lstinline|ghost| keyword at the beginning of the annotation
+(i.e. \lstinline|/*@ ghost ... */| or \lstinline|//@ ghost `dots`|
+for a one-line
 ghost code, as mentionned in section~\ref{sec:gener-about-annot}).
 The grammar is given in Figure~\ref{fig:gram:ghost}, in which only the
 first form of annotation is used. In this figure, the \textit{C-*}
@@ -2478,20 +2528,22 @@ represents the corresponding \textit{C-non-term} entry, in which any
 The variations with respect to the C
 grammar are the following:
 \begin{itemize}
-\item Comments must be introduced by \verb|//| and extend until the
+\item Comments must be introduced by \lstinline|//| and extend until the
   end of the line (the ghost code itself is placed inside a C
-  comment. \verb|/* ... */| would thus lead to incorrect C code).
+  comment. \lstinline|/* ... */| would thus lead to incorrect C code).
 \item It is however possible to write multi-line annotations for ghost
-  code. These annotations are enclosed between \notimplemented{{\texttt{/@}} and
-  {\texttt{@/}}}. As in normal annotations, \verb|@|s at the beginning of a
-  line and at the end of the comment (before the final \verb|*/|) are
+  code. These annotations are enclosed between
+  \notimplemented{\lstinline|/@| and \lstinline|@/|}.
+  As in normal annotations, \verb|@|s at the beginning of a
+  line and at the end of the comment (before the final \lstinline|@/|) are
   considered as blank.
   \oldremark{Claude}{
     faudrait supprimer ca. Je propose de maniere generale que le code
     annote sans les "/*@ ..*/" doit etre parsable aussi, meme s'il
     n'est pas parsable par un compilo.
 }
-\item \notimplemented{Logical types, such as {\texttt{integer}} or {\texttt{real}} are authorized in ghost code}.
+\item \notimplemented{Logical types, such as \lstinline|integer| or
+\lstinline|real| are authorized in ghost code}.
 \item \notimplemented{A non-ghost function can take ghost
     parameters}.
   If such a ghost
@@ -2499,9 +2551,9 @@ grammar are the following:
   parameters must be non-empty and fixed (no vararg ghost). The call
   to the function must then provide the appropriate number of ghost parameters.
 \item Any non-ghost \textit{if-statement} which does not have a non-ghost
-  \verb|else| clause \notimplemented{can be augmented with a ghost
+  \lstinline|else| clause \notimplemented{can be augmented with a ghost
     one}. Similarly, a non-ghost
-  \verb|switch| can have \notimplemented{a ghost {\texttt{default:}}
+  \lstinline|switch| can have \notimplemented{a ghost \lstinline|default:|
     clause}
   if it does not have a non-ghost one
   (there are however semantical restrictions for valid
@@ -2509,8 +2561,8 @@ grammar are the following:
 \end{itemize}
 
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\linewidth}
-      \input{ghost.bnf}
+  \fbox{\begin{minipage}{0.98\linewidth}
+      \input{ghost_modern.bnf}
     \end{minipage}}
   \caption{Grammar for ghost statements}
 \label{fig:gram:ghost}
@@ -2526,18 +2578,20 @@ program execution} This implies several conditions, including e.g:
 \begin{itemize}
 \item Ghost code cannot modify a non-ghost C variable.
 \item Ghost code cannot modify a non-ghost structure field.
-\item If $p$ is a ghost pointer pointing to a non-ghost memory location, then it is forbidden to assign $*p$.
+\item If \lstinline|p| is a ghost pointer pointing to a non-ghost
+  memory location, then it is forbidden to assign \lstinline|*p|.
 \item Body of a ghost function is ghost code, hence do not modify
   non-ghost variables or fields.
 \item If a non-ghost C function is called in ghost code, it must not
   modify non-ghost variables or fields.
-\item If a structure has ghost fields, the \texttt{sizeof} of the
+\item If a structure has ghost fields, the \lstinline|sizeof| of the
   structure is the same has the structure without ghost fields. Also,
   alignment of fields remains unchanged.
 \item The control-flow graph of a function must not be altered by
-  ghost statements. In particular, no ghost \verb|return| can appear
+  ghost statements. In particular, no ghost \lstinline|return| can appear
   in the body of a non-ghost function. Similarly, ghost
-  \verb|goto|, \verb|break|, and continue \verb|continue| cannot jump
+  \lstinline|goto|, \lstinline|break|, and continue
+  \lstinline|continue| cannot jump
   outside of the innermost non-ghost enclosing block.
 \end{itemize}
 
@@ -2556,12 +2610,12 @@ statically detected as ghost must be semantically ghost.
 
 \begin{example}
   The following example shows some invalid assignments of ghost pointers:
-  \input{ghostpointer.pp}
+  \listinginput{1}{ghostpointer.c}
 \end{example}
 
 \begin{example}
   The following example shows some invalid ghost statements:
-  \input{ghostcfg.pp}
+  \listinginput{1}{ghostcfg.c}
 \end{example}
 
 \oldremark{Claude}{
@@ -2590,7 +2644,7 @@ are executable.
   The example~\ref{ex:model} can also be specified with a ghost
   variable instead of a model variable:
 
-  \input{gen_spec_with_ghost.pp}
+  \listinginput{1}{gen_spec_with_ghost.c}
 
 \end{example}
 
@@ -2604,7 +2658,7 @@ may return different values.
 
 \begin{figure}[h]
   \fbox{\begin{minipage}{0.97\linewidth}
-      \input{volatile-gram.bnf}
+      \input{volatile-gram_modern.bnf}
     \end{minipage}}
   \caption{Grammar for volatile constructs}
 \label{fig:gram:volatile}
@@ -2614,41 +2668,47 @@ Specifying properties of a volatile variable may be done via a
 specific construct to attach two ghost functions to it. This
 construct, described by the grammar of Figure~\ref{fig:gram:volatile}, has
 the following shape:
-\begin{flushleft}\ttfamily
-volatile $\tau$ x;\\
-\notimplemented{//@ volatile x reads f writes g;}
-\end{flushleft}
+\begin{lstlisting}[style=c-basic,firstnumber=1,name=volatile,numbers=left]
+volatile $\tau$ x;
+\end{lstlisting}
+\begin{notimplementedenv}
+\begin{lstlisting}[style=c-basic,name=volatile,numbers=left]
+//@ volatile x reads f writes g;
+\end{lstlisting}
+\end{notimplementedenv}
 where \verb|f| and \verb|g| are ghost functions with the following prototypes:
-\begin{flushleft}\ttfamily
-$\tau$ f(volatile $\tau$* p); \\
+\begin{lstlisting}[style=c-basic,name=volatile,numbers=left]
+$\tau$ f(volatile $\tau$* p);
 $\tau$ g(volatile $\tau$* p, $\tau$ v);
-\end{flushleft}
+\end{lstlisting}
 This must be understood as a special construct to instrument the C
-code, where each access to the variable \verb|x| is replaced by a call
-to \verb|f(&x)|, and each assignment to \verb|x| of a value \verb|v|
-is replaced by \verb|g(&x,v)|.
+code, where each access to the variable \lstinline|x| is replaced by a call
+to \lstinline|f(&x)|, and each assignment to \lstinline|x| of a value
+\lstinline|v|
+is replaced by \lstinline|g(&x,v)|.
 
 \begin{example}
   The following code is instrumented in order to inject fixed values
   at each read of variable \verb|x|, and collect written values.
-  \input{volatile.pp}
+  \listinginput{1}{volatile.c}
 \end{example}
 
 \section{Undefined values, dangling pointers}
 
 \subsection{Initialization}
 \indexttbs{initialized}
-\notimplemented{\texttt{\textbackslash{}initialized}} is a predicate taking a set of l-values as
+\begin{notimplementedenv}\lstinline|\initialized|\end{notimplementedenv}
+is a predicate taking a set of l-values as
 argument and means that each l-value in this set is initialized.
 
 \begin{example}
   In the following, the assertion is true.
-  \input{initialized.pp}
+  \listinginput{1}{initialized.c}
 \end{example}
 
 \subsection{Unspecified values}
 \indexttbs{specified}
-\notimplemented{\texttt{\textbackslash{}specified}}
+\begin{notimplementedenv}\lstinline|\specified|\end{notimplementedenv}
 is a predicate taking a set of l-values as
 argument and means that each l-value in this set has a \emph{specified
   value}: its value is not a dangling pointer (that is, the value
@@ -2656,7 +2716,7 @@ is not the address of a local variable refered to outside of its scope)
 
 \begin{example}
   In the following, the assertion is not true.
-  \input{specified.pp}
+  \listinginput{1}{specified.c}
 \end{example}
 
 

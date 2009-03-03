@@ -1,12 +1,15 @@
 \begin{syntax}
-  logic-def ::= {"type" logic-type = logic-type-def ";"}
+  logic-def ::= "type" logic-type = ;
+                logic-type-def ";"
   \
-  logic-type-def ::= {record-type} | {sum-type} ;
+  logic-type-def ::= {record-type} | sum-type ;
   | {type-expr} ; type abbreviation
   \
-  record-type ::= {"{" type-expr id ( ";" type-expr id)* ";"? "}"}
+  record-type ::= {"{" type-expr id} ;
+                  {( ";" type-expr id)* ";"? "}"}
   \
-  sum-type ::= {"|"? constructor ( "|" constructor)*}
+  sum-type ::= "|"? constructor;
+               ( "|" constructor)*
   \
   constructor ::= {id} ; constant constructor
   | {id "(" type-expr ("," type-expr)* ")"} ; non-constant constructor
@@ -17,7 +20,8 @@
   | {"\match" term "{" match-cases "}" } ; pattern-matching
   | {"(" term ("," term)+ ")"} ; tuples
   | {"{" ("." id "=" term ";")+ "}"} ; records
-  | {"\let" "(" id (, id)+ ")" "=" term ";" term}
+  | {"\let" "(" id (, id)+ ")" "=" term ";"};
+    {term}
   \
   match-cases ::= { match-case+ }
   \

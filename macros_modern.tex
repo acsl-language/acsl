@@ -2,15 +2,15 @@
 \newcommand{\experimental}{\textsc{Experimental}}
 
 
-\newcommand{\highlightnotimplemented}[1]{%
-\ifthenelse{\boolean{ColorImplementationRq}}{\textcolor{red}{#1}}%
-           {\underline{#1}}%
+\newcommand{\highlightnotimplemented}{%
+\ifthenelse{\boolean{ColorImplementationRq}}{\color{red}}%
+           {\ul}%
 }%
 
 \newcommand{\notimplemented}[2][]{%
 \ifthenelse{\boolean{PrintImplementationRq}}{%
   \begin{changebar}%
-  \highlightnotimplemented{#2}%
+  {\highlightnotimplemented #2}%
   \ifthenelse{\equal{#1}{}}{}{\footnote{#1}}%
   \end{changebar}%
 }%
@@ -19,8 +19,9 @@
 \newenvironment{notimplementedenv}[1][]{%
 \ifthenelse{\boolean{PrintImplementationRq}}{%
   \begin{changebar}%
+  \highlightnotimplemented%
   \ifthenelse{\equal{#1}{}}{}{\let\myrq#1}%
-    \highlightnotimplemented\bgroup%
+  \bgroup
 }{}}%
 {\ifthenelse{\boolean{PrintImplementationRq}}{%
     \egroup%
@@ -46,8 +47,8 @@ Remarque de {#1}~:}{\end{tabular}\end{quote}}
 %\end{tabular}\end{quote}
 }
 
-\newcommand{\keyword}[1]{\texttt{#1}\xspace}
-\newcommand{\keywordbs}[1]{\texttt{\textbackslash#1}\xspace}
+\newcommand{\keyword}[1]{\lstinline|#1|\xspace}
+\newcommand{\keywordbs}[1]{\lstinline|\\#1|\xspace}
 
 \newcommand{\integer}{\keyword{integer}}
 \newcommand{\real}{\keyword{real}}
@@ -110,22 +111,24 @@ Remarque de {#1}~:}{\end{tabular}\end{quote}}
 \newcommand{\indexttbs}[1]{\index{#1@\protect\keywordbs{#1}}}
 \newif\ifspace
 \newif\ifnewentry
-\newcommand{\addspace}{\ifspace \; \spacefalse \fi}
+\newcommand{\addspace}{\ifspace ~ \spacefalse \fi}
+\newcommand{\term}[2]{\addspace\hbox{\lstinline|#1|%
+\ifthenelse{\equal{#2}{}}{}{\indexttbase{#2}{#1}}}\spacetrue}
 \newcommand{\nonterm}[1]{%
 \addspace\hbox{\textsl{#1}\ifnewentry\index{grammar entries!\textsl{#1}}\fi}\spacetrue}
-\newcommand{\repetstar}{^*\spacetrue}
-\newcommand{\repetplus}{^+\spacetrue}
-\newcommand{\repetone}{^?\spacetrue}
+\newcommand{\repetstar}{$^*$\spacetrue}
+\newcommand{\repetplus}{$^+$\spacetrue}
+\newcommand{\repetone}{$^?$\spacetrue}
 \newcommand{\lparen}{\addspace(}
 \newcommand{\rparen}{)}
-\newcommand{\orelse}{\addspace\mid\spacetrue}
+\newcommand{\orelse}{\addspace$\mid$\spacetrue}
 \newcommand{\sep}{ \\[2mm] \spacefalse\newentrytrue}
 \newcommand{\newl}{ \\ & & \spacefalse}
-\newcommand{\alt}{ \\ & \mid & \spacefalse}
-\newcommand{\is}{ & ::= & \newentryfalse}
-\newenvironment{syntax}{$$\begin{array}{rrll}\spacefalse}{\end{array}$$}
+\newcommand{\alt}{ \\ & $\mid$ & \spacefalse}
+\newcommand{\is}{ & $::=$ & \newentryfalse}
+\newenvironment{syntax}{\begin{tabular}{rrll}\spacefalse}{\end{tabular}}
 \newcommand{\synt}[1]{$\spacefalse#1$}
-\newcommand{\emptystring}{\epsilon}
+\newcommand{\emptystring}{$\epsilon$}
 \newcommand{\below}{See\; below}
 
 % colors

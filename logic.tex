@@ -9,26 +9,33 @@
   type-var ::= id
   \
   logic-type-expr ::= type-var ; type variable
-  | id "<" type-expr (, type-expr)* ">" ; polymorphic type
+  | id;
+    "<" type-expr;
+    (, type-expr)* ">" ; polymorphic type
   \
-  type-var-binders ::= "<" type-var (, type-var)* ">"
+  type-var-binders ::= "<" type-var;
+                       (, type-var)* ">"
   \
   poly-id ::= id ; normal identifier
-  | id type-var-binders ; identifier for polymorphic object
+  | id type-var-binders ; polymorphic object identifier
   \
   logic-const-def ::= "logic" type-expr;
     poly-id "=" term ";"
   \
   logic-function-def ::= "logic" type-expr;
-  poly-id parameters "=" term ";"
+  poly-id parameters "=";
+  term ";"
   \
   logic-predicate-def ::=
   "predicate";
-  poly-id parameters? "=" pred ";"
+  poly-id parameters? "=";
+  pred ";"
   \
-  parameters ::= "(" parameter (, parameter)* ")"
+  parameters ::= "(" parameter;
+                 (, parameter)* ")"
   \
   parameter ::= type-expr variable-ident
   \
-  lemma-decl ::= "lemma" poly-id ":" pred ";" 
+  lemma-decl ::= "lemma" poly-id ":";
+                   pred ";"
 \end{syntax}

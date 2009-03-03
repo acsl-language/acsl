@@ -2,7 +2,8 @@
   poly-id ::= id ; normal identifier
   | id type-var-binders ; identifier for polymorphic object
   | id label-binders ; normal identifier with labels
-  | id label-binders type-var-binders ; polymorphic identifier with labels
+  | id label-binders;
+       type-var-binders ; polymorphic identifier with labels
   \
   label-binders ::= "{" id (, id)* "}"
 \end{syntax}

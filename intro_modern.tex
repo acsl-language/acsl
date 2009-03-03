@@ -1,0 +1,231 @@
+%; whizzy-master "main.tex"
+\chapter{Introduction}
+
+This document is a reference manual for the ACSL implementation
+provided by the Frama-C framework~\cite{frama-c}.
+ACSL is an acronym for ``ANSI C
+Specification Language''. This is a Behavioral Interface Specification
+Language (BISL) implemented in the \textsc{Frama-C} framework.
+It aims at specifying behavioral properties of C
+source code. The main inspiration for this language comes from the
+specification language of the \textsc{Caduceus}
+tool~\cite{filliatre04icfem,filliatre07cav} for deductive verification
+of behavioral properties of C programs. The specification language of
+Caduceus is itself inspired from the
+\emph{Java Modeling Language} (JML~\cite{leavens00jml}) which aims at
+similar goals for Java source code: indeed it aims both at
+\emph{runtime assertion checking} and \emph{static verification} using
+the \textsc{ESC/Java2} tool~\cite{ESCJava2}, where we aim at
+\emph{static verification} and \emph{deductive verification} (see
+Appendix~\ref{sec:comp-jml} for a detailed comparison between ACSL and
+JML).
+
+Going back further in history, JML design was guided by the general
+\emph{design-by-contract} principle proposed by Bertrand Meyer, who
+took his own inspiration from the concepts of preconditions and
+postconditions on a routine, going back at least to Dijkstra, Floyd and
+Hoare in the late 60's and early 70's, and originally implemented in
+the \textsc{Eiffel} language.
+
+In this document, we assume that the reader has a good knowledge of
+the ANSI C programming language~\cite{KR88,standardc99}.
+
+\section{Organization of this document}
+
+In this preliminary chapter we introduce some definitions and
+vocabulary, and discuss generalities about this specification
+language.  Chapter~\ref{chap:base} presents the specification language
+itself.  Chapter~\ref{chap:lib} presents additional informations about
+\emph{libraries} of specifications.  Finally, Appendix~\ref{chap:appendix}
+provides a few additional information.  A detailed table of
+contents is given on page~\pageref{chap:contents}.
+A glossary is given in Appendix~\ref{sec:glossary}.
+
+\ifthenelse{\boolean{PrintImplementationRq}}{%
+Not all of the features mentioned in this document are currently
+implemented in the Frama-C kernel. Those who aren't yet are signaled
+as in the following line:
+\begin{quote}
+\notimplemented[Additional remarks on the feature may appear as footnote]%
+{This feature is not currently supported by Frama-C}
+\end{quote}
+
+As a summary, the features that are not currently implemented into
+Frama-C include in particular:
+\begin{itemize}
+\item some built-in predicates and logical functions;
+\item abrupt termination clauses in statement contracts
+  (section~\ref{sec:statement_contract});
+\item definition of logical types (section~\ref{sec:logicspec});
+\item specification modules (section~\ref{sec:specmodules});
+\item model variables and Model fields (section~\ref{ex:model});
+\item only basic support for ghost code is provided (section~\ref{sec:ghost});
+\item verification of non interference of ghost code
+  (p.~\pageref{sec:semantics-ghost-code});
+\item specification of volatile variables
+  (section~\ref{sec:volatile-variables});
+\end{itemize}
+}%
+{}
+
+\oldremark{Claude}{
+ce document doit etre illustré par des
+exemples. Toute construction qui ne serait pas illustrée par un
+exemple sera non-retenue.
+}
+
+\oldremark{Patrick}{
+utiliser en priorité les constructions de JML,
+ensuite les généraliser lorsque cela a un sens, et en dernier recours,
+en créer de nouvelles. Il y a peut-être des constructions
+du C++ ou C\# à utiliser ou à généraliser.
+Idem avec les extensions de GCC.
+}
+
+
+\section{Generalities about Annotations}\label{sec:gener-about-annot}
+
+In this document, we consider that specifications are given as
+annotations in comments written directly in C source files, so that
+source files remain compilable. Those comments must start by
+\verb|/*@| or \verb|//@| and end as usual in~C.
+
+In some contexts, it is not possible to modify the source code.
+It is strongly recommended that a tool which implements
+ACSL specifications provides technical means to store annotations
+separately from the source. It is not the purpose of this document
+to describe such means.  Nevertheless, some of the specifications,
+namely those at a global level, can be given in separate files:
+logical specifications can be imported (see
+Section~\ref{sec:specmodules}) and a function contract can be attached
+to a copy of the function profile (see
+Section~\ref{sec:multiplecontracts}).
+
+
+\oldremark{All}{
+
+  Elaborer plus sur ce que peuvent faire les outils pour permettre des
+  annotations dans des fichiers a part.
+
+  Mettre a part le cas simple des annotations globales (qui peuvent
+  etre dans un .h a part)
+
+}
+
+\oldremark{DP}{
+
+  discuter sur les facons d'annoter les statements sans modifier le code source
+  mais en les donnant a part.
+
+  idee :
+
+  . fichier patchs
+  . autres
+
+  a discuter en appendice de ce document. (?)
+
+}
+
+
+
+
+
+\subsection{Kinds of annotations}
+
+\begin{itemize}
+\item Global annotations:
+  \begin{itemize}
+  \item \emph{function contract}\,: such an annotation is inserted just before
+    the declaration or the definition of a function.
+    See section~\ref{sec:fn-behavior}.
+
+  \item \emph{global invariant}\,: this is allowed at the level of
+    global declarations. See section~\ref{sec:invariants}.
+
+  \item \emph{type invariant}\,: this allows to declare both structure
+    or union invariants, and invariants on type names introduced by
+    \typedef.  See section~\ref{sec:invariants}.
+
+  \item \emph{logic specifications}\,: definitions of logic functions
+    or predicates, lemmas, axiomatizations by declaration of new logic
+    types, logic functions, predicates with axioms they satisfy. Such an
+    annotation is placed at the level of global declarations.
+
+  \end{itemize}
+
+\item Statement annotations:
+  \begin{itemize}
+  \item \emph{\assert clause}\,: these are allowed
+    everywhere a C label is allowed, or just before a
+    block closing brace.
+    \oldremark{Claude}{About \assume{} clauses: current
+      discussion is that it is not considered as an element of
+      specification, so not present here. This should be part of proof
+      management done by tools.
+    }
+    \oldremark{Patrick}{En C, seules les
+      instructions peuvent être étiquettées. GCC étend cela aux
+      accolades fermantes des blocs, y compris celle fermant le corps
+      de fonction. On peut dire que l'on fait de même lorsque l'on
+      place des annotations juste avant la fermerture d'un bloc.
+    }
+
+  \item \emph{loop annotation} (invariant, variant, assign clauses): is
+    allowed immediately before a loop statement: \For, \While,
+    \Do\ldots \While. See Section~\ref{sec:loop_annot}.
+
+  \item \emph{statement contract}\,: very similar to a function contract, and
+    placed before a statement or a block.  Semantical conditions must
+    be checked (no goto going inside, no goto
+    going outside).  See Section~\ref{sec:statement_contract}.
+    \oldremark{Patrick}{
+      as-t'on droit au \old dans le \ensures de
+      cette annotation~? Oui, pour refer a l'etat avant le statement
+      consider\'e
+    }
+
+  \item \emph{ghost code}\,: regular C code, only visible from the
+    specifications, that is only allowed to modify ghost
+    variables. See section~\ref{sec:ghost}. This includes ghost braces
+    for enclosing blocks.
+
+  \end{itemize}
+
+%\item Attribute annotations: \experimental. See
+%  Section~\ref{sec:attribute_annot}.
+
+\end{itemize}
+
+\input{parsing_annot_modern}
+
+\subsection{About preprocessing}
+
+This document considers C source \emph{after} preprocessing.
+Tools must decide how they handle preprocessing (what to do with
+annotations, whether macro substitution should be performed, etc.)
+
+\subsection{About keywords}
+
+Additional keywords of the specification language start with a
+backslash, if they are used in position of a term or a predicate
+(which are defined in the following).  Otherwise they do not start
+with a backslash (like \ensures{}) and they remain valid identifiers.
+\oldremark{Claude}{
+cas particulier de 'integer' et 'real'  et 'boolean'
+}
+\section{Notations for grammars}
+
+In this document, grammar rules are given in BNF form. In grammar
+rules, we use extra notations $e^*$ to denote repetition of zero, one
+or more occurrences of $e$, $e^+$ for repetition of one or more
+occurrences of $e$, and $e^?$ for zero or one occurrence of $e$.  For
+the sake of simplicity, we only describe annotations in the usual
+\lstinline|/*@ ... */| style of comments. One-line annotations
+in \lstinline|//@| comments are alike.
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-PDF-mode: t
+%%% TeX-master: "main"
+%%% End:

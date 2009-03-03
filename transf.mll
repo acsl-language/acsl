@@ -1,7 +1,38 @@
-(* $Id: transf.mll,v 1.10 2008-02-22 16:40:20 uid562 Exp $ *)
+(* $Id: transf.mll,v 1.11 2009-03-03 09:53:08 uid562 Exp $ *)
 
 { open Lexing;;
   let idx = Buffer.create 5
+  let full_kw = Buffer.create 5
+
+  let modern = ref false
+
+  let escape_keyword s =
+    let buf = Buffer.create 5 in
+    String.iter
+      (function
+           c when ('A' <= c && c <= 'Z') ||
+                  ('a' <= c && c <= 'z') ||
+                  ('0' <= c && c <= '9')
+             -> Buffer.add_char buf c
+         | c -> Buffer.add_string buf
+             (Printf.sprintf "\\char%d" (int_of_char c))) s;
+    Buffer.contents buf
+
+  let make_keyword () =
+    let keyword = Buffer.contents full_kw in
+    let index = Buffer.contents idx in
+    print_string "\\addspace";
+    if !modern then
+      Printf.printf
+        "\\lstinline$%s$" keyword
+    else
+      Printf.printf "\\texttt{%s}" (escape_keyword keyword);
+    if index <> "" then
+      Printf.printf "\\indextt%s{%s}"
+        (if keyword.[0] = '\\' then "bs" else "") index;
+    print_string "\\spacetrue";
+    Buffer.clear idx;
+    Buffer.clear full_kw
 }
 
 rule main = parse
@@ -39,12 +70,12 @@ and syntax = parse
       print_string "}";
       main lexbuf }
   | '\'' {
-      print_string "\\term{";
       Buffer.clear idx;
+      Buffer.clear full_kw;
       inquote lexbuf }
   | '"' {
-      print_string "\\term{";
       Buffer.clear idx;
+      Buffer.clear full_kw;
       indoublequote lexbuf }
   | "below" { print_string "\\below"; syntax lexbuf }
   | "epsilon" { print_string "\\emptystring"; syntax lexbuf }
@@ -67,43 +98,63 @@ and syntax = parse
   | "::=" { print_string "\\is{}"; syntax lexbuf }
   | "|" { print_string "\\orelse{}"; syntax lexbuf }
   | "\\" { print_string "\\sep{}"; syntax lexbuf }
-  | "{" { print_string "\\notimplemented"; check_rq lexbuf }
-  | "}" { print_string "}"; syntax lexbuf }
+  | "{" { print_string "\\begin{notimplementedenv}"; check_rq lexbuf }
+  | "}" { print_string "\\end{notimplementedenv}"; syntax lexbuf }
   | _ {
       print_char (lexeme_char lexbuf 0);
       syntax lexbuf }
 
 and inquote = parse
     ['A'-'Z' 'a'-'z' '0'-'9'] as c {
-      print_char c;
+      Buffer.add_char full_kw c;
       Buffer.add_char idx c;
       inquote lexbuf }
   | '\'' {
-      print_string ("}{" ^ Buffer.contents idx ^ "}");
-      Buffer.clear idx;
+      make_keyword ();
       syntax lexbuf }
-  | _ {
-      print_string "\\char";
-      print_int (int_of_char (lexeme_char lexbuf 0));
+  | '_' {
+      Buffer.add_char full_kw '_';
+      Buffer.add_string idx "\\_";
+      inquote lexbuf
+    }
+  | _ as c {
+      Buffer.add_char full_kw c;
       inquote lexbuf }
 
 and indoublequote = parse
     ['A'-'Z' 'a'-'z' '0'-'9'] as c {
-      print_char c;
+      Buffer.add_char full_kw c;
       Buffer.add_char idx c;
       indoublequote lexbuf }
   | '"' {
-      print_string ("}{" ^ Buffer.contents idx ^ "}");
-      Buffer.clear idx;
+      make_keyword();
       syntax lexbuf }
-  | _ {
-      print_string "\\char";
-      print_int (int_of_char (lexeme_char lexbuf 0));
+  | '_' {
+      Buffer.add_char full_kw '_';
+      Buffer.add_string idx "\\_";
+      indoublequote lexbuf
+    }
+  | _ as c {
+      Buffer.add_char full_kw c;
       indoublequote lexbuf }
 and check_rq = parse
   | "[" { print_string "["; inbrack lexbuf }
-  | "" { print_string "{"; syntax lexbuf }
+  | "" { syntax lexbuf }
 and inbrack = parse
-    "]" { print_string "]{"; syntax lexbuf }
+    "]" { print_string "]"; syntax lexbuf }
   | _  { print_char (lexeme_char lexbuf 0);
            inbrack lexbuf }
+
+{
+
+  let () = Arg.parse
+    [ "-modern", Arg.Set modern, "set modern style"; ]
+    (fun f ->
+       let cin = open_in f in
+       let lb = from_channel cin in
+       main lb;
+       close_in cin)
+    "transf [-modern] file";
+    exit 0
+
+}

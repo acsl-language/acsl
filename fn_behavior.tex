@@ -8,9 +8,8 @@
   named-behavior ::= "behavior" ident ":" behavior-body
   \
   behavior-body ::= (assumes-clause |
-                     {[not in a named behavior]requires-clause}
-                    | assigns-clause |
-                      ensures-clause ) *
+                     {[not in a named behavior]requires-clause} ;
+                    | assigns-clause | ensures-clause ) *
               \
   assumes-clause ::= "assumes" predicate ";"
   \

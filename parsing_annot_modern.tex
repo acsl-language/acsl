@@ -1,0 +1,21 @@
+\subsection{Parsing annotations in practice}
+
+In JML, parsing is done by simply ignoring \verb|//@|, \verb|/*@| and
+\verb|*/| at the lexical analysis level. This technique could modify the
+semantics of the code, for example:
+\begin{listing}{1}
+return x /*@ +1 */ ;
+\end{listing}
+In our language, this is forbidden. Technically, the current
+implementation of Frama-C isolates the comments in a first step of
+syntax analysis, and then parses a second time. Nevertheless, the
+grammar and the corresponding parser must be carefully designed to
+avoid interaction of annotations with the code. For example, in code such as
+\begin{listing}{1}
+  if (c) //@ assert P;
+     c=1;
+\end{listing}
+the statement \lstinline|c=1| must be understood as the
+branch of the \texttt{if}. This is ensured by the grammar below,
+saying that \lstinline|assert| annotations are not statement themselves,
+but attached to the statement that follows, like C labels.

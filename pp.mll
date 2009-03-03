@@ -39,7 +39,7 @@
 	"throws" ; "extends" ; "implements" ; "reads" ;
 	"requires"; "assumes" ; "invariant"; "representation";
 	"decreases" ; "loop" ; "variant" ; "data" ; "strong" ;
-	"ensures" ; "breaks"; "continues"; "returns"; "assigns";
+	"breaks"; "continues"; "returns"; "assigns";
         "modifiable" ; "signals" ; "global";
 	"logic" ; "type" ; "predicate" ; "axiom"; "lemma" ;
 	"axiomatic" ; "inductive" ;
@@ -60,7 +60,7 @@
 	"fresh"; "from";
 	"nothing";
 	"result";
-	"let" ; "at"; "true"; "false"; "result"; "numof"
+	"let" ; "at"; "true"; "false"; "numof"
       ];
     List.iter (fun (s,t) -> Hashtbl.add h s t)
       [

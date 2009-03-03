@@ -1,0 +1,25 @@
+
+
+Let's consider the following example:
+\begin{listing-nonumber}
+  int f(int a, int b) { return a < b; }
+\end{listing-nonumber}
+\begin{itemize}
+\item the obvious postcondition \lstinline[style=c]|\result == a < b|
+  is not the right one because it is actually a shortcut for
+  \lstinline[style=c]|\result == a && a < b|.
+\item adding parentheses results in a correct post-condition
+  \lstinline[style=c]|\result == (a < b)|. Note however that there is an implicit
+  conversion (see Sec.~\ref{sec:typing})
+  from the \lstinline[style=c]|int| (the type of \lstinline[style=c]|\result|) to
+  \lstinline[style=c]|boolean| (the type of \lstinline[style=c]|(a<b)|)
+\item an equivalent post-condition, which does not rely on implicit
+  conversion, is \lstinline[style=c]|(\result != 0) == (a<b)|. Both pairs of
+  parentheses are mandatory.
+\item \lstinline[style=c]|\result == (integer)(a<b)| is also acceptable because it compares
+  two integers. The cast towards \lstinline[style=c]|integer| enforces
+  \lstinline[style=c]|a<b| to be understood as a boolean term. Notice that a cast
+  towards \lstinline[style=c]|int| would also be acceptable.
+\item \lstinline[style=c]|\result != 0 <==> a < b| is acceptable because it is an
+  equivalence between two predicates.
+\end{itemize}

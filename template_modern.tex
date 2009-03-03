@@ -10,7 +10,7 @@ For instance,
 a function contract may need to refer to a global variable that has the
 same name as a function parameter, as in the following code:
 
-\input{glob_var_masked.pp}
+\listinginput{1}{glob_var_masked.c}
 
 In order to write the \verb|assigns| clause for \verb|f|, we must
 access the global variable \verb|x|, since \verb|f| calls \verb|g|,
@@ -21,7 +21,7 @@ function.
 A solution is to use a ghost pointer to \verb|x|, as shown in
 the following code:
 
-\input{glob_var_masked_sol.pp}
+\listinginput{1}{glob_var_masked_sol.c}
 
 
 %%% Local Variables:
