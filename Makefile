@@ -76,10 +76,10 @@ main.pdf: main.tex $(DEPS)
 
 modern: modern.tex $(DEPS_MODERN) frama-c-book.cls frama-c-cover.pdf
 	pdflatex modern
-#	makeindex modern
-#	bibtex modern
-#	pdflatex modern
-#	pdflatex modern
+	makeindex modern
+	bibtex modern
+	pdflatex modern
+	pdflatex modern
 
 frama-c-book.cls: ../frama-c-book.cls
 	rm -f $@
