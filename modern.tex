@@ -33,11 +33,12 @@
 \makeindex
 \input{./macros_modern}
 
-\setlength{\textheight}{240mm}
-\setlength{\topmargin}{-10mm}
-\setlength{\textwidth}{160mm}
-\setlength{\oddsidemargin}{0mm}
-\setlength{\evensidemargin}{0mm}
+%Already set in frama-c-book
+%\setlength{\textheight}{240mm}
+%\setlength{\topmargin}{-10mm}
+%\setlength{\textwidth}{160mm}
+%\setlength{\oddsidemargin}{0mm}
+%\setlength{\evensidemargin}{0mm}
 \newcommand{\version}{1.4}
 
 \renewcommand{\textfraction}{0.01}
@@ -66,7 +67,8 @@
 \coverpage{ACSL Implementation}
 \cleardoublepage
 %\begin{titlepage}
-\pagestyle{empty}
+%%To not overid page style setting from frama-c-book
+\thispagestyle{empty}
 \begin{center}
 \includegraphics[height=14mm]{cealistlogo.jpg}
 \hfill
@@ -109,7 +111,8 @@ $^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405
 \end{center}
 %\end{titlepage}
 
-\clearpage
+%%Contents should open on right 
+\cleardoublepage
 \label{chap:contents}
 \tableofcontents
 
