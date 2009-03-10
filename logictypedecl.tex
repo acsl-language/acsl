@@ -12,16 +12,20 @@
                ( "|" constructor)*
   \
   constructor ::= {id} ; constant constructor
-  | {id "(" type-expr ("," type-expr)* ")"} ; non-constant constructor
+  | {id} ;
+    {"(" type-expr};
+    {("," type-expr)* ")"} ; non-constant constructor
   \
-  type-expr ::= {"(" type-expr ("," type-expr)+ ")"} ; product type
+  type-expr ::= {"(" type-expr};
+                {("," type-expr)+ ")"} ; product type
   \
   term ::= {term "." id} ; record field access
-  | {"\match" term "{" match-cases "}" } ; pattern-matching
+  | {"\match" term};
+    {"{" match-cases "}" } ; pattern-matching
   | {"(" term ("," term)+ ")"} ; tuples
   | {"{" ("." id "=" term ";")+ "}"} ; records
-  | {"\let" "(" id (, id)+ ")" "=" term ";"};
-    {term}
+  | {"\let" "(" id (, id)+ ")" "="};
+    {term ";" term}
   \
   match-cases ::= { match-case+ }
   \

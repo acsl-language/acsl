@@ -2371,9 +2371,9 @@ which they are supposed to hold.
 
 \item A weak type invariant on type $\tau$ must hold at any function
   entrance and exit, and applies to any global variable or formal
-  parameter which has static type $\tau$. If the result of the
+  parameter with static type $\tau$. If the result of the
   function is of type $\tau$, the result must also satisfy its
-  weak invariant at function exit. Notice that it says nothing of fields,
+  weak invariant at function exit. However, it says nothing of fields,
   array elements, memory locations, etc. of type $\tau$.
 
   \oldremark{Claude}{
@@ -2383,8 +2383,8 @@ which they are supposed to hold.
   }
 \item A strong type invariant on type $\tau$ must hold at any step
   during execution, and applies to any global variable, local
-  variable, or formal parameter which has static type $\tau$. If the
-  result of the function is of type $\tau$, the result must also
+  variable, or formal parameter with static type $\tau$. If the
+  result of the function has type $\tau$, the result must also
   satisfy its strong invariant at function exit. Again, it says
   nothing of fields, array elements, memory locations, etc. of type
   $\tau$.

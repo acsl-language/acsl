@@ -10,14 +10,14 @@
     "(" parameter-type-list? ")";
         {"/*@" "ghost"};
           {"("parameter-list")"};
-          {"*/"} ; declare ghost args
+          {"*/"}; ghost args
         \
   postfix-expression ::= C-postfix-expression ;
     | postfix-expression ;
      "(" argument-expression-list? ")";
      {"/*@" "ghost"} ;
      {  "(" argument-expression-list ")"};
-     {  "*/"} ; call with ghost args
+     {  "*/"} ; call with ghosts
     \
   statement ::= C-statement ;
              | statements-ghost \

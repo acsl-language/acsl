@@ -20,7 +20,7 @@
 \ifthenelse{\boolean{PrintImplementationRq}}{%
   \begin{changebar}%
   \highlightnotimplemented%
-  \ifthenelse{\equal{#1}{}}{}{\let\myrq#1}%
+  \ifthenelse{\equal{#1}{}}{}{\def\myrq{#1}}%
   \bgroup
 }{}}%
 {\ifthenelse{\boolean{PrintImplementationRq}}{%

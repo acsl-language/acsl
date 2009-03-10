@@ -2,13 +2,13 @@
   C-global-decl ::= "/*@" logic-def+ "*/"
   \
   logic-def ::= logic-const-def ;
-          | logic-predicate-def ;
           | logic-function-def ;
+          | predicate-def ;
           | lemma-def ;
   \
   type-var ::= id
   \
-  logic-type-expr ::= type-var ; type variable
+  type-expr ::= type-var ; type variable
   | id;
     "<" type-expr;
     (, type-expr)* ">" ; polymorphic type
@@ -26,7 +26,7 @@
   poly-id parameters "=";
   term ";"
   \
-  logic-predicate-def ::=
+  predicate-def ::=
   "predicate";
   poly-id parameters? "=";
   pred ";"
@@ -34,7 +34,7 @@
   parameters ::= "(" parameter;
                  (, parameter)* ")"
   \
-  parameter ::= type-expr variable-ident
+  parameter ::= type-expr id
   \
   lemma-decl ::= "lemma" poly-id ":";
                    pred ";"
