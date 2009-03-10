@@ -24,7 +24,6 @@ void swap(color t[], int i, int j) {
   t[i] = t[j];
   t[j] = tmp;
 }
-
 typedef struct flag {
   int n;
   color *colors;

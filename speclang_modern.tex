@@ -645,7 +645,7 @@ Section~\ref{sec:termination}.
 
 \subsection{Built-in constructs \protect\old{} and \protect\result{}}
 
-Post-conditions usually require to refer to function results and
+Post-conditions usually require to refer to both the function result and
 values in the pre-state. Thus terms are extended with the following new
 constructs (shown in Figure~\ref{fig:gram:oldandresult}).
 \begin{itemize}
@@ -653,17 +653,17 @@ constructs (shown in Figure~\ref{fig:gram:oldandresult}).
   \lstinline|e| in the pre-state of the function.
 \item \result\indexttbs{result} denotes the returned value of the function.
 \end{itemize}
-
 \lstinline|\old(e)| and \result{} can be used only in \ensures{} clauses, since
-the other clauses already refer to the pre-state.
+the other clauses already refer to the pre-state. In addition,
+\result{} can not be used in the contract of a function which returns
+\lstinline|void|.
 % See Section~\ref{sec:at} for more details on scoping rules for labels.
 
 \subsection{Simple function contracts}
 \label{sec:simplecontracts}
 
-A simple function contract, having no named behavior, has the following
-form:
-\indextt{requires}\indextt{assigns}\indextt{ensures}
+A simple function contract, having only simple clauses and no named behavior, takes the following
+form:\indextt{requires}\indextt{assigns}\indextt{ensures}
 \begin{listing}{1}
 /*@ requires $P_1$; requires $P_2$; `\dots`
   @ assigns $L_1$;  assigns $L_2$;  `\dots`
@@ -673,9 +673,9 @@ form:
 The semantics of such a contract is as follows:
 \begin{itemize}
 \item The caller of the function must guarantee that it is called in a
-  state where the property \lstinline|$P_1$ && $P_2$ && `\dots`| holds.
+  state where the property \lstinline|$P_1$ && $P_2$ && ...| holds.
 \item The called function returns a state where the property
-  \lstinline|$E_1$ && $E_2$ && `\dots`| holds.
+  \lstinline|$E_1$ && $E_2$ && ...| holds.
 \item All memory locations of the pre-state that do not belong to the
   set $L_1 \cup L_2 \cup \dots$ remain allocated and are left unchanged in the
   post-state. The set $L_1 \cup L_2 \cup \dots$ itself is interpreted in the
@@ -813,14 +813,14 @@ is actually equivalent to a single named behavior as follows:
   @*/
 \end{listing}
 Similarly, global \assigns\ and \ensures\ clauses are equivalent to a
-single named behavior. More precisely,
+single named behavior. More precisely, the following contract
 \begin{listing}{1}
 /*@ requires $P$;
   @ assigns $L$;
   @ ensures $E$;
   @ behavior $b_1$: `\dots`
   @ behavior $b_2$: `\dots`
-  @ `\vdots`
+  @ `\dots`
   @*/
 \end{listing}
 is equivalent to
@@ -832,7 +832,7 @@ is equivalent to
   @   ensures $E$;
   @ behavior $b_1$: `\dots`
   @ behavior $b_2$: `\dots`
-  @ `\vdots`
+  @ `\dots`
   @*/
 \end{listing}
 
@@ -1436,7 +1436,7 @@ The grammar for statement contracts is given in
 Figure~\ref{fig:gram:stcontracts}. It is similar to function
 contracts, but without \decreases{} clause. Additionally, a statement contract
 may refer to enclosing named behaviors, with the form
-\lstinline|for $id$:\ldots|.
+\lstinline|for id:...|.
 Such contracts are only valid for the
 corresponding behaviors, in particular only under the
 corresponding \assumes{} clause.
@@ -2516,7 +2516,7 @@ we deliberately do not provide a precise semantics in this document .
 Ghost variables and statements are like C variables and statements,
 but visible only in the specifications. They are introduced by the
 \lstinline|ghost| keyword at the beginning of the annotation
-(i.e. \lstinline|/*@ ghost ... */| or \lstinline|//@ ghost `dots`|
+(i.e. \lstinline|/*@ ghost ... */| or \lstinline|//@ ghost ...|
 for a one-line
 ghost code, as mentionned in section~\ref{sec:gener-about-annot}).
 The grammar is given in Figure~\ref{fig:gram:ghost}, in which only the
