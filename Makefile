@@ -53,6 +53,8 @@ DEPS_MODERN=intro_modern.tex speclang_modern.tex libraries_modern.tex	\
 	glob_var_masked.c glob_var_masked_sol.c intlists.c sign.c	\
 	signdef.c oldat.c mean.c isgcd.c
 
+include ../MakeLaTeXModern
+
 all: acsl-implementation.pdf main.pdf
 
 main.ps: main.dvi
@@ -74,22 +76,16 @@ main.pdf: main.tex $(DEPS)
 
 .PHONY: modern
 
-modern: modern.tex $(DEPS_MODERN) frama-c-book.cls frama-c-cover.pdf
+modern: modern.tex $(DEPS_MODERN) $(FRAMAC_MODERN)
 	pdflatex modern
 	makeindex modern
 	bibtex modern
 	pdflatex modern
 	pdflatex modern
 
-frama-c-book.cls: ../frama-c-book.cls
-	rm -f $@
-	cp $< .
-	chmod a-w $@
-
-frama-c-cover.pdf: ../frama-c-cover.pdf
-	rm -f $@
-	cp $< .
-	chmod a-w $@
+umodern: modern.tex $(FRAMAC_MODERN)
+	pdflatex modern
+	pdflatex modern
 
 %.1: %.mp
 	mpost -interaction batchmode $<
