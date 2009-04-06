@@ -53,9 +53,9 @@ DEPS_MODERN=intro_modern.tex speclang_modern.tex libraries_modern.tex	\
 	glob_var_masked.c glob_var_masked_sol.c intlists.c sign.c	\
 	signdef.c oldat.c mean.c isgcd.c
 
-include ../MakeLaTeXModern
-
 all: acsl-implementation.pdf main.pdf
+
+include ../MakeLaTeXModern
 
 main.ps: main.dvi
 	dvips $^ -o $@
