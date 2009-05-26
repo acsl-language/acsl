@@ -1146,7 +1146,7 @@ as an extension of the grammar of C statements.
 
 \subsubsection{Loop invariants}
 \index{invariant}
-The semantics of loop invariants is defined as follows: a loop
+The semantics of loop invariants is defined as follows: a simple loop
 annotation of the form
 \begin{flushleft}\ttfamily
 /*@ loop invariant $I$; \\
@@ -1181,9 +1181,15 @@ specifies that the following conditions hold.
   before entering the loop.
 % [Patrick B.] START proposition:
   In fact, the \texttt{loop assigns} clause specifies an inductive
-  invariant for the locations wich are not member of $L$.
+  invariant for the locations that are not member of $L$.
 % END proposition:
 \end{itemize}
+
+A loop annotation preceded by
+$\texttt{for}~id_1,\ldots,id_k\texttt{:}$ is similar as above,
+although applies only for behaviors $id_1,\ldots,id_k$, hence in
+particular holds only under the assumption of their \texttt{assumes}
+clauses.
 
 \paragraph{Remarks}
 \begin{itemize}
