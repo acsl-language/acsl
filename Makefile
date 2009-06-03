@@ -101,6 +101,7 @@ umodern: modern.tex $(FRAMAC_MODERN)
 
 %.tex: %.ctex pp
 	./pp $< > $@
+	chmod -w $@
 
 %.bnf: %.tex transf
 	./transf $< > $@
