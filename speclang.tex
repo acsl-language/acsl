@@ -454,9 +454,18 @@ Section~\ref{sec:libreal}).
 
 Floating-point constants and operations are interpreted as
 mathematical real numbers: a C variable of type float or double is
-implicitly promoted to a real. Integers are promoted to reals if necessary.
+implicitly promoted to a real. Integers are promoted to reals if
+necessary. Usual binary operations are interpreted as operators on
+real numbers, hence they never involve any rounding nor overflow
+
 \begin{example}
-$2 * 3.5$ is equal to the real number 7
+  In an annotation, $1e+300 * 1e+300$ is equal to $1e+600$, even if
+  that last number exceeds the largest representable number in double
+  precision: there is no "overflow".
+
+  $2 * 0.1$ is equal to the real number $0.2$, and not to any of its
+  floating-point approximation: there is no "rounding".
+
 \end{example}
 Unlike the promotion of C integer types to mathematical integers,
 there are special float values which do not naturally map to a real
@@ -466,6 +475,15 @@ functions \verb|real_of_float|\indextt{real\_of\_float} and
 \verb|real_of_double|\indextt{real\_of\_double} whose results
 on the 3 values above is left unspecified.
 
+\begin{remark}{Claude}
+  ajouter hexadecimal floating-point constant
+  
+  parler des constantes non representables
+  
+\end{remark}
+ 
+
+
 Usual operators for comparison are interpreted as real operators
 too. In particular, equality operation $\equiv$ of float (or double)
 expressions means equality of the real numbers they represent
@@ -473,6 +491,30 @@ respectively. Or equivalently, $x \equiv y$ for $x,y$ two float
 variables means $\verb|real_of_float|(x) \equiv
 \verb|real_of_float|(y)$ with the mathematical equality of real
 numbers.
+
+\begin{remark}{Claude}
+   ajouter des fonctions predefinies
+ 
+   avec ou sans backslash ? 
+ 
+   abs
+ 
+   sqrt
+ 
+   power
+ 
+   cos
+ 
+   sin 
+ 
+   exp , atan2, atan, hypot, ln, etc. 
+ 
+   fma ?
+ 
+   remainder
+ 
+ \end{remark}
+
 
 Special predicates are also available to express the comparison
 operators of float (resp. double) numbers as in C:
@@ -524,7 +566,7 @@ of the special values +infinity and -infinity.
 \begin{example}
   We have
   $\verb|(float)0.1| \equiv 13421773 \times 2 ^{-27}$ which is equal to
-  $0.10000000149006473916$
+  $0.100000001490116119384765625$
 \end{example}
 Notice also that unlike for integers, suffixes $f$ and $l$ are
 meaningful, because they implicitly add a cast operator as above.
@@ -545,15 +587,21 @@ in C is equal to the float number \verb|-0.0|, which is not
 \verb|\eq_float| to \verb|0.0|, which is the value of the logic
 expression \verb|(float)(-0.0 + -0.0)|.
 
-Finally, two additional predicates are provided on float and double
-numbers,which check that their argument is NaN or a
+Finally, additional predicates are provided on float and double
+numbers, which check that their argument is NaN or a
 finite number respectively:
 \begin{flushleft}\ttfamily
-predicate \verb|\is_nan_float|\indexttbs{is\_nan\_float}(float x); \\
-predicate \verb|\is_nan_double|\indexttbs{is\_nan\_double}(double x); \\
-predicate \verb|\is_finite_float|\indexttbs{is\_finite\_float}(float x); \\
-predicate \verb|\is_finite_double|\indexttbs{is\_finite\_double}(double x);
+predicate \verb|\is_NaN|\indexttbs{is\_NaN}(float x); \\
+predicate \verb|\is_NaN|\indexttbs{is\_NaN}(double x); \\
+predicate \verb|\is_finite|\indexttbs{is\_finite}(float x); \\
+predicate \verb|\is_finite|\indexttbs{is\_finite}(double x);
 \end{flushleft}
+
+\begin{remark}{Claude}
+
+  et les long double
+
+\end{remark}
 
 \oldremark{Claude}{
 
@@ -585,6 +633,27 @@ Il faudrait les integrer a une traitement plus general des modeles
 pour des types de donnees
 
 }
+
+
+\subsection{String literals}
+
+\begin{remark}{Pascal, Benjamin}
+
+Quelle est la semantique des constanes chaines dans les annotations
+logiques ?
+
+Une reponse simple possible : equivalent a une constante globale ghost
+
+
+"foo" devient:
+
+
+ghost char string\_literal\_foo [4] = "foo" (avec le 0 final)
+
+et utiliser string\_literal\_foo a la place de "foo"
+
+  
+\end{remark}
 
 
 \section{Function contracts}

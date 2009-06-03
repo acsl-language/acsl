@@ -230,6 +230,53 @@ as much as possible of ACSL.
 
 \input{acsl_allocator.pp}
 
+\section{Hints for writing specifications}
+
+\begin{remark}{Pascal, Claude, etc.}
+
+Comment ecrire des specs de facon a utiliser au mieux les greffons...
+(specs techno-agnostiques)
+  
+devrait etre ailleurs que dans ce document
+
+exemple:
+
+\begin{verbatim}
+int find(int t[],int v);
+
+spec avec equivalence : \result <==> \exists ...
+
+mais aussi
+
+  \result ==> exists && ! \result ==> forall
+
+ou alors
+
+  \result && exists || !\result && forall
+
+ (mieux pour WP + preuve intuitioniste)
+
+ (peut-etre mieux aussi pour les prouveur SMT s'il ne mettent pas en
+ CNF de facon stricte)
+
+ou alors
+
+  exists ... ==> \result && forall ==> ! \result
+
+qui a l'avantage de se mettre sous la forme
+
+behavior b1:
+  assumes exists
+  ensures \result
+behavior b2:
+  assumes forall
+  ensures ! \result
+
+et qui peut etre utilise par une analyse en avant: execution
+symbolique, analyse de valeurs, etc.
+\end{verbatim}
+\end{remark}
+
 \section{Changes}
 
 \subsection{Version 1.x}
