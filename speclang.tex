@@ -1996,7 +1996,7 @@ context.
 \end{figure}
 
 
-\begin{example}
+\begin{example}\label{ex:nb_occ}
   The following annotations declare a function which returns the
   number of occurrences of a given double in an array of doubles
   between the given indexes, together with the related axioms.  It
@@ -2017,15 +2017,32 @@ context.
   \input{permut.pp}
 \end{example}
 
-\oldremark{Claude}{Obsolete
+% resurected reads clause
 
-\subsection{\texttt{reads} clauses}
+\subsection{Memory footprint specification: \texttt{reads} clause}
 
-declaration can be augmented with a \reads{} clause, with
-the syntax given in Figure~\ref{fig:gram:logicreads}, which extends the
-one of Figure~\ref{fig:gram:logic}. This feature is useful when a
-function or a predicate is not easily definable, but can be more
-easily axiomatized.
+\begin{figure}[t]
+  \fbox{\begin{minipage}{0.97\linewidth}
+      \input{logicreads.bnf}
+    \end{minipage}}
+  \caption{Grammar for logic declarations with \texttt{reads} clauses}
+\label{fig:gram:logicreads}
+\end{figure}
+
+
+\experimental
+
+Logic declaration can be augmented with a \reads{} clause, with the
+syntax given in Figure~\ref{fig:gram:logicreads}, which extends the
+one of Figure~\ref{fig:gram:logic}. This feature allows to specify the
+\emph{footprint} of a hybrid predicate or function, that is the set of
+memory locations which it depends on. From such an information, one
+might deduce properties of the form $f\{L_1\}(args) = f\{L_2\}(args)$
+if it is known that between states $L_1$ and $L_2$, the memory changes are
+disjoint from the declared footprint.
+%is useful when a
+%function or a predicate is not easily definable, but can be more
+%easily axiomatized.
 
 % VP: exemple redondant avec le suivant.
 % \begin{example}
@@ -2049,39 +2066,44 @@ easily axiomatized.
 % \end{example}
 
 
-\begin{example}
-  The following annotations declare a function which returns the
-  number of occurrences of a given double in an array of doubles
-  between the given indexes, together with the related axioms.
-  It should be noted that without the reads
-  clauses, this axiomatization would be inconsistent, since the
-  function would not depend on the values stored in t, hence the two
-  last axioms would say both that $a=b+1$ and $a=b$ for some $a$ and
-  $b$.
-  \input{nb_occ_reads.pp}
-\end{example}
+\begin{remark}{Claude}
+on peut indiquer des conditions semantiques de validite des axiomes:
+
+pour tout etat L1, L2 qui sont identiques sur le footprint, P{L1} =>
+P{L2} ou P est la formule de l'axiome
+
+\end{remark}
 
 \begin{example}
-  This second example defines a predicate which indicates whether two
-  arrays of the same size are a permutation of each other. It
-  illustrates the use of more than a single label. Thus, the \verb+\at+
-  operator is mandatory here. Indeed the two arrays
-  may come from two distinct memory states. Typically, one of the post
-  condition of a sorting function would be \verb+permut{Pre,Here}(t,t)+.
-  \input{permut_reads.pp}
+  The following is the same as example~\ref{ex:nb_occ} augmented with
+  a \texttt{reads} clause.  \input{nb_occ_reads.pp} If for example a
+  piece of code between labels $L_1$ and $L_2$ modifies $t[k]$ for
+  some index $k$ outside $i..j$, then one can deduce that
+  $\verb|nb_occ|\{L_1\}(t,i,j,e)=\verb|nb_occ|\{L_2\}(t,i,j,e)$.
+
 \end{example}
 
-\oldremark{SD7+All}{
+% \begin{example}
+%   This second example defines a predicate which indicates whether two
+%   arrays of the same size are a permutation of each other. It
+%   illustrates the use of more than a single label. Thus, the \verb+\at+
+%   operator is mandatory here. Indeed the two arrays
+%   may come from two distinct memory states. Typically, one of the post
+%   condition of a sorting function would be \verb+permut{Pre,Here}(t,t)+.
+%   \input{permut_reads.pp}
+% \end{example}
 
-  As shown above, hybrid predicates and functions declared with reads
-  clauses should be used with caution, since they do not depend only
-  on the values of their parameters but also in an implicit way on the
-  values stored in memory.
+% \oldremark{SD7+All}{
 
-  reutiliser l'exemple en question ? (en le faisant mieux)
+%   As shown above, hybrid predicates and functions declared with reads
+%   clauses should be used with caution, since they do not depend only
+%   on the values of their parameters but also in an implicit way on the
+%   values stored in memory.
 
-}
-}
+%   reutiliser l'exemple en question ? (en le faisant mieux)
+
+% }
+% }
 
 \subsection{Specification Modules}
 \label{sec:specmodules}
