@@ -31,7 +31,7 @@
     List.iter (fun s -> Hashtbl.add h s ())
       [
 	"auto"; "assert"; "break"; "case"; "continue"; "new";
-	"default"; "do"; "else"; "for"; "goto"; "if"; "then" ; 
+	"default"; "do"; "else"; "for"; "goto"; "if";
 	"return"; "switch"; "while";
 	"class" ; "interface" ; "ensures";
 	"public" ; "private" ; "static" ; "struct" ;
