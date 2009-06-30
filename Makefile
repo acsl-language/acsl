@@ -53,7 +53,7 @@ DEPS_MODERN=intro_modern.tex speclang_modern.tex libraries_modern.tex	\
 	glob_var_masked.c glob_var_masked_sol.c intlists.c sign.c	\
 	signdef.c oldat.c mean.c isgcd.c
 
-all: acsl-implementation.pdf main.pdf
+all: acsl-implementation.pdf modern.pdf
 
 include ../MakeLaTeXModern
 
@@ -67,21 +67,11 @@ main.dvi: main.tex $(DEPS)
 	latex main
 	latex main
 
-main.pdf: main.tex $(DEPS)
-	pdflatex main
-	makeindex main
-	bibtex main
-	pdflatex main
-	pdflatex main
+main.pdf: $(DEPS)
 
 .PHONY: modern
 
-modern: modern.tex $(DEPS_MODERN) $(FRAMAC_MODERN)
-	pdflatex modern
-	makeindex modern
-	bibtex modern
-	pdflatex modern
-	pdflatex modern
+modern.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
 
 umodern: modern.tex $(FRAMAC_MODERN)
 	pdflatex modern
@@ -162,21 +152,20 @@ clean:
 
 #.PHONY: implementation rubber
 acsl-implementation.pdf: $(DEPS)
-	mv main.tex main_old.tex
-	sed -e 's/%--//' main_old.tex > main.tex
-	@if $(MAKE) main.pdf; then \
-	   mv main_old.tex main.tex; \
-           mv main.pdf acsl-implementation.pdf; \
-           echo "implementation manual generated"; \
-         else \
-           mv main_old.tex main.tex; \
-           echo "Error while processing document See main.log for details"; \
-           exit 2; \
-        fi
+
+acsl-implementation.tex: modern.tex
+	sed -e '/PrintImplementationRq/s/%--//' $^ > $@
 
 # see http://www.pps.jussieu.fr/~beffara/soft/rubber/ for details on rubber.
 rubber: $(DEPS)
-	rubber -d main.tex
+	rubber -d modern.tex
+
+%.pdf: %.tex
+	pdflatex $*
+	makeindex $*
+	bibtex $*
+	pdflatex $*
+	pdflatex $*
 
 # Command to produce a diff'ed document. Must be refined to flatten automatically the files
 # latexdiff --type=CFONT --append-textcmd="_,sep,alt,newl,is" --append-safecmd="term,nonterm,indexttbase,indextt,indexttbs,keyword,ensuremath" --config "PICTUREENV=(?:picture|latexonly)[\\w\\d*@]*,MATHENV=(?:syntax),MATHREPL=syntax"  full.tex current/full.tex > diff.tex

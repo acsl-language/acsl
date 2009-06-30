@@ -6,7 +6,10 @@
 % true = prints marks signaling the state of the implementation
 % false = prints only the ACSL definition, without remarks on implementation.
 \newboolean{PrintImplementationRq}
-\setboolean{PrintImplementationRq}{true}
+\setboolean{PrintImplementationRq}{false}
+%Do not touch the following line. It is used in a Makefile hack to
+%produce the ACSL document shipped with the Frama-C distribution.
+%--\setboolean{PrintImplementationRq}{true}
 
 % true = remarks about the current state of implementation in Frama-C
 % are in color.
@@ -64,7 +67,10 @@
 \sloppy
 \hbadness=10000
 
-\coverpage{ACSL Implementation}
+\ifthenelse{\boolean{PrintImplementationRq}}%
+  {\coverpage{ACSL Implementation}}%
+  {\coverpage{ACSL: ANSI/ISO C Specification Language}}
+
 \begin{titlepage}
 \includegraphics[height=14mm]{cealistlogo.jpg}
 \hfill
