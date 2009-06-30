@@ -461,9 +461,18 @@ Section~\ref{sec:libreal}).
 
 Floating-point constants and operations are interpreted as
 mathematical real numbers: a C variable of type float or double is
-implicitly promoted to a real. Integers are promoted to reals if necessary.
+implicitly promoted to a real. Integers are promoted to reals if
+necessary. Usual binary operations are interpreted as operators on
+real numbers, hence they never involve any rounding nor overflow
+
 \begin{example}
-$2 * 3.5$ is equal to the real number 7
+  In an annotation, $1e+300 * 1e+300$ is equal to $1e+600$, even if
+  that last number exceeds the largest representable number in double
+  precision: there is no "overflow".
+
+  $2 * 0.1$ is equal to the real number $0.2$, and not to any of its
+  floating-point approximation: there is no "rounding".
+
 \end{example}
 Unlike the promotion of C integer types to mathematical integers,
 there are special float values which do not naturally map to a real
@@ -473,6 +482,15 @@ functions \lstinline|real_of_float|\indextt{real\_of\_float} and
 \lstinline|real_of_double|\indextt{real\_of\_double} whose results
 on the 3 values above is left unspecified.
 
+\begin{remark}{Claude}
+  ajouter hexadecimal floating-point constant
+
+  parler des constantes non representables
+
+\end{remark}
+
+
+
 Usual operators for comparison are interpreted as real operators
 too. In particular, equality operation $\equiv$ of float (or double)
 expressions means equality of the real numbers they represent
@@ -480,6 +498,30 @@ respectively. Or equivalently, $x \equiv y$ for $x,y$ two float
 variables means \lstinline|real_of_float(x) $\equiv$ real_of_float(y)|
 with the mathematical equality of real
 numbers.
+
+\begin{remark}{Claude}
+   ajouter des fonctions predefinies
+
+   avec ou sans backslash ?
+
+   abs
+
+   sqrt
+
+   power
+
+   cos
+
+   sin
+
+   exp , atan2, atan, hypot, ln, etc.
+
+   fma ?
+
+   remainder
+
+ \end{remark}
+
 
 Special predicates are also available to express the comparison
 operators of float (resp. double) numbers as in C:
@@ -532,7 +574,7 @@ of the special values +infinity and -infinity.
 \begin{example}
   We have
   \lstinline|(float)0.1| $\equiv 13421773 \times 2 ^{-27}$ which is equal to
-  $0.10000000149006473916$
+  $0.100000001490116119384765625$
 \end{example}
 Notice also that unlike for integers, suffixes \lstinline|f| and
 \lstinline|l| are
@@ -556,15 +598,21 @@ in C is equal to the float number \lstinline|-0.0|, which is not
 \lstinline|\eq_float| to \lstinline|0.0|, which is the value of the logic
 expression \lstinline|(float)(-0.0 + -0.0)|.
 
-Finally, two additional predicates are provided on float and double
-numbers,which check that their argument is NaN or a
+Finally, additional predicates are provided on float and double
+numbers, which check that their argument is NaN or a
 finite number respectively:
 \begin{listing}{1}
-predicate \is_nan_float`\indexttbs{is\_nan\_float}`(float x);
-predicate \is_nan_double`\indexttbs{is\_nan\_double}`(double x);
-predicate \is_finite_float`\indexttbs{is\_finite\_float}`(float x);
-predicate \is_finite_double`\indexttbs{is\_finite\_double}`(double x);
+predicate \is_NaN`\indexttbs{is\_NaN}`(float x); \\
+predicate \is_NaN`\indexttbs{is\_NaN}`(double x); \\
+predicate \is_finite`\indexttbs{is\_finite}`(float x); \\
+predicate \is_finite`\indexttbs{is\_finite}`(double x);
 \end{listing}
+
+\begin{remark}{Claude}
+
+  et les long double
+
+\end{remark}
 
 \oldremark{Claude}{
 
@@ -596,6 +644,27 @@ Il faudrait les integrer a une traitement plus general des modeles
 pour des types de donnees
 
 }
+
+
+\subsection{String literals}
+
+\begin{remark}{Pascal, Benjamin}
+
+Quelle est la semantique des constanes chaines dans les annotations
+logiques ?
+
+Une reponse simple possible : equivalent a une constante globale ghost
+
+
+"foo" devient:
+
+
+ghost char string\_literal\_foo [4] = "foo" (avec le 0 final)
+
+et utiliser string\_literal\_foo a la place de "foo"
+
+
+\end{remark}
 
 
 \section{Function contracts}
@@ -650,7 +719,7 @@ values in the pre-state. Thus terms are extended with the following new
 constructs (shown in Figure~\ref{fig:gram:oldandresult}).
 \begin{itemize}
 \item \lstinline|\old(e)|\indexttbs{old} denotes the value of
-  \lstinline|e| in the pre-state of the function.
+  predicate or term \lstinline|e| in the pre-state of the function.
 \item \result\indexttbs{result} denotes the returned value of the function.
 \end{itemize}
 \lstinline|\old(e)| and \result{} can be used only in \ensures{} clauses, since
@@ -1171,7 +1240,7 @@ as an extension of the grammar of C statements.
 
 \subsubsection{Loop invariants}
 \index{invariant}
-The semantics of loop invariants is defined as follows: a loop
+The semantics of loop invariants is defined as follows: a simple loop
 annotation of the form
 \begin{listing}{1}
 /*@ loop invariant I;
@@ -1209,9 +1278,17 @@ specifies that the following conditions hold.
   before entering the loop.
 % [Patrick B.] START proposition:
   In fact, the \lstinline|loop assigns| clause specifies an inductive
-  invariant for the locations wich are not member of \lstinline|L|.
+  invariant for the locations that are not member of \lstinline|L|.
 % END proposition:
 \end{itemize}
+
+A loop annotation preceded by
+\lstinline|for id_1,`\ldots`,id_k:| is similar as above,
+although applies only for behaviors
+\lstinline|id_1|,$\ldots$,\lstinline|id_k|, hence in
+particular holds only under the assumption of their \texttt{assumes}
+clauses.
+
 
 \paragraph{Remarks}
 \begin{itemize}
@@ -1967,8 +2044,7 @@ context.
 \label{fig:gram:logiclabels}
 \end{figure}
 
-
-\begin{example}
+\begin{example}\label{ex:nb_occ}
   The following annotations declare a function which returns the
   number of occurrences of a given double in an array of doubles
   between the given indexes, together with the related axioms.  It
@@ -1989,15 +2065,32 @@ context.
   \listinginput{1}{permut.c}
 \end{example}
 
-\oldremark{Claude}{Obsolete
+% resurected reads clause
 
-\subsection{\protect\reads{} clauses}
+\subsection{Memory footprint specification: \lstinline|reads| clause}
 
-declaration can be augmented with a \reads{} clause, with
-the syntax given in Figure~\ref{fig:gram:logicreads}, which extends the
-one of Figure~\ref{fig:gram:logic}. This feature is useful when a
-function or a predicate is not easily definable, but can be more
-easily axiomatized.
+\begin{figure}[t]
+  \fbox{\begin{minipage}{0.97\linewidth}
+      \input{logicreads_modern.bnf}
+    \end{minipage}}
+  \caption{Grammar for logic declarations with \lstinline|reads| clauses}
+\label{fig:gram:logicreads}
+\end{figure}
+
+
+\experimental
+
+Logic declaration can be augmented with a \reads{} clause, with the
+syntax given in Figure~\ref{fig:gram:logicreads}, which extends the
+one of Figure~\ref{fig:gram:logic}. This feature allows to specify the
+\emph{footprint} of a hybrid predicate or function, that is the set of
+memory locations which it depends on. From such an information, one
+might deduce properties of the form $f\{L_1\}(args) = f\{L_2\}(args)$
+if it is known that between states $L_1$ and $L_2$, the memory changes are
+disjoint from the declared footprint.
+%is useful when a
+%function or a predicate is not easily definable, but can be more
+%easily axiomatized.
 
 % VP: exemple redondant avec le suivant.
 % \begin{example}
@@ -2020,40 +2113,45 @@ easily axiomatized.
 %   }
 % \end{example}
 
+\begin{remark}{Claude}
+on peut indiquer des conditions semantiques de validite des axiomes:
+
+pour tout etat L1, L2 qui sont identiques sur le footprint, P{L1} =>
+P{L2} ou P est la formule de l'axiome
+
+\end{remark}
 
 \begin{example}
-  The following annotations declare a function which returns the
-  number of occurrences of a given double in an array of doubles
-  between the given indexes, together with the related axioms.
-  It should be noted that without the reads
-  clauses, this axiomatization would be inconsistent, since the
-  function would not depend on the values stored in t, hence the two
-  last axioms would say both that $a=b+1$ and $a=b$ for some $a$ and
-  $b$.
+  The following is the same as example~\ref{ex:nb_occ} augmented with
+  a \lstinline|reads| clause.
   \listinginput{1}{nb_occ_reads.c}
+  If for example a
+  piece of code between labels \lstinline|L_1| and \lstinline|L_2|
+  modifies \lstinline|t[k]| for
+  some index \lstinline|k| outside \lstinline|i..j|, then one can deduce that
+  \lstinline|nb_occ{L_1}(t,i,j,e)==nb_occ{L_2}(t,i,j,e)|.
 \end{example}
 
-\begin{example}
-  This second example defines a predicate which indicates whether two
-  arrays of the same size are a permutation of each other. It
-  illustrates the use of more than a single label. Thus, the \verb+\at+
-  operator is mandatory here. Indeed the two arrays
-  may come from two distinct memory states. Typically, one of the post
-  condition of a sorting function would be \lstinline+permut{Pre,Here}(t,t)+.
-  \listinginput{1}{permut_reads.c}
-\end{example}
+% \begin{example}
+%   This second example defines a predicate which indicates whether two
+%   arrays of the same size are a permutation of each other. It
+%   illustrates the use of more than a single label. Thus, the \verb+\at+
+%   operator is mandatory here. Indeed the two arrays
+%   may come from two distinct memory states. Typically, one of the post
+%   condition of a sorting function would be \lstinline+permut{Pre,Here}(t,t)+.
+%   \listinginput{1}{permut_reads.c}
+% \end{example}
 
-\oldremark{SD7+All}{
+% \oldremark{SD7+All}{
 
-  As shown above, hybrid predicates and functions declared with reads
-  clauses should be used with caution, since they do not depend only
-  on the values of their parameters but also in an implicit way on the
-  values stored in memory.
+%   As shown above, hybrid predicates and functions declared with reads
+%   clauses should be used with caution, since they do not depend only
+%   on the values of their parameters but also in an implicit way on the
+%   values stored in memory.
 
-  reutiliser l'exemple en question ? (en le faisant mieux)
+%   reutiliser l'exemple en question ? (en le faisant mieux)
 
-}
-}
+% }
 
 \subsection{Specification Modules}
 \label{sec:specmodules}
