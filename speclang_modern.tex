@@ -728,6 +728,18 @@ the other clauses already refer to the pre-state. In addition,
 \lstinline|void|.
 % See Section~\ref{sec:at} for more details on scoping rules for labels.
 
+% [Patrick B.] START proposition:
+Note C function parameters\index{formal parameter} are obtained by
+value from actual parameters that mostly remain unaltered by the
+function calls. For that reason, formal parameters in function
+contracts are defined such that they always refer implicitly to their
+values interpreted in the pre-state.
+So, \lstinline|\old| construct is useless for formal parameters (in
+function contracts only).
+% END proposition
+
+
+
 \subsection{Simple function contracts}
 \label{sec:simplecontracts}
 
@@ -788,10 +800,11 @@ default status of clauses.
   the conjunction of the three \ensures{} clauses.
 % [Patrick B.] START proposition:
   Inside these \ensures{} clauses, the use of the construct \lstinline|\old(x)|
-  is not necessary, even if the function modifies the formal operand
-  \lstinline|x|, because function calls modify a copy of the effective operands,
-  and the effective operands remain unaltered.  In fact, \lstinline|x| denotes
-  the effective operand of \lstinline|isqrt| calls which has the same value
+  is not necessary, even if the function modifies the formal 
+  parameter\index{formal parameter}
+  \lstinline|x|, because function calls modify a copy of the effective parameters,
+  and the effective parameters remain unaltered.  In fact, \lstinline|x| denotes
+  the effective parameter of \lstinline|isqrt| calls which has the same value
   interpreted in the pre-state than in the post-state.
 % END proposition
 
@@ -1461,9 +1474,19 @@ It is also visible in data invariants, presented in Section~\ref{sec:invariants}
 \item The label \lstinline|Pre| is visible in all statement annotations,
   and refers to the pre-state of the function it occurs in.
 \item The label \lstinline|Post| is visible in
-\lstinline|assigns| and \lstinline|ensures| clauses and refers to the
-post-state of the function it occurs in.
+\lstinline|assigns| and \lstinline|ensures| clauses of all contracts, 
+and it refers to the post-state.
+
 \end{itemize}
+
+% [Patrick B.] START proposition:
+There is one particular case for \lstinline|assigns| and \lstinline|ensures|
+clauses of function contracts where formal parameters\index{formal parameter} 
+of functions cannot refer to the label \lstinline|Post|.
+In such clauses formal parameters always refer implicitly to the label
+\lstinline|Pre|, and any \lstinline|\at| construct can modify the 
+interpretation of formal parameters.
+% END proposition
 
 Note that no logic label is visible in global logic declarations
 such as lemmas, axioms, definition of predicate or logic
@@ -2481,7 +2504,8 @@ which they are supposed to hold.
   }
 \item A strong type invariant on type $\tau$ must hold at any step
   during execution, and applies to any global variable, local
-  variable, or formal parameter with static type $\tau$. If the
+  variable, or formal parameter\index{formal parameter}
+  with static type $\tau$. If the
   result of the function has type $\tau$, the result must also
   satisfy its strong invariant at function exit. Again, it says
   nothing of fields, array elements, memory locations, etc. of type
