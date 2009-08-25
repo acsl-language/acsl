@@ -11,7 +11,7 @@
   @   logic A fold_right<A,B>((A -> B -> B) f, list<A> l, B acc) =
   @     \match l {
   @       case Nil : acc
-  @       case Cons(h,t) : f(h,fold(f,t,acc)) } ;
+  @       case Cons(h,t) : f(h,fold_right(f,t,acc)) } ;
   @
   @   logic list<A> filter<A>((A -> boolean) f, list<A> l) =
   @     fold_right((\lambda A x, list<A> acc;
