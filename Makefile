@@ -151,7 +151,7 @@ clean:
                transf trans.ml *.cm? *.idx *.ind *.ilg
 
 #.PHONY: implementation rubber
-acsl-implementation.pdf: $(DEPS)
+acsl-implementation.pdf: $(DEPS_MODERN)
 
 acsl-implementation.tex: modern.tex
 	sed -e '/PrintImplementationRq/s/%--//' $^ > $@
