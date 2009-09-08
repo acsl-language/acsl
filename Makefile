@@ -26,8 +26,9 @@ DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
 	oldat.pp mean.pp isgcd.pp
 # 	fwrite-malloc.pp
 
-DEPS_MODERN=intro_modern.tex speclang_modern.tex libraries_modern.tex	\
-	compjml_modern.tex div_lemma.c assigns.c invariants.c		\
+DEPS_MODERN=speclang_modern.tex macros_modern.tex                       \
+	intro_modern.tex libraries_modern.tex compjml_modern.tex        \
+	div_lemma.c assigns.c invariants.c		                \
 	example-lt-modern.tex isqrt.c sizeof.c incrstar.c		\
 	parsing_annot_modern.tex integer-cast-modern.tex max.c		\
 	max_index.c cond_assigns.c bsearch.c bsearch2.c			\
@@ -56,18 +57,6 @@ DEPS_MODERN=intro_modern.tex speclang_modern.tex libraries_modern.tex	\
 all: acsl-implementation.pdf modern.pdf
 
 include ../MakeLaTeXModern
-
-main.ps: main.dvi
-	dvips $^ -o $@
-
-main.dvi: main.tex $(DEPS)
-	latex main
-	makeindex main
-	bibtex main
-	latex main
-	latex main
-
-main.pdf: $(DEPS)
 
 .PHONY: modern
 
@@ -157,7 +146,7 @@ acsl-implementation.tex: modern.tex
 	sed -e '/PrintImplementationRq/s/%--//' $^ > $@
 
 # see http://www.pps.jussieu.fr/~beffara/soft/rubber/ for details on rubber.
-rubber: $(DEPS)
+rubber: $(DEPS_MODERN)
 	rubber -d modern.tex
 
 %.pdf: %.tex

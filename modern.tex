@@ -3,6 +3,14 @@
 \usepackage{hevea}
 \usepackage{ifthen}
 
+% true = prints remarks for the ACSL working group.
+% false = prints no remark for the distributed version of ASCL documents
+\newboolean{PrintRemarks}
+\setboolean{PrintRemarks}{false}
+%Do not touch the following line. It is used in a Makefile hack to
+%produce the ACSL documents for the ACSL working group.
+%--\setboolean{PrintRemarks}{true}
+
 % true = prints marks signaling the state of the implementation
 % false = prints only the ACSL definition, without remarks on implementation.
 \newboolean{PrintImplementationRq}
@@ -33,6 +41,7 @@
 \usepackage[normalem]{ulem}
 \usepackage[leftbars]{changebar}
 \usepackage{alltt}
+\usepackage{comment}
 \makeindex
 \input{./macros_modern}
 

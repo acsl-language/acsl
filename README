@@ -1,3 +1,10 @@
+Makefile pour la génération des fichiers
+- modern.pdf
+- acsl-implementation.pdf
+
+
+
+
 Utilitaires pour syntaxe:
 - pp.ml pour pretty-printer via latex un fichier C:
   Usage du Makefile: .tex -> .pp
