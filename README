@@ -1,8 +1,8 @@
-Makefile pour la génération des fichiers
-- modern.pdf
-- acsl-implementation.pdf
-
-
+Makefile all
+pour la génération des fichiers
+- acsl.pdf                  <-- version de référence
+- acsl-implementation.pdf   <-- idem + détails implémentation
+- main.pdf                  <-- idem + remarques
 
 
 Utilitaires pour syntaxe:

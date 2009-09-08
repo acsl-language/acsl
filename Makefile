@@ -1,31 +1,4 @@
-
-DEPS=intro.tex speclang.tex libraries.tex compjml.tex \
-	div_lemma.pp assigns.pp invariants.pp example-lt.pp \
-	isqrt.pp sizeof.pp incrstar.pp parsing_annot.pp integer-cast.pp \
-	max.pp max_index.pp cond_assigns.pp bsearch.pp bsearch2.pp \
-	assigns_array.pp assigns_list.pp sum.pp \
-	listdecl.pp listdef.pp listlengthdef.pp import.pp listmodule.pp \
-	strcpyspec.pp dowhile.pp num_of_pos.pp nb_occ.pp \
-	nb_occ_reads.pp permut.pp permut_reads.pp \
-	acsl_allocator.pp gen_spec_with_model.pp gen_code.pp out_char.pp \
-	ghostpointer.pp ghostcfg.pp flag.pp lexico.pp footprint.pp \
-	loopvariantnegative.pp \
-	fact.pp mutualrec.pp abrupt_termination.pp \
-        advancedloopinvariants.pp inductiveloopinvariants.pp \
-	term.bnf binders.bnf fn_behavior.bnf oldandresult.bnf at.bnf loc.bnf \
-	assertions.bnf loops.bnf generalinvariants.bnf \
-	st_contracts.bnf moreterm.bnf ghost.bnf model.bnf \
-	logic.bnf inductive.bnf logicdecl.bnf \
-	logictypedecl.bnf higherorder.bnf logiclabels.bnf logicreads.bnf \
-	data_invariants.bnf  \
-	cfg.mps volatile.pp volatile-gram.bnf euclide.pp \
-	initialized.pp specified.pp exitbehavior.bnf dependencies.bnf \
-	sum2.pp modifier.pp gen_spec_with_ghost.pp terminates_list.pp \
-        glob_var_masked.pp glob_var_masked_sol.pp intlists.pp \
-	sign.pp signdef.pp \
-	oldat.pp mean.pp isgcd.pp
-# 	fwrite-malloc.pp
-
+MAIN=main
 DEPS_MODERN=speclang_modern.tex macros_modern.tex                       \
 	intro_modern.tex libraries_modern.tex compjml_modern.tex        \
 	div_lemma.c assigns.c invariants.c		                \
@@ -54,17 +27,11 @@ DEPS_MODERN=speclang_modern.tex macros_modern.tex                       \
 	glob_var_masked.c glob_var_masked_sol.c intlists.c sign.c	\
 	signdef.c oldat.c mean.c isgcd.c
 
-all: acsl-implementation.pdf modern.pdf
+all: acsl-implementation.pdf acsl.pdf main.pdf
 
 include ../MakeLaTeXModern
 
 .PHONY: modern
-
-modern.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
-
-umodern: modern.tex $(FRAMAC_MODERN)
-	pdflatex modern
-	pdflatex modern
 
 %.1: %.mp
 	mpost -interaction batchmode $<
@@ -80,13 +47,17 @@ umodern: modern.tex $(FRAMAC_MODERN)
 
 %.tex: %.ctex pp
 	./pp $< > $@
-	chmod -w $@
+	chmod a-w $@
 
 %.bnf: %.tex transf
+	rm -f $@
 	./transf $< > $@
+	chmod a-w $@
 
 %_modern.bnf: %.tex transf
+	rm -f $@
 	./transf -modern $< > $@
+	chmod a-w $@
 
 %.ml: %.mll
 	ocamllex $<
@@ -139,15 +110,24 @@ clean:
 	rm -rf *~ *.aux *.log *.nav *.out *.snm *.toc *.pp *.bnf \
                transf trans.ml *.cm? *.idx *.ind *.ilg
 
-#.PHONY: implementation rubber
-acsl-implementation.pdf: $(DEPS_MODERN)
+# version WEB liée à ce qui est implementé
+acsl-implementation.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
 
-acsl-implementation.tex: modern.tex
+acsl-implementation.tex: $(MAIN).tex
+	rm -f $@
+	sed -e '/PrintRemarks/s/%--//' $^ > $@
+	chmod a-w $@
+
+# version WEB du langage ACSL
+acsl.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
+
+acsl.tex: acsl-implementation.tex
+	rm -f $@
 	sed -e '/PrintImplementationRq/s/%--//' $^ > $@
+	chmod a-w $@
 
-# see http://www.pps.jussieu.fr/~beffara/soft/rubber/ for details on rubber.
-rubber: $(DEPS_MODERN)
-	rubber -d modern.tex
+# version WEB du langage ACSL
+$(MAIN).pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
 
 %.pdf: %.tex
 	pdflatex $*
