@@ -27,11 +27,13 @@ DEPS_MODERN=speclang_modern.tex macros_modern.tex                       \
 	glob_var_masked.c glob_var_masked_sol.c intlists.c sign.c	\
 	signdef.c oldat.c mean.c isgcd.c
 
+.PHONY: all install
+
 all: acsl-implementation.pdf acsl.pdf main.pdf
+install: acsl-implementation.pdf acsl.pdf
+	cp -f acsl-implementation.pdf acsl.pdf ../manuals/
 
 include ../MakeLaTeXModern
-
-.PHONY: modern
 
 %.1: %.mp
 	mpost -interaction batchmode $<
@@ -126,7 +128,7 @@ acsl.tex: acsl-implementation.tex
 	sed -e '/PrintImplementationRq/s/%--//' $^ > $@
 	chmod a-w $@
 
-# version WEB du langage ACSL
+# version pour le goupe de travail ACSL
 $(MAIN).pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
 
 %.pdf: %.tex
