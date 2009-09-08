@@ -4,5 +4,5 @@ Utilitaires pour syntaxe:
   Usage general: ocaml pp.ml -color file.tex > file.pp
 
 - transf pour pretty-printer une BNF via latex
-  Usage du Makefile: .tex -> .synt
-  Usage general: ./transf < file.tex > file.synt
+  Usage du Makefile: .tex -> .bnf
+  Usage general: ./transf < file.tex > file.bnf

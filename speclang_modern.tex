@@ -442,21 +442,6 @@ Bitwise operations apply to this representation.
   \end{itemize}
 \end{example}
 
-\subsubsection{Transcendental functions}
-
-Classical mathematical operations like exponential, sine, cosine,
-etc. are supposed to be available in some library (see
-Section~\ref{sec:libreal}).
-
-\oldremark{All}{  syntaxe pour abs et power ? a priori non, on peut
-  fournir une library pour les reels avec abs(), power(), mais
-  proposer des syntaxes speciales parait difficile
-
-  mais: on pourrait permettre des definition d'operateurs infixes
-
-}
-
-
 \subsection{Real numbers and floating point numbers}
 
 Floating-point constants and operations are interpreted as
@@ -498,29 +483,6 @@ respectively. Or equivalently, $x \equiv y$ for $x,y$ two float
 variables means \lstinline|real_of_float(x) $\equiv$ real_of_float(y)|
 with the mathematical equality of real
 numbers.
-
-\begin{remark}{Claude}
-   ajouter des fonctions predefinies
-
-   avec ou sans backslash ?
-
-   abs
-
-   sqrt
-
-   power
-
-   cos
-
-   sin
-
-   exp , atan2, atan, hypot, ln, etc.
-
-   fma ?
-
-   remainder
-
- \end{remark}
 
 
 Special predicates are also available to express the comparison
@@ -633,6 +595,42 @@ doubles). In particular, this does not include NaN, +infinity and
 -infinity in the considered range.
 
 
+\subsubsection{Transcendental functions}
+
+Classical mathematical operations like exponential, sine, cosine,
+etc. are supposed to be available in some library (see
+Section~\ref{sec:libreal}).
+
+\begin{remark}{Claude}
+   ajouter des fonctions predefinies
+
+   avec ou sans backslash ?
+
+   abs
+
+   sqrt
+
+   power
+
+   cos
+
+   sin
+
+   exp , atan2, atan, hypot, ln, etc.
+
+   fma ?
+
+   remainder
+\end{remark}
+
+\oldremark{All}{  syntaxe pour abs et power ? a priori non, on peut
+  fournir une library pour les reels avec abs(), power(), mais
+  proposer des syntaxes speciales parait difficile
+
+  mais: on pourrait permettre des definition d'operateurs infixes
+
+}
+
 \oldremark{JCF+All}{
 \subsubsection{Exact computations}
 
@@ -644,7 +642,6 @@ Il faudrait les integrer a une traitement plus general des modeles
 pour des types de donnees
 
 }
-
 
 \subsection{String literals}
 
