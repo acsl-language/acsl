@@ -1,9 +1,13 @@
-Makefile all
-pour la génération des fichiers
-- acsl.pdf                  <-- version de référence
-- acsl-implementation.pdf   <-- idem + détails implémentation
-- main.pdf                  <-- idem + remarques
+Pour la génération des fichiers:
+ ./acsl.pdf                  <-- version de référence
+ ./acsl-implementation.pdf   <-- idem + détails implémentation
+ ./main.pdf                  <-- idem + remarques
+ Usage: make acsl (cible par defaut)
 
+Pour copier les deux documents (ceux sans les remarques) en:
+ ../manuals/acsl.pdf 
+ ../manuals/acsl-implementation.pdf
+  Usage: make install
 
 Utilitaires pour syntaxe:
 - pp.ml pour pretty-printer via latex un fichier C:

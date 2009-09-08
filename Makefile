@@ -27,9 +27,14 @@ DEPS_MODERN=speclang_modern.tex macros_modern.tex                       \
 	glob_var_masked.c glob_var_masked_sol.c intlists.c sign.c	\
 	signdef.c oldat.c mean.c isgcd.c
 
-.PHONY: all install
+.PHONY: all install acsl
 
-all: acsl-implementation.pdf acsl.pdf main.pdf
+.DEFAULT_GOAL: acsl
+
+all: acsl install
+
+acsl: acsl-implementation.pdf acsl.pdf main.pdf
+
 install: acsl-implementation.pdf acsl.pdf
 	cp -f acsl-implementation.pdf acsl.pdf ../manuals/
 
