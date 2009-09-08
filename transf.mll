@@ -105,7 +105,7 @@ and syntax = parse
       syntax lexbuf }
 
 and inquote = parse
-    ['A'-'Z' 'a'-'z' '0'-'9'] as c {
+    ['A'-'Z' 'a'-'z' '0'-'9' '?'] as c {
       Buffer.add_char full_kw c;
       Buffer.add_char idx c;
       inquote lexbuf }
@@ -122,7 +122,7 @@ and inquote = parse
       inquote lexbuf }
 
 and indoublequote = parse
-    ['A'-'Z' 'a'-'z' '0'-'9'] as c {
+    ['A'-'Z' 'a'-'z' '0'-'9' '?'] as c {
       Buffer.add_char full_kw c;
       Buffer.add_char idx c;
       indoublequote lexbuf }
