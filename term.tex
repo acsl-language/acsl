@@ -24,7 +24,7 @@
        | "(" type-expr ")" term  ; cast
        | id "(" term ("," term)* ")" ; function application
        | "(" term ")" ; parentheses
-       | term "?" term ":" term ;
+       | term "?" term ":" term ; ternary condition
        | {"\let" id "=" term ";" term} ; local binding
        | "sizeof" "(" term ")" ;
        | "sizeof" "(" C-type-expr ")" ;
@@ -42,7 +42,7 @@
        | pred "<==>" pred ; equivalence
        | "!" pred ; negation
        | pred "^^" pred ; exclusive or
-       | term "?" pred ":" pred ;
+       | term "?" pred ":" pred ; ternary condition
        | { pred "?" pred ":" pred };
        | { "\let" id "=" term ";" pred }; local binding
        | "\forall" binders ";" pred ; universal quantification
