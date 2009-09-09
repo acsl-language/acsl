@@ -27,13 +27,13 @@ DEPS_MODERN=speclang_modern.tex macros_modern.tex                       \
 	glob_var_masked.c glob_var_masked_sol.c intlists.c sign.c	\
 	signdef.c oldat.c mean.c isgcd.c
 
-.PHONY: all install acsl
-
-.DEFAULT_GOAL: acsl
-
-all: acsl install
+.PHONY: all install acsl tutorial
 
 acsl: acsl-implementation.pdf acsl.pdf main.pdf
+
+all: acsl install tutorial check
+
+tutorial: tutorial-check acsl-mini-tutorial.pdf acsl-mini-tutorial.html
 
 install: acsl-implementation.pdf acsl.pdf
 	cp -f acsl-implementation.pdf acsl.pdf ../manuals/
@@ -53,6 +53,7 @@ include ../MakeLaTeXModern
 	./pp -utf8 -c $< > $@
 
 %.tex: %.ctex pp
+	rm -f $@
 	./pp $< > $@
 	chmod a-w $@
 
@@ -86,7 +87,7 @@ transf: transf.cmo transfmain.cmo
 
 transfmain.cmo: transf.cmo
 
-.PHONY: clean rubber
+.PHONY: check tutorial-check
 
 check:
 	gcc -c -std=c99 *.c
@@ -105,17 +106,18 @@ acsl-mini-tutorial.pdf: acsl-mini-tutorial.tex mini-biblio.bib
 	pdflatex acsl-mini-tutorial
 	pdflatex acsl-mini-tutorial
 
-acsl-mini-tutorial.html: acsl-mini-tutorial.tex
+acsl-mini-tutorial.html: acsl-mini-tutorial.tex mini-biblio.bib
 	hevea acsl-mini-tutorial.tex
 	bibhva acsl-mini-tutorial
 	hevea -fix acsl-mini-tutorial.tex
 
-#acsl_tutorial_index.html: acsl-mini-tutorial.html
-#	hacha -o $@ $<
+.PHONY: clean
 
 clean:
-	rm -rf *~ *.aux *.log *.nav *.out *.snm *.toc *.pp *.bnf \
-               transf trans.ml *.cm? *.idx *.ind *.ilg
+	rm -rf *~ *.aux *.log *.nav *.out *.snm *.toc *.lof *.pp *.bnf \
+		*.haux  *.hbbl *.htoc \
+                *.cb *.cm? *.bbl *.blg *.idx *.ind *.ilg \
+		transf trans.ml pp.ml pp
 
 # version WEB liée à ce qui est implementé
 acsl-implementation.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
