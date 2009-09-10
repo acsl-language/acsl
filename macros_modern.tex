@@ -1,4 +1,6 @@
-%%% Environnements dont le corps est suprimé lorsque PrintRemarks=false
+%%% Environnements dont le corps est suprimé, et
+%%% commandes dont la définition est vide,
+%%% lorsque PrintRemarks=false
 
 \ifthenelse{\boolean{PrintRemarks}}%
       {\newenvironment{todo}{%  
@@ -15,19 +17,39 @@
            {\end{tabular}\end{quote}}}%
       {\excludecomment{remark}}
 
-%%% Commandes dont la définition peut être vide lorsque PrintRemarks=false
-\ifthenelse{\boolean{PrintRemarks}}%
-      {\newcommand{\oldremark}[2]{%
+\newcommand{\oldremark}[2]{%
+\ifthenelse{\boolean{PrintRemarks}}{%
             %\begin{quote}\itshape%
             %\begin{tabular}{||p{0.8\textwidth}}Vieille remarque de {#1}~: #2%
             %\end{tabular}\end{quote}%
-            }}%
-      {\newcommand{\oldremark}[2]{}}
+}%
+{}}
 
-%%% Environnements et commandes non conditionnelle
-\newcommand{\experimental}{\textsc{Experimental}}
+\newcommand{\highlightnotreviewed}{%
+\color{blue}%
+}%
+
+\newcommand{\notreviewed}[2][]{%
+\ifthenelse{\boolean{PrintRemarks}}{%
+  \begin{changebar}%
+  {\highlightnotreviewed #2}%
+  \ifthenelse{\equal{#1}{}}{}{\footnote{#1}}%
+  \end{changebar}%
+}%
+{}}
+
+\ifthenelse{\boolean{PrintRemarks}}{%
+\newenvironment{notreviewedenv}[1][]{%
+  \begin{changebar}%
+  \highlightnotreviewed%
+  \ifthenelse{\equal{#1}{}}{}{\def\myrq{#1}}%
+  \bgroup}%
+ {\egroup%
+  \ifthenelse{\isundefined{\myrq}}{}{\footnote{\myrq}}\end{changebar}}}%
+{\excludecomment{notreviewedenv}}
 
 
+%%% Commandes et environnements pour la version relative à l'implementation
 \newcommand{\highlightnotimplemented}{%
 \ifthenelse{\boolean{ColorImplementationRq}}{\color{red}}%
            {\ul}%
@@ -52,6 +74,10 @@
 {\ifthenelse{\boolean{PrintImplementationRq}}{%
     \egroup%
     \ifthenelse{\isundefined{\myrq}}{}{\footnote{\myrq}}\end{changebar}}{}}
+
+%%% Environnements et commandes non conditionnelles
+\newcommand{\experimental}{\textsc{Experimental}}
+
 
 \newsavebox{\fmbox}
 \newenvironment{cadre}
