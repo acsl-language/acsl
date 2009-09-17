@@ -445,29 +445,27 @@ necessary. Usual binary operations are interpreted as operators on
 real numbers, hence they never involve any rounding nor overflow
 
 \begin{example}
-  In an annotation, $1e+300 * 1e+300$ is equal to $1e+600$, even if
-  that last number exceeds the largest representable number in double
-  precision: there is no "overflow".
+  In an annotation, \lstinline|1e+300 * 1e+300| is equal to
+  \lstinline|1e+600|, even if that last number exceeds the largest
+  representable number in double precision: there is no "overflow".
 
   $2 * 0.1$ is equal to the real number $0.2$, and not to any of its
   floating-point approximation: there is no "rounding".
-
 \end{example}
 Unlike the promotion of C integer types to mathematical integers,
 there are special float values which do not naturally map to a real
-number, namely NaN, +Infinity and -Infinity. However, ACSL is a logic
-with total functions. There are implicit promotion
-functions \lstinline|real_of_float|\indextt{real\_of\_float} and
-\lstinline|real_of_double|\indextt{real\_of\_double} whose results
-on the 3 values above is left unspecified.
+number, namely the IEEE-754 special values for ``not-a-number'',
+$+\infty$ and $-\infty$. See below for a detalied discussions on such
+special values. However, remember that ACSL's logic has only total
+functions. Thus, there are implicit promotion functions
+\lstinline|real_of_float|\indextt{real\_of\_float} and
+\lstinline|real_of_double|\indextt{real\_of\_double} whose results on
+the 3 values above is left unspecified.
 
-\begin{remark}{Claude}
-  ajouter hexadecimal floating-point constant
-
-  parler des constantes non representables
-
-\end{remark}
-
+In logic, real literals can also be expressed under the hexadecimal
+form of C99: \texttt{0x$hh$.$hh$p$\pm{}dd$} where $h$ are hexadecimal
+digits and $dd$ is in decimal, denotes number $hh.hh\times
+2^{dd}$, e.g. \texttt{0x1.Fp-4} is $(1+15/16)\times 2^{-4}$.
 
 
 Usual operators for comparison are interpreted as real operators
@@ -491,27 +489,17 @@ operators of float (resp. double) numbers as in C:
 
 
 
-\oldremark{DP+all}{
-
-  Il faut de toute facon detailler les constructions de le spec pour
-  parler des flottants: reprend-on celles de Caduceus ? exact(...)
-
-  On peut laisser la main a JCF pour ce point
-
-}
-
 \subsubsection{Casts, infinity and NaNs}
 
-Casting\index{cast} from a C integer type or a float type to a float or a double is
-as in C: the same conversion operations apply.
+Casting\index{cast} from a C integer type or a float type to a float
+or a double is as in C: the same conversion operations apply.
 
 Conversion of real numbers to float or double values indeed depends on
 various possible rounding modes defined by the IEEE~754
 standard~\cite{float-std,wikipedia-float}. These modes are defined by
 a logic type (see section~\ref{sec:concrete-logic-types}):
 \begin{listing-nonumber}
-/*@ type rounding\_mode =
-    Nearest_even | To_zero | Round_up | Round_down | Nearest_away
+/*@ type rounding_mode = \Up | \Down | \ToZero | \NearestAway | \NearestEven;
 */
 \end{listing-nonumber}
 Then rounding a real number can be done explicitly using functions
@@ -589,33 +577,53 @@ doubles). In particular, this does not include NaN, +infinity and
 -infinity in the considered range.
 
 
-\subsubsection{Transcendental functions}
+\subsubsection{Mathematical functions}
 
-Classical mathematical operations like exponential, sine, cosine,
-etc. are supposed to be available in some library (see
-Section~\ref{sec:libreal}).
+Classical mathematical operations like exponential, sine, cosine, and
+such are available as built-in:
 
-\begin{remark}{Claude}
-   ajouter des fonctions predefinies
+\begin{remark}{Virgile}
+  Il faut indexer ces fonctions
 
-   avec ou sans backslash ?
+  Il faut mentionner quelque part que la surcharge des finctions
+  logiques est possible.
 
-   abs
-
-   sqrt
-
-   power
-
-   cos
-
-   sin
-
-   exp , atan2, atan, hypot, ln, etc.
-
-   fma ?
-
-   remainder
 \end{remark}
+
+\begin{listing-nonumber}
+integer \min(integer x, integer y) ;
+integer \max(integer x, integer y) ;
+real \min(real x, real y) ;
+real \max(real x, real y) ;
+integer \abs(integer x) ;
+real \abs(real x) ;
+
+real \sqrt(real x) ;
+real \pow(real x, real y) ;
+
+integer \ceil(real x) ;
+integer \floor(real x) ;
+
+real \exp(real x) ;
+real \log(real x) ;
+real \log10(real x) ;
+
+real \cos(real x) ;
+real \sin(real x) ;
+real \tan(real x) ;
+
+real \cosh(real x) ;
+real \sinh(real x) ;
+real \tanh(real x) ;
+
+real \acos(real x) ;
+real \asin(real x) ;
+real \atan(real x) ;
+
+real \atan2(real y, real x) ;
+real \hypot(real x, real y) ;
+\end{listing-nonumber}
+
 
 \oldremark{All}{  syntaxe pour abs et power ? a priori non, on peut
   fournir une library pour les reels avec abs(), power(), mais
@@ -625,17 +633,44 @@ Section~\ref{sec:libreal}).
 
 }
 
-\oldremark{JCF+All}{
 \subsubsection{Exact computations}
 
-built-in \texttt{exact}: a definir TODO
+In order to specify properties of rounding errors, it is useful to express
+something about the so-called \emph{exact}
+computations~\cite{BoldoFilliatre07}: the computations that would be performed
+in an ideal mode where variables denote true real numbers.
+
+To express such exact computations, two special
+constructs exist in annotations:
+\begin{itemize}
+\item $\verb|\exact|(x)$ denotes the value of the C variable $x$ (or
+  more generally any C left-value) as if the program was executed with
+  ideal real numbers.
+\item $\verb|\round_error|(x)$ is a shortcut for $|x-\verb|\exact|(x)|$
+\end{itemize}
+
+\begin{example}
+Here is an example of a naive approximation of cosine~\cite{ayad09}.
+\begin{verbatim}
+/*@ requires \abs(\exact(x)) <= 0x1p-5; 
+  @ requires \round_error(x) <= 0x1p-20;  
+  @ ensures \abs(\exact(\result) - \cos(\exact(x))) <= 0x1p-24;
+  @ ensures \round_error(\result) <= \round_error(x) + 0x3p-24;  
+  @*/
+float cosine(float x) {
+  return 1.0f - x * x * 0.5f;
+}
+\end{verbatim}
+\end{example}
+
+\begin{remark}{JCF+All}
 
 Que deviennent les champs modeles de caduceus ?
 
 Il faudrait les integrer a une traitement plus general des modeles
 pour des types de donnees
 
-}
+\end{remark}
 
 
 
@@ -662,7 +697,7 @@ non-negative. Access to the length of an logic array can be done with
 //@ type triangle = point[3];
 
 //@ logic point origin = { .x = 0.0 , .y = 0.0 }; 
-/*@ logic point isobarycenter(triangle t) = { 
+/*@ logic point centroid(triangle t) = { 
   @    .x = mean3(t[0].x,t[1].x,t[2].x); 
   @    .y = mean3(t[0].y,t[1].y,t[2].y); 
   @ };
@@ -670,7 +705,7 @@ non-negative. Access to the length of an logic array can be done with
 
 type polygon = point[];
 /*@ logic perimeter(polygon p) =
-  @   \sum(i,0,\length(p)-1,d(p[i],p[(i+1) % \length(p)])) ;
+  @   \sum(0,\length(p)-1,\lambda integer i;d(p[i],p[(i+1) % \length(p)])) ;
   @*/
 \end{verbatim}
 \end{example}
@@ -725,8 +760,8 @@ converse).
   logic point[4] square = { { ... } , { .. } ... }
     
   perimeter(square); // well typed
-  isobarycenter(square); // wrongly typed
-  isobarycenter((triangle)square); // well-typed (truncation)
+  centroid(square); // wrongly typed
+  centroid((triangle)square); // well-typed (truncation)
 \end{example}
 
 
@@ -749,7 +784,7 @@ Subtyping and cast recursively applies to fields.
 \begin{example}
   struct { float u,v; } p[10];
 
-  //@ assert isobarycenter((point[3])p) == ...
+  //@ assert centroid((point[3])p) == ...
 
 
   //@ assert perimeter((point[])p) == ...
@@ -801,6 +836,27 @@ The type system should provide a boolean information on whether a
 given logic term denotes a C memory location (i.e. a C left-value).
 
 
+
+
+\subsection{Function pointers}
+
+Pointers to C functions are allowed in logic. The only possible use of
+them is to check for equality.
+
+\begin{example}
+\begin{verbatim}
+
+
+int f(int x);
+int g(int x);
+
+
+//@ requires p == &f || p == &g;
+void h(int(*p)(int)) {
+...
+}
+\end{verbatim}
+\end{example}
 
 \section{Function contracts}
 \label{sec:fn-behavior}
