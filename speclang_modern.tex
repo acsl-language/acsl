@@ -390,8 +390,10 @@ Thus the formula
 \end{listing-nonumber}
 is equivalent to
 \begin{listing-nonumber}
-\forall integer c; -128 <= c <= 127 ==> c <= 1000
+\forall integer c; MIN_CHAR <= c <= MAX_CHAR ==> c <= 1000
 \end{listing-nonumber}
+where the the bounds \verb|MIN_CHAR| and \verb|MAX_CHAR| are defined
+in \verb|limits.h|
 \end{example}
 
 
@@ -409,14 +411,6 @@ possible to verify the following code:
 Constants giving maximum and minimum values of those types may be
 provided in a library.
 
-\oldremark{Claude}{we need macros \texttt{max\_range} \texttt{min\_range}
-  taking a C integer type as argument, e.g.
-  \texttt{max\_range(unsigned char) = 255} Ces macros, types et
-  variables sont en principe définies dans des \texttt{.h} que la
-  norme spécifie en grande partie (le nom l'est, le type peut y être
-  contraint).  Il faudrait autant que possible se raprocher de ces
-  noms.
-}
 
 \subsubsection{Enum types}
 
@@ -643,6 +637,137 @@ pour des types de donnees
 
 }
 
+
+
+
+\subsection{Structures, Unions and Arrays in logic}
+
+Aggregate C objects (i.e. structures, unions and arrays) are also
+possible values for terms in logic. They can passed as parameters (and
+also returned) to logic functions, tested for equality, etc. like any
+other values.
+
+Aggregate types can be declared in logic, and their contents may be
+any logic types themselves. Constructing such values in logic can be
+performed using a syntax similar to C designated initializers.
+
+Array types in logic may be declared either with an explicit length,
+non-negative. Access to the length of an logic array can be done with
+\verb|\length|.
+
+
+\begin{example}
+\begin{verbatim}
+//@ type point = struct { real x; real y; };
+//@ type triangle = point[3];
+
+//@ logic point origin = { .x = 0.0 , .y = 0.0 }; 
+/*@ logic point isobarycenter(triangle t) = { 
+  @    .x = mean3(t[0].x,t[1].x,t[2].x); 
+  @    .y = mean3(t[0].y,t[1].y,t[2].y); 
+  @ };
+  @*/ 
+
+type polygon = point[];
+/*@ logic perimeter(polygon p) =
+  @   \sum(i,0,\length(p)-1,d(p[i],p[(i+1) % \length(p)])) ;
+  @*/
+\end{verbatim}
+\end{example}
+
+Beware that because of the principle of only total functions in logic,
+t[i] can be written even if i is outside the array bounds.
+
+\subsubsection{Functional updates}
+
+Functional update of a struct is done by
+\begin{verbatim}
+{ s for .x = 3.0 }
+\end{verbatim}
+
+There is no particular syntax for a functional update of a union: it
+is equivalent to a direct initialization.
+
+Functional update of an array is done by
+\begin{verbatim}
+{ t for [3] = { .x = 1.0, .y = 3.0 } }
+\end{verbatim}
+
+other built-in constructs: array.sub ? array.map ? (later)
+
+
+\subsubsection{C aggregate types}
+
+C aggregates types (struct, union or array) naturally map to logic
+types, by recursively mapping their fields.
+
+\begin{example}
+
+struct S { int x; float y; int t[10]; };
+
+//@ logic integer g(struct S s) = s.t[3]; 
+//@ logic struct S f(integer n) = { .x = (int)n , .y = (float)0.0 };
+
+\end{example}
+
+
+
+
+
+\subsubsection{Cast and conversion}
+
+Thus, unlike in C, their is no implicit conversion from an array type
+to a pointer type. However, there is an implicit conversion from array
+of a given size to arrays with unspecified size (but not the
+converse).
+
+\begin{example}
+  logic point[4] square = { { ... } , { .. } ... }
+    
+  perimeter(square); // well typed
+  isobarycenter(square); // wrongly typed
+  isobarycenter((triangle)square); // well-typed (truncation)
+\end{example}
+
+
+The equality predicate \verb|==| applies to aggregate values, but it
+is required that they have the same type. Then equality amounts the
+recursively check equality of fields.  Equality of arrays of different
+lengths returns false.  Beware that equality of unions is also
+equality of all fields.
+
+An explicit cast from a array type to a pointer type is allowed only
+for arrays that lies in C memory, similarly as taking its address (see
+Section~\ref{sec:address}).
+
+Conversely, an explicit cast from a pointer type to an array type or a
+structure type is allowed, and acts as collecting the values it points
+to.
+
+Subtyping and cast recursively applies to fields.
+
+\begin{example}
+  struct { float u,v; } p[10];
+
+  //@ assert isobarycenter((point[3])p) == ...
+
+
+  //@ assert perimeter((point[])p) == ...
+
+\end{example}
+
+Precisely, conversion of a pointer p of type $\tau*$ to an logic array of type 
+$\tau[]$ returns a logic array $t$ such that 
+\[
+\verb|length|(t) = (\verb|block_length|(p) - \verb|offset|(p))/sizeof(\tau) 
+\]
+
+
+
+
+
+
+
 \subsection{String literals}
 
 \begin{remark}{Pascal, Benjamin}
@@ -662,6 +787,19 @@ et utiliser string\_literal\_foo a la place de "foo"
 
 
 \end{remark}
+
+
+
+\subsection{Address operator}
+\label{sec:address}
+
+A particular caution should be taken care with respect to the address
+operator. Values in logic do not lie in C memory so it does not mean
+anything to talk about their ``address''.
+
+The type system should provide a boolean information on whether a
+given logic term denotes a C memory location (i.e. a C left-value).
+
 
 
 \section{Function contracts}
@@ -2336,6 +2474,17 @@ It is used to give behavioral properties to the \lstinline|main| function
 or to any function that may exit the program, \emph{e.g.} by calling
 the \lstinline|exit| function.
 Such a behavior can be written under the following form:
+
+
+\begin{todo}
+  Supprimer le exitbehavior, et utiliser une clause |exits| similaire
+  a ensures.
+
+  Discuter de ext versus return pour la fonction main. Discuter
+    du atexit() : le post-state de la clause exit est-il avant ou
+    apres les fonctions enregistrees par atexit() ? 
+
+\end{todo}
 
 \input{exitbehavior_modern.bnf}
 
