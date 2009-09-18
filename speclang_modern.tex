@@ -1054,7 +1054,7 @@ The semantics of such a contract is as follows:
   performed in a state where the property
   \lstinline|$P$ && ($A_1$ ==> $R_1$) && ($A_2$ ==> $R_2$)| holds.
 \item The called function returns a state where
-the properties \lstinline|\old($A_i$) ==> $E_i$| hold for each $i$.
+the properties \lstinline|\old($A_i$) ==> $E_i$| hold for each~$i$.
 \item For each $i$, if the function is called in a pre-state where
   $A_i$ holds, then each memory location of that pre-state that does not
   belong to the set $L_i$ remains allocated and is left unchanged
@@ -1138,7 +1138,7 @@ See~\ref{sec:loop_annot} for a continuation of this example.
 %
   Its contract means that it assigns values pointed to by
   \lstinline|p| or by \lstinline|q|,
-  conditionally on the sign of \lstinline|n|.
+  conditionally on the sign of~\lstinline|n|.
 \end{example}
 
 
@@ -1160,14 +1160,16 @@ that
 \begin{listing-nonumber}
 R ==> ($A_1$ || $A_2$ || ... || $A_n$)
 \end{listing-nonumber}
-holds, where $R$ is the precondition of the contract. The
-simplified version of that clause
+holds, where $R$ is the precondition of the contract.
+\begin{notimplementedenv}
+The simplified version of that clause
 \begin{listing-nonumber}
 /*@ `\dots`
   @ complete behaviors;
   @*/
 \end{listing-nonumber}
 means that all behaviors given in the contract should be taken into account.
+\end{notimplementedenv}
 
 Similarly, it is not required that two distinct behaviors are disjoint.
 If desired, this can be specified with the following clause:
@@ -1182,13 +1184,16 @@ that, for all distinct $i$ and $j$,
 \begin{listing-nonumber}
 R ==> ! ($A_i$ && $A_j$)
 \end{listing-nonumber}
-holds. The simplified version of that clause
+holds.
+\begin{notimplementedenv}
+The simplified version of that clause
 \begin{listing-nonumber}
 /*@ ...
   @ disjoint behaviors;
   @*/
 \end{listing-nonumber}
 means that all behaviors given in the contract should be taken into account.
+\end{notimplementedenv}
 
 \oldremark{Abandonne}{
 
