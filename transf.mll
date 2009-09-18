@@ -83,7 +83,7 @@ and syntax = parse
       print_string "\\nonterm{";
       print_string (lexeme lexbuf);
       print_string"}";
-      syntax lexbuf }
+      check_nonterm_note lexbuf }
   | '\\' ['a'-'z''A'-'Z'] + {
       print_string (lexeme lexbuf);
       syntax lexbuf }
@@ -98,7 +98,7 @@ and syntax = parse
   | "::=" { print_string "\\is{}"; syntax lexbuf }
   | "|" { print_string "\\orelse{}"; syntax lexbuf }
   | "\\" { print_string "\\sep{}"; syntax lexbuf }
-  | "{" { print_string "\\begin{notimplementedenv}"; check_rq lexbuf }
+  | "{" { print_string "\\begin{notimplementedenv}"; check_implementation_note lexbuf }
   | "}" { print_string "\\end{notimplementedenv}"; syntax lexbuf }
   | _ {
       print_char (lexeme_char lexbuf 0);
@@ -137,13 +137,20 @@ and indoublequote = parse
   | _ as c {
       Buffer.add_char full_kw c;
       indoublequote lexbuf }
-and check_rq = parse
-  | "[" { print_string "["; inbrack lexbuf }
+and check_implementation_note = parse
+  | "[" { print_string "["; implementation_note lexbuf }
   | "" { syntax lexbuf }
-and inbrack = parse
+and implementation_note = parse
     "]" { print_string "]"; syntax lexbuf }
   | _  { print_char (lexeme_char lexbuf 0);
-           inbrack lexbuf }
+           implementation_note lexbuf }
+and check_nonterm_note = parse
+  | "[" { print_string "{"; nonterm_note lexbuf }
+  | ""  { print_string "{}"; syntax lexbuf }
+and nonterm_note = parse
+    "]" { print_string "}"; syntax lexbuf }
+  | _  { print_char (lexeme_char lexbuf 0);
+           nonterm_note lexbuf }
 
 {
 

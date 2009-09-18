@@ -1,4 +1,14 @@
 \begin{syntax}
-exit-behavior ::= {"exit_behavior" ':'} ;
-{(assumes-clause|assigns-clause|ensures-clause)*}
+  abrupt-clauses[syntax allowed under functions contracts] ::= exits-clause
+  \
+  exits-clause ::= {"exits" predicate ";"}
+  \
+  abrupt-clauses[syntax allowed under statement contracts] ::= exits-clause ;
+        | breaks-clause | continues-clause | returns-clause
+  \
+  breaks-clause ::= {"breaks" predicate ";"}
+  \
+  continues-clause ::= {"continues" predicate ";"}
+  \
+  returns-clause ::= {"returns" predicate ";"}
 \end{syntax}

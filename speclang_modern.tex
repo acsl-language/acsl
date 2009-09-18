@@ -882,26 +882,25 @@ void h(int(*p)(int)) {
 
 
 Figure~\ref{fig:gram:contracts} shows a grammar for function
-contracts. Non-terminal \textsl{location}
-is defined later in Section~\ref{sec:locations} (informally, \textsl{location}
-denotes a set of C l-values\index{l-value}).
+contracts. 
+\begin{notreviewedenv}
+Non-terminal \textsl{location} and \notimplemented{\textsl{abrupt-clauses}}
+are defined later in Section~\ref{sec:locations}
+and~\ref{sec:abrupt-clauses} respectivily.
+Informally, \textsl{location} denotes a set of C l-values\index{l-value} 
+and \textsl{abrupt-clauses} can be used to specify properties to 
+functions that may exit the program (\emph{e.g.} by calling the \exit{}
+function).
+\end{notreviewedenv}
 
 This section is organized as follows.  First, the grammar for terms is
 extended with two new constructs.  Then
 Section~\ref{sec:simplecontracts} introduces \emph{simple contracts}.
 Finally, Section~\ref{subsec:behaviors} defines more general contracts
-involving \emph{named behaviors} The \lstinline|decreases| and
+involving \emph{named behaviors}. The \lstinline|decreases| and
 \lstinline|terminates| clauses are presented later in
-Section~\ref{sec:termination}.
+Section~\ref{sec:termination}. 
 
-\oldremark{Patrick}{pourquoi seuls les ``behavior'' peuvent avoir un
-  nom~? Ne peut-t'on pas avoir le ``ident:'' optionnel pour chacune
-  des clauses~? Claude: parce que le nommage de behavior doit servir
-  pour les associer a des clauses du corps de la fonction, p. ex.
-  assert ou loop invariant. Mais on peut aussi proposer par ailleurs
-  de nommer des predicate ou terms, p. ex. avec la notation Caduceus
-  (id : f)
-}
 
 \subsection{Built-in constructs \protect\old{} and \protect\result{}}
 
@@ -916,7 +915,7 @@ constructs (shown in Figure~\ref{fig:gram:oldandresult}).
 \lstinline|\old(e)| and \result{} can be used only in \ensures{} clauses, since
 the other clauses already refer to the pre-state. In addition,
 \result{} can not be used in the contract of a function which returns
-\lstinline|void|.
+\void{}.
 % See Section~\ref{sec:at} for more details on scoping rules for labels.
 
 % [Patrick B.] START proposition:
@@ -1737,47 +1736,18 @@ Such contracts are only valid for the
 corresponding behaviors, in particular only under the
 corresponding \assumes{} clause.
 
-The clauses \lstinline|breaks|, \lstinline|continues| and \lstinline|returns|
-state properties on the program state which hold when the
-annotated statement terminates abruptly with the corresponding
-statement (\lstinline|break|, \lstinline|continue| or \lstinline|return|).
-% [Patrick B.] START proposition:
-Inside these clauses, the construct \lstinline|\old(e)|\indexttbs{old}
-is allowed and denotes, like for statement contracts
-\lstinline{assigns} and \lstinline{ensures}, the value of
-\lstinline|e| in the pre-state of the statement.
-% END proposition
-For the \lstinline|returns| case, the \result\indexttbs{result}
-construct is allowed and bounds to the returned value (if not a
-\lstinline|void| function).
+\begin{todo}
+  Ajouter un exemple avec un \For{}.
+\end{todo}
 
-\begin{example}
-  Here is an example which illustrates each of these special
-  clauses for statement contracts.
-  \listinginput{1}{abrupt_termination.c}
-\end{example}
-
-\oldremark{PC+Claude}{
-
-This allows to pose an assertion on function's state just before it
-returns, (whatever way that return occurs) where it is still possible
-to refer to local variables.
-
-  avoir la meme chose sur toute fin de bloc.
-
-  Mais il semble que c'est deja prevu... -> A VERIFIER qu'on la bien dit.
-
-  De toute facon, il faut detailler
-
-  Garder l'idee principale: on veut des annotations qui parlent a la
-  fois de \result et des variables locales.
-
-  A-t-on besoin de mettre cela pour toute expression ?
-
-  exemple : x = x + (f(..) //@ assert ...\result...) REFUSE'
-
-}
-
+\begin{notreviewedenv}
+The \ensures\indextt{ensures} clause does not constraint the
+post-state when the annoted statement terminates abruptly 
+with a \Break{}, \Continue{} or \Return{} statement, 
+or a call to the \exit{} function.
+To specify such behaviors, \textsl{abrupt clauses} (described in 
+Section~\ref{sec:abrupt-clauses}) can be used.
+\end{notreviewedenv}
 
 
 
@@ -2527,31 +2497,74 @@ to the postcondition
 \forall char* p; \separated(\union(&$l_1$,...,&$l_n$),p) ==> *p == \old(*p)
 \end{listing-nonumber}
 
-\section{Abnormal termination}
+\section{Abrupt termination}
+\label{sec:abrupt-clauses}
+\index{abrupt clause}
 
 \experimental
 
-It is used to give behavioral properties to the \lstinline|main| function
-or to any function that may exit the program, \emph{e.g.} by calling
-the \lstinline|exit| function.
-Such a behavior can be written under the following form:
+\begin{figure}[t]
+  \fbox{\begin{minipage}{0.97\textwidth}
+     \input{exitbehavior_modern.bnf}
+    \end{minipage}}
+    \caption{Grammar of contracts about abrupt terminations}
+  \label{fig:gram:abrupt-clauses}
+\end{figure}
+
+\begin{notreviewedenv}
+The \ensures\indextt{ensures} clause of function and statement contracts 
+does not constraint the post-state when the annoted function and
+statement terminates respectively abruptly. In such cases,
+\textsl{abrupt clauses} can be used inside \textsl{simple clause} or 
+\textsl{behavior body}. The allowed constructs (shown in  
+Figure~\ref{fig:gram:abrupt-clauses}) differs between function and 
+statement contracts.
+\end{notreviewedenv}
+
+
+
+The clauses \breaks{}, \continues{} and \returns{}
+state properties on the program state which hold when the
+annotated statement terminates abruptly with the corresponding
+statement (\Break{}, \Continue{} or \Return{}).
+% [Patrick B.] START proposition:
+Inside these clauses, the construct \lstinline|\old(e)|\indexttbs{old}
+is allowed and denotes, like for statement contracts
+\assigns{} and \ensures{}, the value of
+\lstinline|e| in the pre-state of the statement.
+% END proposition
+For the \lstinline|returns| case, the \result\indexttbs{result}
+construct is allowed and bounds to the returned value (if not a
+\void{} function).
+
+\begin{example}
+  Here is an example which illustrates each of these special
+  clauses for statement contracts.
+  \listinginput{1}{abrupt_termination.c}
+\end{example}
+
+
+\begin{notreviewedenv}
+
+The \exits{} clause can be used either in function or statement
+contracts to give behavioral properties to the \main{} function 
+or to any function that may exit the program, 
+\emph{e.g.} by calling the \exit{} function. 
+In such clause, \result is bound to the return code,
+\emph{e.g} the value returned by \main{} or the argument passed
+to \exit{}.
+\end{notreviewedenv}
+
 
 
 \begin{todo}
-  Supprimer le exitbehavior, et utiliser une clause |exits| similaire
-  a ensures.
+  Ajouter un exemple.
 
   Discuter de ext versus return pour la fonction main. Discuter
     du atexit() : le post-state de la clause exit est-il avant ou
     apres les fonctions enregistrees par atexit() ? 
 
 \end{todo}
-
-\input{exitbehavior_modern.bnf}
-
-In an \textsl{ensures-clause}, \result is bound to the return code,
-\emph{e.g} the value returned by \lstinline|main| or the argument passed
-to \lstinline|exit|.
 
 \oldremark{PC}{
 

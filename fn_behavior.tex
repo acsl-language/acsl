@@ -1,15 +1,16 @@
 \begin{syntax}
-  fun-contract ::= simple-behavior named-behavior* decreases-clause?
+  function-contract ::= simple-behavior named-behavior* decreases-clause?
   \
   simple-behavior ::= simple-clauses* terminates-clause? simple-clauses*
   \
-  simple-clauses ::= requires-clause | assigns-clause | ensures-clause
+  simple-clauses ::= requires-clause | assigns-clause | ensures-clause ;
+                   | {abrupt-clauses}
   \
   named-behavior ::= "behavior" id ":" behavior-body
   \
   behavior-body ::= (assumes-clause |
-                     {[not in a named behavior]requires-clause} ;
-                    | assigns-clause | ensures-clause ) *
+                     {[not implemented in a named behavior]requires-clause} ;
+                    | assigns-clause | ensures-clause | {abrupt-clauses}) *
               \
   assumes-clause ::= "assumes" predicate ";"
   \
@@ -19,7 +20,7 @@
   \
   locations ::= location ("," location) * | "\nothing"
   \
-  ensures-clause ::= "ensures" predicate ";"
+  ensures-clauses ::= "ensures" predicate ";"
   \
   decreases-clause ::= "decreases" term ("for" ident)? ";"
   \

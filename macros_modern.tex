@@ -90,14 +90,21 @@
 \newcommand{\integer}{\keyword{integer}}
 \newcommand{\real}{\keyword{real}}
 \newcommand{\bool}{\keyword{boolean}}
+
 \newcommand{\assert}{\keyword{assert}}
+\newcommand{\terminates}{\keyword{terminates}}
 \newcommand{\assume}{\keyword{assume}}
 \newcommand{\requires}{\keyword{requires}}
 \newcommand{\ensures}{\keyword{ensures}}
+\newcommand{\exits}{\keyword{exits}}
+\newcommand{\returns}{\keyword{returns}}
+\newcommand{\breaks}{\keyword{breaks}}
+\newcommand{\continues}{\keyword{continues}}
 \newcommand{\assumes}{\keyword{assumes}}
 \newcommand{\assigns}{\keyword{assigns}}
 \newcommand{\reads}{\keyword{reads}}
 \newcommand{\decreases}{\keyword{decreases}}
+
 \newcommand{\boundseparated}{\keywordbs{bound\_separated}}
 \newcommand{\Exists}{\keywordbs{exists}~}
 \newcommand{\Forall}{\keywordbs{forall}~}
@@ -121,6 +128,13 @@
 \newcommand{\While}{~\keyword{while}~}
 \newcommand{\Do}{~\keyword{do}~}
 \newcommand{\Let}{\keywordbs{let}~}
+\newcommand{\Break}{\keyword{break}}
+\newcommand{\Return}{\keyword{return}}
+\newcommand{\Continue}{\keyword{continue}}
+
+\newcommand{\exit}{\keyword{exit}}
+\newcommand{\main}{\keyword{main}}
+\newcommand{\void}{\keyword{void}}
 
 \newcommand{\struct}{\keyword{struct}}
 \newcommand{\union}{\keywordbs{union}}
@@ -151,8 +165,10 @@
 \newcommand{\addspace}{\ifspace ~ \spacefalse \fi}
 \newcommand{\term}[2]{\addspace\hbox{\lstinline|#1|%
 \ifthenelse{\equal{#2}{}}{}{\indexttbase{#2}{#1}}}\spacetrue}
-\newcommand{\nonterm}[1]{%
-\addspace\hbox{\textsl{#1}\ifnewentry\index{grammar entries!\textsl{#1}}\fi}\spacetrue}
+\newcommand{\nonterm}[2]{%
+  \ifthenelse{\equal{#2}{}}%
+             {\addspace\hbox{\textsl{#1}\ifnewentry\index{grammar entries!\textsl{#1}}\fi}\spacetrue}%
+             {\addspace\hbox{\textsl{#1}\footnote{#2}\ifnewentry\index{grammar entries!\textsl{#1}}\fi}\spacetrue}}
 \newcommand{\repetstar}{$^*$\spacetrue}
 \newcommand{\repetplus}{$^+$\spacetrue}
 \newcommand{\repetone}{$^?$\spacetrue}
