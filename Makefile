@@ -25,7 +25,7 @@ DEPS_MODERN=speclang_modern.tex macros_modern.tex                       \
 	exitbehavior_modern.bnf dependencies_modern.bnf sum2.c		\
 	modifier.c gen_spec_with_ghost.c terminates_list.c		\
 	glob_var_masked.c glob_var_masked_sol.c intlists.c sign.c	\
-	signdef.c oldat.c mean.c isgcd.c
+	signdef.c oldat.c mean.c isgcd.c exit.c mayexit.c
 
 .PHONY: all install acsl tutorial
 

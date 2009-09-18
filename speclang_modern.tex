@@ -2553,13 +2553,21 @@ or to any function that may exit the program,
 In such clause, \result is bound to the return code,
 \emph{e.g} the value returned by \main{} or the argument passed
 to \exit{}.
+
+\begin{example}
+  Here is a complete specification of the \exit{} function which
+  performs an unconditional exit of the \main{} function:
+  \listinginput{1}{exit.c}
+  The specification of the \lstinline|may_exit| function is incomplete
+  in the sense its contract allows modifications of the variable 
+  \lstinline|status| when no exit is performed.
+  A complete specification could be:
+  \listinginput{9}{mayexit.c}
+\end{example}
 \end{notreviewedenv}
 
 
-
 \begin{todo}
-  Ajouter un exemple.
-
   Discuter de ext versus return pour la fonction main. Discuter
     du atexit() : le post-state de la clause exit est-il avant ou
     apres les fonctions enregistrees par atexit() ? 
