@@ -1735,16 +1735,12 @@ corresponding \assumes{} clause.
   Ajouter un exemple avec un \For{}.
 \end{todo}
 
-\begin{notreviewedenv}
 The \ensures\indextt{ensures} clause does not constraint the
-post-state when the annoted statement terminates abruptly
+post-state when the annotated statement terminates abruptly
 with a \Break{}, \Continue{} or \Return{} statement,
 or a call to the \exit{} function.
 To specify such behaviors, \textsl{abrupt clauses} (described in
-Section~\ref{sec:abrupt-clauses}) can be used.
-\end{notreviewedenv}
-
-
+Section~\ref{sec:abrupt-clauses}) need to be used.
 
 \section{Termination}
 \label{sec:termination}
@@ -2506,28 +2502,24 @@ to the postcondition
   \label{fig:gram:abrupt-clauses}
 \end{figure}
 
-\begin{notreviewedenv}
 The \ensures\indextt{ensures} clause of function and statement contracts
-does not constraint the post-state when the annoted function and
+does not constraint the post-state when the annotated function and
 statement terminates respectively abruptly. In such cases,
 \textsl{abrupt clauses} can be used inside \textsl{simple clause} or
-\textsl{behavior body}. The allowed constructs (shown in
-Figure~\ref{fig:gram:abrupt-clauses}) differs between function and
-statement contracts.
-\end{notreviewedenv}
-
-
+\textsl{behavior body}. The allowed constructs are shown in
+Figure~\ref{fig:gram:abrupt-clauses}.
 
 The clauses \breaks{}, \continues{} and \returns{}
+can only be found in a statement contract and
 state properties on the program state which hold when the
 annotated statement terminates abruptly with the corresponding
 statement (\Break{}, \Continue{} or \Return{}).
-% [Patrick B.] START proposition:
+
 Inside these clauses, the construct \lstinline|\old(e)|\indexttbs{old}
 is allowed and denotes, like for statement contracts
 \assigns{} and \ensures{}, the value of
 \lstinline|e| in the pre-state of the statement.
-% END proposition
+
 For the \lstinline|returns| case, the \result\indexttbs{result}
 construct is allowed and bounds to the returned value (if not a
 \void{} function).
@@ -2538,8 +2530,6 @@ construct is allowed and bounds to the returned value (if not a
   \listinginput{1}{abrupt_termination.c}
 \end{example}
 
-
-\begin{notreviewedenv}
 
 The \exits{} clause can be used either in function or statement
 contracts to give behavioral properties to the \main{} function
@@ -2553,20 +2543,20 @@ to \exit{}.
   Here is a complete specification of the \exit{} function which
   performs an unconditional exit of the \main{} function:
   \listinginput{1}{exit.c}
-  The specification of the \lstinline|may_exit| function is incomplete
-  in the sense its contract allows modifications of the variable
+  Note that the specification of the \lstinline|may_exit|
+  function is incomplete allows modifications of the variable
   \lstinline|status| when no exit is performed.
-  A complete specification could be:
+  Using behaviors, it is possible to distinguish between the exit case
+  and the normal case, as in the following specification.
   \listinginput{9}{mayexit.c}
 \end{example}
-\end{notreviewedenv}
-
 
 \begin{todo}
   Discuter de ext versus return pour la fonction main. Discuter
     du atexit() : le post-state de la clause exit est-il avant ou
     apres les fonctions enregistrees par atexit() ?
 
+    \lstinline|\exit_status| vs \lstinline|\result| pour les clauses exit?
 \end{todo}
 
 \oldremark{PC}{

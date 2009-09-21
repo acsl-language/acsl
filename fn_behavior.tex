@@ -4,13 +4,13 @@
   simple-behavior ::= simple-clauses* terminates-clause? simple-clauses*
   \
   simple-clauses ::= requires-clause | assigns-clause | ensures-clause ;
-                   | {abrupt-clauses}
+                   | {abrupt-clause-fn}
   \
   named-behavior ::= "behavior" id ":" behavior-body
   \
   behavior-body ::= (assumes-clause |
                      {[not implemented in a named behavior]requires-clause} ;
-                    | assigns-clause | ensures-clause | {abrupt-clauses}) *
+                    | assigns-clause | ensures-clause | {abrupt-clauses-fn}) *
               \
   assumes-clause ::= "assumes" predicate ";"
   \

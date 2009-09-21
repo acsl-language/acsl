@@ -1,9 +1,9 @@
 \begin{syntax}
-  abrupt-clauses[syntax allowed under functions contracts] ::= exits-clause
+  abrupt-clauses-fn ::= exits-clause
   \
   exits-clause ::= {"exits" predicate ";"}
   \
-  abrupt-clauses[syntax allowed under statement contracts] ::= exits-clause ;
+  abrupt-clauses-stmt ::= exits-clause ;
         | breaks-clause | continues-clause | returns-clause
   \
   breaks-clause ::= {"breaks" predicate ";"}

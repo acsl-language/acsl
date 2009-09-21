@@ -122,7 +122,7 @@ clean:
 # version WEB liée à ce qui est implementé
 acsl-implementation.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
 
-acsl.tex: $(MAIN).tex
+acsl-implementation.tex: $(MAIN).tex
 	rm -f $@
 	sed -e '/PrintRemarks/s/%--//' $^ > $@
 	chmod a-w $@
@@ -130,7 +130,7 @@ acsl.tex: $(MAIN).tex
 # version WEB du langage ACSL
 acsl.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
 
-acsl-implementation.tex: acsl.tex
+acsl.tex: acsl-implementation.tex
 	rm -f $@
 	sed -e '/PrintImplementationRq/s/%--//' $^ > $@
 	chmod a-w $@
