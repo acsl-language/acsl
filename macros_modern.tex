@@ -2,8 +2,24 @@
 %%% commandes dont la définition est vide,
 %%% lorsque PrintRemarks=false
 
+% true = prints remarks for the ACSL working group.
+% false = prints no remark for the distributed version of ASCL documents
+\newboolean{PrintRemarks}
+\setboolean{PrintRemarks}{true}
+
+% true = prints marks signaling the state of the implementation
+% false = prints only the ACSL definition, without remarks on implementation.
+\newboolean{PrintImplementationRq}
+\setboolean{PrintImplementationRq}{true}
+
+% true = remarks about the current state of implementation in Frama-C
+% are in color.
+% false = they are rendered with an underline
+\newboolean{ColorImplementationRq}
+\setboolean{ColorImplementationRq}{true}
+
 \ifthenelse{\boolean{PrintRemarks}}%
-      {\newenvironment{todo}{%  
+      {\newenvironment{todo}{%
             \begin{quote}%
             \begin{tabular}{||p{0.8\textwidth}}TODO~:\itshape}%
            {\end{tabular}\end{quote}}}%

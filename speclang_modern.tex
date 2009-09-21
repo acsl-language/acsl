@@ -652,10 +652,10 @@ constructs exist in annotations:
 \begin{example}
 Here is an example of a naive approximation of cosine~\cite{ayad09}.
 \begin{verbatim}
-/*@ requires \abs(\exact(x)) <= 0x1p-5; 
-  @ requires \round_error(x) <= 0x1p-20;  
+/*@ requires \abs(\exact(x)) <= 0x1p-5;
+  @ requires \round_error(x) <= 0x1p-20;
   @ ensures \abs(\exact(\result) - \cos(\exact(x))) <= 0x1p-24;
-  @ ensures \round_error(\result) <= \round_error(x) + 0x3p-24;  
+  @ ensures \round_error(\result) <= \round_error(x) + 0x3p-24;
   @*/
 float cosine(float x) {
   return 1.0f - x * x * 0.5f;
@@ -696,12 +696,12 @@ non-negative. Access to the length of an logic array can be done with
 //@ type point = struct { real x; real y; };
 //@ type triangle = point[3];
 
-//@ logic point origin = { .x = 0.0 , .y = 0.0 }; 
-/*@ logic point centroid(triangle t) = { 
-  @    .x = mean3(t[0].x,t[1].x,t[2].x); 
-  @    .y = mean3(t[0].y,t[1].y,t[2].y); 
+//@ logic point origin = { .x = 0.0 , .y = 0.0 };
+/*@ logic point centroid(triangle t) = {
+  @    .x = mean3(t[0].x,t[1].x,t[2].x);
+  @    .y = mean3(t[0].y,t[1].y,t[2].y);
   @ };
-  @*/ 
+  @*/
 
 type polygon = point[];
 /*@ logic perimeter(polygon p) =
@@ -740,7 +740,7 @@ types, by recursively mapping their fields.
 
 struct S { int x; float y; int t[10]; };
 
-//@ logic integer g(struct S s) = s.t[3]; 
+//@ logic integer g(struct S s) = s.t[3];
 //@ logic struct S f(integer n) = { .x = (int)n , .y = (float)0.0 };
 
 \end{example}
@@ -758,7 +758,7 @@ converse).
 
 \begin{example}
   logic point[4] square = { { ... } , { .. } ... }
-    
+
   perimeter(square); // well typed
   centroid(square); // wrongly typed
   centroid((triangle)square); // well-typed (truncation)
@@ -791,10 +791,10 @@ Subtyping and cast recursively applies to fields.
 
 \end{example}
 
-Precisely, conversion of a pointer p of type $\tau*$ to an logic array of type 
-$\tau[]$ returns a logic array $t$ such that 
+Precisely, conversion of a pointer p of type $\tau*$ to an logic array of type
+$\tau[]$ returns a logic array $t$ such that
 \[
-\verb|length|(t) = (\verb|block_length|(p) - \verb|offset|(p))/sizeof(\tau) 
+\verb|length|(t) = (\verb|block_length|(p) - \verb|offset|(p))/sizeof(\tau)
 \]
 
 
@@ -882,16 +882,11 @@ void h(int(*p)(int)) {
 
 
 Figure~\ref{fig:gram:contracts} shows a grammar for function
-contracts. 
-\begin{notreviewedenv}
-Non-terminal \textsl{location} and \notimplemented{\textsl{abrupt-clauses}}
-are defined later in Section~\ref{sec:locations}
-and~\ref{sec:abrupt-clauses} respectivily.
-Informally, \textsl{location} denotes a set of C l-values\index{l-value} 
-and \textsl{abrupt-clauses} can be used to specify properties to 
-functions that may exit the program (\emph{e.g.} by calling the \exit{}
-function).
-\end{notreviewedenv}
+contracts. \textsl{location} denotes a memory location and is defined
+in Section~\ref{sec:locations}. \notimplemented{\textsl{abrupt-clauses}}
+allow to specify what happens when the function does not return
+normally but \lstinline|exit|s abruptly. They are defined in
+Section~\ref{sec:abrupt-clauses}.
 
 This section is organized as follows.  First, the grammar for terms is
 extended with two new constructs.  Then
@@ -899,7 +894,7 @@ Section~\ref{sec:simplecontracts} introduces \emph{simple contracts}.
 Finally, Section~\ref{subsec:behaviors} defines more general contracts
 involving \emph{named behaviors}. The \lstinline|decreases| and
 \lstinline|terminates| clauses are presented later in
-Section~\ref{sec:termination}. 
+Section~\ref{sec:termination}.
 
 
 \subsection{Built-in constructs \protect\old{} and \protect\result{}}
@@ -990,7 +985,7 @@ default status of clauses.
   the conjunction of the three \ensures{} clauses.
 % [Patrick B.] START proposition:
   Inside these \ensures{} clauses, the use of the construct \lstinline|\old(x)|
-  is not necessary, even if the function modifies the formal 
+  is not necessary, even if the function modifies the formal
   parameter\index{formal parameter}
   \lstinline|x|, because function calls modify a copy of the effective parameters,
   and the effective parameters remain unaltered.  In fact, \lstinline|x| denotes
@@ -1669,17 +1664,17 @@ It is also visible in data invariants, presented in Section~\ref{sec:invariants}
 \item The label \lstinline|Pre| is visible in all statement annotations,
   and refers to the pre-state of the function it occurs in.
 \item The label \lstinline|Post| is visible in
-\lstinline|assigns| and \lstinline|ensures| clauses of all contracts, 
+\lstinline|assigns| and \lstinline|ensures| clauses of all contracts,
 and it refers to the post-state.
 
 \end{itemize}
 
 % [Patrick B.] START proposition:
 There is one particular case for \lstinline|assigns| and \lstinline|ensures|
-clauses of function contracts where formal parameters\index{formal parameter} 
+clauses of function contracts where formal parameters\index{formal parameter}
 of functions cannot refer to the label \lstinline|Post|.
 In such clauses formal parameters always refer implicitly to the label
-\lstinline|Pre|, and any \lstinline|\at| construct can modify the 
+\lstinline|Pre|, and any \lstinline|\at| construct can modify the
 interpretation of formal parameters.
 % END proposition
 
@@ -1742,10 +1737,10 @@ corresponding \assumes{} clause.
 
 \begin{notreviewedenv}
 The \ensures\indextt{ensures} clause does not constraint the
-post-state when the annoted statement terminates abruptly 
-with a \Break{}, \Continue{} or \Return{} statement, 
+post-state when the annoted statement terminates abruptly
+with a \Break{}, \Continue{} or \Return{} statement,
 or a call to the \exit{} function.
-To specify such behaviors, \textsl{abrupt clauses} (described in 
+To specify such behaviors, \textsl{abrupt clauses} (described in
 Section~\ref{sec:abrupt-clauses}) can be used.
 \end{notreviewedenv}
 
@@ -2512,12 +2507,12 @@ to the postcondition
 \end{figure}
 
 \begin{notreviewedenv}
-The \ensures\indextt{ensures} clause of function and statement contracts 
+The \ensures\indextt{ensures} clause of function and statement contracts
 does not constraint the post-state when the annoted function and
 statement terminates respectively abruptly. In such cases,
-\textsl{abrupt clauses} can be used inside \textsl{simple clause} or 
-\textsl{behavior body}. The allowed constructs (shown in  
-Figure~\ref{fig:gram:abrupt-clauses}) differs between function and 
+\textsl{abrupt clauses} can be used inside \textsl{simple clause} or
+\textsl{behavior body}. The allowed constructs (shown in
+Figure~\ref{fig:gram:abrupt-clauses}) differs between function and
 statement contracts.
 \end{notreviewedenv}
 
@@ -2547,9 +2542,9 @@ construct is allowed and bounds to the returned value (if not a
 \begin{notreviewedenv}
 
 The \exits{} clause can be used either in function or statement
-contracts to give behavioral properties to the \main{} function 
-or to any function that may exit the program, 
-\emph{e.g.} by calling the \exit{} function. 
+contracts to give behavioral properties to the \main{} function
+or to any function that may exit the program,
+\emph{e.g.} by calling the \exit{} function.
 In such clause, \result is bound to the return code,
 \emph{e.g} the value returned by \main{} or the argument passed
 to \exit{}.
@@ -2559,7 +2554,7 @@ to \exit{}.
   performs an unconditional exit of the \main{} function:
   \listinginput{1}{exit.c}
   The specification of the \lstinline|may_exit| function is incomplete
-  in the sense its contract allows modifications of the variable 
+  in the sense its contract allows modifications of the variable
   \lstinline|status| when no exit is performed.
   A complete specification could be:
   \listinginput{9}{mayexit.c}
@@ -2570,7 +2565,7 @@ to \exit{}.
 \begin{todo}
   Discuter de ext versus return pour la fonction main. Discuter
     du atexit() : le post-state de la clause exit est-il avant ou
-    apres les fonctions enregistrees par atexit() ? 
+    apres les fonctions enregistrees par atexit() ?
 
 \end{todo}
 
@@ -3100,4 +3095,5 @@ is not the address of a local variable refered to outside of its scope)
 %%% mode: latex
 %%% TeX-PDF-mode: t
 %%% TeX-master: "main"
+%%% ispell-local-dictionary: "english"
 %%% End:

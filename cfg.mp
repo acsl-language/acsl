@@ -3,8 +3,9 @@ verbatimtex
 \documentclass[a4paper,11pt,twoside,openright]{report}
 \usepackage[T1]{fontenc}
 \usepackage{times}
+\usepackage{ifthen}
 \usepackage{color}
-\input{macros}
+\input{macros_modern}
 \begin{document}
 etex
 
