@@ -123,9 +123,11 @@ With respect to C pure expressions, the additional constructs are as follows:
   the name cannot be reused in other terms or predicates. It is only
   for readibility purposes.
 
-\item[Functional modifier] The composite element modifier is an additional
+\item[Functional modifier]   
+ \begin{notimplementedenv}
+  The composite element modifier is an additional
   operator in relation to the C structure field and array accessors.
-  The expression \lstinline|{ s for id = v }|
+  The expression \lstinline|{ s for .id = v }|
   denotes the same structure than \lstinline|s|, except for the field
   \lstinline|id| to be modified by \lstinline|v|.
   The equivalent expression for an array is
@@ -134,6 +136,7 @@ With respect to C pure expressions, the additional constructs are as follows:
   \lstinline|i$^{th}$| element those value
   is updated to \lstinline|v|.
   See Section~\ref{sec:func-dep} for an example of use of these operators.
+ \end{notimplementedenv}
 
 \item[Logic functions] Applications in terms and in propositions are not
 applications of C functions, but of logic functions or predicates; see
@@ -2606,8 +2609,10 @@ corresponding contract.
 
 
 \begin{example}
+ \begin{notimplementedenv}
   % This exemple is referenced in a previous section.
   The composite element modifier operators are useful additional constructs for such functional expressions.
+ \end{notimplementedenv}
   \listinginput{1}{modifier.c}
 \end{example}
 
