@@ -2538,9 +2538,16 @@ The \exits{} clause can be used either in function or statement
 contracts to give behavioral properties to the \main{} function
 or to any function that may exit the program,
 \emph{e.g.} by calling the \exit{} function.
-In such clause, \result is bound to the return code,
-\emph{e.g} the value returned by \main{} or the argument passed
-to \exit{}.
+\begin{notreviewedenv}
+In such clause, \lstinline|\old(e)|\indexttbs{old}
+is allowed and denotes the value of \lstinline|e| in the pre-state of
+the function or statement, 
+and \lstinline|\exit_status| is bound to the return code, 
+\emph{e.g} the value returned by \main{} or the argument passed to \exit{}. 
+The  construct \lstinline|\exit_status|\indexttbs{exit_status} can be used only in \exits{}
+and \assigns{} clauses. Of course, \result cannot be used in \exits{} clauses.
+\end{notreviewedenv}
+
 
 \begin{example}
   Here is a complete specification of the \exit{} function which

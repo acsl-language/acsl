@@ -1,13 +1,13 @@
 /*@ assigns \nothing;
   @ ensures \false;
-  @ exits   \result == status;
+  @ exits   \exit_status == status;
   @*/
 void exit(int status);
 
 int status;
 
 /*@ assigns status;
-  @ exits   !cond && \result == 1 && status == val;
+  @ exits   !cond && \exit_status == 1 && status == val;
   @*/
 void may_exit(int cond, int val) {
   if (! cond) {
