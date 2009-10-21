@@ -1,16 +1,16 @@
 \begin{syntax}
   abrupt-clauses-fn ::= exits-clause
   \
-  exits-clause ::= {"exits" predicate ";"}
+  exits-clause ::= "exits" predicate ";"
   \
   abrupt-clauses-stmt ::= exits-clause ;
         | breaks-clause | continues-clause | returns-clause
   \
-  breaks-clause ::= {"breaks" predicate ";"}
+  breaks-clause ::= "breaks" predicate ";"
   \
-  continues-clause ::= {"continues" predicate ";"}
+  continues-clause ::= "continues" predicate ";"
   \
-  returns-clause ::= {"returns" predicate ";"}
+  returns-clause ::= "returns" predicate ";"
   \
-  term  ::= {"\exit_status"}
+  term  ::= "\exit_status"
 \end{syntax}

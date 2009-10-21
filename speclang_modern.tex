@@ -123,7 +123,7 @@ With respect to C pure expressions, the additional constructs are as follows:
   the name cannot be reused in other terms or predicates. It is only
   for readibility purposes.
 
-\item[Functional modifier]   
+\item[Functional modifier]
  \begin{notimplementedenv}
   The composite element modifier is an additional
   operator in relation to the C structure field and array accessors.
@@ -886,7 +886,7 @@ void h(int(*p)(int)) {
 
 Figure~\ref{fig:gram:contracts} shows a grammar for function
 contracts. \textsl{location} denotes a memory location and is defined
-in Section~\ref{sec:locations}. \notimplemented{\textsl{abrupt-clauses}}
+in Section~\ref{sec:locations}. \textsl{abrupt-clauses}
 allow to specify what happens when the function does not return
 normally but \lstinline|exit|s abruptly. They are defined in
 Section~\ref{sec:abrupt-clauses}.
@@ -2538,16 +2538,15 @@ The \exits{} clause can be used either in function or statement
 contracts to give behavioral properties to the \main{} function
 or to any function that may exit the program,
 \emph{e.g.} by calling the \exit{} function.
-\begin{notreviewedenv}
-In such clause, \lstinline|\old(e)|\indexttbs{old}
-is allowed and denotes the value of \lstinline|e| in the pre-state of
-the function or statement, 
-and \lstinline|\exit_status| is bound to the return code, 
-\emph{e.g} the value returned by \main{} or the argument passed to \exit{}. 
-The  construct \lstinline|\exit_status|\indexttbs{exit_status} can be used only in \exits{}
-and \assigns{} clauses. Of course, \result cannot be used in \exits{} clauses.
-\end{notreviewedenv}
 
+In such clauses, \lstinline|\old(e)|\indexttbs{old}
+is allowed and denotes the value of \lstinline|e| in the pre-state of
+the function or statement,
+and \lstinline|\exit_status| is bound to the return code,
+\emph{e.g} the value returned by \main{} or the argument passed to \exit{}.
+The  construct \lstinline|\exit_status|\indexttbs{exit_status} can be used only in \exits{}
+and \assigns{} clauses. On the contrary,
+\result cannot be used in \exits{} clauses.
 
 \begin{example}
   Here is a complete specification of the \exit{} function which
@@ -2566,7 +2565,6 @@ and \assigns{} clauses. Of course, \result cannot be used in \exits{} clauses.
     du atexit() : le post-state de la clause exit est-il avant ou
     apres les fonctions enregistrees par atexit() ?
 
-    \lstinline|\exit_status| vs \lstinline|\result| pour les clauses exit?
 \end{todo}
 
 \oldremark{PC}{

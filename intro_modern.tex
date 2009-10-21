@@ -1,8 +1,11 @@
 %; whizzy-master "main.tex"
 \chapter{Introduction}
 
-This document is a reference manual for the ACSL implementation
-provided by the Frama-C framework~\cite{frama-c}.
+This document is a reference manual for
+\ifthenelse{\boolean{PrintImplementationRq}}%
+{the ACSL implementation provided by the Frama-C
+  framework~\cite{frama-c}.}%
+{ACSL.}
 ACSL is an acronym for ``ANSI C
 Specification Language''. This is a Behavioral Interface Specification
 Language (BISL) implemented in the \textsc{Frama-C} framework.
