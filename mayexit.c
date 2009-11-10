@@ -6,6 +6,6 @@
   @   assumes !cond;
   @   assigns status;
   @   exits   \result == 1 && status == val;
-  @   returns \false;
+  @   ensures \false;
   @*/
 void may_exit(int cond, int val) ;
