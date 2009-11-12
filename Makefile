@@ -1,5 +1,5 @@
 MAIN=main
-DEPS_MODERN=speclang_modern.tex macros_modern.tex                       \
+DEPS_MODERN=speclang_modern.tex macros_modern.tex framacversion.tex     \
 	intro_modern.tex libraries_modern.tex compjml_modern.tex        \
 	div_lemma.c assigns.c invariants.c		                \
 	example-lt-modern.tex isqrt.c sizeof.c incrstar.c		\
@@ -27,6 +27,9 @@ DEPS_MODERN=speclang_modern.tex macros_modern.tex                       \
 	glob_var_masked.c glob_var_masked_sol.c intlists.c sign.c	\
 	signdef.c oldat.c mean.c isgcd.c exit.c mayexit.c
 
+TUTORIAL_EXAMPLES=max_ptr-tut.c max_ptr2-tut.c max_ptr_bhv-tut.c \
+                  max_seq_ghost-tut.c
+
 .PHONY: all install acsl tutorial
 
 acsl: acsl-implementation.pdf acsl.pdf main.pdf
@@ -37,6 +40,19 @@ tutorial: tutorial-check acsl-mini-tutorial.pdf acsl-mini-tutorial.html
 
 install: acsl-implementation.pdf acsl.pdf
 	cp -f acsl-implementation.pdf acsl.pdf ../manuals/
+
+FRAMAC=FRAMAC_PLUGIN=../../lib/plugins ../../bin/toplevel.byte
+
+HAS_JESSIE=`if $(FRAMAC) -jessie-help; then echo yes; else echo no; fi`
+
+ifeq ($(HAS_JESSIE),no)
+tutorial-valid:
+	@echo "you need a working jessie plugin (and alt-ergo) to verify that \
+               the examples of the tutorial are all proved"
+	@exit 2
+else
+tutorial-valid: $(TUTORIAL_EXAMPLES:.c=.proved)
+endif
 
 include ../MakeLaTeXModern
 
@@ -85,19 +101,26 @@ transf: transf.cmo transfmain.cmo
 %.cmo: %.ml
 	ocamlc -c $<
 
+%.proved:%.c acsl-mini-tutorial.tex
+	$(FRAMAC) -jessie-atp simplify -jessie $<
+	touch $@
+%.gproved:%.c acsl-mini-tutorial.tex
+	$(FRAMAC) -jessie $<
+
+
 transfmain.cmo: transf.cmo
 
 .PHONY: check tutorial-check
 
 check:
 	gcc -c -std=c99 *.c
-	for f in *.c ; do ../../bin/toplevel.byte -pp-annot $$f ; done
+	for f in *.c ; do $(FRAMAC) -pp-annot $$f ; done
 
 tutorial-check: acsl-mini-tutorial.tex
 	@for f in *-tut.c; do \
             echo "***Starting analysis of $$f"; \
             gcc -c -std=c99 $$f; \
-            ../../bin/toplevel.byte -pp-annot $$f; \
+            $(FRAMAC) -pp-annot $$f; \
         done
 
 acsl-mini-tutorial.pdf: acsl-mini-tutorial.tex mini-biblio.bib

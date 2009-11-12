@@ -64,7 +64,7 @@
 \hbadness=10000
 
 \ifthenelse{\boolean{PrintImplementationRq}}%
-  {\coverpage{ACSL Implementation}}%
+  {\coverpage{ACSL Implementation in \framacversion}}%
   {\coverpage{ACSL: ANSI/ISO C Specification Language}}
 
 \begin{titlepage}
@@ -73,7 +73,8 @@
 \includegraphics[height=14mm]{inriasaclaylogo.png}
 \vfill
 \title{ACSL: ANSI/ISO C Specification Language}%
-{Version \version{} -- Frama-C Beryllium implementation}
+{Version \version{}\ifthenelse\boolean{PrintImplementationRq}%
+{~--~\framacversion}{}}
 \author{Patrick Baudin$^1$, Pascal Cuoq$^1$, Jean-Christophe Filli\^atre$^{4,3}$, Claude March\'e$^{3,4}$,\\ Benjamin Monate$^1$, Yannick Moy$^{2,4,3}$, Virgile Prevosto$^1$}
 
 \begin{tabular}{l}

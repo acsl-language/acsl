@@ -1,20 +1,16 @@
 \documentclass{report}
 \usepackage[utf8]{inputenc}
 \usepackage[a4paper=true,pdftex,colorlinks=true,urlcolor=blue,pdfstartview=FitH]{hyperref}
-
+\usepackage[english]{babel}
+\usepackage{graphicx}
 \usepackage[T1]{fontenc}
 \usepackage{times}
-\usepackage{amssymb}
-\usepackage{graphicx}
-%\usepackage{tikz}
-\usepackage{color}
-\usepackage{xspace}
-\usepackage{makeidx}
-%\usepackage{ulem}
-\usepackage[leftbars]{changebar}
 \usepackage{alltt}
+\usepackage{color}
+\usepackage{ifthen}
 \usepackage{hevea}
-\input{./macros}
+\usepackage{amssymb}
+\input{./macros_modern}
 
 \htmlprefix{ACSL Tutorial: }
 
@@ -89,6 +85,7 @@
 \vspace{20mm}
 
 {\Huge\bfseries ACSL Mini-Tutorial}
+
 \begin{latexonly}
 \bigskip
 
@@ -168,10 +165,6 @@ contract is written immediately above the function declaration.
 In this example, the contract contains only post-conditions
 (\verb+ensures+ clauses),
 as \verb+max+ does not have any particular requirement.
-%We could have
-%added as a pre-condition the always-true formula, with the
-%\verb+requires \true;+ clause, but this is not mandatory.
-%Less trival \verb+requires+ clauses will be illustrated in the next examples.
 The first \verb+ensures+ clause expresses the fact that the result
 of \verb+max+ is greater than both \verb+x+ and \verb+y+, the arguments of
 \verb+max+. The second clause mandates that the result is equal to either
@@ -192,14 +185,146 @@ practice for real-life examples, complemented by informal specifications.
 For instance, the above specification for \verb|max| is in fact
 partial, for reasons that will become clearer later.
 
-\chapter{Pointers and Arrays}\cutname{acsl_tutorial_pointer.html}
-Now that we have specified a \verb+max+ function, we can use it to extract the
+\chapter{Pointers}\cutname{acsl_tutorial_pointer.html}
+\section{A First Specification}
+Let us now consider a small program involving pointers. Informally,
+the \verb+max_ptr+ function takes two pointers as argument, and if
+necessary swaps the two pointed values so that the value stored in the
+first pointer is the minimal one and the value stored in the second
+pointer is the maximal one. A specification can be the following:
+\begin{c}[max_ptr-tut.c,max_ptr_false-tut.c]
+/*@ requires \valid(p) && \valid(q);
+    ensures *p<=*q;
+*/
+void max_ptr(int *p, int* q);
+\end{c}
+
+Here, we have a pre-condition (the \verb+requires+ clause). Namely, we
+want our function to be called with valid pointers as
+arguments. This is what the built-in ACSL predicate \verb+\valid+
+says. Note that \verb+\valid+ takes into account the static type of
+its argument: in our context, \verb+\valid(p)+ indicates that there
+address \verb+p+ is included in an allocated block which is large
+enough to store an \verb+int+ starting at \verb+p+. This is thus
+different from \verb+\valid((char *)p)+ for instance.
+
+Our post-condition is that when the function returns, the value
+pointed to by \verb+p+ is less than or equal to the value pointed to
+by \verb+q+.
+
+A correct implementation for \verb+max_ptr+ is then
+\begin{c}[max_ptr-tut.c,max_ptr2-tut.c,max_ptr_bhv-tut.c]
+void max_ptr(int*p, int*q) {
+  if (*p > *q) {
+    int tmp = *p;
+    *p = *q;
+    *q = tmp;
+  }
+}
+\end{c}
+
+Namely, since we require \verb+max_ptr+ to be called with valid
+pointers, there is no need to perform any check on them. Then, if
+\verb+*p+ is already less than or equal to \verb+*q+, there's nothing
+to do. If not, we just swap the content of the two pointers.
+
+\section{Building a Complete Specification}
+The implementation seen in the previous section is correct with
+respect to the specification of \verb+max_ptr+. Unfortunately, this is
+not the only conforming implementation: the specification is only
+partial, and is for instance met by the following function:
+\begin{c}[max_ptr_false-tut.c]
+void max_ptr(int* p, int*q) {
+  *p = *q = 0;
+}
+\end{c}
+Indeed, since $0\leq 0$, we have \verb+*p<=*q+ at the end of the
+function.
+
+Depending on the verification tasks we have in mind (see next
+section), we may want to refine our specification to avoid an
+implementation such as above. Namely, we want to enforce a relation
+between the values pointed to by \verb+p+ and \verb+q+ at the
+beginning and at the end of the function. A possible specification is
+then
+
+\begin{c}[max_ptr2-tut.c]
+/*@ requires \valid(p) && \valid(q);
+    ensures *p <= *q;
+    ensures (*p == \old(*p) && *q == \old(*q)) ||
+            (*p == \old(*q) && *q == \old(*p));
+*/
+void max_ptr(int* p, int*q);
+\end{c}
+The \verb+\old+ built-in function says that its argument must be
+evaluated in the pre-state ({\it i.e.} at the beginning) of the
+function. The second \verb+ensures+ clauses thus says that we either
+leave \verb+p+ and \verb+q+ unchanged or swap the two pointed values,
+which, together with the first clause implies that we meet exactly the
+informal specification.
+
+\section{Degree of Completeness}
+The previous section has teached us that writing a fairly complete
+specification\footnote{in fact we could still add some clauses to the
+specification above, as we will see in the next chapters} is not
+immediate, and thus that it is easy to come up with only a partial
+specification. Hence, it raises two frequently asked questions: how can
+we be sure that our specification is complete, and how complete must a
+specification be.
+
+The answers however do not lie in ACSL itself. For the first one, one
+must reason on some model of the specified application. For the second
+one, there is no definite answer. It depends on the context in
+which the specification is written and the kind of properties that
+must be established: the amount of specification required for a given
+function is very different when verifying a given property
+for a given application in which calls to the function always occur in
+a well-defined context and when specifying it as a library function
+which should be callable in as many contexts as possible.
+
+\chapter{Behaviors}\cutname{acsl_tutorial_behavior.html}
+The second \verb+ensures+ clause of our final specification of
+\verb+max_ptr+ is a bit complicated, and does not explain immediately
+in which case we will end up. It is possible to express that
+differently, by using ACSL's \emph{behaviors}.
+A function can have several behaviors in addition to a general
+specification. A behavior can have additional \verb|ensures| clauses,
+but in addition, it can also have \verb|assumes| clauses, which
+indicate when the behavior is triggered. There is no requirement for
+the behaviors to cover all contexts in which a function can be called,
+and behaviors need not to cover disjoint cases. This can be further
+specified by the \verb+complete behaviors+ and
+\verb+disjoint behaviors+ clauses, as in the following specification.
+
+\begin{c}[max_ptr_bhv-tut.c]
+/*@ requires \valid(p) && \valid(q);
+    ensures *p <= *q;
+    behavior p_minimum:
+      assumes *p < *q;
+      ensures *p == \old(*p) && *q == \old(*q);
+    behavior q_minimum:
+      assumes *p >= *q;
+      ensures *p == \old(*q) && *q == \old(*p);
+    complete behaviors p_minimum, q_minimum;
+    disjoint behaviors p_minimum, q_minimum;
+*/
+void max_ptr(int* p, int*q);
+\end{c}
+
+We explain here precisely in which case we keep the same values and in
+which case we swap. Note that the global \verb+ensures+ clause is
+implied by the \verb+ensures+ clauses of the two behavior and the fact
+that \verb+p_minimum+ and \verb+q_minimum+ form a complete set of behaviors.
+
+\chapter{Arrays}\cutname{acsl_tutorial_array.html}
+\section{Basic Specification}
+\label{basic_max_seq}
+
+Now that we have specified a \verb+max_ptr+ function,
+we can use it to extract the
 maximal value found in a sequence of \verb+int+s. A first step is to
 write the prototype of the corresponding function with its
 specification.
-
-\section{Basic Specification}
-\label{basic_max_seq}
 
 \begin{c}[max_seq-tut.c]
 /*@ requires n > 0;
@@ -267,48 +392,13 @@ that the function \verb+max_seq+ implements the specification
 from the preceding section may require additional work.
 
 \chapter{Assigns clauses}\cutname{acsl_tutorial_assigns.html}
-
-The reader is invited at this point to pause and ponder the following
-important question: is the above specification of the function \verb|max_seq|
-a complete or partial one?
-
-It may seem complete, because it takes great care in making
-sure that \verb|n| is positive, and all the pointer accesses valid, and
-it defines completely the expected result as the mathematical maximum
-of the pointed values.
-Still, there is a loophole that would allow a function to
-implement this specification by the letter without being
-what the specifier probably expected. Indeed, an implementation for
+As with the initial specification of \verb+max_ptr+, an
+implementation of
 \verb|max_seq| could zero all the locations
 \verb|p[0]|,\verb|p[1]|,\ldots,\verb|p[n-1]|, return zero,
 and would still satisfy the post-conditions in the specification from
-section \ref{basic_max_seq}.
-
-The loophole is that the post-condition constrains the result of the function
-to be the maximum of the pointed values {\em at the time the function
-{\tt max\_seq} returns}. We should have specified that we expected
-the returned result to be the maximum of the pointed values as they
-were when the function was called. This can be written:
-
-
-\begin{c}[max_seq_old-tut.c]
-/*@ requires n > 0;
-    requires \valid(p+ (0..n-1));
-    ensures \forall int i; 0 <= i <= n-1 ==> \result >= \old(p[i]);
-    ensures \exists int e; 0 <= e <= n-1 && \result == \old(p[e]);
-*/
-int max_seq(int* p, int n);
-\end{c}
-
-The \verb+\old+ keyword does exactly what we intended: instead of
-evaluating \verb+p[i]+ and \verb+p[e]+ at the time the function
-returns, these expressions evaluate to the value they had when the
-function was called.
-Better yet, we should have expressed that we did not expect
-\verb|max_seq| to modify any variable in memory other that its
-locals, and in particular not \verb|p[0]|,\verb|p[1]|,\ldots,\verb|p[n-1]|.
-The latter condition can be expressed in an additional post-condition,
-using the \verb+\old+ construct that was just introduced:
+section \ref{basic_max_seq}. Again, we can use the \verb+\old+ keyword
+to avoid that.
 
 \begin{c}[max_seq_old2-tut.c]
 /*@ requires n > 0;
@@ -319,10 +409,6 @@ using the \verb+\old+ construct that was just introduced:
 */
 int max_seq(int* p, int n);
 \end{c}
-
-Note that in the other two post-conditions, \verb+\old+ is not needed
-anymore, since the first post-condition guarantees that the locations
-pointed to by \verb+p+ are not modified by the \verb+max_seq+ function.
 
 It would be possible, but tedious, to use the same approach to
 specify that global variables do not change during the execution
@@ -412,71 +498,6 @@ assigns \nothing;
 void f (int c) { while(!c); return;}
 \end{c}
 
-\chapter{Behaviors}\cutname{acsl_tutorial_behavior.html}
-The functions that we have seen so far had a quite simple
-specification. In particular, their post-conditions were simple
-relations. Specifications may be more complicated. Take for instance
-the following \verb|extremum| function, which computes either the
-maximum or the minimum of its \verb|int| arguments depending on the
-\verb|kind| which is passed to it:
-
-\begin{c}[extremum-tut.c,extremum2-tut.c]
-typedef enum { Max, Min } kind;
-int extremum (kind k, int x, int y) {
-  return ((k == Max ? x > y : x < y) ? x: y);
-}
-\end{c}
-
-What could be a complete specification of \verb|extremum|? First, we
-should require that \verb|k| is either \verb|Max| or \verb|Min|. Then,
-as for \verb|max|, the result is either \verb|x| or \verb|y|. More
-precisely, if \verb|k| is equal to \verb|Max| then the result is the
-greatest one, and if \verb|k| is equal to \verb|Min|, then the result
-is the smallest one. All of this can be summed up in the following
-ACSL contract:
-
-\begin{c}[extremum-tut.c]
-/*@ requires k == Max || k == Min;
-    assigns \nothing;
-    ensures \result == x || \result == y;
-    ensures k == Max ==> \result >= x && \result >= y;
-    ensures k == Min ==> \result <= x && \result <= y;
-*/
-int extremum (kind k, int x, int y);
-\end{c}
-
-However, this might not be the clearest way to express this
-specification. Namely, we would like to say that \verb|extremum| has
-two distinct modes of operation. These are called \emph{behaviors} in
-ACSL. A function can have several behaviors in addition to a general
-specification. A behavior can have additional \verb|assigns| and
-\verb|ensures| clauses, but in addition, it can also have
-\verb|assumes| clauses, which indicate when the behavior is triggered.
-
-In our case, the first three clauses of the contract remain the same,
-but the last two post-conditions can be expressed as two behaviors,
-\verb|is_max| and \verb|is_min|, whose \verb|assume| clauses are
-respectively \verb|k==Max| and \verb|k==Min|. In addition, we would
-like to state that \verb|is_min| and \verb|is_max| describes
-completely the set of behaviors of the function, and that they are
-mutually exclusive. This is done by the \verb|complete_behaviors| and
-the \verb|disjoint_behaviors| clauses respectively.
-\begin{c}[extremum2-tut.c]
-/*@ requires k == Max || k == Min;
-    assigns \nothing;
-    ensures \result == x || \result == y;
-    behavior is_max:
-      assumes k == Max;
-      ensures \result >= x && \result >= y;
-    behavior is_min:
-      assumes k == Min;
-      ensures \result <= x && \result <= y;
-    complete behaviors is_max, is_min;
-    disjoint behaviors is_max, is_min;
-*/
-int extremum (kind k, int x, int y);
-\end{c}
-
 \chapter{Predicates and Logic Functions}
 \cutname{acsl_tutorial_logic.html}
 
@@ -495,9 +516,9 @@ following annotation:
 \begin{c}[max_list-tut.c,type_invariant-tut.c,global_invariant-tut.c]
   /*@
   inductive reachable{L} (list* root, list* node) {
-    case root_reachable:
+    case root_reachable{L}:
          \forall list* root; reachable(root,root);
-    case next_reachable:
+    case next_reachable{L}:
          \forall list* root, *node;
          \valid(root) ==> reachable(root->next, node) ==>
          reachable(root,node);
@@ -676,11 +697,11 @@ ACSL is the following:
 \begin{c}[global_invariant-tut.c]
 /*@
 inductive sorted_decreasing{L}(list* root) {
-  case sorted_nil: sorted_decreasing(\null);
-  case sorted_singleton:
+  case sorted_nil{L}: sorted_decreasing(\null);
+  case sorted_singleton{L}:
   \forall list* root;
      \valid(root) && root->next == \null ==> sorted_decreasing(root);
-  case sorted_next:
+  case sorted_next{L}:
   \forall list* root;
      \valid(root) && \valid(root->next) &&
      root->element >= root->next->element &&
@@ -861,7 +882,8 @@ This part of the invariant is written:
 \begin{c}[max_seq_inv-tut.c]
 int max_seq(int* p, int n) {
   int res = *p;
-  //@ loop invariant \forall integer j; 0 <= j <= i ==> res >= *(p+j);
+  /*@ loop invariant \forall integer j;
+         0 <= j < i ==> res >= *(\at(p,Pre)+j); */
   for(int i = 0; i < n; i++) {
     if (res < *p) { res = *p; }
     p++;
@@ -869,6 +891,14 @@ int max_seq(int* p, int n) {
   return res;
 }
 \end{c}
+We use here the \verb+\at()+ construct, which is a generalization of
+\verb+\old+. Namely, it says that its argument must be evaluated in a
+given state of the program. A state is represented by a label, which
+can be a C label (the corresponding state being the last time this
+label was reached) or some pre-defined logic labels. \verb+Pre+
+indicates the pre-state of the function. \verb+\old+ is not admitted
+in loop invariant to avoid confusion with an evaluation at the
+beginning of the previous loop step.
 
 The other part of the invariant property that should be expressed
 formally is that there exists an element in
@@ -892,8 +922,11 @@ The complete annotated function \verb|max_seq| then becomes:
 int max_seq(int* p, int n) {
   int res = *p;
   //@ ghost int e = 0;
-  /*@ loop invariant \forall integer j; 0 <= j <= i ==> res >= p[j];
-      loop invariant \valid(p+e) && p[e] == res;
+  /*@ loop invariant \forall integer j; 0 <= j < i ==> res >= \at(p[j],Pre);
+      loop invariant \valid(\at(p,Pre)+e) && \at(p,Pre)[e] == res;
+      loop invariant 0<=i<=n;
+      loop invariant p==\at(p,Pre)+i;
+      loop invariant 0<=e<n;
   */
   for(int i = 0; i < n; i++) {
     if (res < *p) {
@@ -912,5 +945,5 @@ int max_seq(int* p, int n) {
 \end{document}
 Local Variables:
 mode: latex
-ispell-local-dictionary: english
+ispell-local-dictionary: "english"
 End:
