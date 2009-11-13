@@ -56,6 +56,13 @@ endif
 
 include ../MakeLaTeXModern
 
+framacversion.tex: ../../VERSION Makefile
+	rm -f $@
+	echo -n '\\newcommand{\\framacversion}{' > $@
+	cat $< >> $@
+	echo '}' >> $@
+	chmod a-w $@
+
 %.1: %.mp
 	mpost -interaction batchmode $<
 
@@ -165,6 +172,12 @@ $(MAIN).pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
 	bibtex $*
 	pdflatex $*
 	pdflatex $*
+
+tutorial-www: acsl-mini-tutorial.pdf acsl-mini-tutorial.html
+	rm -f ../www/src/acsl_tutorial_index.hevea
+	cp acsl-mini-tutorial.html ../www/src/acsl_tutorial_index.hevea
+	chmod a-w ../www/src/acsl_tutorial_index.hevea
+	cp acsl-mini-tutorial.pdf ../www/distrib/acsl-mini-tutorial.pdf
 
 # Command to produce a diff'ed document. Must be refined to flatten automatically the files
 # latexdiff --type=CFONT --append-textcmd="_,sep,alt,newl,is" --append-safecmd="term,nonterm,indexttbase,indextt,indexttbs,keyword,ensuremath" --config "PICTUREENV=(?:picture|latexonly)[\\w\\d*@]*,MATHENV=(?:syntax),MATHREPL=syntax"  full.tex current/full.tex > diff.tex
