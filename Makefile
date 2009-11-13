@@ -58,7 +58,7 @@ include ../MakeLaTeXModern
 
 framacversion.tex: ../../VERSION Makefile
 	rm -f $@
-	echo -n '\\newcommand{\\framacversion}{' > $@
+	printf '\\newcommand{\\framacversion}{' > $@
 	cat $< >> $@
 	echo '}' >> $@
 	chmod a-w $@

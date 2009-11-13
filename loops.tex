@@ -7,16 +7,18 @@
   | "/*@" loop-annot "*/" ;
   "do" statement "while" "(" expr ")" ";"
   \
-  loop-annot ::= simple-loop-behavior? loop-behavior* ;
+  loop-annot ::= loop-clause* ;
+  loop-behavior* ;
   loop-variant?
   \
-  simple-loop-behavior ::= (loop-invariant | loop-assigns)+ 
-  \
-  loop-behavior ::= "for" id ("," id)* ":" simple-loop-behavior ; annotation for behavior $id$
+  loop-clause ::= loop-invariant | loop-assigns 
   \
   loop-invariant ::= "loop" "invariant" pred ";" 
   \
   loop-assigns ::= "loop" "assigns" locations ";" ;
+  \
+  loop-behavior ::= "for" id ("," id)* ":" ;
+  loop-clause* ; annotation for behavior $id$
   \
   loop-variant ::= "loop" "variant" term ";" ;
   | "loop" "variant" term "for" id ";" ; variant for relation $id$

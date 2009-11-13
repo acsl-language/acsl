@@ -1,20 +1,14 @@
 \begin{syntax}
-  function-contract ::= simple-behavior named-behavior* decreases-clause?
-  \
-  simple-behavior ::= simple-clauses* terminates-clause? simple-clauses*
-  \
-  simple-clauses ::= requires-clause | assigns-clause | ensures-clause ;
-                   | {abrupt-clause-fn}
-  \
-  named-behavior ::= "behavior" id ":" behavior-body
-  \
-  behavior-body ::= (assumes-clause |
-                     {[not implemented in a named behavior]requires-clause} ;
-                    | assigns-clause | ensures-clause | {abrupt-clauses-fn}) *
-              \
-  assumes-clause ::= "assumes" predicate ";"
+  function-contract ::= requires-clause* terminates-clause? decreases-clause? ;
+               simple-clauses* named-behavior* 
   \
   requires-clause ::= "requires" predicate ";"
+  \
+  terminates-clause ::= "terminates" pred ";"
+  \
+  decreases-clause ::= "decreases" term ("for" ident)? ";"
+  \
+  simple-clauses ::= assigns-clause | ensures-clause | {abrupt-clause-fn}
   \
   assigns-clause ::= "assigns" locations ";"
   \
@@ -22,7 +16,10 @@
   \
   ensures-clauses ::= "ensures" predicate ";"
   \
-  decreases-clause ::= "decreases" term ("for" ident)? ";"
+  named-behavior ::= "behavior" id ":" behavior-body
   \
-  terminates-clause ::= "terminates" pred ";"
+  behavior-body ::= assumes-clause*
+                     {requires-clause}* 
+                    simple-clauses* \
+  assumes-clause ::= "assumes" predicate ";"
 \end{syntax}

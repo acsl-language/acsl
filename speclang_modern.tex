@@ -1158,7 +1158,6 @@ that
 R ==> ($A_1$ || $A_2$ || ... || $A_n$)
 \end{listing-nonumber}
 holds, where $R$ is the precondition of the contract.
-\begin{notimplementedenv}
 The simplified version of that clause
 \begin{listing-nonumber}
 /*@ `\dots`
@@ -1166,7 +1165,6 @@ The simplified version of that clause
   @*/
 \end{listing-nonumber}
 means that all behaviors given in the contract should be taken into account.
-\end{notimplementedenv}
 
 Similarly, it is not required that two distinct behaviors are disjoint.
 If desired, this can be specified with the following clause:
@@ -1182,7 +1180,6 @@ that, for all distinct $i$ and $j$,
 R ==> ! ($A_i$ && $A_j$)
 \end{listing-nonumber}
 holds.
-\begin{notimplementedenv}
 The simplified version of that clause
 \begin{listing-nonumber}
 /*@ ...
@@ -1190,7 +1187,6 @@ The simplified version of that clause
   @*/
 \end{listing-nonumber}
 means that all behaviors given in the contract should be taken into account.
-\end{notimplementedenv}
 
 \oldremark{Abandonne}{
 
@@ -1321,7 +1317,7 @@ Note that \lstinline|assigns \nothing| is equivalent to
 %
   It is annotated with three equivalent \assigns{} clauses, each one
   specifying that only the set of cells
-  \lstinline|{t[0],$\ldots$,t[n-1]\}|
+  \lstinline|{t[0],$\ldots$,t[n-1]}|
   is modified.
 \end{example}
 
@@ -1735,7 +1731,7 @@ corresponding behaviors, in particular only under the
 corresponding \assumes{} clause.
 
 \begin{todo}
-  Ajouter un exemple avec un \For{}.
+  Add an example with a \For{}.
 \end{todo}
 
 The \ensures\indextt{ensures} clause does not constraint the
@@ -2561,7 +2557,7 @@ and \assigns{} clauses. On the contrary,
 \end{example}
 
 \begin{todo}
-  Discuter de ext versus return pour la fonction main. Discuter
+  Discuter de exit versus return pour la fonction main. Discuter
     du atexit() : le post-state de la clause exit est-il avant ou
     apres les fonctions enregistrees par atexit() ?
 
