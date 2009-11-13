@@ -130,9 +130,7 @@ acsl-mini-tutorial.pdf: acsl-mini-tutorial.tex mini-biblio.bib
 	pdflatex acsl-mini-tutorial
 
 acsl-mini-tutorial.html: acsl-mini-tutorial.tex mini-biblio.bib
-	hevea acsl-mini-tutorial.tex
-	bibhva acsl-mini-tutorial
-	hevea -fix acsl-mini-tutorial.tex
+	hevea -bib mini-biblio.bib acsl-mini-tutorial.tex
 
 .PHONY: clean
 

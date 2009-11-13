@@ -1,7 +1,7 @@
 \documentclass{report}
 \usepackage[utf8]{inputenc}
 \usepackage[a4paper=true,pdftex,colorlinks=true,urlcolor=blue,pdfstartview=FitH]{hyperref}
-\usepackage[english]{babel}
+
 \usepackage{graphicx}
 \usepackage[T1]{fontenc}
 \usepackage{times}
@@ -20,13 +20,16 @@
 \setlength{\oddsidemargin}{0mm}
 \setlength{\evensidemargin}{0mm}
 
+\usepackage{fancyhdr}
+
+\begin{latexonly}
 \renewcommand{\textfraction}{0.01}
 \renewcommand{\topfraction}{0.99}
 \renewcommand{\bottomfraction}{0.99}
-
-\usepackage{fancyhdr}
-\pagestyle{fancyplain}
 \renewcommand{\footrulewidth}{0.4pt}
+\end{latexonly}
+
+\pagestyle{fancyplain}
 \addtolength{\headheight}{2pt}
 \addtolength{\headwidth}{1cm}
 \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
@@ -78,11 +81,11 @@
 \includegraphics[height=14mm]{inriasaclaylogo.png}
 
 \vfill
-\end{latexonly}
 %\includegraphics[height=60mm]{FramaC.jpg}
 ~
 
 \vspace{20mm}
+\end{latexonly}
 
 {\Huge\bfseries ACSL Mini-Tutorial}
 
@@ -265,8 +268,8 @@ informal specification.
 
 \section{Degree of Completeness}
 The previous section has teached us that writing a fairly complete
-specification\footnote{in fact we could still add some clauses to the
-specification above, as we will see in the next chapters} is not
+specification (in fact we could still add some clauses to the
+specification above, as we will see in the next chapters) is not
 immediate, and thus that it is easy to come up with only a partial
 specification. Hence, it raises two frequently asked questions: how can
 we be sure that our specification is complete, and how complete must a
@@ -437,19 +440,10 @@ the expressions \verb+p[i]+ and \verb+p[e]+ in the the post-conditions,
 since the specification forces them to stay unchanged during the execution of
 \verb+max_seq+.
 
-An example of a function with a non-empty \verb|assign| clause is the
-swap function below, which exchange the content of two pointers to integers.
-\begin{c}[swap-tut.c]
-/*@
-requires \valid(p) && \valid(q);
-assigns *p, *q;
-*/
-void swap (int *p, int *q) { int tmp = *p; *p=*q; *q = tmp; return; }
-\end{c}
-
-The specification of the \verb|swap| function given above is partial.
-Transforming it into a complete
-specification by adding a post-condition is left as an exercise for the reader.
+\verb+assigns+ clauses can be found in behaviors too. Writing
+appropriate \verb+assigns+ clauses for \verb+p_minimum+ and
+\verb+q_minimum+ to complete the specification of \verb+max_ptr+ is
+left as an exercise for the reader.
 
 \chapter{Termination}\cutname{acsl_tutorial_termination.html}
 
@@ -700,7 +694,8 @@ inductive sorted_decreasing{L}(list* root) {
   case sorted_nil{L}: sorted_decreasing(\null);
   case sorted_singleton{L}:
   \forall list* root;
-     \valid(root) && root->next == \null ==> sorted_decreasing(root);
+     \valid(root) && root->next == \null ==>
+        sorted_decreasing(root);
   case sorted_next{L}:
   \forall list* root;
      \valid(root) && \valid(root->next) &&
@@ -922,8 +917,10 @@ The complete annotated function \verb|max_seq| then becomes:
 int max_seq(int* p, int n) {
   int res = *p;
   //@ ghost int e = 0;
-  /*@ loop invariant \forall integer j; 0 <= j < i ==> res >= \at(p[j],Pre);
-      loop invariant \valid(\at(p,Pre)+e) && \at(p,Pre)[e] == res;
+  /*@ loop invariant \forall integer j;
+           0 <= j < i ==> res >= \at(p[j],Pre);
+      loop invariant
+           \valid(\at(p,Pre)+e) && \at(p,Pre)[e] == res;
       loop invariant 0<=i<=n;
       loop invariant p==\at(p,Pre)+i;
       loop invariant 0<=e<n;

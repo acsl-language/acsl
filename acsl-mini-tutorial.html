@@ -1,0 +1,719 @@
+<#def title>ACSL Tutorial</#def>
+<#def meta><meta name="GENERATOR" content="hevea 1.10"></#def>
+<#def quote-text>Computers are good at following instructions,
+         but not at reading your mind.</#def>
+<#def quote-author>Donald Knuth</#def>
+<#head>
+<!--CUT DEF chapter 1 --><DIV CLASS="center">
+<P><FONT SIZE=7><B>ACSL Mini-Tutorial</B></FONT></P></DIV><P>
+This document is also available in
+<A HREF="download/acsl-tutorial.pdf">pdf format</A>.
+
+</P><!--TOC chapter Foreword-->
+<H1 CLASS="chapter"><!--SEC ANCHOR --><A NAME="htoc1">Chapter 1</A>  Foreword</H1><!--SEC END --><!--NAME acsl_tutorial_intro.html-->
+<P>
+This document is a brief introduction to the ANSI/ISO C Specification
+Language (ACSL). ACSL allows to formally specify the properties of a C
+program, in order to be able to formally verify that the implementation
+respects these properties. This verification is done <I>via</I>
+tools that are able to take into account ACSL annotations attached to
+the C code. This tutorial focuses on the most important ACSL constructs
+and gives an
+intuitive grasp of their semantics, through short and illustrative
+examples of C code annotated with ACSL formulas. A complete reference
+of the ACSL language can be found in [<A HREF="#ACSLref">1</A>]. ACSL is inspired
+from the specification language used by Caduceus [<A HREF="#caduceus">2</A>],
+which is itself derived from the Java Modeling Language (JML, see [<A HREF="#JML">3</A>]).</P><!--TOC chapter A First ACSL Example-->
+<H1 CLASS="chapter"><!--SEC ANCHOR --><A NAME="htoc2">Chapter 2</A>  A First ACSL Example</H1><!--SEC END --><!--NAME acsl_tutorial_first_example.html-->
+<P>
+<A NAME="chap:first-example"></A>
+The most important ACSL concept is the <I>function
+contract</I>. A function contract for a C
+function <CODE>f</CODE> is a set of
+requirements over the arguments of
+<CODE>f</CODE> and/or a set of properties
+that are ensured at the end of the function.
+The formula that expresses the requirements is called a <EM>pre-condition</EM>,
+whereas the formula that expresses the properties ensured when <CODE>f</CODE>
+returns is a <EM>post-condition</EM>.
+Together, these conditions form a
+contract between <CODE>f</CODE> and its callers: each caller must guarantee
+that the pre-condition holds before calling <CODE>f</CODE>. In exchange, <CODE>f</CODE>
+guarantees that the post-condition holds when it returns.</P><P>Let us consider the example of the <TT>max</TT> function. Informally, its
+specification can be expressed this way: the function <TT>max</TT> takes two
+<CODE>int</CODE> as arguments, and returns the greatest one. Let us see how
+this can be expressed in ACSL:</P><DIV CLASS="flushleft"><TT>
+</TT><TT><I><FONT COLOR=maroon>/*@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\result</B></FONT></I></TT><TT><I><FONT COLOR=maroon> &gt;= x &amp;&amp; </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\result</B></FONT></I></TT><TT><I><FONT COLOR=maroon> &gt;= y; <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\result</B></FONT></I></TT><TT><I><FONT COLOR=maroon> == x || </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\result</B></FONT></I></TT><TT><I><FONT COLOR=maroon> == y; <BR>
+*/</FONT></I></TT><TT> <BR>
+int max (int x, int y) { </TT><TT><B>return</B></TT><TT> (x &gt; y) ? x : y; } <BR>
+</TT></DIV><P>As can be seen above, ACSL annotations are written in special C
+comments, the difference with plain comments being that annotations
+begin with ’<CODE>/*@</CODE>’. It is also possible to
+write one-line annotations introduced by ’<CODE>//@</CODE>’. The function
+contract is written immediately above the function declaration.
+In this example, the contract contains only post-conditions
+(<CODE>ensures</CODE> clauses),
+as <CODE>max</CODE> does not have any particular requirement.
+The first <CODE>ensures</CODE> clause expresses the fact that the result
+of <CODE>max</CODE> is greater than both <CODE>x</CODE> and <CODE>y</CODE>, the arguments of
+<CODE>max</CODE>. The second clause mandates that the result is equal to either
+<CODE>x</CODE> or <CODE>y</CODE>. Since both clauses must hold, our ACSL
+specification indeed expresses that the result of <TT>max</TT> is
+the greatest of its two arguments.</P><P>It should be noted already that
+there is an intuitive demarcation between “complete” and “partial”
+specifications. The above specification for <CODE>max</CODE> can be thought
+of as “complete”, meaning that any function that satisfies the
+specification should be deemed a satisfactory implementation for <CODE>max</CODE>.
+Partial specifications on the other hand express some of the properties that
+are expected to hold for any implementation, but satisfying them is
+not sufficient for an implementation to be satisfactory. Generally speaking,
+partial formal specifications are the most likely to be encountered in
+practice for real-life examples, complemented by informal specifications.
+For instance, the above specification for <CODE>max</CODE> is in fact
+partial, for reasons that will become clearer later.</P><!--TOC chapter Pointers-->
+<H1 CLASS="chapter"><!--SEC ANCHOR --><A NAME="htoc3">Chapter 3</A>  Pointers</H1><!--SEC END --><!--NAME acsl_tutorial_pointer.html-->
+<!--TOC section A First Specification-->
+<H2 CLASS="section"><!--SEC ANCHOR --><A NAME="htoc4">3.1</A>  A First Specification</H2><!--SEC END --><P>
+Let us now consider a small program involving pointers. Informally,
+the <CODE>max_ptr</CODE> function takes two pointers as argument, and if
+necessary swaps the two pointed values so that the value stored in the
+first pointer is the minimal one and the value stored in the second
+pointer is the maximal one. A specification can be the following:
+</P><DIV CLASS="flushleft"><TT>
+</TT><TT><I><FONT COLOR=maroon>/*@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>requires</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(p) &amp;&amp; </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(q); <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> *p&lt;=*q; <BR>
+*/</FONT></I></TT><TT> <BR>
+void max_ptr(int *p, int* q); <BR>
+</TT></DIV><P>Here, we have a pre-condition (the <CODE>requires</CODE> clause). Namely, we
+want our function to be called with valid pointers as
+arguments. This is what the built-in ACSL predicate <CODE>\valid</CODE>
+says. Note that <CODE>\valid</CODE> takes into account the static type of
+its argument: in our context, <CODE>\valid(p)</CODE> indicates that there
+address <CODE>p</CODE> is included in an allocated block which is large
+enough to store an <CODE>int</CODE> starting at <CODE>p</CODE>. This is thus
+different from <CODE>\valid((char *)p)</CODE> for instance.</P><P>Our post-condition is that when the function returns, the value
+pointed to by <CODE>p</CODE> is less than or equal to the value pointed to
+by <CODE>q</CODE>.</P><P>A correct implementation for <CODE>max_ptr</CODE> is then
+</P><DIV CLASS="flushleft"><TT>
+void max_ptr(int*p, int*q) { <BR>
+  </TT><TT><B>if</B></TT><TT> (*p &gt; *q) { <BR>
+    int tmp = *p; <BR>
+    *p = *q; <BR>
+    *q = tmp; <BR>
+  } <BR>
+} <BR>
+</TT></DIV><P>Namely, since we require <CODE>max_ptr</CODE> to be called with valid
+pointers, there is no need to perform any check on them. Then, if
+<CODE>*p</CODE> is already less than or equal to <CODE>*q</CODE>, there’s nothing
+to do. If not, we just swap the content of the two pointers.</P><!--TOC section Building a Complete Specification-->
+<H2 CLASS="section"><!--SEC ANCHOR --><A NAME="htoc5">3.2</A>  Building a Complete Specification</H2><!--SEC END --><P>
+The implementation seen in the previous section is correct with
+respect to the specification of <CODE>max_ptr</CODE>. Unfortunately, this is
+not the only conforming implementation: the specification is only
+partial, and is for instance met by the following function:
+</P><DIV CLASS="flushleft"><TT>
+void max_ptr(int* p, int*q) { <BR>
+  *p = *q = 0; <BR>
+} <BR>
+</TT></DIV><P>
+Indeed, since 0≤ 0, we have <CODE>*p&lt;=*q</CODE> at the end of the
+function.</P><P>Depending on the verification tasks we have in mind (see next
+section), we may want to refine our specification to avoid an
+implementation such as above. Namely, we want to enforce a relation
+between the values pointed to by <CODE>p</CODE> and <CODE>q</CODE> at the
+beginning and at the end of the function. A possible specification is
+then</P><DIV CLASS="flushleft"><TT>
+</TT><TT><I><FONT COLOR=maroon>/*@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>requires</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(p) &amp;&amp; </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(q); <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> *p &lt;= *q; <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> (*p == </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\old</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(*p) &amp;&amp; *q == </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\old</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(*q)) || <BR>
+            (*p == </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\old</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(*q) &amp;&amp; *q == </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\old</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(*p)); <BR>
+*/</FONT></I></TT><TT> <BR>
+void max_ptr(int* p, int*q); <BR>
+</TT></DIV><P>
+The <CODE>\old</CODE> built-in function says that its argument must be
+evaluated in the pre-state (<I>i.e.</I> at the beginning) of the
+function. The second <CODE>ensures</CODE> clauses thus says that we either
+leave <CODE>p</CODE> and <CODE>q</CODE> unchanged or swap the two pointed values,
+which, together with the first clause implies that we meet exactly the
+informal specification.</P><!--TOC section Degree of Completeness-->
+<H2 CLASS="section"><!--SEC ANCHOR --><A NAME="htoc6">3.3</A>  Degree of Completeness</H2><!--SEC END --><P>
+The previous section has teached us that writing a fairly complete
+specification (in fact we could still add some clauses to the
+specification above, as we will see in the next chapters) is not
+immediate, and thus that it is easy to come up with only a partial
+specification. Hence, it raises two frequently asked questions: how can
+we be sure that our specification is complete, and how complete must a
+specification be.</P><P>The answers however do not lie in ACSL itself. For the first one, one
+must reason on some model of the specified application. For the second
+one, there is no definite answer. It depends on the context in
+which the specification is written and the kind of properties that
+must be established: the amount of specification required for a given
+function is very different when verifying a given property
+for a given application in which calls to the function always occur in
+a well-defined context and when specifying it as a library function
+which should be callable in as many contexts as possible.</P><!--TOC chapter Behaviors-->
+<H1 CLASS="chapter"><!--SEC ANCHOR --><A NAME="htoc7">Chapter 4</A>  Behaviors</H1><!--SEC END --><!--NAME acsl_tutorial_behavior.html-->
+<P>
+The second <CODE>ensures</CODE> clause of our final specification of
+<CODE>max_ptr</CODE> is a bit complicated, and does not explain immediately
+in which case we will end up. It is possible to express that
+differently, by using ACSL’s <EM>behaviors</EM>.
+A function can have several behaviors in addition to a general
+specification. A behavior can have additional <CODE>ensures</CODE> clauses,
+but in addition, it can also have <CODE>assumes</CODE> clauses, which
+indicate when the behavior is triggered. There is no requirement for
+the behaviors to cover all contexts in which a function can be called,
+and behaviors need not to cover disjoint cases. This can be further
+specified by the <CODE>complete behaviors</CODE> and
+<CODE>disjoint behaviors</CODE> clauses, as in the following specification.</P><DIV CLASS="flushleft"><TT>
+</TT><TT><I><FONT COLOR=maroon>/*@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>requires</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(p) &amp;&amp; </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(q); <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> *p &lt;= *q; <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>behavior</B></FONT></I></TT><TT><I><FONT COLOR=maroon> p_minimum: <BR>
+      </FONT></I></TT><TT><I><FONT COLOR=maroon><B>assumes</B></FONT></I></TT><TT><I><FONT COLOR=maroon> *p &lt; *q; <BR>
+      </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> *p == </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\old</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(*p) &amp;&amp; *q == </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\old</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(*q); <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>behavior</B></FONT></I></TT><TT><I><FONT COLOR=maroon> q_minimum: <BR>
+      </FONT></I></TT><TT><I><FONT COLOR=maroon><B>assumes</B></FONT></I></TT><TT><I><FONT COLOR=maroon> *p &gt;= *q; <BR>
+      </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> *p == </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\old</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(*q) &amp;&amp; *q == </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\old</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(*p); <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>complete</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>behaviors</B></FONT></I></TT><TT><I><FONT COLOR=maroon> p_minimum, q_minimum; <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>disjoint</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>behaviors</B></FONT></I></TT><TT><I><FONT COLOR=maroon> p_minimum, q_minimum; <BR>
+*/</FONT></I></TT><TT> <BR>
+void max_ptr(int* p, int*q); <BR>
+</TT></DIV><P>We explain here precisely in which case we keep the same values and in
+which case we swap. Note that the global <CODE>ensures</CODE> clause is
+implied by the <CODE>ensures</CODE> clauses of the two behavior and the fact
+that <CODE>p_minimum</CODE> and <CODE>q_minimum</CODE> form a complete set of behaviors.</P><!--TOC chapter Arrays-->
+<H1 CLASS="chapter"><!--SEC ANCHOR --><A NAME="htoc8">Chapter 5</A>  Arrays</H1><!--SEC END --><!--NAME acsl_tutorial_array.html-->
+<!--TOC section Basic Specification-->
+<H2 CLASS="section"><!--SEC ANCHOR --><A NAME="htoc9">5.1</A>  Basic Specification</H2><!--SEC END --><P>
+<A NAME="basic_max_seq"></A></P><P>Now that we have specified a <CODE>max_ptr</CODE> function,
+we can use it to extract the
+maximal value found in a sequence of <CODE>int</CODE>s. A first step is to
+write the prototype of the corresponding function with its
+specification.</P><DIV CLASS="flushleft"><TT>
+</TT><TT><I><FONT COLOR=maroon>/*@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>requires</B></FONT></I></TT><TT><I><FONT COLOR=maroon> n &gt; 0; <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>requires</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(p+ (0..n</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>1)); <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\forall</B></FONT></I></TT><TT><I><FONT COLOR=maroon> int i; 0 &lt;= i &lt;= n</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>1 ==&gt; </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\result</B></FONT></I></TT><TT><I><FONT COLOR=maroon> &gt;= p[i]; <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\exists</B></FONT></I></TT><TT><I><FONT COLOR=maroon> int e; 0 &lt;= e &lt;= n</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>1 &amp;&amp; </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\result</B></FONT></I></TT><TT><I><FONT COLOR=maroon> == p[e]; <BR>
+*/</FONT></I></TT><TT> <BR>
+int max_seq(int* p, int n); <BR>
+</TT></DIV><P>The function takes two arguments: a pointer <CODE>p</CODE> to the block containing
+the <CODE>int</CODE>s, and the number <CODE>n</CODE> of elements in the
+sequence. This time, there are pre-conditions on these
+arguments. First, it is not possible to compute the maximal value of an empty
+sequence, and so <CODE>n</CODE> must be positive. Moreover, the block
+pointed to by <CODE>p</CODE> must contain at least <CODE>n</CODE> elements. In
+other words, <CODE>p[0]</CODE>, <CODE>p[1]</CODE>, ... <CODE>p[n-1]</CODE> must all be
+valid memory accesses. This is what the second <CODE>requires</CODE> clause expresses.</P><P>The two <CODE>ensures</CODE> clauses display some similarities with
+the contract of the <CODE>max</CODE> function above: the result
+is greater than or equal to every value in the sequence, and there exists
+an index for which the equality is attained. Note that the formulas in
+the post-condition only make sense under the assumption that the
+pre-condition holds: the validity condition ensures that it makes
+sense to speak about <CODE>p[i]</CODE>, and if <CODE>n</CODE> could be <CODE>0</CODE>,
+it would not be possible
+to find an index where <CODE>\result</CODE> is attained.</P><!--TOC section Advanced specification-->
+<H2 CLASS="section"><!--SEC ANCHOR --><A NAME="htoc10">5.2</A>  Advanced specification</H2><!--SEC END --><P>
+<EM>Note: This section can be skipped on a first reading</EM></P><P>In addition, a more advanced ACSL construction allows to provide a shorter
+specification of <CODE>max_seq</CODE>: <CODE>\max</CODE> is a built-in constructor
+(together with <CODE>\min</CODE>, <CODE>\sum</CODE>, and a few others), that returns
+the maximal value taken by a function in an interval of integers.
+With <CODE>\max</CODE> and the <CODE>\lambda</CODE> construction to write
+functions as first-class expressions, our specification becomes:
+</P><DIV CLASS="flushleft"><TT>
+</TT><TT><I><FONT COLOR=maroon>/*@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>requires</B></FONT></I></TT><TT><I><FONT COLOR=maroon> n &gt; 0 &amp;&amp;</FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(p + (0..n</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>1)); <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\result</B></FONT></I></TT><TT><I><FONT COLOR=maroon> == </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\max</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(0,n</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>1,</FONT></I></TT><TT><I><FONT COLOR=maroon><B>\lambda</B></FONT></I></TT><TT><I><FONT COLOR=maroon> integer i; p[i]); <BR>
+*/</FONT></I></TT><TT> <BR>
+int max_seq(int* p, int n); <BR>
+</TT></DIV><!--TOC section Implementation-->
+<H2 CLASS="section"><!--SEC ANCHOR --><A NAME="htoc11">5.3</A>  Implementation</H2><!--SEC END --><P>The implementation of the <CODE>max_seq</CODE> function is pretty
+straightforward. For instance, we can use the following code.</P><DIV CLASS="flushleft"><TT>
+int max_seq(int* p, int n) { <BR>
+  int res = *p; <BR>
+  </TT><TT><B>for</B></TT><TT>(int i = 0; i &lt; n; i++) { <BR>
+    </TT><TT><B>if</B></TT><TT> (res &lt; *p) { res = *p; } <BR>
+    p++; <BR>
+  } <BR>
+  </TT><TT><B>return</B></TT><TT> res; <BR>
+} <BR>
+</TT></DIV><P>
+The specification we have given in the preceding section
+defines an expected behavior for the function <CODE>max_seq</CODE>.
+We will see later in this document that actually verifying
+that the function <CODE>max_seq</CODE> implements the specification
+from the preceding section may require additional work.</P><!--TOC chapter Assigns clauses-->
+<H1 CLASS="chapter"><!--SEC ANCHOR --><A NAME="htoc12">Chapter 6</A>  Assigns clauses</H1><!--SEC END --><!--NAME acsl_tutorial_assigns.html-->
+<P>
+As with the initial specification of <CODE>max_ptr</CODE>, an
+implementation of
+<CODE>max_seq</CODE> could zero all the locations
+<CODE>p[0]</CODE>,<CODE>p[1]</CODE>,…,<CODE>p[n-1]</CODE>, return zero,
+and would still satisfy the post-conditions in the specification from
+section <A HREF="#basic_max_seq">5.16Basic Specificationsection.5.1</A>. Again, we can use the <CODE>\old</CODE> keyword
+to avoid that.</P><DIV CLASS="flushleft"><TT>
+</TT><TT><I><FONT COLOR=maroon>/*@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>requires</B></FONT></I></TT><TT><I><FONT COLOR=maroon> n &gt; 0; <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>requires</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(p+ (0..n</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>1)); <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\forall</B></FONT></I></TT><TT><I><FONT COLOR=maroon> int i; 0 &lt;= i &lt;= n</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>1 ==&gt; p[i] == </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\old</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(p[i]); <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\forall</B></FONT></I></TT><TT><I><FONT COLOR=maroon> int i; 0 &lt;= i &lt;= n</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>1 ==&gt; </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\result</B></FONT></I></TT><TT><I><FONT COLOR=maroon> &gt;= p[i]; <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\exists</B></FONT></I></TT><TT><I><FONT COLOR=maroon> int e; 0 &lt;= e &lt;= n</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>1 &amp;&amp; </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\result</B></FONT></I></TT><TT><I><FONT COLOR=maroon> == p[e]; <BR>
+*/</FONT></I></TT><TT> <BR>
+int max_seq(int* p, int n); <BR>
+</TT></DIV><P>It would be possible, but tedious, to use the same approach to
+specify that global variables do not change during the execution
+of <CODE>max_seq</CODE>.
+The ACSL language provides a special clause to specify that a
+function is not allowed to change memory locations other than
+the ones explicitly listed. This clause is the <CODE>assigns</CODE> clause,
+and it is part of the function contract. When no <CODE>assigns</CODE> clauses
+are specified, the function is allowed to modify every visible variable.
+In presence of such clauses,
+the function can only modify the content of the locations
+that are explicitly mentioned in these clauses. In our case, we do not
+expect <CODE>max_seq</CODE> to have any visible side-effect, so that the contract
+becomes:
+</P><DIV CLASS="flushleft"><TT>
+</TT><TT><I><FONT COLOR=maroon>/*@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>requires</B></FONT></I></TT><TT><I><FONT COLOR=maroon> n &gt; 0; <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>requires</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(p+ (0..n</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>1)); <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>assigns</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\nothing</B></FONT></I></TT><TT><I><FONT COLOR=maroon>; <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\forall</B></FONT></I></TT><TT><I><FONT COLOR=maroon> int i; 0 &lt;= i &lt;= n</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>1 ==&gt; </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\result</B></FONT></I></TT><TT><I><FONT COLOR=maroon> &gt;= p[i]; <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\exists</B></FONT></I></TT><TT><I><FONT COLOR=maroon> int e; 0 &lt;= e &lt;= n</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>1 &amp;&amp; </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\result</B></FONT></I></TT><TT><I><FONT COLOR=maroon> == p[e]; <BR>
+*/</FONT></I></TT><TT> <BR>
+int max_seq(int* p, int n); <BR>
+</TT></DIV><P>
+Again, it is not necessary to use <CODE>\old</CODE> for the values of
+the expressions <CODE>p[i]</CODE> and <CODE>p[e]</CODE> in the the post-conditions,
+since the specification forces them to stay unchanged during the execution of
+<CODE>max_seq</CODE>.</P><P><CODE>assigns</CODE> clauses can be found in behaviors too. Writing
+appropriate <CODE>assigns</CODE> clauses for <CODE>p_minimum</CODE> and
+<CODE>q_minimum</CODE> to complete the specification of <CODE>max_ptr</CODE> is
+left as an exercise for the reader.</P><!--TOC chapter Termination-->
+<H1 CLASS="chapter"><!--SEC ANCHOR --><A NAME="htoc13">Chapter 7</A>  Termination</H1><!--SEC END --><!--NAME acsl_tutorial_termination.html-->
+<P>There is yet another property that is implicitely expected from
+a satisfactory implementation of <CODE>max_seq</CODE>. Namely,
+this function, when called with arguments that satisfy its pre-conditions,
+should eventually terminate (and return a result that satisfies
+its post-conditions). The <CODE>assigns</CODE> clause in itself
+only guarantees that each time the function terminates, only the
+specified locations may have been modified. Similarly, the
+post-conditions only apply when the function terminates, and so
+a function that never terminates would for instance satisfy the
+<CODE>assigns</CODE> and <CODE>ensures</CODE> parts of the specification
+for <CODE>max_seq</CODE>. The termination of the function is a separate
+property that can be specified in its contract using the
+<CODE>terminates</CODE> clause.</P><P>Because in practice many functions are implicitely expected to terminate,
+the default in ACSL is to expect functions to terminate in all the contexts
+that satisfy their pre-conditions. It is possible to relax a particular
+function’s specification by providing a formula that describes
+the conditions in which the function is guaranteed to terminate.
+An implementation is then allowed not to terminate when it is called
+in contexts that do not satisfy this condition.</P><P>In the following example, the function <CODE>f</CODE> can be called with
+any argument <CODE>c</CODE>, but the function is not guaranteed to terminate
+if <CODE>c&lt;=0</CODE>.
+</P><DIV CLASS="flushleft"><TT>
+</TT><TT><I><FONT COLOR=maroon>/*@ <BR>
+</FONT></I></TT><TT><I><FONT COLOR=maroon><B>assigns</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\nothing</B></FONT></I></TT><TT><I><FONT COLOR=maroon>; <BR>
+</FONT></I></TT><TT><I><FONT COLOR=maroon><B>terminates</B></FONT></I></TT><TT><I><FONT COLOR=maroon> c&gt;0; <BR>
+*/</FONT></I></TT><TT> <BR>
+void f (int c) { </TT><TT><B>while</B></TT><TT>(!c); </TT><TT><B>return</B></TT><TT>;} <BR>
+</TT></DIV><P>Another valid contract for the same implementation of <CODE>f</CODE> is
+the following one, where the function implicitely guarantees to terminate
+whenever it is called, but expects to be called only with
+non-zero arguments.
+</P><DIV CLASS="flushleft"><TT>
+</TT><TT><I><FONT COLOR=maroon>/*@ <BR>
+</FONT></I></TT><TT><I><FONT COLOR=maroon><B>requires</B></FONT></I></TT><TT><I><FONT COLOR=maroon> c!=0; <BR>
+</FONT></I></TT><TT><I><FONT COLOR=maroon><B>assigns</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\nothing</B></FONT></I></TT><TT><I><FONT COLOR=maroon>; <BR>
+*/</FONT></I></TT><TT> <BR>
+void f (int c) { </TT><TT><B>while</B></TT><TT>(!c); </TT><TT><B>return</B></TT><TT>;} <BR>
+</TT></DIV><!--TOC chapter Predicates and Logic Functions-->
+<H1 CLASS="chapter"><!--SEC ANCHOR --><A NAME="htoc14">Chapter 8</A>  Predicates and Logic Functions</H1><!--SEC END --><!--NAME acsl_tutorial_logic.html-->
+<P>So far, we have only used logical built-ins operators and relations.
+It is often needed to define new logic predicates and logic
+functions. For instance, if we define (simply) linked lists as such:
+</P><DIV CLASS="flushleft"><TT>
+  </TT><TT><B>typedef</B></TT><TT> </TT><TT><B>struct</B></TT><TT> _list { int element; </TT><TT><B>struct</B></TT><TT> _list* next; } list; <BR>
+</TT></DIV><P>there are some common properties of lists that we want to be able to
+deal with in the logic. In particular, the notion of reachability (can
+a given node be attained from some root through a chain of <CODE>next</CODE>
+fields) plays an important role. It can be defined in ACSL through the
+following annotation:
+</P><DIV CLASS="flushleft"><TT>
+  </TT><TT><I><FONT COLOR=maroon>/*@ <BR>
+  </FONT></I></TT><TT><I><FONT COLOR=maroon><B>inductive</B></FONT></I></TT><TT><I><FONT COLOR=maroon> reachable{L} (list* root, list* node) { <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>case</B></FONT></I></TT><TT><I><FONT COLOR=maroon> root_reachable{L}: <BR>
+         </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\forall</B></FONT></I></TT><TT><I><FONT COLOR=maroon> list* root; reachable(root,root); <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>case</B></FONT></I></TT><TT><I><FONT COLOR=maroon> next_reachable{L}: <BR>
+         </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\forall</B></FONT></I></TT><TT><I><FONT COLOR=maroon> list* root, *node; <BR>
+         </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(root) ==&gt; reachable(root</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>&gt;next, node) ==&gt; <BR>
+         reachable(root,node); <BR>
+  } <BR>
+  */</FONT></I></TT><TT> <BR>
+</TT></DIV><P>The notion of reachability is defined in ACSL by an
+<CODE>inductive</CODE> predicate. Namely, <CODE>root_reachable</CODE> and
+<CODE>next_reachable</CODE> can be seen as axioms indicating the cases under which
+<CODE>reachable</CODE> must hold, and the fact that <CODE>reachable</CODE> is
+inductive implies that these are the only cases under which it can hold.
+<CODE>root_reachable</CODE> indicates that <CODE>reachable</CODE> holds
+as soon as both its arguments are equal. <CODE>next_reachable</CODE>
+indicates that if <CODE>root</CODE> is valid and <CODE>node</CODE> can be proved
+reachable from <CODE>root-&gt;next</CODE>, then it is also reachable from
+<CODE>root</CODE>.</P><P>The <CODE>{L}</CODE> notation indicates that the predicate takes as
+parameter a label, which represent a memory state of the program. Indeed,
+as soon as we deal with pointers or arrays, we must refer to a
+particular memory state: <CODE>reachable</CODE> has no absolute meaning, it
+must be tied to a point of the program. In a case like this, there is no
+need to explicitely instantiate the label when we use
+<CODE>reachable</CODE>: the memory state to which it refers will usually be
+inferred from the context (<I>e.g.</I> for a precondition, it is the
+state at the start of the function, and for a post-condition, it is
+the state just before returning to the caller). More complex predicate
+may relate two or more memory states, but such definitions are out of
+scope in this tutorial.</P><P>Now, the <CODE>reachable</CODE> predicate can be used to discriminate
+between circular and
+finite lists: in a finite list, we will ultimately reach
+<CODE>\null</CODE>;</P><DIV CLASS="flushleft"><TT>
+  </TT><TT><I><FONT COLOR=maroon>/*@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>predicate</B></FONT></I></TT><TT><I><FONT COLOR=maroon> finite{L}(list* root) = reachable(root,</FONT></I></TT><TT><I><FONT COLOR=maroon><B>\null</B></FONT></I></TT><TT><I><FONT COLOR=maroon>); */</FONT></I></TT><TT> <BR>
+</TT></DIV><P>Here, it is not necessary to embed <CODE>finite</CODE> as
+inductive. Instead, we directly give its definition in terms of reachability.</P><P>We can also note that <CODE>finite</CODE> is also parameterized by a label
+<CODE>L</CODE>. In fact, it is implicitely the memory state in which
+<CODE>reachable</CODE> itself is evaluated. It would have been possible to
+make that explicit by writing <CODE>reachable{L}(root,\null)</CODE> instead,
+but this is not necessary here, as <CODE>L</CODE> denotes the only state in
+the environment at this level.</P><P>Similarly, we can define a logical function computing the length of a
+<CODE>\null</CODE> terminated list. This time, we have to avoid circular
+lists, since the notion of length has little meaning for them. In
+order to do that, we can use an axiomatic:</P><DIV CLASS="flushleft"><TT>
+  </TT><TT><I><FONT COLOR=maroon>/*@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>axiomatic</B></FONT></I></TT><TT><I><FONT COLOR=maroon> Length { <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>logic</B></FONT></I></TT><TT><I><FONT COLOR=maroon> integer length{L}(list* l); <BR>
+ <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>axiom</B></FONT></I></TT><TT><I><FONT COLOR=maroon> length_nil{L}: length(</FONT></I></TT><TT><I><FONT COLOR=maroon><B>\null</B></FONT></I></TT><TT><I><FONT COLOR=maroon>) == 0; <BR>
+ <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>axiom</B></FONT></I></TT><TT><I><FONT COLOR=maroon> length_cons{L}: <BR>
+        </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\forall</B></FONT></I></TT><TT><I><FONT COLOR=maroon> list* l, integer n; <BR>
+          finite(l) &amp;&amp; </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(l) ==&gt; <BR>
+            length(l) == length(l</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>&gt;next) + 1; <BR>
+   } <BR>
+*/</FONT></I></TT><TT> <BR>
+</TT></DIV><P>
+An axiomatic is merely a set of logical declarations tied together.
+This way, it is possible to speak about <CODE>length(l)</CODE> for any list
+<CODE>l</CODE>, but if <CODE>l</CODE> is circular, the value of this expression
+will remain undefined: the only way to prove that <CODE>length(l)==n</CODE>
+for a given <CODE>n</CODE> is to prove first <CODE>finite(l)</CODE>.</P><P>Now that we know how to define logic predicates and logic functions,
+we can go back to our maximum example, this time on (finite) lists. A
+possible specification for <CODE>max_list</CODE> would be the following:
+</P><DIV CLASS="flushleft"><TT>
+  </TT><TT><I><FONT COLOR=maroon>/*@ <BR>
+      </FONT></I></TT><TT><I><FONT COLOR=maroon><B>requires</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(root); <BR>
+      </FONT></I></TT><TT><I><FONT COLOR=maroon><B>assigns</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\nothing</B></FONT></I></TT><TT><I><FONT COLOR=maroon>; <BR>
+      </FONT></I></TT><TT><I><FONT COLOR=maroon><B>terminates</B></FONT></I></TT><TT><I><FONT COLOR=maroon> finite(root); <BR>
+      </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> <BR>
+       </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\forall</B></FONT></I></TT><TT><I><FONT COLOR=maroon> list* l; <BR>
+         </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(l) &amp;&amp; reachable(root,l) ==&gt; <BR>
+           </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\result</B></FONT></I></TT><TT><I><FONT COLOR=maroon> &gt;= l</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>&gt;element; <BR>
+      </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> <BR>
+       </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\exists</B></FONT></I></TT><TT><I><FONT COLOR=maroon> list* l; <BR>
+         </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(l) &amp;&amp; reachable(root,l) &amp;&amp; </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\result</B></FONT></I></TT><TT><I><FONT COLOR=maroon> == l</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>&gt;element; <BR>
+  */</FONT></I></TT><TT> <BR>
+  int max_list(list* root); <BR>
+</TT></DIV><P>
+As with arrays, we have as pre-condition that the list is non-empty.
+The post-conditions are also quite similar to the ones of <CODE>max_array</CODE>,
+except that indices have been replaced by the reachability of the node
+from the root of the list. In addition, we find a <CODE>terminates</CODE>
+clause, that indicates that the implementation may loop forever on
+circular lists (but could choose not to, even though this would imply
+an huge overhead in this setting). A possible implementation is thus
+the following:
+</P><DIV CLASS="flushleft"><TT>
+  int max_list(list* root) { <BR>
+    int max = root</TT><TT>-</TT><TT>&gt;element; <BR>
+    </TT><TT><B>while</B></TT><TT>(root</TT><TT>-</TT><TT>&gt;next) { <BR>
+      root = root </TT><TT>-</TT><TT>&gt; next; <BR>
+      </TT><TT><B>if</B></TT><TT> (root</TT><TT>-</TT><TT>&gt;element &gt; max) max = root</TT><TT>-</TT><TT>&gt;element; <BR>
+    } <BR>
+    </TT><TT><B>return</B></TT><TT> max; <BR>
+  } <BR>
+</TT></DIV><!--TOC chapter Data Invariants-->
+<H1 CLASS="chapter"><!--SEC ANCHOR --><A NAME="htoc15">Chapter 9</A>  Data Invariants</H1><!--SEC END --><!--NAME acsl_tutorial_invariant.html-->
+<P>
+<B>This chapter can be skipped on a first reading.</B></P><!--TOC section Type Invariants-->
+<H2 CLASS="section"><!--SEC ANCHOR --><A NAME="htoc16">9.1</A>  Type Invariants</H2><!--SEC END --><P>
+The specification of the <CODE>max_list</CODE> function given above is
+complete, but it could be written differently. In fact, if we are
+writing a program that manipulates <CODE>NULL</CODE>-terminated linked
+lists, a lot a function will rely on the fact that the manipulated
+lists are finite. This means that each function must have a
+precondition or a <CODE>terminates</CODE> clause similar to the one of
+<CODE>max_list</CODE>, but also that the functions that build lists must
+ensure (with a post-condition) that the returned list is
+finite. Writing all these clauses might be tedious for a large set of
+functions. Thus, ACSL provide a way to express that all the elements
+of a given datatype respects some <EM>type invariants</EM>. By default,
+these invariants are <EM>weak invariants</EM> in the ACSL sense, that
+is, they must be valid at the entrance and at the exit of each
+function, but can be temporarily broken inside a function’s body
+(provided they are restored before the function returns, or before
+calling another function which relies on them). ACSL has also a notion
+of <EM>strong invariant</EM>, which must hold at every point of the
+program, but they are harder to use in practice, and beyond the scope
+of this tutorial.</P><P>In our <CODE>list</CODE> example, we can impose that each list is finite
+with the following annotation:</P><DIV CLASS="flushleft"><TT>
+</TT><TT><I><FONT COLOR=maroon>/*@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>type</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>invariant</B></FONT></I></TT><TT><I><FONT COLOR=maroon> finite_list(list* root) = finite(root); */</FONT></I></TT><TT> <BR>
+</TT></DIV><P>The type invariant is a unary predicate. The type of its argument is
+the static type to which the invariant applies (in our case pointers
+to list). With this invariant, we can get rid of the <CODE>terminates</CODE>
+clause in the specification of <CODE>max_list</CODE>, since we are
+guaranteed that only finite lists will be passed to the function. Its
+specification will thus be the following:
+</P><DIV CLASS="flushleft"><TT>
+  </TT><TT><I><FONT COLOR=maroon>/*@ <BR>
+      </FONT></I></TT><TT><I><FONT COLOR=maroon><B>requires</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(root); <BR>
+      </FONT></I></TT><TT><I><FONT COLOR=maroon><B>assigns</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\nothing</B></FONT></I></TT><TT><I><FONT COLOR=maroon>; <BR>
+      </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> <BR>
+       </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\forall</B></FONT></I></TT><TT><I><FONT COLOR=maroon> list* l; <BR>
+         </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(l) &amp;&amp; reachable(root,l) ==&gt; <BR>
+           </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\result</B></FONT></I></TT><TT><I><FONT COLOR=maroon> &gt;= l</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>&gt;element; <BR>
+      </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> <BR>
+       </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\exists</B></FONT></I></TT><TT><I><FONT COLOR=maroon> list* l; <BR>
+         </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(l) &amp;&amp; reachable(root,l) &amp;&amp; </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\result</B></FONT></I></TT><TT><I><FONT COLOR=maroon> == l</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>&gt;element; <BR>
+  */</FONT></I></TT><TT> <BR>
+  int max_list(list* root); <BR>
+</TT></DIV><!--TOC section Global Invariants-->
+<H2 CLASS="section"><!--SEC ANCHOR --><A NAME="htoc17">9.2</A>  Global Invariants</H2><!--SEC END --><P>There is another kind of data invariant in ACSL, called
+<EM>global invariant</EM>. As indicated by its name, a global invariant
+is a property of global variables that must hold at each entrance or
+exit of a function (for weak invariants) or at each point of the
+program (for strong invariants). For instance, suppose that we have a
+global list <CODE>GList</CODE> that is always non-empty and maintained in
+decreasing order, so that <CODE>max_list(GList)</CODE> can be replaced in
+the code by <CODE>if(GList) GList-&gt;element</CODE>. A possible way to express that in
+ACSL is the following:</P><DIV CLASS="flushleft"><TT>
+</TT><TT><I><FONT COLOR=maroon>/*@ <BR>
+</FONT></I></TT><TT><I><FONT COLOR=maroon><B>inductive</B></FONT></I></TT><TT><I><FONT COLOR=maroon> sorted_decreasing{L}(list* root) { <BR>
+  </FONT></I></TT><TT><I><FONT COLOR=maroon><B>case</B></FONT></I></TT><TT><I><FONT COLOR=maroon> sorted_nil{L}: sorted_decreasing(</FONT></I></TT><TT><I><FONT COLOR=maroon><B>\null</B></FONT></I></TT><TT><I><FONT COLOR=maroon>); <BR>
+  </FONT></I></TT><TT><I><FONT COLOR=maroon><B>case</B></FONT></I></TT><TT><I><FONT COLOR=maroon> sorted_singleton{L}: <BR>
+  </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\forall</B></FONT></I></TT><TT><I><FONT COLOR=maroon> list* root; <BR>
+     </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(root) &amp;&amp; root</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>&gt;next == </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\null</B></FONT></I></TT><TT><I><FONT COLOR=maroon> ==&gt; <BR>
+        sorted_decreasing(root); <BR>
+  </FONT></I></TT><TT><I><FONT COLOR=maroon><B>case</B></FONT></I></TT><TT><I><FONT COLOR=maroon> sorted_next{L}: <BR>
+  </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\forall</B></FONT></I></TT><TT><I><FONT COLOR=maroon> list* root; <BR>
+     </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(root) &amp;&amp; </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(root</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>&gt;next) &amp;&amp; <BR>
+     root</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>&gt;element &gt;= root</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>&gt;next</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>&gt;element &amp;&amp; <BR>
+        sorted_decreasing(root</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>&gt;next) ==&gt; sorted_decreasing(root); <BR>
+} <BR>
+*/</FONT></I></TT><TT> <BR>
+ <BR>
+list* GList; <BR>
+ <BR>
+</TT><TT><I><FONT COLOR=maroon>/*@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>global</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>invariant</B></FONT></I></TT><TT><I><FONT COLOR=maroon> glist_sorted: sorted_decreasing(GList); */</FONT></I></TT><TT> <BR>
+ <BR>
+void insert_GList(int x); <BR>
+</TT></DIV><P>Because of the invariant of <CODE>GList</CODE>, a partial specification of
+<CODE>insert_GList</CODE> is that it can assume that GList is a sorted list,
+and that it must ensure that it is still the case when it
+returns. A complete specification, for instance that all the
+elements that were present at the entrance of the function are still
+there, and that <CODE>x</CODE> is present (inserted according to the
+ordering since the global invariant must still hold)
+can be expressed as such:
+</P><DIV CLASS="flushleft"><TT>
+</TT><TT><I><FONT COLOR=maroon>/*@ <BR>
+</FONT></I></TT><TT><I><FONT COLOR=maroon><B>axiomatic</B></FONT></I></TT><TT><I><FONT COLOR=maroon> Count { <BR>
+  </FONT></I></TT><TT><I><FONT COLOR=maroon><B>logic</B></FONT></I></TT><TT><I><FONT COLOR=maroon> integer count(int x,list* l); <BR>
+ <BR>
+  </FONT></I></TT><TT><I><FONT COLOR=maroon><B>axiom</B></FONT></I></TT><TT><I><FONT COLOR=maroon> count_nil: </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\forall</B></FONT></I></TT><TT><I><FONT COLOR=maroon> int x; count(x,</FONT></I></TT><TT><I><FONT COLOR=maroon><B>\null</B></FONT></I></TT><TT><I><FONT COLOR=maroon>) == 0; <BR>
+ <BR>
+  </FONT></I></TT><TT><I><FONT COLOR=maroon><B>axiom</B></FONT></I></TT><TT><I><FONT COLOR=maroon> count_cons_head{L}: <BR>
+  </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\forall</B></FONT></I></TT><TT><I><FONT COLOR=maroon> int x,list* l; <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(l) &amp;&amp; l</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>&gt;element == x ==&gt; <BR>
+       count(x,l) == count(x,l</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>&gt;next)+1; <BR>
+ <BR>
+ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>axiom</B></FONT></I></TT><TT><I><FONT COLOR=maroon> count_cons_tail{L}: <BR>
+  </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\forall</B></FONT></I></TT><TT><I><FONT COLOR=maroon> int x, list* l; <BR>
+     </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(l) &amp;&amp; l</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>&gt;element != x ==&gt; <BR>
+        count(x,l) == count(x,l</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>&gt;next); <BR>
+} <BR>
+*/</FONT></I></TT><TT> <BR>
+ <BR>
+</TT><TT><I><FONT COLOR=maroon>/*@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\forall</B></FONT></I></TT><TT><I><FONT COLOR=maroon> int y; y != x ==&gt; <BR>
+               count(y,GList) == count(y,</FONT></I></TT><TT><I><FONT COLOR=maroon><B>\old</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(GList)); <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> count(x,GList) == count(x,</FONT></I></TT><TT><I><FONT COLOR=maroon><B>\old</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(GList))+1; <BR>
+*/</FONT></I></TT><TT> <BR>
+void insert_GList(int x); <BR>
+</TT></DIV><!--TOC chapter Verification activities-->
+<H1 CLASS="chapter"><!--SEC ANCHOR --><A NAME="htoc18">Chapter 10</A>  Verification activities</H1><!--SEC END --><!--NAME acsl_tutorial_verification.html-->
+<P>The preceding examples have shown us how to write the specification of
+a C function in ACSL. However, at verification time,
+it can be necessary to write additional annotations in the
+implementation itself in order to guide the analyzers.</P><!--TOC section Assertions-->
+<H2 CLASS="section"><!--SEC ANCHOR --><A NAME="htoc19">10.1</A>  Assertions</H2><!--SEC END --><P>
+The simplest form of code annotation is an <EM>assertion</EM>. An
+assertion is a property that must be verified each time the execution
+reaches a given program point. Some assertions may be discharged
+directly by one analyzer or another. When this happens, it means that
+the analyzer has concluded that there was no possibility of the
+assertion not being respected when the arguments satisfy the
+function’s pre-conditions. Conversely, when the analyzer is not able
+to determine that an assertion always holds, it may be able to produce
+a pre-condition for the function that would, if it was added to the
+function’s contract, ensure that the assertion was verified.</P><P>In the following example, the first assertion can be verified automatically
+by many analyzers, whereas the second one can’t. An analyzer may
+suggest to add the pre-condition <CODE>n &gt; 0</CODE> to <CODE>f</CODE>’s contract.</P><DIV CLASS="flushleft"><TT>
+</TT><TT><I><FONT COLOR=maroon>/*@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>requires</B></FONT></I></TT><TT><I><FONT COLOR=maroon> n &gt;= 0 &amp;&amp; n &lt; 100; <BR>
+*/</FONT></I></TT><TT> <BR>
+int f(int n) <BR>
+{ <BR>
+  int tmp = 100 </TT><TT>-</TT><TT> n; <BR>
+  </TT><TT><I><FONT COLOR=maroon>//@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>assert</B></FONT></I></TT><TT><I><FONT COLOR=maroon> tmp &gt; 0;</FONT></I></TT><TT> <BR>
+  </TT><TT><I><FONT COLOR=maroon>//@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>assert</B></FONT></I></TT><TT><I><FONT COLOR=maroon> tmp &lt; 100;</FONT></I></TT><TT> <BR>
+  </TT><TT><B>return</B></TT><TT> tmp; <BR>
+} <BR>
+</TT></DIV><P>Let us now move on to a more interesting example.
+The function <CODE>sqsum</CODE> below is meant to
+compute the sum of the squares of the elements of an array.
+As usual, we have to give some pre-conditions to ensure the validity of
+the pointer accesses, and a post-condition expressing what the intended
+result is:
+</P><DIV CLASS="flushleft"><TT>
+</TT><TT><I><FONT COLOR=maroon>/*@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>requires</B></FONT></I></TT><TT><I><FONT COLOR=maroon> n &gt;= 0; <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>requires</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(p+ (0..n</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>1)); <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>assigns</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\nothing</B></FONT></I></TT><TT><I><FONT COLOR=maroon>; <BR>
+    </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\result</B></FONT></I></TT><TT><I><FONT COLOR=maroon> == </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\sum</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(0,n</FONT></I></TT><TT><I><FONT COLOR=maroon>−</FONT></I></TT><TT><I><FONT COLOR=maroon>1,</FONT></I></TT><TT><I><FONT COLOR=maroon><B>\lambda</B></FONT></I></TT><TT><I><FONT COLOR=maroon> integer i; p[i]*p[i]); <BR>
+*/</FONT></I></TT><TT> <BR>
+int sqsum(int* p, int n); <BR>
+</TT></DIV><P>
+A possible implementation is the following:
+</P><DIV CLASS="flushleft"><TT>
+int sqsum(int* p, int n) { <BR>
+  int S=0, tmp; <BR>
+  </TT><TT><B>for</B></TT><TT>(int i = 0; i &lt; n; i++) { <BR>
+    tmp = p[i] * p[i]; <BR>
+    S += tmp; <BR>
+  } <BR>
+  </TT><TT><B>return</B></TT><TT> S; <BR>
+} <BR>
+</TT></DIV><P>This implementation seems to be correct with respect to the
+specification. However, this is not the case. Indeed, the
+specification operates on mathematical (unbounded) <CODE>integer</CODE>s,
+while the C statements uses modulo arithmetic within the <CODE>int</CODE> type.
+If there is an overflow, the post-condition will not hold. In order
+to overcome
+this issue, a possible solution is to add some assertions before each
+<CODE>int</CODE> operation ensuring that there is no overflow. In
+the annotations, the arithmetic operations <CODE>+</CODE>,<CODE>-</CODE>,…are the mathematical addition, substraction,…in the <CODE>integer</CODE> domain. It is therefore possible to compare
+their results to <CODE>INT_MAX</CODE>.
+The code with its annotations is the following:
+</P><DIV CLASS="flushleft"><TT>
+</TT><CODE><TT>#</TT></CODE><TT>include &lt;limits.h&gt; <BR>
+ <BR>
+int sqsum(int* p, int n) { <BR>
+  int S=0, tmp; <BR>
+  </TT><TT><B>for</B></TT><TT>(int i = 0; i &lt; n; i++) { <BR>
+    </TT><TT><I><FONT COLOR=maroon>//@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>assert</B></FONT></I></TT><TT><I><FONT COLOR=maroon> p[i] * p[i] &lt;= INT_MAX;</FONT></I></TT><TT> <BR>
+    tmp = p[i] * p[i]; <BR>
+    </TT><TT><I><FONT COLOR=maroon>//@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>assert</B></FONT></I></TT><TT><I><FONT COLOR=maroon> tmp &gt;= 0;</FONT></I></TT><TT> <BR>
+    </TT><TT><I><FONT COLOR=maroon>//@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>assert</B></FONT></I></TT><TT><I><FONT COLOR=maroon> S + tmp &lt;= INT_MAX;</FONT></I></TT><TT> <BR>
+    S += tmp; <BR>
+  } <BR>
+  </TT><TT><B>return</B></TT><TT> S; <BR>
+} <BR>
+</TT></DIV><P>The assertion concerning <CODE>tmp</CODE> may be discharged automatically
+by some analyzers, but
+the other two assertions would require <CODE>sqsum</CODE>’s contract
+to be completed with additional pre-conditions. Ideally, the necessary
+pre-conditions will be infered automatically from
+the assertions by an analyzer.
+Even if they are not, and if the pre-conditions need
+to be written by hand, it is still useful to write
+the assertions first.
+In cases like this one, it is easier to get the assertions right
+than the corresponding pre-conditions. Some analyzers may then
+be able to check that the assertions are verified under the
+pre-conditions, providing trust in the latter (In fact, to some analyzers,
+checking the assertions once the corresponding pre-conditions
+are provided is much easier than infering the pre-conditions from the
+assertions).</P><!--TOC section Loop Invariants-->
+<H2 CLASS="section"><!--SEC ANCHOR --><A NAME="htoc20">10.2</A>  Loop Invariants</H2><!--SEC END --><P>Another kind of code annotations is dedicated to the analysis of loops.
+The treatment of loops is a difficult part of static analysis, and
+many analyzers need to be provided with hints in the form of
+an <EM>invariant</EM> for each loop. A loop invariant can be seen as a
+special case of assertion, which is preserved across the loop body.
+If we look back to the <CODE>max_seq</CODE> function, a
+useful invariant for proving that the implementation satisfies the
+formal specification would be that <CODE>res</CODE> contains the maximal value seen
+so far.</P><P>Let us now try to formalize this invariant property.
+Part of the formal invariant that we are trying to build
+is that at any iteration <CODE>j</CODE>, the variable <CODE>res</CODE> is greater or
+equal to <CODE>p[0]</CODE>,<CODE>p[1]</CODE>,…,<CODE>p[j]</CODE>.
+This part of the invariant is written:
+</P><DIV CLASS="flushleft"><TT>
+int max_seq(int* p, int n) { <BR>
+  int res = *p; <BR>
+  </TT><TT><I><FONT COLOR=maroon>/*@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>loop</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>invariant</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\forall</B></FONT></I></TT><TT><I><FONT COLOR=maroon> integer j; <BR>
+         0 &lt;= j &lt; i ==&gt; res &gt;= *(</FONT></I></TT><TT><I><FONT COLOR=maroon><B>\at</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(p,Pre)+j); */</FONT></I></TT><TT> <BR>
+  </TT><TT><B>for</B></TT><TT>(int i = 0; i &lt; n; i++) { <BR>
+    </TT><TT><B>if</B></TT><TT> (res &lt; *p) { res = *p; } <BR>
+    p++; <BR>
+  } <BR>
+  </TT><TT><B>return</B></TT><TT> res; <BR>
+} <BR>
+</TT></DIV><P>
+We use here the <CODE>\at()</CODE> construct, which is a generalization of
+<CODE>\old</CODE>. Namely, it says that its argument must be evaluated in a
+given state of the program. A state is represented by a label, which
+can be a C label (the corresponding state being the last time this
+label was reached) or some pre-defined logic labels. <CODE>Pre</CODE>
+indicates the pre-state of the function. <CODE>\old</CODE> is not admitted
+in loop invariant to avoid confusion with an evaluation at the
+beginning of the previous loop step.</P><P>The other part of the invariant property that should be expressed
+formally is that there exists an element in
+<CODE>p[0]</CODE>,<CODE>p[1]</CODE>,…,<CODE>p[n-1]</CODE> that is equal to
+<CODE>res</CODE>. In other words, this second part expresses that there
+exists an integer <CODE>e</CODE> such that <CODE>0 &lt;= e &lt; n</CODE> and
+<CODE>p[e] == res</CODE>. In order to prove the existence of such an
+integer <CODE>e</CODE>, the simplest way is to keep track of the index for
+which the maximal value is attained. This can be done in ACSL with
+extra statements called <EM>ghost code</EM>. Ghost code is C code
+written inside <CODE>//@ ghost ..</CODE> or <CODE>/*@ ghost .. */</CODE>
+comments. The original program must have exactly the same behavior
+with and without ghost code. In other word,
+ghost code must not interfere with the concrete
+implementation. The variables defined and assigned in ghost code (<EM>ghost variables</EM>) can be used in the ACSL properties.</P><P>The complete annotated function <CODE>max_seq</CODE> then becomes:</P><DIV CLASS="flushleft"><TT>
+int max_seq(int* p, int n) { <BR>
+  int res = *p; <BR>
+  </TT><TT><I><FONT COLOR=maroon>//@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ghost</B></FONT></I></TT><TT><I><FONT COLOR=maroon> int e = 0;</FONT></I></TT><TT> <BR>
+  </TT><TT><I><FONT COLOR=maroon>/*@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>loop</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>invariant</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\forall</B></FONT></I></TT><TT><I><FONT COLOR=maroon> integer j; <BR>
+           0 &lt;= j &lt; i ==&gt; res &gt;= </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\at</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(p[j],Pre); <BR>
+      </FONT></I></TT><TT><I><FONT COLOR=maroon><B>loop</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>invariant</B></FONT></I></TT><TT><I><FONT COLOR=maroon> <BR>
+           </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(</FONT></I></TT><TT><I><FONT COLOR=maroon><B>\at</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(p,Pre)+e) &amp;&amp; </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\at</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(p,Pre)[e] == res; <BR>
+      </FONT></I></TT><TT><I><FONT COLOR=maroon><B>loop</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>invariant</B></FONT></I></TT><TT><I><FONT COLOR=maroon> 0&lt;=i&lt;=n; <BR>
+      </FONT></I></TT><TT><I><FONT COLOR=maroon><B>loop</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>invariant</B></FONT></I></TT><TT><I><FONT COLOR=maroon> p==</FONT></I></TT><TT><I><FONT COLOR=maroon><B>\at</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(p,Pre)+i; <BR>
+      </FONT></I></TT><TT><I><FONT COLOR=maroon><B>loop</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>invariant</B></FONT></I></TT><TT><I><FONT COLOR=maroon> 0&lt;=e&lt;n; <BR>
+  */</FONT></I></TT><TT> <BR>
+  </TT><TT><B>for</B></TT><TT>(int i = 0; i &lt; n; i++) { <BR>
+    </TT><TT><B>if</B></TT><TT> (res &lt; *p) { <BR>
+      res = *p; <BR>
+      </TT><TT><I><FONT COLOR=maroon>//@ </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ghost</B></FONT></I></TT><TT><I><FONT COLOR=maroon> e = i;</FONT></I></TT><TT> <BR>
+    } <BR>
+    p++; <BR>
+  } <BR>
+  </TT><TT><B>return</B></TT><TT> res; <BR>
+} <BR>
+</TT></DIV><!--TOC chapter References-->
+<H1 CLASS="chapter"><!--SEC ANCHOR -->References</H1><!--SEC END --><DL CLASS="thebibliography"><DT CLASS="dt-thebibliography">
+<A NAME="ACSLref"><FONT COLOR=purple>[1]</FONT></A></DT><DD CLASS="dd-thebibliography">
+Patrick Baudin, Jean-Christophe Filliâtre, Claude Marché, Benjamin Monate,
+Yannick Moy, and Virgile Prevosto.
+<EM>ACSL: ANSI/ISO C Specification Language. Preliminary Design,
+version 1.4</EM>, 2008.
+<A HREF="http://www.frama-c.cea.fr/download/acsl_1.4.pdf"><TT>http://www.frama-c.cea.fr/download/acsl_1.4.pdf</TT></A>.</DD><DT CLASS="dt-thebibliography"><A NAME="caduceus"><FONT COLOR=purple>[2]</FONT></A></DT><DD CLASS="dd-thebibliography">
+Caduceus.
+<A HREF="http://why.lri.fr/caduceus/"><TT>http://why.lri.fr/caduceus/</TT></A>.</DD><DT CLASS="dt-thebibliography"><A NAME="JML"><FONT COLOR=purple>[3]</FONT></A></DT><DD CLASS="dd-thebibliography">
+JML.
+<A HREF="http://www.cs.iastate.edu/~leavens/JML/"><TT>http://www.cs.iastate.edu/~leavens/JML/</TT></A>.</DD></DL><!--CUT END -->
+<!--HTMLFOOT-->
+<!--ENDHTML-->
+<!--FOOTER-->
+<HR SIZE=2><BLOCKQUOTE CLASS="quote"><EM>This document was translated from L<sup>A</sup>T<sub>E</sub>X by
+</EM><A HREF="http://hevea.inria.fr/index.html"><EM>H</EM><EM><FONT SIZE=2><sup>E</sup></FONT></EM><EM>V</EM><EM><FONT SIZE=2><sup>E</sup></FONT></EM><EM>A</EM></A><EM>.</EM></BLOCKQUOTE><#foot>
