@@ -41,9 +41,17 @@ must be noted.
       \hline
       \lstinline+!+ & \ensuremath{\neg} & 0x00AC \\
       \hline
+      \lstinline+-+ (unary minus) & \ensuremath{-} & 0x2212 \\
+      \hline
       \lstinline|\forall| & \ensuremath{\forall} & 0x2200 \\
       \hline
       \lstinline|\exists| & \ensuremath{\exists} & 0x2203 \\
+      \hline
+      \lstinline|integer| & \ensuremath{\mathbb{Z}} & 0x2124 \\
+      \hline
+      \lstinline|real| & \ensuremath{\mathbb{R}} & 0x211D \\
+      \hline
+      \lstinline|boolean| & \ensuremath{\mathbb{B}} & 0x1D539 \\
       \hline
     \end{tabular}
   \end{center}
@@ -104,12 +112,10 @@ With respect to C pure expressions, the additional constructs are as follows:
 \end{figure}
 
 \item[Local binding]
-  \begin{notimplementedenv}
     \lstinline|\let x = $e_1$;$e_2$|
     introduces the name \lstinline|x| for
     expression \lstinline|$e_1$| which can be used in expression
     \lstinline|$e_2$|.
-  \end{notimplementedenv}
 
 \item[Conditional] \lstinline|c ? $e_1$ : $e_2$|. There is a subtlety
   here: the condition may be either a boolean term or a predicate.  In
@@ -157,7 +163,7 @@ Section~\ref{sec:logicspec} for detail.
   to add extra parentheses: \lstinline|a == b < c| is equivalent
   to \lstinline|a == b && b < c|, whereas
   \lstinline |a == (b \< c)| is
-  equivalent to \lstinline|\let x != b < c; a == x|.
+  equivalent to \lstinline|\let x = b < c; a == x|.
   This situation raises some issues, see example below.
 
 \oldremark{Virgile}{Dans le dernier cas, on pourrait vouloir avoir x, y
@@ -831,13 +837,14 @@ et utiliser string\_literal\_foo a la place de "foo"
 \subsection{Address operator}
 \label{sec:address}
 
-A particular caution should be taken care with respect to the address
-operator. Values in logic do not lie in C memory so it does not mean
+\emph{address-of} operator should be used with caution.
+Values in logic do not lie in C memory so it does not mean
 anything to talk about their ``address''.
 
+\begin{remark}{???}
 The type system should provide a boolean information on whether a
 given logic term denotes a C memory location (i.e. a C left-value).
-
+\end{remark}
 
 
 

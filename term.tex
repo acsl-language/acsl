@@ -25,7 +25,7 @@
        | id "(" term ("," term)* ")" ; function application
        | "(" term ")" ; parentheses
        | term "?" term ":" term ; ternary condition
-       | {"\let" id "=" term ";" term} ; local binding
+       | "\let" id "=" term ";" term ; local binding
        | "sizeof" "(" term ")" ;
        | "sizeof" "(" C-type-expr ")" ;
        | id ":" term ; syntactic naming
@@ -44,7 +44,7 @@
        | pred "^^" pred ; exclusive or
        | term "?" pred ":" pred ; ternary condition
        | { pred "?" pred ":" pred };
-       | { "\let" id "=" term ";" pred }; local binding
+       | "\let" id "=" term ";" pred ; local binding
        | { "\let" id "=" pred ";" pred };
        | "\forall" binders ";" pred ; universal quantification
        | "\exists" binders ";" pred ; existential quantification
