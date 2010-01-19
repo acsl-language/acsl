@@ -114,21 +114,81 @@ transf: transf.cmo transfmain.cmo
 %.gproved:%.c acsl-mini-tutorial.tex
 	$(FRAMAC) -jessie $<
 
+%.check: %.c acsl-mini-tutorial.tex
+	$(FRAMAC) -pp-annot $<
 
 transfmain.cmo: transf.cmo
 
 .PHONY: check tutorial-check
 
-check:
-	gcc -c -std=c99 *.c
-	for f in *.c ; do $(FRAMAC) -pp-annot $$f ; done
+GOOD=abrupt_termination.c advancedloopinvariants.c assert-tut.c		\
+assigns_array.c assigns.c assigns_list.c bsearch.c bsearch2.c		\
+div_lemma.c dowhile.c euclide.c exit.c extremum-tut.c extremum2-tut.c	\
+fact.c flag.c footprint.c ghostpointer.c glob_var_masked.c		\
+glob_var_masked_sol.c global_invariant-tut.c incrstar.c intlists.c	\
+isgcd.c isqrt.c listdecl.c listdef.c loopvariantnegative.c max-tut.c	\
+max.c max_index.c max_list-tut.c max_ptr-tut.c max_ptr2-tut.c		\
+max_ptr_bhv-tut.c max_ptr_false-tut.c max_seq-tut.c max_seq2-tut.c	\
+max_seq_assigns-tut.c max_seq_ghost-tut.c max_seq_inv-tut.c		\
+max_seq_old-tut.c max_seq_old2-tut.c mayexit.c mean.c minitutorial.c	\
+mutualrec.c nb_occ.c nb_occ_reads.c non_terminating-tut.c		\
+non_terminating2-tut.c num_of_pos.c oldat.c permut.c permut_reads.c	\
+sizeof.c sign.c signdef.c sort.c sqsum-tut.c sqsum2-tut.c sum.c		\
+swap-tut.c terminates_list.c type_invariant-tut.c
 
+BAD=acsl_allocator.c cond_assigns.c gen_code.c gen_spec_with_ghost.c	\
+gen_spec_with_model.c ghostcfg.c import.c initialized.c invariants.c	\
+lexico.c listlengthdef.c listmodule.c modifier.c out_char.c		\
+specified.c strcpyspec.c sum2.c volatile.c
+
+check: acsl-mini-tutorial.tex
+	gcc -c -std=c99 *.c
+	@good=0; \
+        bad=0; \
+        failed=0; \
+        passed=0; \
+	failed_list=""; \
+        passed_list=""; \
+        for f in *.c ; do \
+          $(FRAMAC) -pp-annot -verbose 0 $$f ; \
+          case $$? in \
+            0) if echo "$(GOOD)" | grep -q -e "$$f"; then good=$$(($$good +1)); \
+               else passed=$$(($$passed+1)); \
+                    passed_list="$$passed_list $$f"; \
+	       fi;; \
+            *) if echo "$(BAD)" | grep -q -e "$$f"; then bad=$$(($$bad + 1)); \
+               else failed=$$(($$failed+1)); \
+                    failed_list="$$failed_list $$f"; \
+               fi;; \
+          esac; \
+        done; \
+	echo "$$good examples passed, $$bad failed as expected"; \
+	if test $$failed -ne 0 -o $$passed -ne 0; then \
+	  echo "$$failed examples failed, $$passed unexpectedly passed."; \
+          echo "Failures: $$failed_list"; \
+          echo "Accepted: $$passed_list"; \
+          exit 1; \
+        fi
+
+# On the contrary to check above, all files in the tutorial are supposed to
+# be supported by Frama-C
 tutorial-check: acsl-mini-tutorial.tex
-	@for f in *-tut.c; do \
-            echo "***Starting analysis of $$f"; \
+	@failed=0; \
+         failed_list=""; \
+          for f in *-tut.c; do \
             gcc -c -std=c99 $$f; \
-            $(FRAMAC) -pp-annot $$f; \
-        done
+            $(FRAMAC) -pp-annot -verbose 0 $$f; \
+	    if test $$? -ne 0; then \
+              failed=$$(($$failed + 1)); \
+              failed_list="$$failed_list $$f"; \
+            fi; \
+        done; \
+        if test $$failed -ne 0; then \
+	   echo "$$failed tests from the tutorial failed."; \
+           echo "Failures: $$failed_list"; \
+	   exit 1; \
+        else echo "All examples from the tutorial are accepted. Good!"; \
+        fi
 
 acsl-mini-tutorial.pdf: acsl-mini-tutorial.tex mini-biblio.bib
 	pdflatex acsl-mini-tutorial

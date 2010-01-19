@@ -1,11 +1,9 @@
 /* public interface */
 
-//@ open Set;
-
-//@ model set<integer> forbidden = emptyset;
+//@ model set<integer> forbidden = \empty;
 
 /*@ assigns forbidden;
-  @ ensures ! in(\result,\old(forbidden) 
-  @   && in(\result,forbidden) && subset(\old(forbidden),forbidden);
+  @ ensures ! \subset(\result,\old(forbidden))
+  @   && \subset(\result,forbidden) && \subset(\old(forbidden),forbidden);
   @*/
 int gen();

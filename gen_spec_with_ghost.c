@@ -1,16 +1,16 @@
-//@ ghost set<integer> forbidden = emptyset;
+//@ ghost set<integer> forbidden = \empty;
 
 /*@ assigns forbidden;
-  @ ensures ! Set::in(\result,\old(forbidden)
-  @   && Set::in(\result,forbidden)
-      && Set::subset(\old(forbidden),forbidden);
+  @ ensures ! \subset(\result,\old(forbidden))
+  @   && \subset(\result,forbidden)
+      && \subset(\old(forbidden),forbidden);
   @*/
 int gen() {
   static int x = 0;
   /*@ global invariant I: \forall integer k;
-    @    Set::mem(k,forbidden) ==> x > k;
+    @    \subset(k,forbidden) ==> x > k;
     @*/
   x++;
-  //@ ghost forbidden = Set::union(Set::single(x),forbidden);
+  //@ ghost forbidden = \union(x,forbidden);
   return x;
 }

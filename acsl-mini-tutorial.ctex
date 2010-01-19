@@ -474,8 +474,8 @@ any argument \verb|c|, but the function is not guaranteed to terminate
 if \verb|c<=0|.
 \begin{c}[non_terminating-tut.c]
 /*@
-assigns \nothing;
 terminates c>0;
+assigns \nothing;
 */
 void f (int c) { while(!c); return;}
 \end{c}
@@ -593,8 +593,10 @@ possible specification for \verb|max_list| would be the following:
 \begin{c}[max_list-tut.c]
   /*@
       requires \valid(root);
-      assigns \nothing;
+
       terminates finite(root);
+
+      assigns \nothing;
       ensures
        \forall list* l;
          \valid(l) && reachable(root,l) ==>

@@ -11,7 +11,7 @@ int even(int n) {
 }
 
 /*@
-  requires n>=0;
+  requires x>=0;
   decreases x;
 */
 int odd(int x) {

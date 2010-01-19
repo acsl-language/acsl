@@ -11,6 +11,6 @@ struct S {
 
 /*@ axiomatic Conv {
     axiom conversion: \forall struct S s;
-      footprint(s) == \union(s.x,(char*) y + (0 .. sizeof(int) - 1));
+      footprint(s) == \union(s.x,(char*) s.y + (0 .. sizeof(int) - 1));
     }
 */

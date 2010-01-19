@@ -311,8 +311,8 @@ any argument <CODE>c</CODE>, but the function is not guaranteed to terminate
 if <CODE>c&lt;=0</CODE>.
 </P><DIV CLASS="flushleft"><TT>
 </TT><TT><I><FONT COLOR=maroon>/*@ <BR>
-</FONT></I></TT><TT><I><FONT COLOR=maroon><B>assigns</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\nothing</B></FONT></I></TT><TT><I><FONT COLOR=maroon>; <BR>
 </FONT></I></TT><TT><I><FONT COLOR=maroon><B>terminates</B></FONT></I></TT><TT><I><FONT COLOR=maroon> c&gt;0; <BR>
+</FONT></I></TT><TT><I><FONT COLOR=maroon><B>assigns</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\nothing</B></FONT></I></TT><TT><I><FONT COLOR=maroon>; <BR>
 */</FONT></I></TT><TT> <BR>
 void f (int c) { </TT><TT><B>while</B></TT><TT>(!c); </TT><TT><B>return</B></TT><TT>;} <BR>
 </TT></DIV><P>Another valid contract for the same implementation of <CODE>f</CODE> is
@@ -405,8 +405,10 @@ possible specification for <CODE>max_list</CODE> would be the following:
 </P><DIV CLASS="flushleft"><TT>
   </TT><TT><I><FONT COLOR=maroon>/*@ <BR>
       </FONT></I></TT><TT><I><FONT COLOR=maroon><B>requires</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(root); <BR>
-      </FONT></I></TT><TT><I><FONT COLOR=maroon><B>assigns</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\nothing</B></FONT></I></TT><TT><I><FONT COLOR=maroon>; <BR>
+ <BR>
       </FONT></I></TT><TT><I><FONT COLOR=maroon><B>terminates</B></FONT></I></TT><TT><I><FONT COLOR=maroon> finite(root); <BR>
+ <BR>
+      </FONT></I></TT><TT><I><FONT COLOR=maroon><B>assigns</B></FONT></I></TT><TT><I><FONT COLOR=maroon> </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\nothing</B></FONT></I></TT><TT><I><FONT COLOR=maroon>; <BR>
       </FONT></I></TT><TT><I><FONT COLOR=maroon><B>ensures</B></FONT></I></TT><TT><I><FONT COLOR=maroon> <BR>
        </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\forall</B></FONT></I></TT><TT><I><FONT COLOR=maroon> list* l; <BR>
          </FONT></I></TT><TT><I><FONT COLOR=maroon><B>\valid</B></FONT></I></TT><TT><I><FONT COLOR=maroon>(l) &amp;&amp; reachable(root,l) ==&gt; <BR>
