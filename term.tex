@@ -43,7 +43,7 @@
        | "!" pred ; negation
        | pred "^^" pred ; exclusive or
        | term "?" pred ":" pred ; ternary condition
-       | { pred "?" pred ":" pred };
+       | pred "?" pred ":" pred;
        | "\let" id "=" term ";" pred ; local binding
        | { "\let" id "=" pred ";" pred };
        | "\forall" binders ";" pred ; universal quantification
