@@ -39,7 +39,7 @@
 %\setlength{\textwidth}{160mm}
 %\setlength{\oddsidemargin}{0mm}
 %\setlength{\evensidemargin}{0mm}
-\newcommand{\version}{1.4}
+\newcommand{\version}{1.4+dev}
 
 \renewcommand{\textfraction}{0.01}
 \renewcommand{\topfraction}{0.99}
@@ -65,8 +65,10 @@
 \hbadness=10000
 
 \ifthenelse{\boolean{PrintImplementationRq}}%
-  {\coverpage{ACSL Implementation in \framacversion{}}}%
-  {\coverpage{ACSL: ANSI/ISO C Specification Language}}
+  {\coverpage{\vbox{\mbox{ACSL Version \version}\newline
+\mbox{Implementation in \framacversion{}}}}}%
+  {\coverpage{\vbox{\mbox{ACSL: ANSI/ISO C Specification Language}\newline
+        \mbox{Version \version}}}}
 
 \begin{titlepage}
 \includegraphics[height=14mm]{cealistlogo.jpg}
@@ -221,6 +223,8 @@ as much as possible of ACSL.
 \listinginput{1}{acsl_allocator.c}
 
 \section{Changes}
+
+\subsection{Version \version}
 
 \subsection{Version 1.4}
 \begin{itemize}
