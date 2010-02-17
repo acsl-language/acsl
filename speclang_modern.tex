@@ -687,7 +687,7 @@ pour des types de donnees
 \subsection{Structures, Unions and Arrays in logic}
 
 Aggregate C objects (i.e. structures, unions and arrays) are also
-possible values for terms in logic. They can passed as parameters (and
+possible values for terms in logic. They can be passed as parameters (and
 also returned) to logic functions, tested for equality, etc. like any
 other values.
 
@@ -695,9 +695,9 @@ Aggregate types can be declared in logic, and their contents may be
 any logic types themselves. Constructing such values in logic can be
 performed using a syntax similar to C designated initializers.
 
-Array types in logic may be declared either with an explicit length,
-non-negative. Access to the length of an logic array can be done with
-\verb|\length|.
+Array types in logic may be declared either with or without an
+explicit non-negative length. Access to the length of a logic array
+can be done with \verb|\length|.
 
 
 \begin{example}
@@ -712,7 +712,7 @@ non-negative. Access to the length of an logic array can be done with
   @ };
   @*/
 
-type polygon = point[];
+//@ type polygon = point[];
 /*@ logic perimeter(polygon p) =
   @   \sum(0,\length(p)-1,\lambda integer i;d(p[i],p[(i+1) % \length(p)])) ;
   @*/
@@ -760,10 +760,10 @@ struct S { int x; float y; int t[10]; };
 
 \subsubsection{Cast and conversion}
 
-Thus, unlike in C, their is no implicit conversion from an array type
-to a pointer type. However, there is an implicit conversion from array
-of a given size to arrays with unspecified size (but not the
-converse).
+Unlike in C, there is no implicit conversion from an array type to a
+pointer type. On the other hand, there is an implicit conversion from
+an array of a given size to an array with unspecified size (but not
+the converse).
 
 \begin{example}
   logic point[4] square = { { ... } , { .. } ... }
@@ -781,7 +781,8 @@ lengths returns false.  Beware that equality of unions is also
 equality of all fields.
 
 An explicit cast from a array type to a pointer type is allowed only
-for arrays that lies in C memory, similarly as taking its address (see
+for arrays that lies in C memory. As in C, the result of the cast is
+the address of the first element of the array (see
 Section~\ref{sec:address}).
 
 Conversely, an explicit cast from a pointer type to an array type or a
@@ -1655,7 +1656,7 @@ in fact syntactic sugar for \lstinline|\at(e,Old)|.
   all contracts, where it refers to the pre-state for the
   \lstinline|requires|, \lstinline|assumes|, \lstinline|assigns|,
   \lstinline|variant|,
-  \lstinline|terminates|,  
+  \lstinline|terminates|,
   clauses and the post-state for other clauses.
 It is also visible in data invariants, presented in Section~\ref{sec:invariants}.
 \item The label \lstinline|Old| is visible in \lstinline|assigns| and
