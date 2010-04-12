@@ -64,7 +64,7 @@ framacversion.tex: ../../VERSION Makefile
 	chmod a-w $@
 
 %.1: %.mp
-	mpost -interaction batchmode $<
+	mpost -interaction=batchmode $<
 
 %.mps: %.1
 	mv $< $@

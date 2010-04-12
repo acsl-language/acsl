@@ -4,12 +4,12 @@
   statement-contract ::= {("for" id ("," id)*)?} ;
     simple-behavior-stmt named-behavior-stmt*
   \
-  simple-behavior-stmt::=(simple-clauses | {abrupt-clause-stmt})*
+  simple-behavior-stmt::=(simple-clauses | abrupt-clause-stmt)*
   \
   named-behavior-stmt ::= "behavior" id ":" behavior-body-stmt
   \
   behavior-body-stmt ::= (assumes-clause |
                      {[not implemented in a named behavior]requires-clause} ;
                     | assigns-clause | ensures-clause ;
-                    | {abrupt-clauses-stmt}) *
+                    | abrupt-clauses-stmt) *
 \end{syntax}

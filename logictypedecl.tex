@@ -3,7 +3,7 @@
                 logic-type-def ";"
   \
   logic-type-def ::= {record-type} | sum-type ;
-  | {type-expr} ; type abbreviation
+  | type-expr ; type abbreviation
   \
   record-type ::= {"{" type-expr id} ;
                   {( ";" type-expr id)* ";"? "}"}
@@ -12,9 +12,9 @@
                ( "|" constructor)*
   \
   constructor ::= {id} ; constant constructor
-  | {id} ;
-    {"(" type-expr};
-    {("," type-expr)* ")"} ; non-constant constructor
+  | id ;
+    "(" type-expr;
+    ("," type-expr)* ")" ; non-constant constructor
   \
   type-expr ::= {"(" type-expr};
                 {("," type-expr)+ ")"} ; product type

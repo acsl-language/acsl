@@ -45,7 +45,7 @@
        | term "?" pred ":" pred ; ternary condition
        | pred "?" pred ":" pred;
        | "\let" id "=" term ";" pred ; local binding
-       | { "\let" id "=" pred ";" pred };
+       | "\let" id "=" pred ";" pred ;
        | "\forall" binders ";" pred ; universal quantification
        | "\exists" binders ";" pred ; existential quantification
        | id ":" pred ; syntactic naming
