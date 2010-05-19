@@ -1,7 +1,7 @@
 \begin{syntax}
   function-contract ::= requires-clause* terminates-clause?;
-                        decreases-clause? simple-clauses*;
-                        named-behavior* completeness-clauses*
+                        decreases-clause? simple-clause*;
+                        named-behavior* completeness-clause*
   \
   requires-clause ::= "requires" predicate ";"
   \
@@ -9,21 +9,20 @@
   \
   decreases-clause ::= "decreases" term ("for" ident)? ";"
   \
-  simple-clauses ::= assigns-clause | ensures-clause | abrupt-clause-fn
+  simple-clause ::= assigns-clause | ensures-clause | abrupt-clause-fn
   \
   assigns-clause ::= "assigns" locations ";"
   \
   locations ::= location ("," location) * | "\nothing"
   \
-  ensures-clauses ::= "ensures" predicate ";"
+  ensures-clause ::= "ensures" predicate ";"
   \
   named-behavior ::= "behavior" id ":" behavior-body
   \
-  behavior-body ::= assumes-clause*
-                     {requires-clause}*
-                    simple-clauses* \
+  behavior-body ::= assumes-clause* {requires-clause}* simple-clause* 
+  \
   assumes-clause ::= "assumes" predicate ";"
   \
-  completeness-clauses ::= "complete" "behaviors" (id (","id)*)? ";";
+  completeness-clause ::= "complete" "behaviors" (id (","id)*)? ";";
      | "disjoint" "behaviors" (id (","id)*)? ";"
 \end{syntax}
