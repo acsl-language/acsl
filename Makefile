@@ -123,6 +123,7 @@ transfmain.cmo: transf.cmo
 
 GOOD=abrupt_termination.c advancedloopinvariants.c assert-tut.c		\
 assigns_array.c assigns.c assigns_list.c bsearch.c bsearch2.c		\
+cond_assigns.c \
 div_lemma.c dowhile.c euclide.c exit.c extremum-tut.c extremum2-tut.c	\
 fact.c flag.c footprint.c ghostpointer.c glob_var_masked.c		\
 glob_var_masked_sol.c global_invariant-tut.c incrstar.c intlists.c	\
@@ -136,7 +137,7 @@ non_terminating2-tut.c num_of_pos.c oldat.c permut.c permut_reads.c	\
 sizeof.c sign.c signdef.c sort.c sqsum-tut.c sqsum2-tut.c sum.c		\
 swap-tut.c terminates_list.c type_invariant-tut.c
 
-BAD=acsl_allocator.c cond_assigns.c gen_code.c gen_spec_with_ghost.c	\
+BAD=acsl_allocator.c gen_code.c gen_spec_with_ghost.c	\
 gen_spec_with_model.c ghostcfg.c import.c initialized.c invariants.c	\
 lexico.c listlengthdef.c listmodule.c modifier.c out_char.c		\
 specified.c strcpyspec.c sum2.c volatile.c
