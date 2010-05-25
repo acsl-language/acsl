@@ -1,12 +1,12 @@
 \begin{syntax}
   statement ::= "/*@" statement-contract "*/" statement
   \
-  statement-contract ::= {("for" id ("," id)* ":")?} ;
-    requires-clause* simple-clause-stmt* named-behavior-stmt*
+  statement-contract ::= {("for" id ("," id)* ":")?} requires-clause* ;
+    simple-clause-stmt* named-behavior-stmt*
   \
   simple-clause-stmt::= (simple-clause | abrupt-clause-stmt)
   \
   named-behavior-stmt ::= "behavior" id ":" behavior-body-stmt
   \
-  behavior-body-stmt ::= assumes-clause* {requires-clause*} simple-clause-stmt*
+  behavior-body-stmt ::= assumes-clause* requires-clause* simple-clause-stmt*
 \end{syntax}
