@@ -60,7 +60,8 @@
 	"fresh"; "from";
 	"nothing";
 	"result";
-	"let" ; "at"; "true"; "false"; "numof"
+	"let" ; "at"; "true"; "false"; "numof";
+	"with"
       ];
     List.iter (fun (s,t) -> Hashtbl.add h s t)
       [

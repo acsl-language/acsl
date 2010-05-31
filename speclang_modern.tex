@@ -133,11 +133,11 @@ With respect to C pure expressions, the additional constructs are as follows:
  \begin{notimplementedenv}
   The composite element modifier is an additional
   operator in relation to the C structure field and array accessors.
-  The expression \lstinline|{ s for .id = v }|
+  The expression \lstinline|{ s \with .id = v }|
   denotes the same structure than \lstinline|s|, except for the field
   \lstinline|id| to be modified by \lstinline|v|.
   The equivalent expression for an array is
-  \lstinline|{ t for [ i ] = v }|
+  \lstinline|{ t \with [ i ] = v }|
   which returns the same array than \lstinline|t|, except for the
   \lstinline|i$^{th}$| element those value
   is updated to \lstinline|v|.
@@ -726,7 +726,7 @@ t[i] can be written even if i is outside the array bounds.
 
 Functional update of a struct is done by
 \begin{verbatim}
-{ s for .x = 3.0 }
+{ s \with .x = 3.0 }
 \end{verbatim}
 
 There is no particular syntax for a functional update of a union: it
@@ -734,7 +734,7 @@ is equivalent to a direct initialization.
 
 Functional update of an array is done by
 \begin{verbatim}
-{ t for [3] = { .x = 1.0, .y = 3.0 } }
+{ t \with [3] = { .x = 1.0, .y = 3.0 } }
 \end{verbatim}
 
 other built-in constructs: array.sub ? array.map ? (later)
@@ -2630,8 +2630,8 @@ corresponding contract.
   Ceci n'est pas au bon endroit, et n'est peut-etre pas du tout utile
 
 \begin{itemize}
-\item functional  of array : \notimplemented{$\{ t {\tt for} [i] {\tt:} e \} $}
-\item functional update of struct : \notimplemented{$\{ s {\tt for} f {\tt=} e \} $}
+\item functional  of array : \notimplemented{$\{ t \lstinline$\with$ [i] {\tt=} e \} $}
+\item functional update of struct : \notimplemented{$\{ s \lstinline$\with$ f {\tt=} e \} $}
 
 \item arrays or structs given extensionaly, syntax like for C
   initializers :  \notimplemented{$\{ t_1, \ldots, t_n \}$}
