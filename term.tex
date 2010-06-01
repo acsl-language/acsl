@@ -17,7 +17,7 @@
        | unary-op term ;
        | term bin-op term ;
        | term "[" term "]" ; array access
-       | {"{" term "\with" "[" term "]" "=" term "}"} ; array functional modifier
+       | "{" term "\with" "[" term "]" "=" term "}" ; array functional modifier
        | term "." id  ; structure field access
        | "{" term "\with" "."id "=" term "}" ; field functional modifier
        | term "->" id ;
