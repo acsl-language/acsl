@@ -770,16 +770,22 @@ C aggregates types (struct, union or array) naturally map to logic
 types, by recursively mapping their fields.
 
 \begin{example}
-~
+There is no implicit cast to type of the updated/initialized fields.
 \begin{listing-nonumber}
 struct S { int x; float y; int t[10]; };
 
-//@ logic integer g(struct S s) = s.t[3];
-//@ logic struct S f(integer n) = { .x = (int)n , .y = (float)0.0 };
+//@ logic integer f(struct S s) = s.t[3];
+//@ logic struct S g(integer n, struct S s) = { s \with .x = (int)n };
+\end{listing-nonumber}
+Unlike in C, all fields should be initialized:
+\begin{listing-nonumber}
+/*@ logic struct S h(integer n, int a[10]) = {
+  @   .x = (int)n, .y = (float)0.0, .t = a 
+  @   };
+  @*/
 \end{listing-nonumber}
 \end{example}
-
-
+ 
 \subsubsection{Cast and conversion}
 
 Unlike in C, there is no implicit conversion from an array type to a
@@ -790,11 +796,11 @@ the converse).
 \begin{example}
 ~
 \begin{listing-nonumber}
-  logic point square[4] = { { ... } , { .. } ... }
+//@ logic point square[4] = { { ... } , { .. } ... };
 
-  perimeter(square); // well typed
-  centroid(square); // wrongly typed
-  centroid((triangle)square); // well-typed (truncation)
+//@ ... perimeter(square); // well typed
+//@ ... centroid(square); // wrongly typed
+//@ ... centroid((triangle)square); // well-typed (truncation)
 \end{listing-nonumber}
 \end{example}
 
