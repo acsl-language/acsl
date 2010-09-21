@@ -340,7 +340,7 @@ remainder of $n$ divided by $d$ then:
 \item $q$ is negative if $|n|\geq|d|$ and $n$ and $d$ have opposite signs;
 \item $q\times d+r = n$;
 \item $|r|<|d|$;
-\item $r$ is zero or has the same sign as $d$.
+\item $r$ is zero or has the same sign as $n$.
 \end{itemize}
 
 \begin{example}
@@ -705,7 +705,7 @@ can be done with \lstinline|\length|.
 //@ type triangle = point[3];
 
 //@ logic point origin = { .x = 0.0 , .y = 0.0 };
-/*@ logic triangle t_iso = { [0] = origin, 
+/*@ logic triangle t_iso = { [0] = origin,
   @                          [1] = { .y = 2.0 , .x = 0.0 }
   @                          [2] = { .x = 2.0 , .y = 0.0 }};
   @*/
@@ -742,9 +742,9 @@ Functional update of a structure is done by
 \end{listing-nonumber}
 
 There is no particular syntax for a functional update of an union, but of course the following
-equility is not be true for an \lstinline|object| of an union type: 
+equility is not be true for an \lstinline|object| of an union type:
 \begin{listing-nonumber}
-{ { object \with .x = 3.0 } 
+{ { object \with .x = 3.0 }
            \with .y = 2.0 } == { { object \with .y = 2.0 }
                                           \with .x = 3.0 }
 \end{listing-nonumber}
@@ -780,12 +780,12 @@ struct S { int x; float y; int t[10]; };
 Unlike in C, all fields should be initialized:
 \begin{listing-nonumber}
 /*@ logic struct S h(integer n, int a[10]) = {
-  @   .x = (int)n, .y = (float)0.0, .t = a 
+  @   .x = (int)n, .y = (float)0.0, .t = a
   @   };
   @*/
 \end{listing-nonumber}
 \end{example}
- 
+
 \subsubsection{Cast and conversion}
 
 Unlike in C, there is no implicit conversion from an array type to a
