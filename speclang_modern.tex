@@ -708,7 +708,7 @@ Nevertheless, arithmetic and dereferencing over arrays lying in C memory are all
 Dereferencing a C array is equivalent an access to the first element of the array~;
 shifting it from $i$ denotes the address of it $i^{th}$ element.
 \begin{listing-nonumber}
-int tab[10] ;
+int tab[10] = { 1 } ;
 int x ;
 int *p = &x;
 
