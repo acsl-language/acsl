@@ -827,10 +827,14 @@ Subtyping and cast recursively applies to fields.
 \end{listing-nonumber}
 \end{example}
 
-Precisely, conversion of a pointer p of type $\tau*$ to an logic array of type
+Precisely, conversion of a pointer $p$ of type $\tau*$ to an logic array of type
 $\tau[]$ returns a logic array $t$ such that
 \[
-\lstinline|length|(t) = (\lstinline|block_length|(p) - \lstinline|offset|(p))/\lstinline|sizeof|(\tau)
+\lstinline|length|(t) = (
+\blocklength\indexttbs{block\_length}
+(p) - 
+\begin{notimplementedenv}\lstinline|\offset|\end{notimplementedenv}%
+(p))/\lstinline|sizeof|(\tau)
 \]
 
 
@@ -2410,10 +2414,10 @@ Some shortcuts are provided:
   \indexttbs{offset}
   returns the offset between \lstinline|p| and its base address
 
-  \begin{tabular}{rcl}
+  \begin{tabular}{lcl}
     \lstinline|\offset| &:& \lstinline|$\alpha$ * $\ra$ size_t| \\
-    \lstinline|\offset(p)| &=& \lstinline|(char*)p - \base_addr(p)|
-  \end{tabular}
+    \lstinline|\offset(p)| &=& \lstinline|(char*)p - \base_addr(p)| \\
+  \end{tabular} \\
   the following property holds: for any set of pointers
 \lstinline|s|, \lstinline|\valid(s)| if and only if for all \lstinline|p$\in$s|:
   \begin{listing-nonumber}
