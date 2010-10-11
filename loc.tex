@@ -1,6 +1,5 @@
 \begin{syntax}
   tset ::= "\empty" ; empty set
-       | term ; singleton
        | tset "->" id ;
        | tset "." id ;
        | "*" tset ;
@@ -12,6 +11,8 @@
        | tset "+" tset ;
        | "(" tset ")" ;
        | "{" tset "|" binders (";" pred)? "}" ; set comprehension
+       | { "{" term "}" } ; explicit singleton
+       | term ; implicit singleton
        \
   pred ::= {"\subset" "(" tset "," tset ")"} ; set inclusion
 \end{syntax}
