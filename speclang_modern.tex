@@ -1266,17 +1266,19 @@ means that all behaviors given in the contract should be taken into account.
 % See Section~\ref{sec:errorhandling} for a discussion about
 % behaviors related to error cases.
 
-\subsection{Memory locations}
+\subsection{Memory locations and sets of terms}
 \label{sec:locations}
 
+% PB: Modified since \separated operates on pointers and not on locations
 There are several places where one needs to describe a set of memory
 locations: in \assigns{} clauses of function contracts, or
-in \lstinline|\separated| predicate (see Section~\ref{sec:separated}). More
-generally, we introduce syntactic constructs to denote \emph{sets of
-  terms}. A \emph{memory location} is then any set of terms denoting a set of
+in \lstinline|loop assigns| clauses.
+A \emph{memory location} is then any set of terms denoting a set of
 l-values\index{l-value}. Moreover, a location given as argument to
 an \assigns{} clause must be a set of modifiable l-values, as described in
-Section~\ref{sec:glossary}.
+Section~\ref{sec:glossary}. 
+More generally, we introduce syntactic constructs to denote \emph{sets of
+  terms} which are also usefull for \separated predicate (see Section~\ref{sec:separated})
 
 \oldremark{PB+VP}{
   préciser le statut de \textbackslash{}result: est-ce une modifiable
@@ -2430,10 +2432,11 @@ Some shortcuts are provided:
 
 \experimental
 
-\lstinline|\separated($loc_1$,..,$loc_n$)|\indexttbs{separated}
+% PB: Modified since \separated operates on pointers and not on locations
+\lstinline|\separated($pt_1$,..,$pt_n$)|\indexttbs{separated}
 means that for each
-$i\neq j$, the intersection of $loc_i$ and $loc_j$ is empty. Each
-$loc_i$ is a set of terms as defined in Section~\ref{sec:locations}.
+$i\neq j$, the intersection of locations \lstinline|*|$pt_i$ and \lstinline|*|$pt_j$ is empty. Each
+$pt_i$ is a set of pointer terms as defined in Section~\ref{sec:locations}.
 
 
 \subsection{Allocation and deallocation}
