@@ -684,7 +684,72 @@ pour des types de donnees
 
 
 
+\subsection{C arrays and pointers}
+
+\subsubsection{Address operator, array access, pointer arithmetic and dereferencing}
+\label{sec:address}
+
+These operators are similar to their corresponding C operators.
+
+\emph{address-of} operator should be used with caution.
+Values in logic do not lie in C memory so it does not mean
+anything to talk about their ``address''.
+
+\begin{remark}{???}
+The type system should provide a boolean information on whether a
+given logic term denotes a C memory location (i.e. a C left-value).
+\end{remark}
+
+Unlike C, there is no implicit cast from from an array type to a pointer type.
+Nevertheless, arithmetic and dereferencing over arrays lying in C memory are allowed like in C.
+
+\begin{example}
+~
+Dereferencing a C array is equivalent an access to the first element of the array~;
+shifting it from $i$ denotes the address of it $i^{th}$ element.
+\begin{listing-nonumber}
+int tab[10] ;
+int x ;
+int *p = &x;
+
+//@ requires p == &x
+int main(void){
+  //@ assert tab[0]==1 && *p == x;
+  //@ assert *tab == 1;
+  int *q = tab[3];
+  //@ assert q+1 == tab+4;
+  ...
+}
+\end{listing-nonumber}
+\end{example}
+
+Since pointers can only refers values lying in C memory, 
+\lstinline|p->s| is always equivalent to \lstinline|(*p).s|.
+On the contrary, \lstinline|t[i]| is not always equivalent to 
+\lstinline|*(t+i)|, especially for arrays lying not in C 
+(see Section~\ref{sec:aggtregate} for details about arrays 
+as possible logic values).
+
+\subsubsection{Function pointers}
+
+Pointers to C functions are allowed in logic. The only possible use of
+them is to check for equality.
+
+\begin{example}
+~
+\begin{listing-nonumber}
+int f(int x);
+int g(int x);
+
+//@ requires p == &f || p == &g;
+void h(int(*p)(int)) {
+...
+}
+\end{listing-nonumber}
+\end{example}
+
 \subsection{Structures, Unions and Arrays in logic}
+\label{sec:aggregate}
 
 Aggregate C objects (i.e. structures, unions and arrays) are also
 possible values for terms in logic. They can be passed as parameters (and
@@ -796,10 +861,10 @@ the converse).
 \begin{example}
 ~
 \begin{listing-nonumber}
-//@ logic point square[4] = { { ... } , { .. } ... };
+//@ logic point square[4] = { origin, ... };
 
-//@ ... perimeter(square); // well typed
-//@ ... centroid(square); // wrongly typed
+//@ ... perimeter(square);          // well typed
+//@ ... centroid(square);           // wrongly typed
 //@ ... centroid((triangle)square); // well-typed (truncation)
 \end{listing-nonumber}
 \end{example}
@@ -864,38 +929,6 @@ et utiliser string\_literal\_foo a la place de "foo"
 \end{remark}
 
 
-
-\subsection{Address operator}
-\label{sec:address}
-
-\emph{address-of} operator should be used with caution.
-Values in logic do not lie in C memory so it does not mean
-anything to talk about their ``address''.
-
-\begin{remark}{???}
-The type system should provide a boolean information on whether a
-given logic term denotes a C memory location (i.e. a C left-value).
-\end{remark}
-
-
-
-\subsection{Function pointers}
-
-Pointers to C functions are allowed in logic. The only possible use of
-them is to check for equality.
-
-\begin{example}
-~
-\begin{listing-nonumber}
-int f(int x);
-int g(int x);
-
-//@ requires p == &f || p == &g;
-void h(int(*p)(int)) {
-...
-}
-\end{listing-nonumber}
-\end{example}
 
 \section{Function contracts}
 \label{sec:fn-behavior}
