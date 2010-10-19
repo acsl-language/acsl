@@ -2608,11 +2608,11 @@ and \assigns{} clauses. On the contrary,
   performs an unconditional exit of the \main{} function:
   \listinginput{1}{exit.c}
   Note that the specification of the \lstinline|may_exit|
-  function is incomplete allows modifications of the variable
+  function is incomplete since it allows modifications of the variable
   \lstinline|status| when no exit is performed.
   Using behaviors, it is possible to distinguish between the exit case
-  and the normal case, as in the following specification.
-  \listinginput{9}{mayexit.c}
+  and the normal case, as in the following specification:
+  \listinginput{8}{mayexit.c}
 \end{example}
 
 \begin{todo}
