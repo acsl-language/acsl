@@ -1692,7 +1692,7 @@ scoping rules must be respected:
 These rules are exactly the same rules as for the visibility of local
 variables within C statements (see~\cite{KR88}, Section A11.1)
 
-\subsubsection*{Default logic labels}
+\subsubsection*{Default logic labels}\label{sec:default-logic-labels}
 \indextt{Pre}\indextt{Here}\indextt{Old}\indextt{Post}
 There are four predefined logic labels: \lstinline|Pre|, \lstinline|Here|,
 \lstinline|Old| and
@@ -2577,6 +2577,12 @@ Inside these clauses, the construct \lstinline|\old(e)|\indexttbs{old}
 is allowed and denotes, like for statement contracts
 \assigns{} and \ensures{}, the value of
 \lstinline|e| in the pre-state of the statement.
+% [Patrick B.] START proposition:
+ More generally, the visibility in \textsl{abrupt clauses} of predefined 
+logics labels\indextt{Pre}\indextt{Here}\indextt{Old}\indextt{Post}
+ (presented in Section~\ref{sec:default-logic-labels}) is the 
+same as in \ensures{} clauses.
+% END proposition:
 
 For the \lstinline|returns| case, the \result\indexttbs{result}
 construct is allowed and bounds to the returned value (if not a
