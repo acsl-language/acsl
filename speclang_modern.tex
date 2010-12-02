@@ -72,18 +72,27 @@ annotations. These are called \emph{logic expressions} in the following. They
 correspond to pure C expressions, with additional constructs
 that we will introduce progressively.
 
-\begin{figure}[p]
-  \fbox{\begin{minipage}{0.97\textwidth} \input{term_modern.bnf}
-    \end{minipage}}
-  \caption{Grammar of terms and predicates}
+\begin{figure}[ht]
+  \begin{cadre}
+    \input{term_modern.bnf}
+  \end{cadre}
+  \caption{Grammar of terms}
 \label{fig:gram:term}
 \end{figure}
 
-Figure~\ref{fig:gram:term} presents the grammar for the basic
-constructs of logic expressions.  In that grammar, we distinguish
-between \emph{predicates}\index{predicate} and
+\begin{figure}[hb]
+  \begin{cadre}
+    \input{predicate_modern.bnf}
+  \end{cadre}
+  \caption{Grammar of predicates}
+\label{fig:gram:pred}
+\end{figure}
+
+Figures~\ref{fig:gram:term}~and~\ref{fig:gram:pred} present the
+grammar for the basic constructs of logic expressions. In that
+grammar, we distinguish between \emph{predicates}\index{predicate} and
 \emph{terms}\index{term}, following the usual distinction between
-propositions and terms in classical first-order logic.  The grammar
+propositions and terms in classical first-order logic. The grammar
 for binders and type expressions is given separately in
 Figure~\ref{fig:gram:binders}.
 
@@ -936,17 +945,17 @@ et utiliser string\_literal\_foo a la place de "foo"
 
 
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\textwidth}
+  \begin{cadre}
       \input{fn_behavior_modern.bnf}
-    \end{minipage}}
+   \end{cadre}
     \caption{Grammar of function contracts}
   \label{fig:gram:contracts}
 \end{figure}
 
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\textwidth}
+  \begin{cadre}
       \input{oldandresult_modern.bnf}
-    \end{minipage}}
+    \end{cadre}
     \caption{\protect\old and \protect\result in terms}
   \label{fig:gram:oldandresult}
 \end{figure}
@@ -969,7 +978,9 @@ involving \emph{named behaviors}. The \lstinline|decreases| and
 Section~\ref{sec:termination}.
 
 
-\subsection{Built-in constructs \protect\old{} and \protect\result{}}
+\subsection{Built-in constructs %
+  \texorpdfstring{\old}{\textbackslash{}old} %
+ and \texorpdfstring{\result}{\textbackslash{}result}}
 
 Post-conditions usually require to refer to both the function result and
 values in the pre-state. Thus terms are extended with the following new
@@ -1519,7 +1530,8 @@ specifies that the following conditions hold.
   \lstinline|c| is also true, and if execution of the loop body in
   that state ends normally at the end of the body or with a
   \lstinline{continue} statement, \lstinline|I| is true in the
-  resulting state. If the loop condition has side effects, these are
+  resulting state. 
+  If the loop condition has side effects, these are
   included in the loop body in a suitable way:
   \begin{itemize}
   \item for a \lstinline|while (c) s| loop, \lstinline|I| must be
@@ -1532,6 +1544,14 @@ specifies that the following conditions hold.
     preserved by \lstinline|s| followed by the side-effects of
     \lstinline|c|.
   \end{itemize}
+Note that if \lstinline|c| has side-effects, the invariant might not
+be true at the exit of the loop: the last ``step'' starts from a state
+where \lstinline|I| holds, performs the side-effects of \lstinline|c|,
+which in the end evaluates to false and exits the loop. Likewise, if a
+loop is exited through a \lstinline|break| statement, \lstinline|I|
+does not necessarily hold, as side effects may occur between
+the last state in which \lstinline|I| was supposed to hold and 
+the \lstinline|break| statement.
 
 \item At any loop iteration, any location that was allocated before
   entering the loop, and is not member of \lstinline|L| (interpreted in the
@@ -1673,7 +1693,7 @@ node ``inv'' to itself.
 \input{inductiveloopinvariants_modern}
 \end{example}
 
-\subsection{Built-in construct \protect\at{}}
+\subsection{Built-in construct \texorpdfstring{\at}{\textbackslash{}at}}
 \label{sec:at}
 \indexttbs{at} Statement annotations usually need another additional
 construct \lstinline|\at(e,id)| referring to the value of the
@@ -2304,7 +2324,7 @@ context.
 
 % resurected reads clause
 
-\subsection{Memory footprint specification: \lstinline|reads| clause}
+\subsection{Memory footprint specification: \texorpdfstring{\lstinline|reads|}{reads} clause}
 
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
@@ -2553,7 +2573,7 @@ to the postcondition
 \experimental
 
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\textwidth}
+  \fbox{\begin{minipage}{0.98\textwidth}
      \input{exitbehavior_modern.bnf}
     \end{minipage}}
     \caption{Grammar of contracts about abrupt terminations}

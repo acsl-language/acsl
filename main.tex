@@ -1,5 +1,5 @@
 %; whizzy section -pdf -initex "pdflatex -ini"
-\documentclass[a4paper,11pt,twoside,openright,web]{frama-c-book}
+\documentclass[a4paper,web]{frama-c-book}
 \usepackage{hevea}
 \usepackage{ifthen}
 
@@ -30,6 +30,7 @@
 \usepackage[normalem]{ulem}
 \usepackage[leftbars]{changebar}
 \usepackage{alltt}
+\usepackage{longtable}
 \makeindex
 
 %Already set in frama-c-book
@@ -96,6 +97,7 @@ $^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405
 
 %%Contents should open on right
 \cleardoublepage
+\phantomsection
 \label{chap:contents}
 \tableofcontents
 
@@ -226,6 +228,8 @@ as much as possible of ACSL.
 \subsection{Version \version}
 
 \begin{itemize}
+\item Clarify the status of \lstinline|loop invariant| in presence of
+  \lstinline|break| or side-effects in the loop test.
 \item Introduction of \lstinline|\with| keyword for functional updates.
 \item Added bnf entry for completeness of function behaviors.
 \item Order of clauses in statement contracts is now fixed.

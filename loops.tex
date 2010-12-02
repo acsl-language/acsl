@@ -2,20 +2,24 @@
   statement ::= "/*@" loop-annot "*/" ;
   "while" "(" expr ")" statement ;
   | "/*@" loop-annot "*/" ;
-  "for" "(" expr ";" expr ";" expr ")";
+  "for";
+  "(" expr ";" expr ";" expr ")";
   statement ;
   | "/*@" loop-annot "*/" ;
-  "do" statement "while" "(" expr ")" ";"
+  "do" statement ;
+  "while" "(" expr ")" ";"
   \
   loop-annot ::= loop-clause* ;
   loop-behavior* ;
   loop-variant?
   \
-  loop-clause ::= loop-invariant | loop-assigns 
+  loop-clause ::= loop-invariant ;
+                | loop-assigns 
   \
   loop-invariant ::= "loop" "invariant" pred ";" 
   \
-  loop-assigns ::= "loop" "assigns" locations ";" ;
+  loop-assigns ::= "loop" 
+                   "assigns" locations ";" ;
   \
   loop-behavior ::= "for" id ("," id)* ":" ;
   loop-clause* ; annotation for behavior $id$

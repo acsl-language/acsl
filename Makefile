@@ -1,18 +1,18 @@
 MAIN=main
-DEPS_MODERN=speclang_modern.tex macros_modern.tex framacversion.tex     \
-	intro_modern.tex libraries_modern.tex compjml_modern.tex        \
-	div_lemma.c assigns.c invariants.c		                \
-	example-lt-modern.tex isqrt.c sizeof.c incrstar.c		\
-	parsing_annot_modern.tex integer-cast-modern.tex max.c		\
-	max_index.c cond_assigns.c bsearch.c bsearch2.c			\
-	assigns_array.c assigns_list.c sum.c listdecl.c listdef.c	\
-	listlengthdef.c import.c listmodule.c strcpyspec.c dowhile.c	\
-	num_of_pos.c nb_occ.c nb_occ_reads.c permut.c permut_reads.c	\
-	acsl_allocator.c gen_spec_with_model.c gen_code.c out_char.c	\
-	ghostpointer.c ghostcfg.c flag.c lexico.c footprint.c		\
-	loopvariantnegative.c fact.c mutualrec.c abrupt_termination.c	\
-	advancedloopinvariants.c inductiveloopinvariants_modern.tex	\
-	term_modern.bnf binders_modern.bnf fn_behavior_modern.bnf	\
+DEPS_MODERN=speclang_modern.tex macros_modern.tex framacversion.tex	\
+	intro_modern.tex libraries_modern.tex compjml_modern.tex	\
+	div_lemma.c assigns.c invariants.c example-lt-modern.tex	\
+	isqrt.c sizeof.c incrstar.c parsing_annot_modern.tex		\
+	integer-cast-modern.tex max.c max_index.c cond_assigns.c	\
+	bsearch.c bsearch2.c assigns_array.c assigns_list.c sum.c	\
+	listdecl.c listdef.c listlengthdef.c import.c listmodule.c	\
+	strcpyspec.c dowhile.c num_of_pos.c nb_occ.c nb_occ_reads.c	\
+	permut.c permut_reads.c acsl_allocator.c gen_spec_with_model.c	\
+	gen_code.c out_char.c ghostpointer.c ghostcfg.c flag.c		\
+	lexico.c footprint.c loopvariantnegative.c fact.c mutualrec.c	\
+	abrupt_termination.c advancedloopinvariants.c			\
+	inductiveloopinvariants_modern.tex term_modern.bnf		\
+	predicate_modern.bnf binders_modern.bnf fn_behavior_modern.bnf	\
 	oldandresult_modern.bnf at_modern.bnf loc_modern.bnf		\
 	assertions_modern.bnf loops_modern.bnf				\
 	generalinvariants_modern.bnf st_contracts_modern.bnf		\
