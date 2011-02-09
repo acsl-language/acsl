@@ -1,0 +1,131 @@
+%; whizzy section -pdf -initex "pdflatex -ini"
+\documentclass[a4paper,web]{frama-c-book}
+\usepackage{hevea}
+\usepackage{ifthen}
+
+\input{./macros_modern}
+\input{framacversion.tex}
+%Do not touch the following line. It is used in a Makefile hack to
+%produce the ACSL documents for the ACSL working group.
+%--\setboolean{PrintRemarks}{false}
+
+%Do not touch the following line. It is used in a Makefile hack to
+%produce the ACSL document shipped with the Frama-C distribution.
+%--\setboolean{PrintImplementationRq}{false}
+
+%\setboolean{ColorImplementationRq}{false}
+
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{xspace}
+\usepackage{makeidx}
+\usepackage[normalem]{ulem}
+\usepackage[leftbars]{changebar}
+\usepackage{alltt}
+\makeindex
+
+\newcommand{\version}{1.5-0}
+
+\renewcommand{\textfraction}{0.01}
+\renewcommand{\topfraction}{0.99}
+\renewcommand{\bottomfraction}{0.99}
+
+\begin{document}
+\sloppy
+\hbadness=10000
+
+\ifthenelse{\boolean{PrintImplementationRq}}%
+  {\coverpage{\vbox{\mbox{E-ACSL Version \version}\newline
+\mbox{Implementation in \framacversion{}}}}}%
+  {\coverpage{\vbox{\mbox{E-ACSL}\\[2mm]\vbox{\mbox{Executable ANSI/ISO C
+          Specification Language}}\\[2mm]
+        \mbox{Version \version}}}}
+
+\begin{titlepage}
+\includegraphics[height=14mm]{cealistlogo.jpg}
+\vfill
+\title{E-ACSL\\[5mm]Executable ANSI/ISO C Specification Language}%
+{Version \version{}\ifthenelse{\boolean{PrintImplementationRq}}%
+{~--~\framacversion}{}}
+
+
+\author{Julien Signoles}
+
+CEA LIST, Software Reliability Laboratory\\
+\vfill
+\begin{flushleft}
+  \textcopyright 2011 CEA LIST
+
+  This work has been supported by the `Hi-Lite' FUI project (FUI AAP 9).
+\end{flushleft}
+\end{titlepage}
+
+%%Contents should open on right
+\cleardoublepage
+\phantomsection
+\label{chap:contents}
+\tableofcontents
+
+\chapter*{Foreword}
+
+This is a preliminary design of the E-ACSL language, a deliverable of
+the task 3.4 of the FUI-9 project Hi-Lite
+(\url{http://www.open-do.org/projects/hi-lite}).
+
+This is the version \version{} of E-ACSL design. Several features may still
+evolve in the future.
+
+%% \section*{Acknowledgements}
+
+%% We gratefully thank all the people who contributed to this document:
+%% Sylvie Boldo,
+%% Jean-Louis Cola\c{c}o,
+%% Pierre Cr\'egut,
+%% David Delmas,
+%% St\'ephane Duprat,
+%% Arnaud Gotlieb,
+%% Thierry Hubert,
+%% Dillon Pariente,
+%% Pierre Rousseau,
+%% Julien Signoles,
+%% Jean Souyris.
+
+\include{intro_modern}
+
+\include{speclang_modern}
+
+\include{libraries_modern}
+
+\include{concl_modern}
+
+\appendix
+
+\chapter{Appendices}
+\label{chap:appendix}
+
+%% \section{Glossary}
+%% \label{sec:glossary}
+
+%\input{compjml_modern}
+
+%\input{typingrules_modern}
+
+%\input{template_modern}
+
+% \section{Changes}
+
+\cleardoublepage
+\addcontentsline{toc}{chapter}{\bibname}
+\bibliographystyle{plain}
+\bibliography{./biblio}
+
+\cleardoublepage
+\addcontentsline{toc}{chapter}{\listfigurename}
+\listoffigures
+
+\cleardoublepage
+\addcontentsline{toc}{chapter}{\indexname}
+\printindex
+
+\end{document}

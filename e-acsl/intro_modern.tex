@@ -1,0 +1,31 @@
+%; whizzy-master "main.tex"
+\chapter{Introduction}
+
+This document is a reference manual for
+\ifthenelse{\boolean{PrintImplementationRq}}%
+{the E-ACSL implementation provided by the Frama-C
+  framework~\cite{frama-c}.}%
+{E-ACSL.}
+E-ACSL is an acronym for ``Executable ANSI C
+Specification Language''. It is an ``executable'' subset of
+ACSL~\cite{acsl} implemented in the \framac platform~\cite{framac}. Contrary to
+ACSL, each E-ACSL specification is executable: it may be evaluated at runtime.
+
+In this document, we assume that the reader has a good knowledge of both
+ACSL~\cite{acsl} and the ANSI C programming language~\cite{KR88,standardc99}.
+
+\section{Organization of this document}
+
+This document is organized in the very same way that the reference manual of
+ACSL~\cite{acsl}.
+
+Instead of being a fully new reference manual, this document points out the
+differences between E-ACSL and ACSL. Each E-ACSL construct which is not
+pointed out must be considered to have the very same semantics that it ACSL
+counterpart.
+
+\section{Generalities about Annotations}\label{sec:gener-about-annot}
+\nodiff
+
+\section{Notations for grammars}
+\nodiff
