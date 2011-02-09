@@ -1,6 +1,7 @@
 MAIN=main
 DEPS_MODERN=macros_modern.tex framacversion.tex biblio.bib \
-	intro_modern.tex
+	intro_modern.tex speclang_modern.tex \
+	libraries_modern.tex concl_modern.tex
 
 .PHONY: all e-acsl default
 

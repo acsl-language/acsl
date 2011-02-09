@@ -1,0 +1,228 @@
+%; whizzy-master "main.tex"
+
+\chapter{Specification language}
+\label{chap:base}
+
+\section{Lexical rules}
+
+\section{Logic expressions}
+\label{sec:expressions}
+
+\subsection{Operators precedence}
+
+\subsection{Semantics}
+\label{sec:twovaluedlogic}
+
+\subsection{Integer arithmetic and machine integers}
+
+\subsubsection{Hexadecimal and octal constants}
+
+\subsubsection{Casts and  overflows}\index{cast}
+
+\subsubsection{Quantification on C integral types}
+\label{sec:quantification}
+
+\subsubsection{Size of C integer types}
+
+\subsubsection{Enum types}
+
+\subsubsection{Bitwise operations}
+
+\subsection{Real numbers and floating point numbers}
+
+\subsubsection{Casts, infinity and NaNs}
+
+\subsubsection{Quantification}
+
+
+\subsubsection{Mathematical functions}
+
+\subsubsection{Exact computations}
+
+\subsection{C arrays and pointers}
+
+\subsubsection{Address operator, array access, pointer arithmetic and dereferencing}
+\label{sec:address}
+
+\subsubsection{Function pointers}
+
+\subsubsection{Functional updates}
+
+
+\subsubsection{C aggregate types}
+
+
+\subsection{String literals}
+
+
+\section{Function contracts}
+\label{sec:fn-behavior}
+\index{function contract}\index{contract}
+
+
+\subsection{Built-in constructs %
+  \texorpdfstring{\old}{\textbackslash{}old} %
+ and \texorpdfstring{\result}{\textbackslash{}result}}
+
+
+\subsection{Simple function contracts}
+\label{sec:simplecontracts}
+
+\subsection{Contracts with named behaviors}
+\label{subsec:behaviors}
+\index{function behavior}\index{behavior}
+
+\subsubsection{Completeness of behaviors}
+\label{sec:compl-behav}
+
+\subsection{Memory locations and sets of terms}
+\label{sec:locations}
+
+\subsection{Default contracts, multiple contracts}
+\label{sec:multiplecontracts}
+
+\section{Statement annotations}
+\index{annotation}
+
+\subsection{Assertions}
+\indextt{assert}
+
+\subsection{Loop annotations}
+\label{sec:loop_annot}
+
+\subsubsection{Loop invariants}
+\index{invariant}
+
+\subsubsection{Loop variants}
+\index{variant}\index{termination}
+
+\subsubsection{General inductive invariants}
+\index{invariant}
+
+\subsection{Built-in construct \texorpdfstring{\at}{\textbackslash{}at}}
+\label{sec:at}
+
+\subsubsection*{Default logic labels}\label{sec:default-logic-labels}
+
+\subsection{Statement contracts}
+\label{sec:statement_contract}
+\index{statement contract}\index{contract}
+
+\section{Termination}
+\label{sec:termination}
+\index{termination}
+
+\subsection{Integer measures}
+\label{sec:integermeasures}
+\indexttbs{decreases}\indexttbs{variant}
+
+\subsection{General measures}
+\label{sec:generalmeasures}
+
+\subsection{Recursive function calls}
+
+\subsection{Non-terminating functions}
+\label{sec:non-term-funct}
+\indextt{terminates}
+\experimental
+
+\section{Logic specifications}
+\label{sec:logicspec}
+\index{logic specification}\index{specification}
+
+\subsection{Predicate and function definitions}
+
+\subsection{Lemmas}
+
+\subsection{Inductive predicates}
+\label{sec:inductivepredicates}
+\index{inductive predicates}
+
+
+\subsection{Axiomatic definitions}
+
+\subsection{Polymorphic logic types}\label{sec:polym-logic-types}
+\index{type!polymorphic}
+\index{polymorphism}
+\experimental
+
+\subsection{Recursive logic definitions}
+\index{recursion}
+
+\subsection{Higher-order logic constructions}
+\label{sec:higherorder}
+
+\experimental
+
+\subsection{Concrete logic types}\label{sec:concrete-logic-types}
+\index{type!concrete}
+\experimental
+
+\subsection{Hybrid functions and predicates}
+\label{sec:logicalstates}
+\index{hybrid!function}
+\index{hybrid!predicate}
+
+\subsection{Memory footprint specification: \texorpdfstring{\lstinline|reads|}{reads} clause}
+
+\experimental
+
+\subsection{Specification Modules}
+\label{sec:specmodules}
+\index{module}
+
+\section{Pointers and physical adressing}
+\label{sec:pointers}
+
+\subsection{Memory blocks and pointer dereferencing}
+\label{subsec:memory}
+
+\subsection{Separation}
+\label{sec:separated}
+
+\experimental
+
+\subsection{Allocation and deallocation}
+
+\experimental
+
+\section{Sets as first-class values}
+\index{location}
+
+\section{Abrupt termination}
+\label{sec:abrupt-clauses}
+\index{abrupt clause}
+
+\experimental
+
+\section{Dependencies information}
+\label{sec:func-dep}
+
+\experimental
+
+\section{Data invariants}
+\label{sec:invariants}
+\index{data invariant}\index{global invariant}\index{type invariant}
+\index{invariant!data}\index{invariant!global}\index{invariant!type}
+
+\subsection{Semantics}
+
+\subsection{Model variables and model fields}
+\index{model}
+
+\section{Ghost variables and statements}
+\label{sec:ghost}
+\index{ghost}
+
+\subsection{Volatile variables}\label{sec:volatile-variables}
+\index{volatile}
+\experimental
+
+
+\section{Undefined values, dangling pointers}
+
+\subsection{Initialization}
+\indexttbs{initialized}
+
+\subsection{Unspecified values}
+\indexttbs{specified}
