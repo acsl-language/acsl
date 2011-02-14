@@ -4,7 +4,7 @@
 Disclaimer: this chapter is unfinished, it is left here to give
 an idea of what it will look like in the final document.
 
-This chapter is devoted to librairies of specification, built upon the
+This chapter is devoted to libraries of specification, built upon the
 ACSL specification language.  Section~\ref{sec:jessie} describes
 additional predicates introduced by the Jessie plugin of Frama-C, to
 propose a slightly higher level of annotation.
@@ -52,7 +52,7 @@ Finite sets, finite maps, in ZB-style.
 
 }
 
-\section{Jessie library: logical adressing of memory blocks}
+\section{Jessie library: logical addressing of memory blocks}
 \label{sec:jessie}
 
 %Jessie is a plugin of the Frama-C platform, which connects to the
@@ -63,14 +63,13 @@ The Jessie library is a collection of logic specifications whose
 semantics is well-defined only on source codes free from
 architecture-dependent features. In particular it is currently
 incompatible with pointer casts or unions (although there is ongoing
-work to support some of them~\cite{moy07ccpp}). As a consequence, in
-this particular setting, a valid pointer of some type $\tau*$
-necessarily points to a memory block which contains values of type
-$\tau$.
+work to support some of them~\cite{moy07ccpp}). As a consequence, a valid
+pointer of some type $\tau*$ necessarily points to a memory block which
+contains values of type $\tau$.
 
 \subsection{Abstract level of pointer validity}
 
-Int the particular setting described above, it is possible to
+In the particular setting described above, it is possible to
 introduce the following logic functions:
 \begin{notimplementedenv}
 \begin{listing}{1}
@@ -86,16 +85,16 @@ introduce the following logic functions:
 \lstinline|i| such that \lstinline|(p+i)| is a
   valid pointer.
 
-\item \lstinline|\offset_max(p)|: the maximum integer
+\item \lstinline|\offset_max(p)| is the maximum integer
   \lstinline|i| such that \lstinline|(p+i)| is a
-  valid pointer
+  valid pointer.
 \end{itemize}
 The following properties hold:
 \begin{listing}{1}
 \offset_min(p+i) == \offset_min(p)-i
 \offset_max(p+i) == \offset_max(p)-i
-\end{eqnarray*}
-It also introduce syntactic sugar:
+\end{listing}
+It also introduces some syntactic sugar:
 \begin{listing}{1}
 /*@
 predicate \valid_range<a>(a *p,integer i,integer j) =
@@ -103,7 +102,7 @@ predicate \valid_range<a>(a *p,integer i,integer j) =
 */
 \end{listing}
 and the ACSL built-in predicate \lstinline|\valid(p)| is now equivalent to
-\lstinline|\validrange(p,0,0)|.
+\lstinline|\valid_range(p,0,0)|.
 
 \subsection{Strings}
 
@@ -114,8 +113,8 @@ The logic function
 //@ logic integer \strlen(char* p);
 \end{listing-nonumber}
 \end{notimplementedenv}
-denotes the length of a 0-terminated C string. It is total function,
-whose value is non-negative if and only if the pointer in argument is
+denotes the length of a 0-terminated C string. It is a total function,
+whose value is nonnegative if and only if the pointer in argument is
 really a string.
 
 \begin{example}
