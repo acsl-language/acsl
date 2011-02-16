@@ -18,9 +18,38 @@
 \section{Logic expressions}
 \label{sec:expressions}
 
-figure 2.1: \nodiff
+\except{guarded quantificatication}.
 
-TODO: figure 2.2 et/ou 2.3: attention aux quantifications
+More precisely, grammar of terms and binders is the same than the one of \acsl,
+while Figure~\ref{fig:gram:pred} presents grammar of predicates.
+\begin{figure}[htbp]
+  \begin{cadre}
+    \input{predicate_modern.bnf}
+  \end{cadre}
+  \caption{Grammar of predicates}
+\label{fig:gram:pred}
+\end{figure}
+The only difference between \eacsl and \acsl predicates are
+quantifications.
+
+\begin{description}
+\item[Quantification] Universal quantification is denoted by
+\begin{lstlisting}
+\forall $\tau$ $x_1$,$\ldots$,$x_n$;
+  $a_1$ <= $x_1$ <= $b_1$ $\ldots$ && $a_n$ <= $x_n$ <= $b_n$
+  ==> e
+\end{lstlisting} and existential quantification by
+\begin{lstlisting}
+\exists $\tau$ $x_1$,$\ldots$,$x_n$;
+  $a_1$ <= $x_1$ <= $b_1$ $\ldots$ && $a_n$ <= $x_n$ <= $b_n$
+  ==> e
+\end{lstlisting}
+Therefore each quantified variable belongs to a finite constant interval. By
+this way, since operator \lstinline|<=| is only valid for integers and reals,
+quantification is limited to these both types (and their corresponding
+subtypes). For example, quantification over \C pointers or logic types is not
+allowed.
+\end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -33,63 +62,43 @@ TODO: figure 2.2 et/ou 2.3: attention aux quantifications
 \subsection{Semantics}
 \label{sec:twovaluedlogic}
 
-TODO: un mot sur les quantifications bornées?
+\except{undefinedness}
+
+More precisely, while \acsl is a 2-valued logic with only total functions,
+\eacsl is a 3-valued logic with partial functions since expressions may be
+``undefined''.
+
+\todo{go into deeper details}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Typing}
 
-No difference with \acsl, but neither \texttt{float}\index{float},
-\texttt{double}\index{double} nor \texttt{real}\index{real} in \eacsl.
-
-TODO: dernier point sur les quantificateurs?
+\nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Integer arithmetic and machine integers}
 
-TODO: voir compte-rendu réunion avancement Hi-Lite.
-
-\subsubsection{Hexadecimal and octal constants}
-
-\subsubsection{Casts and  overflows}\index{cast}
-
-\subsubsection{Quantification on C integral types}
-\label{sec:quantification}
-
-\subsubsection{Size of C integer types}
-
-\subsubsection{Enum types}
-
-\subsubsection{Bitwise operations}
+\nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Real numbers and floating point numbers}
 
-\absent
+\nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{C arrays and pointers}
 
-TODO: quid des questions sur le modèle mémoire?
-
-\subsubsection{Address operator, array access, pointer arithmetic and
-  dereferencing}
-\label{sec:address}
-
-\subsubsection{Function pointers}
+\nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Structures, Unions and Arrays in logic}
 
-TODO: which behaviour if (for instance) testing equality of cyclic values?
-
-\subsubsection{Functional updates}
-
-\subsubsection{C aggregate types}
+\todo{undefined behaviour if (for instance) testing equality of cyclic values?}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -105,8 +114,18 @@ TODO: which behaviour if (for instance) testing equality of cyclic values?
 \label{sec:fn-behavior}
 \index{function contract}\index{contract}
 
-TODO: figure 2.5: pas de assigns. Quid des complete/disjoint behaviors, des
-terminates and decreases?
+\except{no assigns, terminates, decreases and abrupt clauses}
+
+Figure~\ref{fig:gram:contracts} shows grammar of function contracts. That is a
+simplified version of \acsl one with no assigns, terminates, decreases and
+abrupt clauses. All the other constructs are unchanged.
+\begin{figure}[htbp]
+  \begin{cadre}
+      \input{fn_behavior_modern.bnf}
+   \end{cadre}
+    \caption{Grammar of function contracts}
+  \label{fig:gram:contracts}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -121,7 +140,11 @@ terminates and decreases?
 \subsection{Simple function contracts}
 \label{sec:simplecontracts}
 
-TODO: no assign?
+\except{no \lstinline|assigns| clause}
+
+Simple function contracts are now limited to \lstinline|requires| and
+\lstinline|ensures| clauses since there is no assigns. Their semantics are
+unchanched.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -129,24 +152,29 @@ TODO: no assign?
 \label{subsec:behaviors}
 \index{function behavior}\index{behavior}
 
-TODO: no assign?
+\except{no \lstinline|assigns| clause}
 
-\subsubsection{Completeness of behaviors}
-\label{sec:compl-behav}
+Contracts with named behaviors are now limited to \lstinline|assumes|,
+\lstinline|requires| and \lstinline|ensures| clauses since there is no
+assigns. Their semantics are unchanched.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Memory locations and sets of terms}
 \label{sec:locations}
 
-TODO
+\absent
+
+Since there is neither \lstinline|assigns| clauses, \lstinline|loop assigns|
+clauses, nor \lstinline|\separated| in \eacsl, there is no need for sets of
+terms denoting memory locations.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Default contracts, multiple contracts}
 \label{sec:multiplecontracts}
 
-TODO
+\nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,17 @@
+\begin{syntax}
+  function-contract ::= requires-clause* ensures-clause*;
+                        named-behavior* completeness-clause*
+  \
+  requires-clause ::= "requires" predicate ";"
+  \
+  ensures-clause ::= "ensures" predicate ";"
+  \
+  named-behavior ::= "behavior" id ":" behavior-body
+  \
+  behavior-body ::= assumes-clause* requires-clause* ensures-clause*
+  \
+  assumes-clause ::= "assumes" predicate ";"
+  \
+  completeness-clause ::= "complete" "behaviors" (id (","id)*)? ";";
+     | "disjoint" "behaviors" (id (","id)*)? ";"
+\end{syntax}
