@@ -1,8 +1,10 @@
 \begin{syntax}
-  function-contract ::= requires-clause* ensures-clause*;
+  function-contract ::= requires-clause* decreases-clause* ensures-clause*;
                         named-behavior* completeness-clause*
   \
   requires-clause ::= "requires" predicate ";"
+  \
+  decreases-clause ::= "decreases" term ("for" ident)? ";"
   \
   ensures-clause ::= "ensures" predicate ";"
   \

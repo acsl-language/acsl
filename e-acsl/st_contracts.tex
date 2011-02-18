@@ -1,0 +1,6 @@
+\begin{syntax}
+  statement ::= "/*@" statement-contract "*/" statement
+  \
+  statement-contract ::= {("for" id ("," id)* ":")?} requires-clause* ;
+    ensures-clause* named-behavior*
+\end{syntax}

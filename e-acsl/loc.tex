@@ -1,0 +1,18 @@
+\begin{syntax}
+  tset ::= "\empty" ; empty set
+       | tset "->" id ;
+       | tset "." id ;
+       | "*" tset ;
+       | "&" tset ;
+       | tset "[" tset "]" ;
+       | term ".." term ; range
+       | "\union" "(" tset ("," tset)* ")" ; union of locations
+       | "\inter" "(" tset ("," tset)* ")" ; intersection
+       | tset "+" tset ;
+       | "(" tset ")" ;
+       | "{" tset "|" binders ";" guarded-pred "}" ; set comprehension
+       | { "{" term "}" } ; explicit singleton
+       | term ; implicit singleton
+       \
+  pred ::= {"\subset" "(" tset "," tset ")"} ; set inclusion
+\end{syntax}

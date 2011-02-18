@@ -20,14 +20,28 @@
 
 \except{guarded quantificatication}.
 
-More precisely, grammar of terms and binders is the same than the one of \acsl,
-while Figure~\ref{fig:gram:pred} presents grammar of predicates.
+More precisely, grammars of terms and binders presented respectively
+Figures~\ref{fig:gram:term} and~\ref{fig:gram:binders} are the same than the one
+of \acsl, while Figure~\ref{fig:gram:pred} presents grammar of predicates.
+\begin{figure}[htbp]
+  \begin{cadre}
+    \input{term_modern.bnf}
+  \end{cadre}
+  \caption{Grammar of terms}
+\label{fig:gram:term}
+\end{figure}
 \begin{figure}[htbp]
   \begin{cadre}
     \input{predicate_modern.bnf}
   \end{cadre}
   \caption{Grammar of predicates}
 \label{fig:gram:pred}
+\end{figure}
+\begin{figure}[htbp]
+  \fbox{\begin{minipage}{0.97\textwidth} \input{binders_modern.bnf}
+    \end{minipage}}
+  \caption{Grammar of binders and type expressions}
+\label{fig:gram:binders}
 \end{figure}
 The only difference between \eacsl and \acsl predicates are
 quantifications.
@@ -56,6 +70,43 @@ allowed.
 \subsection{Operators precedence}
 
 \nodiff
+
+Figure~\ref{fig:precedence} summarizes operator precedences.
+\begin{figure}[htbp]
+  \begin{center}
+    \begin{tabular}{|l|l|l|}
+      \hline
+      class 	& associativity & operators \\
+      \hline
+      selection & left & \lstinline|[$\cdots$]| \lstinline|->| \lstinline|.| \\
+      unary 	& right & \lstinline|!| \lstinline|~| \lstinline|+|
+      \lstinline|-| \lstinline|*| \lstinline|&| \lstinline|(cast)|
+      \lstinline|sizeof| \\
+      multiplicative & left & \lstinline|*| \lstinline|/|  \lstinline|%| \\
+      additive & left & \lstinline|+| \lstinline|-| \\
+      shift 	& left & \lstinline|<<| \lstinline|>>| \\
+      comparison & left & \lstinline|<| \lstinline|<=| \lstinline|>| \lstinline|>=| \\
+      comparison & left & \lstinline|==| \lstinline|!=| \\
+      bitwise and & left & \lstinline|&| \\
+      bitwise xor & left & \lstinline|^| \\
+      bitwise or & left & \lstinline+|+ \\
+      bitwise implies & left & \lstinline+-->+ \\
+      bitwise equiv & left & \lstinline+<-->+ \\
+      connective and     & left & \lstinline|&&| \\
+      connective xor & left & \lstinline+^^+ \\
+      connective or & left & \lstinline+||+ \\
+      connective implies & right & \lstinline|==>| \\
+      connective equiv & left & \lstinline|<==>| \\
+      ternary connective & right & \lstinline|$\cdots$?$\cdots$:$\cdots$| \\
+      binding & left & \Forall{} \Exists{} \Let{} \\
+      naming & right & \lstinline|:| \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption{Operator precedence}
+\label{fig:precedence}
+\end{figure}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -114,11 +165,11 @@ More precisely, while \acsl is a 2-valued logic with only total functions,
 \label{sec:fn-behavior}
 \index{function contract}\index{contract}
 
-\except{no assigns, terminates, decreases and abrupt clauses}
+\except{no assigns, terminates and abrupt clauses}
 
 Figure~\ref{fig:gram:contracts} shows grammar of function contracts. That is a
-simplified version of \acsl one with no assigns, terminates, decreases and
-abrupt clauses. All the other constructs are unchanged.
+simplified version of \acsl one with no assigns, terminates and abrupt
+clauses. All the other constructs are unchanged.
 \begin{figure}[htbp]
   \begin{cadre}
       \input{fn_behavior_modern.bnf}
@@ -134,6 +185,17 @@ abrupt clauses. All the other constructs are unchanged.
  and \texorpdfstring{\result}{\textbackslash{}result}}
 
 \nodiff
+
+Figure~\ref{fig:gram:oldandresult} summarizes grammar extension of terms with
+\lstinline|\old| and \lstinline|\result|.
+\begin{figure}[htbp]
+  \begin{cadre}
+      \input{oldandresult_modern.bnf}
+    \end{cadre}
+    \caption{\protect\old and \protect\result in terms}
+  \label{fig:gram:oldandresult}
+\end{figure}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -163,11 +225,19 @@ assigns. Their semantics are unchanched.
 \subsection{Memory locations and sets of terms}
 \label{sec:locations}
 
-\absent
+\except{limited range and set comprehension}
 
-Since there is neither \lstinline|assigns| clauses, \lstinline|loop assigns|
-clauses, nor \lstinline|\separated| in \eacsl, there is no need for sets of
-terms denoting memory locations.
+Figure~\ref{fig:gram:locations} describes grammar of sets of terms. The only
+differences with \acsl are that both lower and upper bounds of ranges are
+mandatory and that the predicate inside set comprehension must be guarded. In
+that way, each set of terms is finite.
+\begin{figure}[htbp]
+  \fbox{\begin{minipage}{0.97\textwidth}
+      \input{loc_modern.bnf}
+    \end{minipage}}
+  \caption{Grammar for sets of terms}
+\label{fig:gram:locations}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -183,39 +253,70 @@ terms denoting memory locations.
 \section{Statement annotations}
 \index{annotation}
 
-TODO
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Assertions}
+\label{sec:assertions}
 \indextt{assert}
+
+\nodiff
+
+Figure~\ref{fig:gram:assertions} summarizes grammar for assertions.
+\begin{figure}[htbp]
+  \begin{cadre}
+    \input{assertions_modern.bnf}
+  \end{cadre}
+  \caption{Grammar for assertions}
+  \label{fig:gram:assertions}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Loop annotations}
 \label{sec:loop_annot}
 
-\subsubsection{Loop invariants}
-\index{invariant}
+\except{limited to loop variant}
 
-\subsubsection{Loop variants}
-\index{variant}\index{termination}
-
-\subsubsection{General inductive invariants}
-\index{invariant}
+Figure~\ref{fig:gram:loops} shows grammar for loop annotations. The only
+possible loop annotation is loop variant. There is neither
+\lstinline|loop assigns| nor \lstinline|loop invariant| clause. About loop
+invariant, you have to use \lstinline|assertion| clause instead (see
+Section~\ref{sec:assertions}), even if there is no way to encode the inductive
+scheme of a loop invariant.
+\begin{figure}[htbp]
+  \begin{cadre}
+    \input{loops_modern.bnf}
+  \end{cadre}
+  \caption{Grammar for loop annotations}
+  \label{fig:gram:loops}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Built-in construct \texorpdfstring{\at}{\textbackslash{}at}}
 \label{sec:at}
 
-\subsubsection*{Default logic labels}\label{sec:default-logic-labels}
+\nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Statement contracts}
 \label{sec:statement_contract}
 \index{statement contract}\index{contract}
+
+\except{no \lstinline|assigns| and \lstinline|abrupt| clauses}
+
+Figure~\ref{fig:gram:contracts} shows grammar of statement contracts. Like
+function contracts, that is a simplified version of \acsl one with neither
+assigns and abrupt clauses. All the other constructs are unchanged.
+
+\begin{figure}[htbp]
+  \begin{cadre}
+    \input{st_contracts_modern.bnf}
+  \end{cadre}
+  \caption{Grammar for statement contracts}
+  \label{fig:gram:stcontracts}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -225,20 +326,31 @@ TODO
 \label{sec:termination}
 \index{termination}
 
+\except{no general measures and \lstinline|terminates| clauses}
+
+Termination can only be guaranteed by attaching an integer measure to each loop
+and each recursive function.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Integer measures}
 \label{sec:integermeasures}
 \indexttbs{decreases}\indexttbs{variant}
 
+\nodiff
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{General measures}
 \label{sec:generalmeasures}
 
+\absent
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Recursive function calls}
+
+\nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -262,13 +374,13 @@ TODO
 
 \subsection{Predicate and function definitions}
 
-TODO
+\todo{no polymorphism}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Lemmas}
 
-TODO
+\todo{possible, but is it useful?}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -276,13 +388,13 @@ TODO
 \label{sec:inductivepredicates}
 \index{inductive predicates}
 
-TODO
+\absent
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Axiomatic definitions}
 
-TODO
+\absent
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -296,6 +408,8 @@ TODO
 
 \subsection{Recursive logic definitions}
 \index{recursion}
+
+\nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -318,7 +432,7 @@ TODO
 \index{hybrid!function}
 \index{hybrid!predicate}
 
-TODO
+\nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -332,7 +446,7 @@ TODO
 \label{sec:specmodules}
 \index{module}
 
-TODO
+\absent
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

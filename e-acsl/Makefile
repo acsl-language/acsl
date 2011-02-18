@@ -2,7 +2,10 @@ MAIN=main
 DEPS_MODERN=macros_modern.tex framacversion.tex biblio.bib \
 	intro_modern.tex speclang_modern.tex \
 	libraries_modern.tex concl_modern.tex \
-	predicate_modern.bnf fn_behavior_modern.bnf
+	term_modern.bnf binders_modern.bnf predicate_modern.bnf \
+	fn_behavior_modern.bnf oldandresult_modern.bnf \
+	loc_modern.bnf \
+	assertions_modern.bnf loops_modern.bnf st_contracts_modern.bnf
 
 .PHONY: all e-acsl default
 

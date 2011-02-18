@@ -1,0 +1,38 @@
+\begin{syntax}
+  bin-op ::= "+" | "-" | "*" | "/" | "%" ;
+       | "==" | "!=" | "<=" | ">=" | ">" | "<" ;
+       | "&&" | "||" |   ; boolean operations
+       | "&" | "|" | "-->" 
+       | "<-->" | "^"; bitwise operations
+       \
+  unary-op ::= "+" | "-" ; unary plus and minus
+       | "!" ; boolean negation
+       | "~" ;  bitwise complementation
+       | "*" ; pointer dereferencing
+       | "&" ; address-of operator
+       \
+  term ::= "\true" | "\false" ;
+       | integer ; integer constants
+       | real ; real constants
+       | id ; variables
+       | unary-op term ;
+       | term bin-op term ;
+       | term "[" term "]" ; array access
+       | "{" term "\with" "[" term "]" "=" term "}" ; array functional modifier
+       | term "." id  ; structure field access
+       | "{" term "\with" "."id "=" term "}" ; field functional modifier
+       | term "->" id ;
+       | "(" type-expr ")" term  ; cast
+       | id "(" term ("," term)* ")" ; function application
+       | "(" term ")" ; parentheses
+       | term "?" term ":" term ; ternary condition
+       | "\let" id "=" term ";" term ; local binding
+       | "sizeof" "(" term ")" ;
+       | "sizeof" "(" C-type-expr ")" ;
+       | id ":" term ; syntactic naming
+\end{syntax}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
