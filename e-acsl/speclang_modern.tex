@@ -8,7 +8,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Lexical rules}
-
 \nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -68,7 +67,6 @@ allowed.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Operators precedence}
-
 \nodiff
 
 Figure~\ref{fig:precedence} summarizes operator precedences.
@@ -124,25 +122,21 @@ More precisely, while \acsl is a 2-valued logic with only total functions,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Typing}
-
 \nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Integer arithmetic and machine integers}
-
 \nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Real numbers and floating point numbers}
-
 \nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{C arrays and pointers}
-
 \nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -154,7 +148,6 @@ More precisely, while \acsl is a 2-valued logic with only total functions,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{String literals}
-
 \nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -242,8 +235,6 @@ that way, each set of terms is finite.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Default contracts, multiple contracts}
-\label{sec:multiplecontracts}
-
 \nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -258,7 +249,6 @@ that way, each set of terms is finite.
 \subsection{Assertions}
 \label{sec:assertions}
 \indextt{assert}
-
 \nodiff
 
 Figure~\ref{fig:gram:assertions} summarizes grammar for assertions.
@@ -295,7 +285,6 @@ scheme of a loop invariant.
 
 \subsection{Built-in construct \texorpdfstring{\at}{\textbackslash{}at}}
 \label{sec:at}
-
 \nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -336,28 +325,21 @@ and each recursive function.
 \subsection{Integer measures}
 \label{sec:integermeasures}
 \indexttbs{decreases}\indexttbs{variant}
-
 \nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{General measures}
-\label{sec:generalmeasures}
-
 \absent
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Recursive function calls}
-
 \nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Non-terminating functions}
-\label{sec:non-term-funct}
-\indextt{terminates}
-
 \absent
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -368,61 +350,57 @@ and each recursive function.
 \label{sec:logicspec}
 \index{logic specification}\index{specification}
 
-TODO
+\except{neither polymorphism nor lemma}
+
+Figure~\ref{fig:gram:logic} presents grammar of logic definitions. That is the
+same than the one of \acsl without polymorphism definitions nor lemmas.
+
+\begin{figure}[htbp]
+  \fbox{\begin{minipage}{0.97\linewidth}\vfill \input{logic_modern.bnf}
+    \vfill\end{minipage}}
+  \caption{Grammar for global logic definitions}
+\label{fig:gram:logic}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Predicate and function definitions}
-
-\todo{no polymorphism}
+\nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Lemmas}
-
-\todo{possible, but is it useful?}
+\absent
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Inductive predicates}
-\label{sec:inductivepredicates}
-\index{inductive predicates}
-
 \absent
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Axiomatic definitions}
-
 \absent
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Polymorphic logic types}\label{sec:polym-logic-types}
-\index{type!polymorphic}
-\index{polymorphism}
-
+\subsection{Polymorphic logic types}
 \absent
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Recursive logic definitions}
 \index{recursion}
-
 \nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Higher-order logic constructions}
-\label{sec:higherorder}
-
 \absent
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Concrete logic types}\label{sec:concrete-logic-types}
-\index{type!concrete}
-
+\subsection{Concrete logic types}
 \absent
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -431,21 +409,17 @@ TODO
 \label{sec:logicalstates}
 \index{hybrid!function}
 \index{hybrid!predicate}
-
 \nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Memory footprint specification: \texorpdfstring{\lstinline|reads|}{reads} clause}
-
 \absent
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Specification Modules}
 \label{sec:specmodules}
-\index{module}
-
 \absent
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -455,26 +429,29 @@ TODO
 \section{Pointers and physical adressing}
 \label{sec:pointers}
 
-TODO
+There is mostly no special built-in \eacsl construct dealing with pointers and
+physical adressing.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Memory blocks and pointer dereferencing}
 \label{subsec:memory}
+% \absentexcept{\lstinline|\null|} % JS: doesn't work, don't know why
+\emph{No such feature in \eacsl, but } \lstinline|\null|\emph{.}
 
-TODO
+The only existing built-in construct dealing with memory state is
+\lstinline|\null|.  In particular, \lstinline|\valid| does not exist: you can
+only check for nullity and therefore it is not possible to check whether
+dereferencing a non null pointer is safe.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Separation}
-\label{sec:separated}
-
 \absent
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Allocation and deallocation}
-
 \absent
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -483,17 +460,13 @@ TODO
 
 \section{Sets as first-class values}
 \index{location}
-
-TODO
+\nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Abrupt termination}
-\label{sec:abrupt-clauses}
-\index{abrupt clause}
-
 \absent
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -501,8 +474,6 @@ TODO
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Dependencies information}
-\label{sec:func-dep}
-
 \absent
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -514,16 +485,39 @@ TODO
 \index{data invariant}\index{global invariant}\index{type invariant}
 \index{invariant!data}\index{invariant!global}\index{invariant!type}
 
-TODO
+\nodiff
+
+Figure~\ref{fig:gram:datainvariants} summarizes grammar for declarations of data
+invariants.
+\begin{figure}[htbp]
+  \fbox{\begin{minipage}{0.97\linewidth}
+      \input{data_invariants_modern.bnf}
+    \end{minipage}}
+  \caption{Grammar for declarations of data invariants}
+\label{fig:gram:datainvariants}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Semantics}
+\nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Model variables and model fields}
 \index{model}
+
+\nodiff
+
+Figure~\ref{fig:gram:model} summarizes grammar for declarations of model
+variables and fields.
+\begin{figure}[htbp]
+  \fbox{\begin{minipage}{0.97\linewidth}
+      \input{model_modern.bnf}
+    \end{minipage}}
+  \caption{Grammar for declarations of model variables and fields}
+\label{fig:gram:model}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -533,13 +527,22 @@ TODO
 \label{sec:ghost}
 \index{ghost}
 
-TODO
+\except{no specific construct for volatile variables}
+
+Figure~\ref{fig:gram:ghost} summarizes grammar for ghost statements which is the
+same than the one of \acsl.
+\begin{figure}[htbp]
+  \fbox{\begin{minipage}{0.98\linewidth}
+      \input{ghost_modern.bnf}
+    \end{minipage}}
+  \caption{Grammar for ghost statements}
+\label{fig:gram:ghost}
+\end{figure}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Volatile variables}\label{sec:volatile-variables}
-\index{volatile}
-
+\subsection{Volatile variables}
 \absent
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -547,15 +550,4 @@ TODO
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Undefined values, dangling pointers}
-
-TODO
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Initialization}
-\indexttbs{initialized}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Unspecified values}
-\indexttbs{specified}
+\absent

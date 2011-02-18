@@ -1,0 +1,42 @@
+\begin{syntax}
+
+  ghost-type-specifier ::= C-type-specifier ;
+  | {logic-type-name} \
+  declaration ::= C-declaration ;
+  | "/*@" "ghost";
+     ghost-declaration "*/" \
+  direct-declarator ::= C-direct-declarator ;
+    | direct-declarator ;
+    "(" parameter-type-list? ")";
+        {"/*@" "ghost"};
+          {"("parameter-list")"};
+          {"*/"}; ghost args
+        \
+  postfix-expression ::= C-postfix-expression ;
+    | postfix-expression ;
+     "(" argument-expression-list? ")";
+     {"/*@" "ghost"} ;
+     {  "(" argument-expression-list ")"};
+     {  "*/"} ; call with ghosts
+    \
+  statement ::= C-statement ;
+             | statements-ghost \
+  statements-ghost ::= "/*@" "ghost";
+                       ghost-statement+ "*/" \
+  ghost-selection-statement ::= C-selection-statement ;
+    | "if" "(" expression ")";
+       statement;
+      {"/*@" "ghost" "else"};
+      {  C-statement+ };
+      {  "*/"} \
+
+  struct-declaration ::= C-struct-declaration ;
+  | {"/*@" "ghost" };
+    {C-struct-declaration "*/"} ; ghost field
+
+\end{syntax}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
