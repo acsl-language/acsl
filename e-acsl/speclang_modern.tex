@@ -115,9 +115,33 @@ Figure~\ref{fig:precedence} summarizes operator precedences.
 
 More precisely, while \acsl is a 2-valued logic with only total functions,
 \eacsl is a 3-valued logic with partial functions since expressions may be
-``undefined''.
+``undefined''. In this logic, the semantics of any predicate containing a C
+expression which would lead to a runtime error or which the evaluation does not
+terminate is undefined. Each tool implemented \eacsl semantics may do what it
+wants when interpretating an undefined predicate. For instance, it may consider
+the expression is valid or it may fail. This behavior is consistent with both
+\acsl~\cite{acsl} and mainstream specification languages for runtime assertion
+checking like \jml~\cite{jml}. Consistency means that, if exists, the \eacsl
+predicate corresponding to a valid (resp. invalid) \acsl or \jml predicate is
+either valid (resp. invalid) or undefined. Thus it is possible to reuse tools
+interpreting \acsl in order to interpret \eacsl, and it is also possible to
+perform runtime assertion checking of \eacsl predicate.
 
-\todo{go into deeper details}
+\begin{example}
+The semantics of all the below predicates are undefined:
+\begin{itemize}
+\item \lstinline|1/0 == 1/0|
+\item \lstinline|\false && 1/0 == 1/0|
+\item \lstinline|1/0 == 1/0 && \false|
+\item \lstinline|\forall integer x, -1 <= 1/x <= 1|
+\item \lstinline|f(1/0)| for any logic function \lstinline|f|
+\item \lstinline|cyclic == cyclic| if \lstinline|cyclic| is a cyclic \C
+  structure
+\end{itemize}
+\end{example}
+
+The reader interested by a discussion about the implication (especially issues)
+of such a choice may read articles of Patrice Chalin~\cite{chalin05,chalin07}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -142,8 +166,7 @@ More precisely, while \acsl is a 2-valued logic with only total functions,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Structures, Unions and Arrays in logic}
-
-\todo{undefined behaviour if (for instance) testing equality of cyclic values?}
+\nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
