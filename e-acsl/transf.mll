@@ -100,6 +100,8 @@ and syntax = parse
   | "\\" { print_string "\\sep{}"; syntax lexbuf }
   | "{" { print_string "\\begin{notimplementedenv}"; check_implementation_note lexbuf }
   | "}" { print_string "\\end{notimplementedenv}"; syntax lexbuf }
+  | "[" { print_string "\\begin{markdiffenv}"; syntax lexbuf }
+  | "]" { print_string "\\end{markdiffenv}"; syntax lexbuf }
   | _ {
       print_char (lexeme_char lexbuf 0);
       syntax lexbuf }

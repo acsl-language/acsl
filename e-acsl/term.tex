@@ -1,8 +1,8 @@
 \begin{syntax}
   bin-op ::= "+" | "-" | "*" | "/" | "%" ;
        | "==" | "!=" | "<=" | ">=" | ">" | "<" ;
-       | "&&" | "||" |   ; boolean operations
-       | "&" | "|" | "-->" 
+       | [ "&&" ] | [ "||" ] |   ; boolean operations
+       | "&" | "|" | "-->"
        | "<-->" | "^"; bitwise operations
        \
   unary-op ::= "+" | "-" ; unary plus and minus
@@ -31,8 +31,3 @@
        | "sizeof" "(" C-type-expr ")" ;
        | id ":" term ; syntactic naming
 \end{syntax}
-
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: "main"
-%%% End:

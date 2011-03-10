@@ -114,39 +114,66 @@ Figure~\ref{fig:precedence} summarizes operator precedences.
 \subsection{Semantics}
 \label{sec:twovaluedlogic}
 
-\except{undefinedness}
+\except{undefinedness and same lazyness than \C}
 
 More precisely, while \acsl is a 2-valued logic with only total
 functions, \eacsl is a 3-valued logic with partial functions since
-expressions may be ``undefined''. In this logic, the semantics of any
-predicate containing a C expression which would lead to a runtime
-error or whose evaluation does not terminate is undefined. Each tool
-implementing \eacsl semantics may do what it wants when interpreting
-an undefined predicate. For instance, it may consider the expression
-is valid or it may fail. This behavior is consistent with both
-\acsl~\cite{acsl} and mainstream specification languages for runtime
-assertion checking like \jml~\cite{jml}. Consistency means that, if it
-exists and is defined, the \eacsl predicate corresponding to a valid
-(resp. invalid) \acsl or \jml predicate is either valid
-(resp. invalid). Thus it is possible to reuse tools interpreting \acsl
-in order to interpret \eacsl, and it is also possible to perform
-runtime assertion checking of \eacsl predicate.
+terms and predicates may be ``undefined''.
 
+In this logic, the semantics of a term denoting a \C expression $e$ is undefined
+if either $e$ leads to a runtime error or does not terminate. Consequently the
+semantics of any term $t$ (resp. predicate $p$) containing a \C expression $e$
+is undefined if $e$ has to be evaluated in order to evaluate $t$ (resp. $p$).
 \begin{example}
-The semantics of all the predicates below are undefined:
+The semantics of all the below predicates are undefined:
 \begin{itemize}
 \item \lstinline|1/0 == 1/0|
-\item \lstinline|\false && 1/0 == 1/0|
-\item \lstinline|1/0 == 1/0 && \false|
-\item \lstinline|\forall integer x, -1 <= 1/x <= 1|
 \item \lstinline|f(1/0)| for any logic function \lstinline|f|
 \item \lstinline|cyclic == cyclic| if \lstinline|cyclic| is a cyclic \C
   structure
 \end{itemize}
 \end{example}
 
-Reader interested by the implications (especially issues)
-of such a choice may read articles of Patrice Chalin~\cite{chalin05,chalin07}.
+Furthermore, \C-like operators \lstinline|&&|, \lstinline+||+, \lstinline|^^|
+and \lstinline|_ ? _ : _| are lazy like in \C: their right members are evaluated
+only if required. Thus the amount of undefinedness is limited. Consequently,
+predicates \lstinline|p ==> q| and \lstinline|p <==> q| are also lazy
+since their are respectively equivalent to \lstinline+!p || q+ and
+\lstinline|p ==> q && q ==> p|.
+
+\begin{example}
+Below, the first predicate is invalid" while the second one is valid:
+\begin{itemize}
+\item \lstinline|\false && 1/0 == 1/0|
+\item \lstinline|\forall integer x, \false ==> -1 <= 1/x <= 1|
+\end{itemize}
+
+\emph{A contrario} the semantics of both predicates below is undefined:
+\begin{itemize}
+\item \lstinline|1/0 == 1/0 && \false|
+\item \lstinline|-1 <= 1/0 <= 1 ==> \true|
+\end{itemize}
+\end{example}
+
+[TODO] precise semantics of undefinedness (for instance for
+\lstinline|1/0 == 1/0 && \false|)
+In this logic, the semantics of any
+predicate containing a C expression which would lead to a runtime
+error or whose evaluation does not terminate is undefined. Each tool
+implementing \eacsl semantics may do what it wants when interpreting
+an undefined predicate. For instance, it may consider the expression
+is valid or it may fail.
+
+This behavior is consistent with both \acsl~\cite{acsl} and mainstream
+specification languages for runtime assertion checking like
+\jml~\cite{jml}. Consistency means that, if it exists and is defined, the \eacsl
+predicate corresponding to a valid (resp. invalid) \acsl or \jml predicate is
+either valid (resp. invalid)\footnote{For \jml, that is only true for a common
+  subset to \eacsl and \jml.}. Thus it is possible to reuse tools interpreting
+\acsl in order to interpret \eacsl, and it is also possible to perform runtime
+assertion checking of \eacsl predicates in the same way we do for \jml
+predicates. Reader interested by the implications (especially issues) of such a
+choice may read articles of Patrice Chalin~\cite{chalin05,chalin07}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

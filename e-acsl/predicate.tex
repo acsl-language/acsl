@@ -5,23 +5,23 @@
        | term (rel-op term)+ ; comparisons
        | id "(" term ("," term)* ")" ; predicate application
        | "(" pred ")" ; parentheses
-       | pred "&&" pred ; conjunction
-       | pred "||" pred ; disjunction
-       | pred "==>" pred ; implication
-       | pred "<==>" pred ; equivalence
+       | [ pred "&&" pred ] ; conjunction
+       | [ pred "||" pred ] ; disjunction
+       | [ pred "==>" pred ] ; implication
+       | [ pred "<==>" pred ] ; equivalence
        | "!" pred ; negation
-       | pred "^^" pred ; exclusive or
-       | term "?" pred ":" pred ; ternary condition
-       | pred "?" pred ":" pred;
+       | [ pred "^^" pred ] ; exclusive or
+       | [ term "?" pred ":" pred ] ; ternary condition
+       | [ pred "?" pred ":" pred ];
        | "\let" id "=" term ";" pred ; local binding
        | "\let" id "=" pred ";" pred ;
-       | "\forall" binders ";" guards "==>" pred; universal quantification
-       | "\exists" binders ";" guards "&&" pred ; existential quantification
+       | [ "\forall" binders ";" guards "==>" pred ]; universal quantification
+       | [ "\exists" binders ";" guards "&&" pred ] ; existential quantification
        | "\forall" boolean-binders ";" pred; universal boolean quantification
        | "\exists" boolean-binders ";" pred ; existential quantification
        | id ":" pred ; syntactic naming
        \
-  guards ::= interv  ("&&" interv)*
+  [ guards ] ::= [ interv  ("&&" interv)* ]
        \
-  interv ::= integer "<=" id "<=" integer
+  [ interv ]  ::= [ integer "<=" id "<=" integer ]
 \end{syntax}

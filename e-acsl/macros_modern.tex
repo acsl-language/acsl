@@ -17,7 +17,12 @@
 
 \newcommand{\todo}[1]{{\large \textbf{TODO: #1.}}}
 
-\newcommand{\markdiff}[1]{\color{blue}{#1}}
+\newcommand{\markdiff}[1]{{\color{blue}{#1}}}
+\newenvironment{markdiffenv}[1][]{%
+  \begin{changebar}%
+  \markdiff\bgroup%
+}%
+{\egroup\end{changebar}}
 
 % true = prints remarks for the ACSL working group.
 % false = prints no remark for the distributed version of ASCL documents
