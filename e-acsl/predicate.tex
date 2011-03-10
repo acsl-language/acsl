@@ -2,7 +2,7 @@
   rel-op ::= "==" | "!=" | "<=" | ">=" | ">" | "<"
        \
   pred ::= "\true" | "\false" ;
-       | term (rel-op term)+ ; comparisons (see remark)
+       | term (rel-op term)+ ; comparisons
        | id "(" term ("," term)* ")" ; predicate application
        | "(" pred ")" ; parentheses
        | pred "&&" pred ; conjunction
@@ -15,13 +15,13 @@
        | pred "?" pred ":" pred;
        | "\let" id "=" term ";" pred ; local binding
        | "\let" id "=" pred ";" pred ;
-       | "\forall" binders ";" guarded-pred ; universal quantification
-       | "\exists" binders ";" guarded-pred ; existential quantification
+       | "\forall" binders ";" guards "==>" pred; universal quantification
+       | "\exists" binders ";" guards "&&" pred ; existential quantification
+       | "\forall" boolean-binders ";" pred; universal boolean quantification
+       | "\exists" boolean-binders ";" pred ; existential quantification
        | id ":" pred ; syntactic naming
        \
-  guarded-pred ::= intervs "==>" pred
-       \
-  intervs ::= interv  ("&&" interv)*
+  guards ::= interv  ("&&" interv)*
        \
   interv ::= integer "<=" id "<=" integer
 \end{syntax}

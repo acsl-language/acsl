@@ -3,13 +3,15 @@
 
 This document is a reference manual for
 \ifthenelse{\boolean{PrintImplementationRq}}%
-{the E-ACSL implementation provided by the Frama-C
+{the \eacsl implementation provided by the Frama-C
   framework~\cite{frama-c}.}%
 {E-ACSL.}
 E-ACSL is an acronym for ``Executable ANSI/ISO C
 Specification Language''. It is an ``executable'' subset of
-ACSL~\cite{acsl} implemented in the \framac platform~\cite{framac}. Contrary to
-ACSL, each E-ACSL specification is executable: it may be evaluated at runtime.
+\emph{stable} \acsl~\cite{acsl} implemented in the \framac
+platform~\cite{framac}. ``Stable'' means that no experimental \acsl feature is
+supported by \eacsl. Contrary to \acsl, each \eacsl specification is
+executable: it may be evaluated at runtime.
 
 In this document, we assume that the reader has a good knowledge of both
 ACSL~\cite{acsl} and the ANSI C programming language~\cite{KR88,standardc99}.

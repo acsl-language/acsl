@@ -10,7 +10,7 @@
        | "\inter" "(" tset ("," tset)* ")" ; intersection
        | tset "+" tset ;
        | "(" tset ")" ;
-       | "{" tset "|" binders ";" guarded-pred "}" ; set comprehension
+       | "{" tset "|" binders ";" guards "}" ; set comprehension
        | { "{" term "}" } ; explicit singleton
        | term ; implicit singleton
        \

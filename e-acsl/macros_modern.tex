@@ -17,6 +17,8 @@
 
 \newcommand{\todo}[1]{{\large \textbf{TODO: #1.}}}
 
+\newcommand{\markdiff}[1]{\color{blue}{#1}}
+
 % true = prints remarks for the ACSL working group.
 % false = prints no remark for the distributed version of ASCL documents
 \newboolean{PrintRemarks}
@@ -78,7 +80,6 @@
   \ifthenelse{\isundefined{\myrq}}{}{\footnote{\myrq}}\end{changebar}}}%
 {\excludecomment{notreviewedenv}}
 
-
 %%% Commandes et environnements pour la version relative à l'implementation
 \newcommand{\highlightnotimplemented}{%
 \ifthenelse{\boolean{ColorImplementationRq}}{\color{red}}%
@@ -107,7 +108,6 @@
 
 %%% Environnements et commandes non conditionnelles
 \newcommand{\experimental}{\textsc{Experimental}}
-
 
 \newsavebox{\fmbox}
 \newenvironment{cadre}
@@ -186,7 +186,6 @@
 \newcommand{\N}{\ensuremath{\mathbb{N}}}
 \newcommand{\ra}{\ensuremath{\rightarrow}}
 \newcommand{\la}{\ensuremath{\leftarrow}}
-
 
 % BNF grammar
 \newcommand{\indextt}[1]{\index{#1@\protect\keyword{#1}}}

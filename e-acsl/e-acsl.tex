@@ -25,7 +25,7 @@
 \usepackage{alltt}
 \makeindex
 
-\newcommand{\version}{1.5-0}
+\newcommand{\version}{1.5-0.1}
 
 \renewcommand{\textfraction}{0.01}
 \renewcommand{\topfraction}{0.99}
@@ -76,20 +76,12 @@ the task 3.4 of the FUI-9 project Hi-Lite
 This is the version \version{} of \eacsl design. Several features may still
 evolve in the future.
 
-%% \section*{Acknowledgements}
+\section*{Acknowledgements}
 
-%% We gratefully thank all the people who contributed to this document:
-%% Sylvie Boldo,
-%% Jean-Louis Cola\c{c}o,
-%% Pierre Cr\'egut,
-%% David Delmas,
-%% St\'ephane Duprat,
-%% Arnaud Gotlieb,
-%% Thierry Hubert,
-%% Dillon Pariente,
-%% Pierre Rousseau,
-%% Julien Signoles,
-%% Jean Souyris.
+We gratefully thank all the people who contributed to this document:
+Patrick Baudin,
+Bernard Botella, and
+Virgile Prevosto.
 
 \include{intro_modern}
 
@@ -114,6 +106,16 @@ evolve in the future.
 %\input{template_modern}
 
 \section{Changes}
+
+\subsection{Version 1.5-0.1}
+
+\begin{itemize}
+\item Allow unguarded quantification over boolean
+\item Fix syntax of set comprehensions
+\item Fix syntax of \lstinline|\exists|
+\item Indicating the experimental \acsl features are unsupported
+\item Fix typos reported by Virgile Prevosto.
+\end{itemize}
 
 \subsection{Version 1.5-0}
 

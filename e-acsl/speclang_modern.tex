@@ -55,13 +55,16 @@ quantifications.
 \begin{lstlisting}
 \exists $\tau$ $x_1$,$\ldots$,$x_n$;
   $a_1$ <= $x_1$ <= $b_1$ $\ldots$ && $a_n$ <= $x_n$ <= $b_n$
-  ==> e
+  && e
 \end{lstlisting}
 Therefore each quantified variable belongs to a finite constant interval. By
 this way, since operator \lstinline|<=| is only valid for integers and reals,
 quantification is limited to both of these types (and their corresponding
 subtypes). For example, quantification over \C pointers or logic types is not
 allowed.
+
+Furthermore, the standard \acsl (unguarded) quantification over boolean is still
+possible in \eacsl.
 \end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -323,7 +326,7 @@ scheme of a loop invariant.
 
 Figure~\ref{fig:gram:contracts} shows grammar of statement contracts. Like
 function contracts, this is a simplified version of \acsl with neither
-\lstinline|assigns| nor \lstinline|abrupt| clauses. 
+\lstinline|assigns| nor \lstinline|abrupt| clauses.
 All the other constructs are unchanged.
 
 \begin{figure}[htbp]
