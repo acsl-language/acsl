@@ -1,7 +1,7 @@
 \begin{syntax}
   statement ::= "/*@" statement-contract "*/" statement
   \
-  statement-contract ::= {("for" id ("," id)* ":")?} requires-clause* ;
+  statement-contract ::= ("for" id ("," id)* ":")? requires-clause* ;
     simple-clause-stmt* named-behavior-stmt*
   \
   simple-clause-stmt::= (simple-clause | abrupt-clause-stmt)
