@@ -5,12 +5,12 @@
        | "*" tset ;
        | "&" tset ;
        | tset "[" tset "]" ;
-       | term ".." term ; range
+       | [ term ".." term ] ; range
        | "\union" "(" tset ("," tset)* ")" ; union of locations
        | "\inter" "(" tset ("," tset)* ")" ; intersection
        | tset "+" tset ;
        | "(" tset ")" ;
-       | "{" tset "|" binders ";" guards "}" ; set comprehension
+       | [ "{" tset "|" binder ";" guards "}" ]; set comprehension
        | { "{" term "}" } ; explicit singleton
        | term ; implicit singleton
        \

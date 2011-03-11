@@ -121,16 +121,18 @@ functions, \eacsl is a 3-valued logic with partial functions since
 terms and predicates may be ``undefined''.
 
 In this logic, the semantics of a term denoting a \C expression $e$ is undefined
-if either $e$ leads to a runtime error or does not terminate. Consequently the
-semantics of any term $t$ (resp. predicate $p$) containing a \C expression $e$
-is undefined if $e$ has to be evaluated in order to evaluate $t$ (resp. $p$).
+if $e$ leads to a runtime error. Consequently the semantics of any term $t$
+(resp. predicate $p$) containing a \C expression $e$ is undefined if $e$ has to
+be evaluated in order to evaluate $t$ (resp. $p$).
+\begin{remark}[Julien]
+$e$ always terminates, thus no termination issue.
+\end{remark}
 \begin{example}
 The semantics of all the below predicates are undefined:
 \begin{itemize}
 \item \lstinline|1/0 == 1/0|
-\item \lstinline|f(1/0)| for any logic function \lstinline|f|
-\item \lstinline|cyclic == cyclic| if \lstinline|cyclic| is a cyclic \C
-  structure
+\item \lstinline|f(*p)| for any logic function \lstinline|f| and invalid pointer
+  \lstinline|p|
 \end{itemize}
 \end{example}
 
@@ -155,25 +157,24 @@ Below, the first predicate is invalid" while the second one is valid:
 \end{itemize}
 \end{example}
 
-[TODO] precise semantics of undefinedness (for instance for
-\lstinline|1/0 == 1/0 && \false|)
-In this logic, the semantics of any
-predicate containing a C expression which would lead to a runtime
-error or whose evaluation does not terminate is undefined. Each tool
-implementing \eacsl semantics may do what it wants when interpreting
-an undefined predicate. For instance, it may consider the expression
-is valid or it may fail.
+\paragraph{Handling undefinedness in tools}
+
+It is the responsibility of the tools which interprets \eacsl to ensure that an
+undefined construct is never evaluated. For instance, they may exit with a
+proper error message or, if they generate \C code, they may guard each
+generated undefined \C expression in order to be sure that they are always
+safely used.
 
 This behavior is consistent with both \acsl~\cite{acsl} and mainstream
 specification languages for runtime assertion checking like
 \jml~\cite{jml}. Consistency means that, if it exists and is defined, the \eacsl
 predicate corresponding to a valid (resp. invalid) \acsl or \jml predicate is
-either valid (resp. invalid)\footnote{For \jml, that is only true for a common
-  subset to \eacsl and \jml.}. Thus it is possible to reuse tools interpreting
-\acsl in order to interpret \eacsl, and it is also possible to perform runtime
-assertion checking of \eacsl predicates in the same way we do for \jml
-predicates. Reader interested by the implications (especially issues) of such a
-choice may read articles of Patrice Chalin~\cite{chalin05,chalin07}.
+valid (resp. invalid)\footnote{For \jml, that is only true for a common subset
+  to \eacsl and \jml.}. Thus it is possible to reuse tools interpreting \acsl in
+order to interpret \eacsl, and it is also possible to perform runtime assertion
+checking of \eacsl predicates in the same way than \jml predicates. Reader
+interested by the implications (especially issues) of such a choice may read
+articles of Patrice Chalin~\cite{chalin05,chalin07}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -213,12 +214,14 @@ choice may read articles of Patrice Chalin~\cite{chalin05,chalin07}.
 \label{sec:fn-behavior}
 \index{function contract}\index{contract}
 
-\except{no assigns, terminates and abrupt clauses}
+\except{no \lstinline|terminates| and \lstinline|abrupt| clauses}
 
 Figure~\ref{fig:gram:contracts} shows grammar of function
-contracts. This is a simplified version of \acsl one with no
-\lstinline|assigns|, \lstinline|terminates| and \lstinline|abrupt|
-clauses. All the other constructs are unchanged.
+contracts. This is a simplified version of \acsl one with \lstinline|terminates|
+and \lstinline|abrupt| clauses. Section~\ref{sec:termination}
+(resp.~\ref{sec:abrupt}) explains why \eacsl has no \lstinline|terminates|
+(resp. \lstinline|abrupt|) clause.
+
 \begin{figure}[htbp]
   \begin{cadre}
       \input{fn_behavior_modern.bnf}
@@ -251,11 +254,7 @@ Figure~\ref{fig:gram:oldandresult} summarizes grammar extension of terms with
 \subsection{Simple function contracts}
 \label{sec:simplecontracts}
 
-\except{no \lstinline|assigns| clause}
-
-Simple function contracts are now limited to \lstinline|requires| and
-\lstinline|ensures| clauses since there is no assigns. Their semantics are
-unchanged.
+\nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -263,11 +262,7 @@ unchanged.
 \label{subsec:behaviors}
 \index{function behavior}\index{behavior}
 
-\except{no \lstinline|assigns| clause}
-
-Contracts with named behaviors are now limited to \lstinline|assumes|,
-\lstinline|requires| and \lstinline|ensures| clauses since there is no
-assigns. Their semantics are unchanched.
+\nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -278,8 +273,9 @@ assigns. Their semantics are unchanched.
 
 Figure~\ref{fig:gram:locations} describes grammar of sets of terms. The only
 differences with \acsl are that both lower and upper bounds of ranges are
-mandatory and that the predicate inside set comprehension must be guarded. In
-that way, each set of terms is finite.
+mandatory and that the predicate inside set comprehension must be guarded and
+bind only one variable. In that way, each set of terms is finite and their
+members easily computable.
 \begin{figure}[htbp]
   \fbox{\begin{minipage}{0.97\textwidth}
       \input{loc_modern.bnf}
@@ -287,6 +283,12 @@ that way, each set of terms is finite.
   \caption{Grammar for sets of terms}
 \label{fig:gram:locations}
 \end{figure}
+
+\begin{example}
+The set \lstinlineµ{ x | integer x; 0 <= x <= 9 && 20 <= x <= 29 }µ denotes the
+set of all integers between 0 and 9 and between 20 and 29.
+\end{example}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -321,14 +323,10 @@ Figure~\ref{fig:gram:assertions} summarizes grammar for assertions.
 \subsection{Loop annotations}
 \label{sec:loop_annot}
 
-\except{limited to loop variant}
+\except{loop invariants lose their inductive nature}
 
-Figure~\ref{fig:gram:loops} shows grammar for loop annotations. The only
-possible loop annotation is loop variant. There is neither
-\lstinline|loop assigns| nor \lstinline|loop invariant| clause. About loop
-invariant, you have to use \lstinline|assertion| clause instead (see
-Section~\ref{sec:assertions}), even if there is no way to encode the inductive
-scheme of a loop invariant.
+Figure~\ref{fig:gram:loops} shows grammar for loop annotations. There is no
+syntactic difference with \acsl.
 \begin{figure}[htbp]
   \begin{cadre}
     \input{loops_modern.bnf}
@@ -336,6 +334,67 @@ scheme of a loop invariant.
   \caption{Grammar for loop annotations}
   \label{fig:gram:loops}
 \end{figure}
+
+\subsubsection{Loop invariants}
+
+\index{invariant}
+The semantics of loop invariants is defined as follows: a simple loop
+annotation of the form
+\begin{listing}{1}
+/*@ loop invariant I;
+  @*/
+...
+\end{listing}
+specifies that the following conditions hold.
+\begin{itemize}
+\item The predicate \lstinline|I| holds before entering the loop
+  (in the case of a
+  \lstinline|for| loop, this means right after the initialization expression).
+\item The predicate \lstinline|I| is an invariant, that is if execution of the
+  loop body in some state $S$ where the condition \lstinline|c| is true ends
+  normally at the end of the body or with a \lstinline{continue} statement,
+  \lstinline|I| is true in the resulting state. If the loop condition has side
+  effects, these are included in the loop body in a suitable way:
+  \begin{itemize}
+  \item for a \lstinline|while (c) s| loop, \lstinline|I| must be
+    preserved by the side-effects of \lstinline|c| followed by
+    \lstinline|s|;
+  \item for a \lstinline|for(init;c;step) s| loop, \lstinline|I| must
+    be preserved by the side-effects of \lstinline|c| followed by
+    \lstinline|s| followed by \lstinline|step|;
+  \item for a \lstinline|do s while (c);| loop, \lstinline|I| must be
+    preserved by \lstinline|s| followed by the side-effects of
+    \lstinline|c|.
+  \end{itemize}
+
+Note that if \lstinline|c| has side-effects, the invariant might not
+be true at the exit of the loop: if the last ``step'' starts from a state
+where \lstinline|I| holds, it performs the side-effects of \lstinline|c|,
+which in the end evaluates to false and exits the loop. Likewise, if a
+loop is exited through a \lstinline|break| statement, \lstinline|I|
+does not necessarily hold, as side effects may occur between
+the last state in which \lstinline|I| was supposed to hold and
+the \lstinline|break| statement.
+\end{itemize}
+
+The only difference with \acsl is that \eacsl does not assume that the predicate
+\lstinline|I| holds in the state $S$. In other words a loop invariant
+\lstinline|I| is equivalent to put an assertion \lstinline|I| just before
+entering the loop and at the very end of the loop body.
+
+\subsubsection{General inductive invariant}
+
+Syntax of these kinds of invariant is shown Figure~\ref{fig:advancedinvariants}
+\begin{figure}[t]
+  \begin{cadre}
+    \input{generalinvariants_modern.bnf}
+  \end{cadre}
+  \caption{Grammar for general inductive invariants}
+  \label{fig:advancedinvariants}
+\end{figure}
+
+In \eacsl, these kinds of invariants put everywhere in a loop body is exactly
+equivalent to an assertion.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -349,12 +408,11 @@ scheme of a loop invariant.
 \label{sec:statement_contract}
 \index{statement contract}\index{contract}
 
-\except{no \lstinline|assigns| and \lstinline|abrupt| clauses}
+\except{no \lstinline|abrupt| clauses}
 
 Figure~\ref{fig:gram:contracts} shows grammar of statement contracts. Like
-function contracts, this is a simplified version of \acsl with neither
-\lstinline|assigns| nor \lstinline|abrupt| clauses.
-All the other constructs are unchanged.
+function contracts, this is a simplified version of \acsl with no
+\lstinline|abrupt| clauses. All the other constructs are unchanged.
 
 \begin{figure}[htbp]
   \begin{cadre}
@@ -372,7 +430,7 @@ All the other constructs are unchanged.
 \label{sec:termination}
 \index{termination}
 
-\except{no general measures and \lstinline|terminates| clauses}
+\except{no \lstinline|terminates| clauses}
 
 Termination can only be guaranteed by attaching an integer measure to each loop
 and each recursive function.
@@ -387,7 +445,7 @@ and each recursive function.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{General measures}
-\absent
+\nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -398,6 +456,8 @@ and each recursive function.
 
 \subsection{Non-terminating functions}
 \absent
+
+TODO: why
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -523,7 +583,7 @@ dereferencing a non null pointer is safe.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Abrupt termination}
+\section{Abrupt termination}\label{sec:abrupt}
 \absent
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -9,7 +9,20 @@
   "do" statement ;
   "while" "(" expr ")" ";"
   \
-  loop-annot ::= loop-variant?
+  loop-annot ::= loop-clause* ;
+  loop-behavior* ;
+  loop-variant?
+  \
+  loop-clause ::= loop-invariant ;
+                | loop-assigns
+  \
+  [ loop-invariant ] ::= [ "loop" "invariant" pred ";" ]
+  \
+  loop-assigns ::= "loop"
+                   "assigns" locations ";" ;
+  \
+  loop-behavior ::= "for" id ("," id)* ":" ;
+  loop-clause* ; annotation for behavior $id$
   \
   loop-variant ::= "loop" "variant" term ";" ;
   | "loop" "variant" term "for" id ";" ; variant for relation $id$

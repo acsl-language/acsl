@@ -110,10 +110,15 @@ Virgile Prevosto.
 \subsection{Version 1.5-0.1}
 
 \begin{itemize}
+\item Add loop invariants, but they lose their inductive \acsl nature
+\item Add operations over memory like \lstinline|\valid|.
+\item Lazy operators \lstinline|&&|, \lstinline+||+, \lstinline|^^|,
+  \lstinline|==>| and \lstinline|<==>|
+\item Better semantics for undefinedness
 \item Highlighting constructs with semantic changes in grammars.
 \item Allow unguarded quantification over boolean
-\item Fix syntax of set comprehensions
-\item Fix syntax of \lstinline|\exists|
+\item Revised syntax of set comprehensions
+\item Revised syntax of \lstinline|\exists|
 \item Indicating that experimental \acsl features are unsupported
 \item Fix many typos
 \end{itemize}
@@ -145,7 +150,7 @@ DEPS_MODERN=macros_modern.tex framacversion.tex biblio.bib \
 	loc_modern.bnf \
 	assertions_modern.bnf loops_modern.bnf st_contracts_modern.bnf \
 	logic_modern.bnf data_invariants_modern.bnf model_modern.bnf \
-	ghost_modern.bnf
+	ghost_modern.bnf generalinvariants_modern.bnf
 
 .PHONY: all e-acsl default
 
