@@ -114,7 +114,7 @@ Figure~\ref{fig:precedence} summarizes operator precedences.
 \subsection{Semantics}
 \label{sec:twovaluedlogic}
 
-\except{undefinedness and same lazyness than \C}
+\except{undefinedness and same laziness than \C}
 
 More precisely, while \acsl is a 2-valued logic with only total
 functions, \eacsl is a 3-valued logic with partial functions since
@@ -170,11 +170,12 @@ specification languages for runtime assertion checking like
 \jml~\cite{jml}. Consistency means that, if it exists and is defined, the \eacsl
 predicate corresponding to a valid (resp. invalid) \acsl or \jml predicate is
 valid (resp. invalid)\footnote{For \jml, that is only true for a common subset
-  to \eacsl and \jml.}. Thus it is possible to reuse tools interpreting \acsl in
-order to interpret \eacsl, and it is also possible to perform runtime assertion
-checking of \eacsl predicates in the same way than \jml predicates. Reader
-interested by the implications (especially issues) of such a choice may read
-articles of Patrice Chalin~\cite{chalin05,chalin07}.
+  to \eacsl and \jml.}. Thus it is possible to reuse tools interpreting \acsl
+like the \framac's value analysis plug-in~\cite{value} in order to interpret
+\eacsl, and it is also possible to perform runtime assertion checking of \eacsl
+predicates in the same way than \jml predicates. Reader interested by the
+implications (especially issues) of such a choice may read articles of Patrice
+Chalin~\cite{chalin05,chalin07}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -412,7 +413,7 @@ equivalent to an assertion.
 
 Figure~\ref{fig:gram:contracts} shows grammar of statement contracts. Like
 function contracts, this is a simplified version of \acsl with no
-\lstinline|abrupt| clauses. All the other constructs are unchanged.
+\lstinline|abrupt| clauses. All other constructs are unchanged.
 
 \begin{figure}[htbp]
   \begin{cadre}
@@ -455,9 +456,7 @@ and each recursive function.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Non-terminating functions}
-\absent
-
-TODO: why
+\absentexperimental
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -467,10 +466,11 @@ TODO: why
 \label{sec:logicspec}
 \index{logic specification}\index{specification}
 
-\except{neither polymorphism nor lemma}
+\limited{stable and computable features}
 
 Figure~\ref{fig:gram:logic} presents grammar of logic definitions. This is the
-same than the one of \acsl without polymorphic definitions nor lemmas.
+same than the one of \acsl without polymorphic definitions, lemmas, nor
+axiomatics.
 
 \begin{figure}[htbp]
   \fbox{\begin{minipage}{0.97\linewidth}\vfill \input{logic_modern.bnf}
@@ -489,20 +489,31 @@ same than the one of \acsl without polymorphic definitions nor lemmas.
 \subsection{Lemmas}
 \absent
 
+Lemmas are user-given propositions. They are written usually to help theorem
+provers to establish validity of specifications. Thus they are mostly useful for
+verification activities based on deductive methods which are out of the scope of
+\eacsl. Furthermore, they often requires human help to be proven, although
+\eacsl targets are automatic tools.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Inductive predicates}
 \absent
+
+Inductive predicates are not computable if they really use their inductive
+nature.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Axiomatic definitions}
 \absent
 
+By nature, an axiomatic is not computable.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Polymorphic logic types}
-\absent
+\absentexperimental
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -513,12 +524,12 @@ same than the one of \acsl without polymorphic definitions nor lemmas.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Higher-order logic constructions}
-\absent
+\absentexperimental
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Concrete logic types}
-\absent
+\subsection{Concrete logic types}\label{sec:concrete-logic-types}
+\absentexperimental
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -526,18 +537,21 @@ same than the one of \acsl without polymorphic definitions nor lemmas.
 \label{sec:logicalstates}
 \index{hybrid!function}
 \index{hybrid!predicate}
-\nodiff
+\absent
+
+There is no logic type (see Section~\ref{sec:concrete-logic-types}). Thus hybrid
+functions and predicates are meaningless.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Memory footprint specification: \texorpdfstring{\lstinline|reads|}{reads} clause}
-\absent
+\absentexperimental
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Specification Modules}
 \label{sec:specmodules}
-\absent
+\nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -546,30 +560,23 @@ same than the one of \acsl without polymorphic definitions nor lemmas.
 \section{Pointers and physical adressing}
 \label{sec:pointers}
 
-There is mostly no special built-in \eacsl construct dealing with pointers and
-physical adressing.
+\except{separation, allocation and deallocation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Memory blocks and pointer dereferencing}
 \label{subsec:memory}
-% \absentexcept{\lstinline|\null|} % JS: doesn't work, don't know why
-\emph{No such feature in \eacsl, but } \lstinline|\null|\emph{.}
-
-The only existing built-in construct dealing with memory state is
-\lstinline|\null|.  In particular, \lstinline|\valid| does not exist: you can
-only check for nullity and therefore it is not possible to check whether
-dereferencing a non null pointer is safe.
+\nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Separation}
-\absent
+\absentexperimental
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Allocation and deallocation}
-\absent
+\absentexperimental
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -584,14 +591,14 @@ dereferencing a non null pointer is safe.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Abrupt termination}\label{sec:abrupt}
-\absent
+\absentexperimental
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Dependencies information}
-\absent
+\absentexperimental
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -660,11 +667,11 @@ same than the one of \acsl.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Volatile variables}
-\absent
+\absentexperimental
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Undefined values, dangling pointers}
-\absent
+\nodiff

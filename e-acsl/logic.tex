@@ -1,18 +1,17 @@
 \begin{syntax}
   C-global-decl ::= "/*@" logic-def+ "*/"
   \
-  logic-def ::= logic-const-def ;
+  [ logic-def ] ::= logic-const-def ;
           | logic-function-def ;
           | predicate-def ;
-          | lemma-def ;
   \
-  type-expr ::= id;
+  [ type-expr ] ::= id;
   \
-  logic-const-def ::= "logic" type-expr id "=" term ";"
+  [ logic-const-def ] ::= "logic" type-expr id "=" term ";"
   \
-  logic-function-def ::= "logic" type-expr id parameters "=" term ";"
+  [ logic-function-def ] ::= "logic" type-expr id parameters "=" term ";"
   \
-  predicate-def ::= "predicate" id parameters? "=" pred ";"
+  [ predicate-def ] ::= "predicate" id parameters? "=" pred ";"
   \
   parameters ::= "(" parameter (, parameter)* ")"
   \
