@@ -139,21 +139,24 @@ The semantics of all the below predicates are undefined:
 Furthermore, \C-like operators \lstinline|&&|, \lstinline+||+, \lstinline|^^|
 and \lstinline|_ ? _ : _| are lazy like in \C: their right members are evaluated
 only if required. Thus the amount of undefinedness is limited. Consequently,
-predicates \lstinline|p ==> q| and \lstinline|p <==> q| are also lazy
-since their are respectively equivalent to \lstinline+!p || q+ and
-\lstinline|p ==> q && q ==> p|.
+predicate \lstinline|p ==> q| is also lazy since it is equivalent
+to \lstinline+!p || q+. It is also the case for guarded quantifications since
+guards are conjunctions.
 
 \begin{example}
-Below, the first predicate is invalid" while the second one is valid:
+Below, the first and second predicates are invalid while the third one are
+valid:
 \begin{itemize}
 \item \lstinline|\false && 1/0 == 1/0|
+\item \lstinline|\forall integer x, -1 <= x <= 1 ==> 1/x > 0|
 \item \lstinline|\forall integer x, \false ==> -1 <= 1/x <= 1|
 \end{itemize}
 
-\emph{A contrario} the semantics of both predicates below is undefined:
+\emph{A contrario} the semantics of predicates below is undefined:
 \begin{itemize}
 \item \lstinline|1/0 == 1/0 && \false|
 \item \lstinline|-1 <= 1/0 <= 1 ==> \true|
+\item \lstinline|\exists integer x, -1 <= x <= 1 && 1/x > 0 |
 \end{itemize}
 \end{example}
 
@@ -168,13 +171,12 @@ safely used.
 This behavior is consistent with both \acsl~\cite{acsl} and mainstream
 specification languages for runtime assertion checking like
 \jml~\cite{jml}. Consistency means that, if it exists and is defined, the \eacsl
-predicate corresponding to a valid (resp. invalid) \acsl or \jml predicate is
-valid (resp. invalid)\footnote{For \jml, that is only true for a common subset
-  to \eacsl and \jml.}. Thus it is possible to reuse tools interpreting \acsl
-like the \framac's value analysis plug-in~\cite{value} in order to interpret
-\eacsl, and it is also possible to perform runtime assertion checking of \eacsl
-predicates in the same way than \jml predicates. Reader interested by the
-implications (especially issues) of such a choice may read articles of Patrice
+predicate corresponding to a valid (resp. invalid) \acsl predicate is valid
+(resp. invalid). Thus it is possible to reuse tools interpreting \acsl like the
+\framac's value analysis plug-in~\cite{value} in order to interpret \eacsl, and
+it is also possible to perform runtime assertion checking of \eacsl predicates
+in the same way than \jml predicates. Reader interested by the implications
+(especially issues) of such a choice may read articles of Patrice
 Chalin~\cite{chalin05,chalin07}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -276,7 +278,7 @@ Figure~\ref{fig:gram:locations} describes grammar of sets of terms. The only
 differences with \acsl are that both lower and upper bounds of ranges are
 mandatory and that the predicate inside set comprehension must be guarded and
 bind only one variable. In that way, each set of terms is finite and their
-members easily computable.
+members easily identifiable.
 \begin{figure}[htbp]
   \fbox{\begin{minipage}{0.97\textwidth}
       \input{loc_modern.bnf}
@@ -338,50 +340,25 @@ syntactic difference with \acsl.
 
 \subsubsection{Loop invariants}
 
-\index{invariant}
-The semantics of loop invariants is defined as follows: a simple loop
-annotation of the form
-\begin{listing}{1}
-/*@ loop invariant I;
-  @*/
-...
-\end{listing}
-specifies that the following conditions hold.
-\begin{itemize}
-\item The predicate \lstinline|I| holds before entering the loop
-  (in the case of a
-  \lstinline|for| loop, this means right after the initialization expression).
-\item The predicate \lstinline|I| is an invariant, that is if execution of the
-  loop body in some state $S$ where the condition \lstinline|c| is true ends
-  normally at the end of the body or with a \lstinline{continue} statement,
-  \lstinline|I| is true in the resulting state. If the loop condition has side
-  effects, these are included in the loop body in a suitable way:
-  \begin{itemize}
-  \item for a \lstinline|while (c) s| loop, \lstinline|I| must be
-    preserved by the side-effects of \lstinline|c| followed by
-    \lstinline|s|;
-  \item for a \lstinline|for(init;c;step) s| loop, \lstinline|I| must
-    be preserved by the side-effects of \lstinline|c| followed by
-    \lstinline|s| followed by \lstinline|step|;
-  \item for a \lstinline|do s while (c);| loop, \lstinline|I| must be
-    preserved by \lstinline|s| followed by the side-effects of
-    \lstinline|c|.
-  \end{itemize}
+\index{invariant} The semantics of loop invariants is the same than the one
+defined in \acsl, except that they are not inductive. Thus the only difference
+with \acsl is that \eacsl does not assume that the invariant previously holds
+when one checks that it holds at the end of the loop body. In other words a loop
+invariant \lstinline|I| is equivalent to put an assertion \lstinline|I| just
+before entering the loop and at the very end of the loop body.
 
-Note that if \lstinline|c| has side-effects, the invariant might not
-be true at the exit of the loop: if the last ``step'' starts from a state
-where \lstinline|I| holds, it performs the side-effects of \lstinline|c|,
-which in the end evaluates to false and exits the loop. Likewise, if a
-loop is exited through a \lstinline|break| statement, \lstinline|I|
-does not necessarily hold, as side effects may occur between
-the last state in which \lstinline|I| was supposed to hold and
-the \lstinline|break| statement.
-\end{itemize}
+\begin{example}
+In the following, \lstinline|bsearch(t,n,v)| searches for element \lstinline|v|
+in array \lstinline|t| between indices \lstinline|0| and \lstinline|n-1|.
 
-The only difference with \acsl is that \eacsl does not assume that the predicate
-\lstinline|I| holds in the state $S$. In other words a loop invariant
-\lstinline|I| is equivalent to put an assertion \lstinline|I| just before
-entering the loop and at the very end of the loop body.
+\listinginput{1}{bsearch.c}
+
+In \eacsl, this annotated function is equivalent to the following one since
+loop invariants are not inductive.
+
+\listinginput{1}{bsearch2.c}
+
+\end{example}
 
 \subsubsection{General inductive invariant}
 

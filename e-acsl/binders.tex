@@ -16,8 +16,7 @@
   | variable-ident "[]";
   | "(" variable-ident ")"
   \
-  boolean-binders ::= boolean-binder (, boolean-binder)* ;
+  [ boolean-binders ] ::= [ boolean-binder (, boolean-binder)* ];
   \
-  boolean-binder ::= "boolean" variable-ident;
-             (,variable-ident)*
+  [ boolean-binder ] ::= [ "boolean" variable-ident (,variable-ident)* ]
 \end{syntax}

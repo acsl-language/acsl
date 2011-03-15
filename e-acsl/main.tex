@@ -25,7 +25,8 @@
 \usepackage{alltt}
 \makeindex
 
-\newcommand{\version}{1.5-1}
+\newcommand{\acslversion}{1.5\xspace}
+\newcommand{\version}{\acslversion-2\xspace}
 
 \renewcommand{\textfraction}{0.01}
 \renewcommand{\topfraction}{0.99}
@@ -73,14 +74,17 @@ This is a preliminary design of the \eacsl language, a deliverable of
 the task 3.4 of the FUI-9 project Hi-Lite
 (\url{http://www.open-do.org/projects/hi-lite}).
 
-This is the version \version{} of \eacsl design. Several features may still
-evolve in the future.
+This is the version \version{} of \eacsl design based on \acsl version
+\acslversion~\cite{acsl}. Several features may still evolve in the future.
 
 \section*{Acknowledgements}
 
 We gratefully thank all the people who contributed to this document:
 Patrick Baudin,
-Bernard Botella, and
+Bernard Botella,
+Loïc Correnson,
+Pascal Cuoq,
+Benjamin Monate and
 Virgile Prevosto.
 
 \include{intro_modern}
@@ -110,25 +114,37 @@ Virgile Prevosto.
 \subsection{Version \version}
 
 \begin{itemize}
-\item Add specification modules
-\item Add general measures for termination
-\item Add loop invariants, but they lose their inductive \acsl nature
+\item Simplify explanations for loop invariants
+\item Add examples for loop invariants
+\item Extended syntax for set comprehensions.
+\item Remove laziness of operator \lstinline|<==>|.
+\item Extended syntax for guarded quantifications.
+\end{itemize}
+
+\subsection{Version 1.5-1}
+
+\begin{itemize}
+\item Add specification modules.
+\item Add general measures for termination.
+\item Add loop invariants, but they lose their inductive \acsl nature.
 \item Add operations over memory like \lstinline|\valid|.
 \item Lazy operators \lstinline|&&|, \lstinline+||+, \lstinline|^^|,
-  \lstinline|==>| and \lstinline|<==>|
-\item Better semantics for undefinedness
+  \lstinline|==>| and \lstinline|<==>|.
+\item Better semantics for undefinedness.
 \item Highlighting constructs with semantic changes in grammars.
-\item Allow unguarded quantification over boolean
-\item Revised syntax of set comprehensions
-\item Revised syntax of \lstinline|\exists|
-\item Explain why unsupported features has been removed
-\item Indicating that experimental \acsl features are unsupported
-\item Fix many typos
+\item Allow unguarded quantification over boolean.
+\item Revised syntax of set comprehensions.
+\item Revised syntax of \lstinline|\exists|.
+\item Explain why unsupported features has been removed.
+\item Indicating that experimental \acsl features are unsupported.
+\item Fix many typos.
 \end{itemize}
 
 \subsection{Version 1.5-0}
 
-Initial version.
+\begin{itemize}
+\item Initial version.
+\end{itemize}
 
 \cleardoublepage
 \addcontentsline{toc}{chapter}{\bibname}
