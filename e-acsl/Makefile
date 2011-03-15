@@ -8,7 +8,7 @@ DEPS_MODERN=macros_modern.tex framacversion.tex biblio.bib \
 	assertions_modern.bnf loops_modern.bnf st_contracts_modern.bnf \
 	logic_modern.bnf data_invariants_modern.bnf model_modern.bnf \
 	ghost_modern.bnf generalinvariants_modern.bnf \
-	bsearch.c
+	bsearch.c bsearch2.c
 
 .PHONY: all e-acsl default
 
