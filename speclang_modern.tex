@@ -710,11 +710,13 @@ given logic term denotes a C memory location (i.e. a C left-value).
 \end{remark}
 
 Unlike C, there is no implicit cast from from an array type to a pointer type.
-Nevertheless, arithmetic and dereferencing over arrays lying in C memory are allowed like in C.
+Nevertheless, arithmetic and dereferencing over arrays lying in C memory are 
+allowed like in C.
 
 \begin{example}
 ~
-Dereferencing a C array is equivalent an access to the first element of the array~;
+Dereferencing a C array is equivalent an access 
+to the first element of the array~;
 shifting it from $i$ denotes the address of it $i^{th}$ element.
 \begin{listing-nonumber}
 int tab[10] = { 1 } ;
@@ -732,12 +734,14 @@ int main(void){
 \end{listing-nonumber}
 \end{example}
 
-Since pointers can only refers values lying in C memory, 
+Since pointers can only refers to values lying in C memory, 
 \lstinline|p->s| is always equivalent to \lstinline|(*p).s|.
 On the contrary, \lstinline|t[i]| is not always equivalent to 
-\lstinline|*(t+i)|, especially for arrays lying not in C 
-(see Section~\ref{sec:aggregate} for details about arrays 
-as possible logic values).
+\lstinline|*(t+i)|, especially for arrays not lying in C memory. 
+Section~\ref{sec:aggregate} details the use of arrays as logic values. There
+are also differences between \lstinline|t| and the pointer to its first element
+when evaluating an expression at a given program point. See 
+Section~\ref{sec:at} for more information.
 
 \subsubsection{Function pointers}
 
@@ -878,7 +882,6 @@ the converse).
 \end{listing-nonumber}
 \end{example}
 
-
 An explicit cast from a array type to a pointer type is allowed only
 for arrays that lies in C memory. As in C, the result of the cast is
 the address of the first element of the array (see
@@ -910,12 +913,6 @@ $\tau[]$ returns a logic array $t$ such that
 \begin{notimplementedenv}\lstinline|\offset|\end{notimplementedenv}%
 (p))/\lstinline|sizeof|(\tau)
 \]
-
-
-
-
-
-
 
 \subsection{String literals}
 
@@ -1697,8 +1694,18 @@ node ``inv'' to itself.
 \label{sec:at}
 \indexttbs{at} Statement annotations usually need another additional
 construct \lstinline|\at(e,id)| referring to the value of the
-expression \lstinline|e| in the state at label \lstinline|id|. The
-label \lstinline|id| can be either a regular C label, or a label added
+expression \lstinline|e| in the state at label \lstinline|id|. 
+In particular, for a C array of \lstinline|int|, 
+\lstinline|t|, \lstinline|\at(t,id)| is a logical
+array whose content is the same as the one of \lstinline|t| in state at label
+\lstinline|id|. It is thus very different from 
+\lstinline|\at((int *)t,id)|, which
+is a pointer to the first element of \lstinline|t| (and stays the same between 
+the state at \lstinline|id| and the current state). Namely, if 
+\lstinline|t[0]| has changed since \lstinline|id|, we have
+\lstinline|\at(t,id)[0] != \at((int *)t,id)[0]|.
+
+The label \lstinline|id| can be either a regular C label, or a label added
 within a ghost statement as described in Section~\ref{sec:ghost}. This
 label must be declared in the same function as the occurrence of
 \lstinline|\at(e,id)|, but unlike \lstinline|goto|s, more restrictive
@@ -1710,7 +1717,7 @@ scoping rules must be respected:
 \item the label \lstinline|id| must not be inside an inner block.
 \end{itemize}
 These rules are exactly the same rules as for the visibility of local
-variables within C statements (see~\cite{KR88}, Section A11.1)
+variables within C statements (see~\cite{KR88}, Section A11.1).
 
 \subsubsection*{Default logic labels}\label{sec:default-logic-labels}
 \indextt{Pre}\indextt{Here}\indextt{Old}\indextt{Post}
