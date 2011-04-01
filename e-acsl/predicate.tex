@@ -16,7 +16,7 @@
        | "\let" id "=" term ";" pred ; local binding
        | "\let" id "=" pred ";" pred ;
        | [ "\forall" binders ";" ] ;
-         [ guards "==>" pred ]; universal. guarded quantification
+         [ guards "==>" pred ]; universal guarded quantification
        | [ "\exists" binders ";" ];
          [ guards "&&" pred ] ; existential guarded quantification
        | [ "\forall" boolean-binders ";" pred ]; universal boolean quantification
