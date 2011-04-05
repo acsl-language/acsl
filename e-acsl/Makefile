@@ -1,7 +1,7 @@
 MAIN=main
 DEPS_MODERN=macros_modern.tex framacversion.tex biblio.bib \
 	intro_modern.tex speclang_modern.tex \
-	libraries_modern.tex concl_modern.tex \
+	libraries_modern.tex concl_modern.tex changes_modern.tex \
 	term_modern.bnf binders_modern.bnf predicate_modern.bnf \
 	fn_behavior_modern.bnf oldandresult_modern.bnf \
 	loc_modern.bnf \

@@ -178,14 +178,19 @@ predicate \lstinline|p ==> q| is also lazy since it is equivalent
 to \lstinline+!p || q+. It is also the case for guarded quantifications since
 guards are conjunctions.
 
-\begin{example}
-Below, the first and second predicates are invalid while the third one are
+\begin{example}\label{ex:semantics}
+Below, the first and second predicates are invalid while the third one is
 valid:
 \begin{itemize}
 \item \lstinline|\false && 1/0 == 1/0|
 \item \lstinline|\forall integer x, -1 <= x <= 1 ==> 1/x > 0|
 \item \lstinline|\forall integer x, \false ==> -1 <= 1/x <= 1|
 \end{itemize}
+In particular, the second one is invalid since the quantification is in fact an
+enumeration over a finite number of elements, it amounts to 
+\lstinline|1/-1 > 0 && 1/0 > 0 && 1/1 > 0|. The first atomic proposition is
+invalid, so the rest of the conjunction (and in particular 1/0) is not
+evaluated. 
 
 \emph{A contrario} the semantics of predicates below is undefined:
 \begin{itemize}
@@ -546,10 +551,7 @@ By nature, an axiomatic is not computable.
 \label{sec:logicalstates}
 \index{hybrid!function}
 \index{hybrid!predicate}
-\absent
-
-There is no logic type (see Section~\ref{sec:concrete-logic-types}). Thus hybrid
-functions and predicates are meaningless.
+\nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
