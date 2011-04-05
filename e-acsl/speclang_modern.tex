@@ -184,7 +184,7 @@ valid:
 \begin{itemize}
 \item \lstinline|\false && 1/0 == 1/0|
 \item \lstinline|\forall integer x, -1 <= x <= 1 ==> 1/x > 0|
-\item \lstinline|\forall integer x, \false ==> -1 <= 1/x <= 1|
+\item \lstinline|\forall integer x, 0 <= x <= 0 ==> \false ==> -1 <= 1/x <= 1|
 \end{itemize}
 In particular, the second one is invalid since the quantification is in fact an
 enumeration over a finite number of elements, it amounts to 
