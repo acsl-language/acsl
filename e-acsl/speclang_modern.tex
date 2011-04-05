@@ -45,26 +45,61 @@ of \acsl, while Figure~\ref{fig:gram:pred} presents grammar of predicates.
 The only difference between \eacsl and \acsl predicates are
 quantifications.
 
+\subsection*{Quantification} 
+\eacsl quantification must be computable. They are limited to two limited forms.
+
 \begin{description}
-\item[Quantification] Universal quantification is denoted by
+\item[Guarded integer quantification] Guarded universal quantification is
+  denoted by 
 \begin{lstlisting}
 \forall $\tau$ $x_1$,$\ldots$,$x_n$;
   $a_1$ <= $x_1$ <= $b_1$ $\ldots$ && $a_n$ <= $x_n$ <= $b_n$
   ==> e
-\end{lstlisting} and existential quantification by
+\end{lstlisting} and guarded existential quantification by
 \begin{lstlisting}
 \exists $\tau$ $x_1$,$\ldots$,$x_n$;
   $a_1$ <= $x_1$ <= $b_1$ $\ldots$ && $a_n$ <= $x_n$ <= $b_n$
   && e
 \end{lstlisting}
-Therefore each quantified variable belongs to a finite constant interval. By
-this way, since operator \lstinline|<=| is only valid for integers and reals,
-quantification is limited to both of these types (and their corresponding
-subtypes). For example, quantification over \C pointers or logic types is not
-allowed.
+Therefore each quantified variable belongs to a finite constant interval. Since
+finite interval is only computable in practice for integers, this form of
+quantifier is limited to \texttt{integer} and its subtype. Thus there is no
+guarded quantification over \texttt{float}, \texttt{real}, \C pointers or logic
+types.
 
-Furthermore, the standard \acsl (unguarded) quantification over boolean is still
-possible in \eacsl.
+\item[Guarded iterator quantification] In order to iterate over non-integer
+  types, \eacsl introduces a notion of $iterators$ over types: standard \acsl
+  unguarded quantifications are only allowed over a type which an iterator is
+  attached to.
+
+  Iterators are introduced by a specific construct which attachs two sets ---
+  namely \texttt{nexts} and the \texttt{guards} --- to a type expression. Both
+  sets must have the same cardinal. This construct is described by the grammar
+  of Figure~\ref{fig:gram:iterator}.
+  \begin{figure}[htbp]
+    \begin{cadre}
+      \input{iterator_modern.bnf}
+    \end{cadre}
+    \caption{Grammar of iterator declarations}
+    \label{fig:gram:iterator}
+  \end{figure}
+  For a type $\tau$, \texttt{nexts} is a set of terms which take an argument of
+  type $\tau$ and return a value of type $\tau$ which computes the next element
+  in this type, while \texttt{guards} is a set of predicates which take an
+  argument of type $\tau$ and are valid (resp. invalid) to continue (resp. stop)
+  the iteration.
+
+  Furthermore, the guard of a quantification using an iterator must be a binary
+  predicate taking two arguments of the same type than the binder. The first
+  argument must be this binder and the second one corresponds to the term from
+  which the iteration begins.
+  \begin{example}
+    The following example introduces binary trees and a predicate which is valid
+    if and only if each value of a binary tree is even.
+    \listinginput{1}{link.c}
+  \end{example}
+
+\item[Unguarded quantification] They are only allowed over boolean and char.
 \end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -471,7 +506,7 @@ verification activities based on deductive methods which are out of the scope of
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Inductive predicates}
+\subsection{Inductive predicates}\label{sec:inductive}
 \absent
 
 Inductive predicates are not computable if they really use their inductive

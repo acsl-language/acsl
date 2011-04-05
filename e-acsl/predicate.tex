@@ -15,19 +15,25 @@
        | [ pred "?" pred ":" pred ];
        | "\let" id "=" term ";" pred ; local binding
        | "\let" id "=" pred ";" pred ;
-       | [ "\forall" binders ";" ] ;
-         [ guards "==>" pred ]; universal guarded quantification
+       | [ "\forall" binders ";" ] ; 
+           [ integer-guards "==>" pred ]; univ. integer quantification
        | [ "\exists" binders ";" ];
-         [ guards "&&" pred ] ; existential guarded quantification
-       | [ "\forall" boolean-binders ";" pred ]; universal boolean quantification
-       | [ "\exists" boolean-binders ";" pred ]; existential boolean quantification
+         [ integer-guards "&&" pred ] ; exist. integer quantification
+       | [ "\forall" binders ";" ] ;
+         [ iterator-guard "==>" pred ]; univ. iterator quantification
+       | [ "\exists" binders ";" ];
+         [ iterator-guard "&&" pred ] ; exist. iterator quantification
+       | [ "\forall" binders ";" pred ]; univ. quantification
+       | [ "\exists" binders ";" pred ]; exist. quantification
        | id ":" pred ; syntactic naming
        \
-  [ guards ] ::= [ interv  ("&&" interv)* ]
+  [ integer-guards ] ::= [ interv  ("&&" interv)* ]
        \
-  [ interv ]  ::= [ (term guard-op)+ ];
+  [ interv ]  ::= [ (term integer-guard-op)+ ];
                   [ id ];
-                  [ (guard-op term)+ ]
+                  [ (integer-guard-op term)+ ]
        \
-  [ guard-op ] ::= [ "==" | "<=" | "<" ]
+  [ integer-guard-op ] ::= [ "<=" | "<" ]
+       \
+  [ iterator-guard ] ::= [ id "(" term"," term ")" ]
 \end{syntax}
