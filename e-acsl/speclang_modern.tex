@@ -176,7 +176,8 @@ and \lstinline|_ ? _ : _| are lazy like in \C: their right members are evaluated
 only if required. Thus the amount of undefinedness is limited. Consequently,
 predicate \lstinline|p ==> q| is also lazy since it is equivalent
 to \lstinline+!p || q+. It is also the case for guarded quantifications since
-guards are conjunctions.
+guards are conjunctions and for ternary condition since it is equivalent to a
+disjunction of implications.
 
 \begin{example}\label{ex:semantics}
 Below, the first, second and fourth predicates are invalid while the third
@@ -199,6 +200,17 @@ over an empty range.
 \item \lstinline|1/0 == 1/0 && \false|
 \item \lstinline|-1 <= 1/0 <= 1 ==> \true|
 \item \lstinline|\exists integer x, -1 <= x <= 1 && 1/x > 0 |
+\end{itemize}
+\end{example}
+
+Furthermore, casting a term denoting a \C expression $e$ to a smaller type
+$\tau$ is undefined if $e$ is not representable in $\tau$.
+
+\begin{example}
+Below, the first term is well-defined, while the second one is undefined.
+\begin{itemize}
+\item \lstinline|(char)127|
+\item \lstinline|(char)128|
 \end{itemize}
 \end{example}
 
@@ -573,7 +585,7 @@ By nature, an axiomatic is not computable.
 \section{Pointers and physical adressing}
 \label{sec:pointers}
 
-\except{separation, allocation and deallocation}
+\except{separation, allocation and deallocation is unsupported}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
