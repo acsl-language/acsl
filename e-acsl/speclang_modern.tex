@@ -217,10 +217,9 @@ Below, the first term is well-defined, while the second one is undefined.
 \paragraph{Handling undefinedness in tools}
 
 It is the responsibility of the tools which interprets \eacsl to ensure that an
-undefined construct is never evaluated. For instance, they may exit with a
-proper error message or, if they generate \C code, they may guard each
-generated undefined \C expression in order to be sure that they are always
-safely used.
+undefined term is never evaluated. For instance, they may exit with a proper
+error message or, if they generate \C code, they may guard each generated
+undefined \C expression in order to be sure that they are always safely used.
 
 This behavior is consistent with both \acsl~\cite{acsl} and mainstream
 specification languages for runtime assertion checking like
