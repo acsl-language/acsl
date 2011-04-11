@@ -73,9 +73,9 @@ types.
   attached to.
 
   Iterators are introduced by a specific construct which attachs two sets ---
-  namely \texttt{nexts} and the \texttt{guards} --- to a type expression. Both
-  sets must have the same cardinal. This construct is described by the grammar
-  of Figure~\ref{fig:gram:iterator}.
+  namely \texttt{nexts} and the \texttt{guards} --- to a binary predicate over a
+  type $\tau$. Both sets must have the same cardinal. This construct is
+  described by the grammar of Figure~\ref{fig:gram:iterator}.
   \begin{figure}[htbp]
     \begin{cadre}
       \input{iterator_modern.bnf}
@@ -89,10 +89,12 @@ types.
   argument of type $\tau$ and are valid (resp. invalid) to continue (resp. stop)
   the iteration.
 
-  Furthermore, the guard of a quantification using an iterator must be a binary
-  predicate taking two arguments of the same type than the binder. The first
-  argument must be this binder and the second one corresponds to the term from
-  which the iteration begins.
+  Furthermore, the guard of a quantification using an iterator must be the
+  predicate given in the definition of the iterator. This abstract binary
+  predicate takes two arguments of the same type. One of them must be unnamed by
+  using a wildcard \texttt{\_}. The unnamed argument must be binded to the
+  guantifier, while the other corresponds to the term from which the iteration
+  begins.
   \begin{example}
     The following example introduces binary trees and a predicate which is valid
     if and only if each value of a binary tree is even.

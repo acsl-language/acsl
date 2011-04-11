@@ -1,5 +1,12 @@
 \begin{syntax}
-  declaration ::= [ "//@" "iterator" type-expr ":" "nexts" ids ";" "guards" ids ]
+  declaration ::= [ "//@" "iterator" id "("wildcard-param","
+    wildcard-param")" ":" ] ;
+  [ "nexts" terms ";" "guards" predicates ]
   \
-  [ ids ] ::= [ id (, id)* ]
+  [ wildcard-param ] ::= parameter;
+  | [ "_" ]
+  \
+  [ terms ] ::= [ term (, term)* ]
+  \
+  [ predicates ] ::= [ predicate (, predicate)* ]
 \end{syntax}

@@ -3,11 +3,7 @@ struct btree {
   struct btree *left, *right;
 };
 
-/*@ axiomatic btree {
-  @   predicate access(struct btree tt, struct btree init);
-  @ } */
-
-/*@ iterator struct btree *t: 
+/*@ iterator access(_, struct btree *t): 
   @   nexts t->left, t->right; 
   @   guards \valid(t->left), \valid(t->right) */
 
