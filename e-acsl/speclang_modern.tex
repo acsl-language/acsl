@@ -396,11 +396,30 @@ syntactic difference with \acsl.
 \subsubsection{Loop invariants}
 
 \index{invariant} The semantics of loop invariants is the same than the one
-defined in \acsl, except that they are not inductive. Thus the only difference
-with \acsl is that \eacsl does not assume that the invariant previously holds
-when one checks that it holds at the end of the loop body. In other words a loop
-invariant \lstinline|I| is equivalent to put an assertion \lstinline|I| just
-before entering the loop and at the very end of the loop body.
+defined in \acsl, except that they are not inductive. More precisely, if one
+does not take care of side effects (semantics of specifications about side
+effects in loop is the same in \eacsl than the one in \acsl), a loop invariant
+$I$ is valid in \acsl if and only if:
+\begin{itemize}
+\item $I$ holds before entering the loop; and
+\item if $I$ is assumed true in some state where the loop condition $c$ is also
+  true, and if execution of the loop body in that state ends normally at the end
+  of the body or with a "continue" statement, $I$ is true in the resulting
+  state.
+\end{itemize}
+
+In \eacsl, the same loop invariant $I$ is valid if and only if:
+\begin{itemize}
+\item $I$ holds before entering the loop; and
+\item if execution of the loop body in that state ends normally at the end of
+  the body or with a "continue" statement, $I$ is true in the resulting state. 
+\end{itemize}
+
+Thus the only difference with \acsl is that \eacsl does not assume that the
+invariant previously holds when one checks that it holds at the end of the loop
+body. In other words a loop invariant \lstinline|I| is equivalent to put an
+assertion \lstinline|I| just before entering the loop and at the very end of the
+loop body.
 
 \begin{example}
 In the following, \lstinline|bsearch(t,n,v)| searches for element \lstinline|v|
