@@ -14,9 +14,22 @@
 \newcommand{\except}[1]{\emph{No difference with \acsl, but #1.}}
 \newcommand{\limited}[1]{\emph{Limited to #1.}}
 \newcommand{\absent}{\emph{No such feature in \eacsl.}}
-\newcommand{\absentexperimental}{\emph{No such feature in \eacsl since it is
+\newcommand{\absentwhy}[1]{\emph{No such feature in \eacsl: #1.}}
+\newcommand{\absentexperimental}{\emph{No such feature in \eacsl, since it is
     still experimental in \acsl.}}
 \newcommand{\absentexcept}[1]{\emph{No such feature in \eacsl, but #1.}}
+\newcommand{\difficultwhy}[2]{\emph{#1 is usually difficult to implement, since
+    it requires #2. Thus you would not wonder if most tools do not support it
+    (or support it partially).}}
+\newcommand{\difficultswhy}[2]{\emph{#1 are usually difficult to implement,
+    since they require #2. Thus you would not wonder if most tools do not
+    support them (or support them partially).}}
+\newcommand{\difficult}[1]{\emph{#1 is usually difficult to implement. Thus
+    you would not wonder if most tools do not support it (or support
+    it partially).}}
+\newcommand{\difficults}[1]{\emph{#1 are usually difficult to implement. Thus
+    you would not wonder if most tools do not support them (or support
+    them partially).}}
 
 \newcommand{\changeinsection}[2]{\textbf{Section \ref{sec:#1}:} #2.}
 

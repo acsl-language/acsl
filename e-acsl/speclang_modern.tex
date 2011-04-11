@@ -92,9 +92,9 @@ types.
   Furthermore, the guard of a quantification using an iterator must be the
   predicate given in the definition of the iterator. This abstract binary
   predicate takes two arguments of the same type. One of them must be unnamed by
-  using a wildcard \texttt{\_}. The unnamed argument must be binded to the
-  guantifier, while the other corresponds to the term from which the iteration
-  begins.
+  using a wildcard (character underscore \texttt{'\_'}). The unnamed argument
+  must be binded to the guantifier, while the other corresponds to the term from
+  which the iteration begins.
   \begin{example}
     The following example introduces binary trees and a predicate which is valid
     if and only if each value of a binary tree is even.
@@ -249,15 +249,22 @@ Chalin~\cite{chalin05,chalin07}.
 \subsection{Real numbers and floating point numbers}
 \nodiff
 
+\difficults{Exact real numbers and even floating point numbers}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{C arrays and pointers}
 \nodiff
 
+\difficultwhy{Ensuring validity of memory accesses}{the implementation of a
+  memory model}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Structures, Unions and Arrays in logic}
 \nodiff
+
+\difficults{Logic arrays without an explicit length}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -306,6 +313,7 @@ Figure~\ref{fig:gram:oldandresult} summarizes grammar extension of terms with
   \label{fig:gram:oldandresult}
 \end{figure}
 
+\difficultwhy{\lstinline|\\old|}{a deep copy of the location}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -313,6 +321,8 @@ Figure~\ref{fig:gram:oldandresult} summarizes grammar extension of terms with
 \label{sec:simplecontracts}
 
 \nodiff
+
+\difficultwhy{\lstinline|\\assigns|}{the implementation of a memory model}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -327,7 +337,7 @@ Figure~\ref{fig:gram:oldandresult} summarizes grammar extension of terms with
 \subsection{Memory locations and sets of terms}
 \label{sec:locations}
 
-\except{limited range and set comprehension}
+\except{ranges and set comprehensions are limited in order to be finite}
 
 Figure~\ref{fig:gram:locations} describes grammar of sets of terms. The only
 differences with \acsl are that both lower and upper bounds of ranges are
@@ -346,7 +356,6 @@ members easily identifiable.
 The set \lstinlineµ{ x | integer x; 0 <= x <= 9 && 20 <= x <= 29 }µ denotes the
 set of all integers between 0 and 9 and between 20 and 29.
 \end{example}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -392,6 +401,8 @@ syntactic difference with \acsl.
   \caption{Grammar for loop annotations}
   \label{fig:gram:loops}
 \end{figure}
+
+\difficultwhy{\lstinline|loop assigns|}{the implementation of a memory model}
 
 \subsubsection{Loop invariants}
 
@@ -453,6 +464,8 @@ equivalent to an assertion.
 \subsection{Built-in construct \texorpdfstring{\at}{\textbackslash{}at}}
 \label{sec:at}
 \nodiff
+
+\difficultwhy{\lstinline|\\at|}{a deep copy of the location}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -536,28 +549,22 @@ axiomatics.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Lemmas}
-\absent
-
-Lemmas are user-given propositions. They are written usually to help theorem
-provers to establish validity of specifications. Thus they are mostly useful for
-verification activities based on deductive methods which are out of the scope of
-\eacsl. Furthermore, they often requires human help to be proven, although
-\eacsl targets are automatic tools.
+\absentwhy{lemmas are user-given propositions. They are written usually to help
+  theorem provers to establish validity of specifications. Thus they are mostly
+  useful for verification activities based on deductive methods which are out of
+  the scope of \eacsl. Furthermore, they often requires human help to be proven,
+  although \eacsl targets are automatic tools}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Inductive predicates}\label{sec:inductive}
-\absent
-
-Inductive predicates are not computable if they really use their inductive
-nature.
+\absentwhy{inductive predicates are not computable if they really use their
+  inductive nature}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Axiomatic definitions}
-\absent
-
-By nature, an axiomatic is not computable.
+\absentwhy{by nature, an axiomatic is not computable}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -588,6 +595,10 @@ By nature, an axiomatic is not computable.
 \index{hybrid!predicate}
 \nodiff
 
+\difficultswhy{Hybrid functions and predicates}{the implementation of a memory
+  model (or at least to support \lstinline|\\at|)}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Memory footprint specification: \texorpdfstring{\lstinline|reads|}{reads} clause}
@@ -613,6 +624,10 @@ By nature, an axiomatic is not computable.
 \subsection{Memory blocks and pointer dereferencing}
 \label{subsec:memory}
 \nodiff
+
+\difficultswhy{\lstinline|\\base\_addr|, \lstinline|\\block\_length|,
+  \lstinline|\\valid| and \lstinline|\\offset|}{the implementation of a memory
+  model}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -721,3 +736,6 @@ same than the one of \acsl.
 
 \section{Undefined values, dangling pointers}
 \nodiff
+
+\difficultswhy{\lstinline|\\initialized| and \lstinline|\\specified|}{the
+  implementation of a memory model}
