@@ -3,42 +3,44 @@
 \subsection{Version \version}
 
 \begin{itemize}
-\item Fix semantics of ternary operator.
-\item Fix semantics of cast operator.
-\item Improve and fix example \ref{ex:semantics}.
-\item Add hybrid functions and predicates.
 \item Fix various typos.
+\item \changeinsection{expressions}{fix semantics of ternary operator}
+\item \changeinsection{expressions}{fix semantics of cast operator}
+\item \changeinsection{semantics}{improve and fix example \ref{ex:semantics}}
+\item \changeinsection{logicalstates}{add hybrid functions and predicates}
 \end{itemize}
 
 \subsection{Version 1.5-2}
 
 \begin{itemize}
-\item Simplify explanations for loop invariants.
-\item Add examples for loop invariants.
-\item Extend syntax of set comprehensions.
-\item Remove laziness of operator \lstinline|<==>|.
-\item Restrict old guarded quantifications to integer.
-\item Add guarded iterator quantifications.
-\item Extend unguarded quantifications to char.
+\item \changeinsection{expressions}{remove laziness of operator
+  \lstinline|<==>|}
+\item \changeinsection{expressions}{restrict guarded quantifications to integer}
+\item \changeinsection{expressions}{add guarded iterator quantifications} 
+\item \changeinsection{expressions}{extend unguarded quantifications to char}
+\item \changeinsection{locations}{extend syntax of set comprehensions}
+\item \changeinsection{loop_annot}{simplify explanations for loop invariants and
+  add example.}
 \end{itemize}
 
 \subsection{Version 1.5-1}
 
 \begin{itemize}
-\item Add specification modules.
-\item Add general measures for termination.
-\item Add loop invariants, but they lose their inductive \acsl nature.
-\item Add operations over memory like \lstinline|\valid|.
-\item Lazy operators \lstinline|&&|, \lstinline+||+, \lstinline|^^|,
-  \lstinline|==>| and \lstinline|<==>|.
-\item Better semantics for undefinedness.
-\item Highlight constructs with semantic changes in grammars.
-\item Allow unguarded quantification over boolean.
-\item Revise syntax of set comprehensions.
-\item Revise syntax of \lstinline|\exists|.
-\item Explain why unsupported features has been removed.
-\item Indicate that experimental \acsl features are unsupported.
 \item Fix many typos.
+\item Highlight constructs with semantic changes in grammars.
+\item Explain why unsupported features have been removed.
+\item Indicate that experimental \acsl features are unsupported.
+\item Add operations over memory like \lstinline|\valid|.
+\item \changeinsection{expressions}{lazy operators \lstinline|&&|,
+  \lstinline+||+, \lstinline|\^\^|, \lstinline|==>| and \lstinline|<==>|}
+\item \changeinsection{expressions}{allow unguarded quantification over boolean} 
+\item \changeinsection{expressions}{revise syntax of \lstinline|\\exists|}
+\item \changeinsection{semantics}{better semantics for undefinedness}
+\item \changeinsection{locations}{revise syntax of set comprehensions}
+\item \changeinsection{loop_annot}{add loop invariants, but they lose their
+  inductive \acsl nature}
+\item \changeinsection{generalmeasures}{add general measures for termination}
+\item \changeinsection{specmodules}{add specification modules}
 \end{itemize}
 
 \subsection{Version 1.5-0}
