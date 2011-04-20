@@ -940,7 +940,6 @@ et utiliser string\_literal\_foo a la place de "foo"
 \label{sec:fn-behavior}
 \index{function contract}\index{contract}
 
-
 \begin{figure}[t]
   \begin{cadre}
       \input{fn_behavior_modern.bnf}
@@ -3120,7 +3119,9 @@ This must be understood as a special construct to instrument the C
 code, where each access to the variable \lstinline|x| is replaced by a call
 to \lstinline|f(&x)|, and each assignment to \lstinline|x| of a value
 \lstinline|v|
-is replaced by \lstinline|g(&x,v)|.
+is replaced by \lstinline|g(&x,v)|. If a given volatile variable is only read 
+or only written to, the unused accessor function can be omitted from the 
+\lstinline|volatile| construct.
 
 \begin{example}
   The following code is instrumented in order to inject fixed values
