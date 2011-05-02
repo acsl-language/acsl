@@ -54,18 +54,17 @@ quantifications.
 \begin{lstlisting}
 \forall $\tau$ $x_1$,$\ldots$,$x_n$;
   $a_1$ <= $x_1$ <= $b_1$ $\ldots$ && $a_n$ <= $x_n$ <= $b_n$
-  ==> e
+  ==> p
 \end{lstlisting} and guarded existential quantification by
 \begin{lstlisting}
 \exists $\tau$ $x_1$,$\ldots$,$x_n$;
   $a_1$ <= $x_1$ <= $b_1$ $\ldots$ && $a_n$ <= $x_n$ <= $b_n$
-  && e
+  && p
 \end{lstlisting}
-Therefore each quantified variable belongs to a finite constant interval. Since
-finite interval is only computable in practice for integers, this form of
-quantifier is limited to \texttt{integer} and its subtype. Thus there is no
-guarded quantification over \texttt{float}, \texttt{real}, \C pointers or logic
-types.
+Therefore each quantified variable belongs to a finite interval. Since finite
+interval is only computable in practice for integers, this form of quantifier is
+limited to \texttt{integer} and its subtype. Thus there is no guarded
+quantification over \texttt{float}, \texttt{real}, \C pointers or logic types.
 
 \item[Guarded iterator quantification] In order to iterate over non-integer
   types, \eacsl introduces a notion of $iterators$ over types: standard \acsl
