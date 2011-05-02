@@ -159,8 +159,8 @@ terms and predicates may be ``undefined''.
 
 In this logic, the semantics of a term denoting a \C expression $e$ is undefined
 if $e$ leads to a runtime error. Consequently the semantics of any term $t$
-(resp. predicate $p$) containing a \C expression $e$ is undefined if $e$ has to
-be evaluated in order to evaluate $t$ (resp. $p$).
+(resp. predicate $p$) containing a \C expression $e$ leading to a runtime error
+is undefined if $e$ has to be evaluated in order to evaluate $t$ (resp. $p$).
 \begin{remark}[Julien]
 $e$ always terminates, thus no termination issue.
 \end{remark}
