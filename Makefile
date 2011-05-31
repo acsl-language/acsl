@@ -135,12 +135,12 @@ max_seq_old-tut.c max_seq_old2-tut.c mayexit.c mean.c minitutorial.c	\
 mutualrec.c nb_occ.c nb_occ_reads.c non_terminating-tut.c		\
 non_terminating2-tut.c num_of_pos.c oldat.c permut.c permut_reads.c	\
 sizeof.c sign.c signdef.c sort.c sqsum-tut.c sqsum2-tut.c sum.c		\
-swap-tut.c terminates_list.c type_invariant-tut.c
+swap-tut.c terminates_list.c type_invariant-tut.c volatile.c
 
 BAD=acsl_allocator.c gen_code.c gen_spec_with_ghost.c	\
 gen_spec_with_model.c ghostcfg.c import.c initialized.c invariants.c	\
 lexico.c listlengthdef.c listmodule.c modifier.c out_char.c		\
-specified.c strcpyspec.c sum2.c volatile.c
+specified.c strcpyspec.c sum2.c
 
 check: acsl-mini-tutorial.tex
 	gcc -c -std=c99 *.c
