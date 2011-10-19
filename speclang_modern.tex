@@ -1593,7 +1593,7 @@ a loop invariant associated to a function behavior.
 \end{example}
 
 \subsubsection{Loop variants}
-\index{variant}\index{termination}
+\indextt{variant}\index{termination}
 
 Optionally, a loop annotation may include a loop variant of the form
 \begin{listing-nonumber}
@@ -1845,7 +1845,7 @@ measures into other domains and/or using a different ordering relation
 
 \subsection{Integer measures}
 \label{sec:integermeasures}
-\indexttbs{decreases}\indexttbs{variant}
+\indextt{decreases}\indextt{variant}
 Functions are annotated with integer measures with the syntax
 \begin{listing-nonumber}
 //@ decreases e;
@@ -2440,33 +2440,67 @@ definitions, like the \lstinline|List| module above.
 
 \subsection{Memory blocks and pointer dereferencing}
 \label{subsec:memory}
-The following built-in functions and predicate allows to deal with the
-memory state:
+C memory is structured into allocated blocks that can come either from a 
+declarator or a call to one of the \lstinline|calloc|, \lstinline|malloc| or
+\lstinline|realloc| functions. Blocks are characterized by their base address, 
+{\it i.e.} the address of the declared object (the first declared object 
+in case of an array declarator), or the pointer returned by the allocating 
+function (when the allocation succeed) and their length.
+
+ACSL provides the following built-in functions to deal with allocated blocks:
 \begin{itemize}
 \item \baseaddr\indexttbs{base\_addr}
-returns the base address of an allocated pointer
+returns the base address of the block containing an allocated pointer
 \begin{listing-nonumber}
 \base_addr : $\alpha$ * $\ra$ char*
 \end{listing-nonumber}
 \item \blocklength\indexttbs{block\_length}
-  returns the length of the allocated block of a pointer
+  returns the length of the allocated block of a pointer in bytes
 \begin{listing-nonumber}
 \block_length : $\alpha$ * $\ra$ size_t
 \end{listing-nonumber}
-
-\item \valid\indexttbs{valid}
-  applies to a set of terms (see Section~\ref{sec:locations})
-  of some pointer type. \lstinline|\valid(s)| holds if and only if
- dereferencing any $p\in \lstinline|s|$ is safe. In particular,
-\lstinline|\valid(\empty)| holds.
 \end{itemize}
+
+In addition, dereferencing a pointer may lead to run-time errors. A pointer
+\lstinline|p| is said to be \emph{valid} if \lstinline|*p| is guaranteed to
+produce a definite value according to the C standard~\cite{standardc99}. The
+following built-in predicates deal with this notion:
+\begin{itemize}
+\item \valid\indexttbs{valid} applies to a set of terms 
+(see Section~\ref{sec:locations}) of some pointer type. 
+\lstinline|\valid(s)| holds if and only if
+ dereferencing any $p\in \lstinline|s|$ is safe, both for reading from 
+\lstinline|*p| and writing to it. In particular,
+\lstinline|\valid(\empty)| holds. 
+\item 
+\begin{notimplementedenv}
+[Actual implementation recognizes only one type of validity]
+\lstinline|\valid_read|\indexttbs{valid_read}
+\end{notimplementedenv}
+applies to a set of terms of some pointer type and holds if and only
+if it is safe to read from all the pointers in the set
+\end{itemize}
+
+\lstinline|\valid(p)| implies \lstinline|\valid_read(p)| but the reverse is 
+not true. In particular, it is allowed to read from a string literal, but not 
+to write in it (see \cite{standardc99}, section 6.4.5.6).
+
+Note in addition that the status of \valid depends on the
+type of its argument. Namely, \lstinline|\valid((int *) p)| and 
+\lstinline|\valid((char *)p)| are not equivalent. On the other hand, if we 
+ignore potential alignment constraints, the following equivalence is true:
+\begin{listing-nonumber}
+\valid(p) <==> \valid(((char *)p)+(0..sizeof(*p)))
+\end{listing-nonumber}
+
 Some shortcuts are provided:
 \begin{itemize}
 \item \lstinline|\null|\indexttbs{null} is an
   extra notation for the
   null pointer (\emph{i.e.} a shortcut for \lstinline|(void*)0|). Note that
   as in C itself (see \cite{standardc99}, par. 6.3.2.3),
-  the constant \lstinline|0| can have any pointer type.
+  the constant \lstinline|0| can have any pointer type. In addition, 
+  \lstinline|\valid(\null)| is always false.
 % \footnote{or to \texttt{NULL}, if
 %    annotations are pre-processed are the appropriate inclusion of
 %    \texttt{stddef.h} is added}
@@ -2478,6 +2512,7 @@ Some shortcuts are provided:
     \lstinline|\offset| &:& \lstinline|$\alpha$ * $\ra$ size_t| \\
     \lstinline|\offset(p)| &=& \lstinline|(char*)p - \base_addr(p)| \\
   \end{tabular} \\
+Again, if there is no alignment constraints,
   the following property holds: for any set of pointers
 \lstinline|s|, \lstinline|\valid(s)| if and only if for all \lstinline|p$\in$s|:
   \begin{listing-nonumber}
