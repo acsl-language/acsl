@@ -1083,9 +1083,9 @@ default status of clauses.
 %
   The contract means that the function must be called with a pointer
   \lstinline|p| that points to a safely allocated memory location (see
-  Section~\ref{sec:pointers} for details on the \valid{} built-in
+  Section~\ref{sec:pointers} for details on the \valid built-in
   predicate). It does not modify any memory location but the one
-  pointed to by \lstinline|p|. Finally, the \ensures\ clause specifies that
+  pointed to by \lstinline|p|. Finally, the \ensures clause specifies that
   the value \lstinline!*p! is incremented by one.
 \end{example}
 
@@ -2455,7 +2455,8 @@ returns the base address of the block containing an allocated pointer
 \base_addr : $\alpha$ * $\ra$ char*
 \end{listing-nonumber}
 \item \blocklength\indexttbs{block\_length}
-  returns the length of the allocated block of a pointer in bytes
+  returns the length (in bytes) of the allocated block containing 
+  its argument pointer.
 \begin{listing-nonumber}
 \block_length : $\alpha$ * $\ra$ size_t
 \end{listing-nonumber}
