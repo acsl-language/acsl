@@ -97,7 +97,7 @@ quantification over \texttt{float}, \texttt{real}, \C pointers or logic types.
   \begin{example}
     The following example introduces binary trees and a predicate which is valid
     if and only if each value of a binary tree is even.
-    \listinginput{1}{link.c}
+    \cinput{link.c}
   \end{example}
 
 \item[Unguarded quantification] They are only allowed over boolean and char.
@@ -435,12 +435,12 @@ loop body.
 In the following, \lstinline|bsearch(t,n,v)| searches for element \lstinline|v|
 in array \lstinline|t| between indices \lstinline|0| and \lstinline|n-1|.
 
-\listinginput{1}{bsearch.c}
+\cinput{bsearch.c}
 
 In \eacsl, this annotated function is equivalent to the following one since
 loop invariants are not inductive.
 
-\listinginput{1}{bsearch2.c}
+\cinput{bsearch2.c}
 
 \end{example}
 
@@ -462,9 +462,25 @@ equivalent to an assertion.
 
 \subsection{Built-in construct \texorpdfstring{\at}{\textbackslash{}at}}
 \label{sec:at}
-\nodiff
 
-\difficultwhy{\lstinline|\\at|}{a deep copy of the location}
+\except{no forward references}
+
+The construct \verb|\at(t,id)| (where \verb|id| is a regular C label, a label
+added within a ghost statement or a default logic label) follows the same rule
+than its \acsl counterpart, except that a more restrictive scoping rule must be
+respected in addition to the standard \acsl scoping rule: when evaluating
+\verb|\at(t,id)| at a propram point $p$, the program point $p'$ denoted by
+\verb|id| must be executed after $p$ the program execution flow.
+
+\begin{example}
+In the following example, both assertions are accepted and valid in \acsl, but
+only the first one is accepted and valid in \eacsl since evaluating the term
+\verb|\at(*(p+\at(*q,Here)),L1)| at \verb|L2| requires to evaluate the term
+ \verb|\at(*q,Here)| at \verb|L1|: that is forbidden since \verb|L1| is executed
+ before \verb|L2|.
+\cinput{at.c}
+
+\end{example}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -722,7 +738,6 @@ same than the one of \acsl.
   \caption{Grammar for ghost statements}
 \label{fig:gram:ghost}
 \end{figure}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
