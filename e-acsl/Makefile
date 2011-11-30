@@ -94,7 +94,7 @@ e-acsl-implementation.tex: $(MAIN).tex Makefile
 	sed -e '/PrintRemarks/s/%--//' $^ > $@
 	chmod a-w $@
 
-# version WEB du langage ACSL
+# version WEB du langage E-ACSL
 e-acsl.pdf: $(DEPS_MODERN)
 
 e-acsl.tex: e-acsl-implementation.tex Makefile
@@ -102,5 +102,5 @@ e-acsl.tex: e-acsl-implementation.tex Makefile
 	sed -e '/PrintImplementationRq/s/%--//' $^ > $@
 	chmod a-w $@
 
-# version pour le goupe de travail ACSL
+# version pour le goupe de travail E-CSL
 $(MAIN).pdf: $(DEPS_MODERN)

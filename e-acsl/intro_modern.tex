@@ -3,10 +3,10 @@
 
 This document is a reference manual for
 \ifthenelse{\boolean{PrintImplementationRq}}%
-{the \eacsl implementation provided by the Frama-C
-  framework~\cite{frama-c}.}%
+{the \eacsl implementation provided by the \eacsl plug-in~\cite{eacsl-plugin} of
+  the \framac framework~\cite{framac}.}%
 {E-ACSL.}
-E-ACSL is an acronym for ``Executable ANSI/ISO C
+\eacsl is an acronym for ``Executable ANSI/ISO C
 Specification Language''. It is an ``executable'' subset of
 \emph{stable} \acsl~\cite{acsl} implemented~\cite{acslimplem} in the \framac
 platform~\cite{framac}. ``Stable'' means that no experimental \acsl feature is
@@ -19,14 +19,74 @@ ACSL~\cite{acsl} and the ANSI C programming language~\cite{standardc99,KR88}.
 \section{Organization of this document}
 
 This document is organized in the very same way that the reference manual of
-ACSL~\cite{acsl}.
+\acsl~\cite{acsl}.
 
 Instead of being a fully new reference manual, this document points out the
-differences between E-ACSL and ACSL. Each E-ACSL construct which is not pointed
-out must be considered to have the very same semantics than its ACSL
+differences between \eacsl and \acsl. Each \eacsl construct which is not pointed
+out must be considered to have the very same semantics than its \acsl
 counterpart. For clarity, each relevant grammar rules are given in BNF form
 in separate figures like the \acsl reference manual does. In these rules,
 constructs with semantic changes are displayed in \markdiff{blue}.
+
+\ifthenelse{\boolean{PrintImplementationRq}}{%
+Not all of the features mentioned in this document are currently
+implemented in the \framac's \eacsl plug-in. Those who aren't yet are signaled
+as in the following line:
+\begin{quote}
+\notimplemented[Additional remarks on the feature may appear as footnote]%
+{This feature is not currently supported by \framac's \eacsl plug-in.}
+\end{quote}
+
+As a summary, Figure~\ref{fig:notyet} synthetizes main features that are not
+currently implemented into the \framac's \eacsl plug-in.
+\begin{figure}[htbp]\label{fig:notyet}
+  \begin{center}
+    \begin{tabular}{|l|l|}
+      \hline
+      typing 
+      & mathematical reals \\
+      \hline
+      terms
+      & \lstinline|\\true| and \lstinline|\\false| \\
+      & bitwise operators \\
+      & boolean operators \\
+      & conditional \\
+      & let binding \\
+      & typeof \\
+      & t-sets \\
+      & \lstinline|base\_addr|, \lstinline|offset| and
+      \lstinline|block\_length|
+      \\
+      \hline
+      predicates 
+      & equivalence operator \lstinline|<==>| \\
+      & exclusive or operator \\  %     \lstinline|^^|
+      & conditional \\
+      & let bindings \\
+      & quantifications \\
+      & \lstinline|at| \\
+      & \lstinline|valid| and \lstinline|valid\_range| \\
+      & \lstinline|initialized| and \lstinline|specified|
+      \\
+      \hline
+      annotations 
+      & behavior-specific annotations \\
+      & loop annotations \\
+      & global annotations
+      \\
+      \hline
+      behavior clauses
+      & assigns \\
+      & decreases \\
+      & abrupt termination \\
+      & complete and disjoint behaviors
+      \\
+      \hline
+    \end{tabular}
+  \end{center}
+\end{figure}
+}%
+{}
 
 \section{Generalities about Annotations}\label{sec:gener-about-annot}
 \nodiff

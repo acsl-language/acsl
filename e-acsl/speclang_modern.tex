@@ -22,6 +22,11 @@
 More precisely, grammars of terms and binders presented respectively
 Figures~\ref{fig:gram:term} and~\ref{fig:gram:binders} are the same than the one
 of \acsl, while Figure~\ref{fig:gram:pred} presents grammar of predicates.
+\begin{notimplementedenv}
+The only difference between \eacsl and \acsl predicates are
+quantifications.
+\end{notimplementedenv}
+
 \begin{figure}[htbp]
   \begin{cadre}
     \input{term_modern.bnf}
@@ -42,15 +47,13 @@ of \acsl, while Figure~\ref{fig:gram:pred} presents grammar of predicates.
   \caption{Grammar of binders and type expressions}
 \label{fig:gram:binders}
 \end{figure}
-The only difference between \eacsl and \acsl predicates are
-quantifications.
 
-\subsection*{Quantification} 
+\subsection*{\notimplemented{Quantification}}
 \eacsl quantification must be computable. They are limited to two limited forms.
 
 \begin{description}
-\item[Guarded integer quantification] Guarded universal quantification is
-  denoted by 
+\item[\notimplemented{Guarded integer quantification}] Guarded universal
+  quantification is denoted by 
 \begin{lstlisting}
 \forall $\tau$ $x_1$,$\ldots$,$x_n$;
   $a_1$ <= $x_1$ <= $b_1$ $\ldots$ && $a_n$ <= $x_n$ <= $b_n$
@@ -66,10 +69,10 @@ interval is only computable in practice for integers, this form of quantifier is
 limited to \texttt{integer} and its subtype. Thus there is no guarded
 quantification over \texttt{float}, \texttt{real}, \C pointers or logic types.
 
-\item[Guarded iterator quantification] In order to iterate over non-integer
-  types, \eacsl introduces a notion of $iterators$ over types: standard \acsl
-  unguarded quantifications are only allowed over a type which an iterator is
-  attached to.
+\item[\notimplemented{Guarded iterator quantification}] In order to iterate over
+  non-integer types, \eacsl introduces a notion of $iterators$ over types:
+  standard \acsl unguarded quantifications are only allowed over a type which an
+  iterator is attached to.
 
   Iterators are introduced by a specific construct which attachs two sets ---
   namely \texttt{nexts} and the \texttt{guards} --- to a binary predicate over a
@@ -100,7 +103,8 @@ quantification over \texttt{float}, \texttt{real}, \C pointers or logic types.
     \cinput{link.c}
   \end{example}
 
-\item[Unguarded quantification] They are only allowed over boolean and char.
+\item[\notimplemented{Unguarded quantification}] They are only allowed over
+  boolean and char. 
 \end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -217,10 +221,11 @@ Below, the first term is well-defined, while the second one is undefined.
 
 \paragraph{Handling undefinedness in tools}
 
-It is the responsibility of the tools which interprets \eacsl to ensure that an
-undefined term is never evaluated. For instance, they may exit with a proper
-error message or, if they generate \C code, they may guard each generated
-undefined \C expression in order to be sure that they are always safely used.
+\notimplemented{It is the responsibility of the tools which interprets \eacsl
+  to ensure that an undefined term is never evaluated. For instance, they may
+  exit with a proper error message or, if they generate \C code, they may guard
+  each generated undefined \C expression in order to be sure that they are
+  always safely used.}
 
 This behavior is consistent with both \acsl~\cite{acsl} and mainstream
 specification languages for runtime assertion checking like
@@ -248,25 +253,25 @@ It is not possible to define logic types introduced by the specification writer
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Real numbers and floating point numbers}
+\subsection{\notimplemented{Real numbers} and floating point numbers}
 \nodiff
 
-\difficults{Exact real numbers and even floating point numbers}
+\difficults{\notimplemented{Exact real numbers} and even floating point numbers}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{C arrays and pointers}
 \nodiff
 
-\difficultwhy{Ensuring validity of memory accesses}{the implementation of a
-  memory model}
+\difficultwhy{\notimplemented{Ensuring validity of memory accesses}}{the
+  implementation of a memory model}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Structures, Unions and Arrays in logic}
 \nodiff
 
-\difficults{Logic arrays without an explicit length}
+\difficults{\notimplemented{Logic arrays} without an explicit length}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -284,10 +289,10 @@ It is not possible to define logic types introduced by the specification writer
 \except{no \lstinline|terminates| and \lstinline|abrupt| clauses}
 
 Figure~\ref{fig:gram:contracts} shows grammar of function
-contracts. This is a simplified version of \acsl one with \lstinline|terminates|
-and \lstinline|abrupt| clauses. Section~\ref{sec:termination}
-(resp.~\ref{sec:abrupt}) explains why \eacsl has no \lstinline|terminates|
-(resp. \lstinline|abrupt|) clause.
+contracts. This is a simplified version of \acsl one without
+\lstinline|terminates| and \lstinline|abrupt|
+clauses. Section~\ref{sec:termination} (resp.~\ref{sec:abrupt}) explains why
+\eacsl has no \lstinline|terminates| (resp. \lstinline|abrupt|) clause.
 
 \begin{figure}[htbp]
   \begin{cadre}
@@ -302,6 +307,7 @@ and \lstinline|abrupt| clauses. Section~\ref{sec:termination}
 \subsection{Built-in constructs %
   \texorpdfstring{\old}{\textbackslash{}old} %
  and \texorpdfstring{\result}{\textbackslash{}result}}
+\label{sec:builtinconstructs}
 
 \nodiff
 
@@ -315,8 +321,6 @@ Figure~\ref{fig:gram:oldandresult} summarizes grammar extension of terms with
   \label{fig:gram:oldandresult}
 \end{figure}
 
-\difficultwhy{\lstinline|\\old|}{a deep copy of the location}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Simple function contracts}
@@ -324,7 +328,8 @@ Figure~\ref{fig:gram:oldandresult} summarizes grammar extension of terms with
 
 \nodiff
 
-\difficultwhy{\lstinline|\\assigns|}{the implementation of a memory model}
+\difficultwhy{\notimplemented{\lstinline|\\assigns|}}{the implementation of a
+  memory model}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -336,16 +341,17 @@ Figure~\ref{fig:gram:oldandresult} summarizes grammar extension of terms with
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Memory locations and sets of terms}
+\subsection{Memory locations and \notimplemented{sets of terms}}
 \label{sec:locations}
 
-\except{ranges and set comprehensions are limited in order to be finite}
+\except{\notimplemented{ranges and set comprehensions} are limited in order to
+  be finite}
 
 Figure~\ref{fig:gram:locations} describes grammar of sets of terms. The only
 differences with \acsl are that both lower and upper bounds of ranges are
 mandatory and that the predicate inside set comprehension must be guarded and
-bind only one variable. In that way, each set of terms is finite and their
-members easily identifiable.
+bind only one variable. In that way, each \notimplemented{set of terms} is
+finite and their members easily identifiable.
 \begin{figure}[htbp]
   \fbox{\begin{minipage}{0.97\textwidth}
       \input{loc_modern.bnf}
@@ -354,10 +360,12 @@ members easily identifiable.
 \label{fig:gram:locations}
 \end{figure}
 
+\begin{notimplementedenv}
 \begin{example}
 The set \lstinlineµ{ x | integer x; 0 <= x <= 9 && 20 <= x <= 29 }µ denotes the
 set of all integers between 0 and 9 and between 20 and 29.
 \end{example}
+\end{notimplementedenv}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -389,13 +397,13 @@ Figure~\ref{fig:gram:assertions} summarizes grammar for assertions.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Loop annotations}
+\subsection{\notimplemented{Loop annotations}}
 \label{sec:loop_annot}
 
-\except{loop invariants lose their inductive nature}
+\except{\notimplemented{loop invariants} lose their inductive nature}
 
-Figure~\ref{fig:gram:loops} shows grammar for loop annotations. There is no
-syntactic difference with \acsl.
+Figure~\ref{fig:gram:loops} shows grammar for \notimplemented{loop
+  annotations}. There is no syntactic difference with \acsl.
 \begin{figure}[htbp]
   \begin{cadre}
     \input{loops_modern.bnf}
@@ -404,15 +412,16 @@ syntactic difference with \acsl.
   \label{fig:gram:loops}
 \end{figure}
 
-\difficultwhy{\lstinline|loop assigns|}{the implementation of a memory model}
+\difficultwhy{\notimplemented{\lstinline|loop assigns|}}{the implementation of a
+  memory model}
 
-\subsubsection{Loop invariants}
+\subsubsection{\notimplemented{Loop invariants}}
 
-\index{invariant} The semantics of loop invariants is the same than the one
-defined in \acsl, except that they are not inductive. More precisely, if one
-does not take care of side effects (semantics of specifications about side
-effects in loop is the same in \eacsl than the one in \acsl), a loop invariant
-$I$ is valid in \acsl if and only if:
+\index{invariant} The semantics of \notimplemented{loop invariants} is the same
+than the one defined in \acsl, except that they are not inductive. More
+precisely, if one does not take care of side effects (semantics of
+specifications about side effects in loop is the same in \eacsl than the one in
+\acsl), a loop invariant $I$ is valid in \acsl if and only if:
 \begin{itemize}
 \item $I$ holds before entering the loop; and
 \item if $I$ is assumed true in some state where the loop condition $c$ is also
@@ -447,7 +456,7 @@ loop invariants are not inductive.
 
 \end{example}
 
-\subsubsection{General inductive invariant}
+\subsubsection{\notimplemented{General inductive invariant}}
 
 Syntax of these kinds of invariant is shown Figure~\ref{fig:advancedinvariants}
 \begin{figure}[t]
@@ -469,11 +478,11 @@ equivalent to an assertion.
 \except{no forward references}
 
 The construct \verb|\at(t,id)| (where \verb|id| is a regular C label, a label
-added within a ghost statement or a default logic label) follows the same rule
-than its \acsl counterpart, except that a more restrictive scoping rule must be
-respected in addition to the standard \acsl scoping rule: when evaluating
-\verb|\at(t,id)| at a propram point $p$, the program point $p'$ denoted by
-\verb|id| must be executed after $p$ the program execution flow.
+added within a \notimplemented{ghost statement} or a default logic label)
+follows the same rule than its \acsl counterpart, except that a more restrictive
+scoping rule must be respected in addition to the standard \acsl scoping rule:
+when evaluating \verb|\at(t,id)| at a propram point $p$, the program point $p'$
+denoted by \verb|id| must be executed after $p$ the program execution flow.
 
 \begin{example}
 In the following example, both assertions are accepted and valid in \acsl, but
@@ -517,20 +526,20 @@ function contracts, this is a simplified version of \acsl with no
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Integer measures}
+\subsection{\notimplemented{Integer measures}}
 \label{sec:integermeasures}
 \indexttbs{decreases}\indexttbs{variant}
 \nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{General measures}
+\subsection{\notimplemented{General measures}}
 \label{sec:generalmeasures}
 \nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Recursive function calls}
+\subsection{\notimplemented{Recursive function calls}}
 \nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -561,7 +570,7 @@ axiomatics.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Predicate and function definitions}
+\subsection{\notimplemented{Predicate and function definitions}}
 \nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -591,7 +600,7 @@ axiomatics.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Recursive logic definitions}
+\subsection{\notimplemented{Recursive logic definitions}}
 \index{recursion}
 \nodiff
 
@@ -607,15 +616,14 @@ axiomatics.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Hybrid functions and predicates}
+\subsection{\notimplemented{Hybrid functions and predicates}}
 \label{sec:logicalstates}
 \index{hybrid!function}
 \index{hybrid!predicate}
 \nodiff
 
-\difficultswhy{Hybrid functions and predicates}{the implementation of a memory
-  model (or at least to support \lstinline|\\at|)}
-
+\difficultswhy{\notimplemented{Hybrid functions and predicates}}{the
+  implementation of a memory model (or at least to support \lstinline|\\at|)}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -624,7 +632,7 @@ axiomatics.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Specification Modules}
+\subsection{\notimplemented{Specification Modules}}
 \label{sec:specmodules}
 \nodiff
 
@@ -643,9 +651,9 @@ axiomatics.
 \label{subsec:memory}
 \nodiff
 
-\difficultswhy{\lstinline|\\base\_addr|, \lstinline|\\block\_length|,
-  \lstinline|\\valid| and \lstinline|\\offset|}{the implementation of a memory
-  model}
+\difficultswhy{\notimplemented{\lstinline|\\base\_addr|,
+    \lstinline|\\block\_length|, \lstinline|\\valid| and
+    \lstinline|\\offset|}}{the implementation of a memory model}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -661,9 +669,9 @@ axiomatics.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Sets as first-class values}
+\section{\notimplemented{Sets as first-class values}}
 \index{location}
-\nodiff
+\notimplemented{\nodiff}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -683,7 +691,7 @@ axiomatics.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Data invariants}
+\section{\notimplemented{Data invariants}}
 \label{sec:invariants}
 \index{data invariant}\index{global invariant}\index{type invariant}
 \index{invariant!data}\index{invariant!global}\index{invariant!type}
@@ -707,7 +715,7 @@ invariants.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Model variables and model fields}
+\subsection{\notimplemented{Model variables and model fields}}
 \index{model}
 
 \nodiff
@@ -726,7 +734,7 @@ variables and fields.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Ghost variables and statements}
+\section{\notimplemented{Ghost variables and statements}}
 \label{sec:ghost}
 \index{ghost}
 
@@ -754,5 +762,5 @@ same than the one of \acsl.
 \section{Undefined values, dangling pointers}
 \nodiff
 
-\difficultswhy{\lstinline|\\initialized| and \lstinline|\\specified|}{the
-  implementation of a memory model}
+\difficultswhy{\notimplemented{\lstinline|\\initialized| and
+    \lstinline|\\specified|}}{the implementation of a memory model}

@@ -1,12 +1,12 @@
 \begin{syntax}
-  declaration ::= [ "//@" "iterator" id "("wildcard-param","
-    wildcard-param")" ":" ] ;
-  [ "nexts" terms ";" "guards" predicates ";" ]
+  declaration ::= [ { "//@" "iterator" id "("wildcard-param"," 
+    wildcard-param")" ":" } ] ;
+  [ { "nexts" terms ";" "guards" predicates ";" } ]
   \
-  [ wildcard-param ] ::= parameter;
-  | [ "_" ]
+  [ { wildcard-param } ] ::= { parameter } ;
+  | [ { "_" } ]
   \
-  [ terms ] ::= [ term (, term)* ]
+  [ { terms } ] ::= [ { term (, term)* } ]
   \
-  [ predicates ] ::= [ predicate (, predicate)* ]
+  [ { predicates } ] ::= [ { predicate (, predicate)* } ]
 \end{syntax}

@@ -1,17 +1,17 @@
 \begin{syntax}
   [ function-contract ] ::= requires-clause*;
-                            decreases-clause? simple-clause*;
-                            named-behavior* completeness-clause*
+                            { decreases-clause? } simple-clause*;
+                            named-behavior* { completeness-clause* }
   \
   requires-clause ::= "requires" predicate ";"
   \
-  decreases-clause ::= "decreases" term ("for" ident)? ";"
+  { decreases-clause } ::= { "decreases" term ("for" ident)? ";" }
   \
-  [ simple-clause ] ::= assigns-clause | ensures-clause
+  [ simple-clause ] ::= { assigns-clause } | ensures-clause
   \
-  assigns-clause ::= "assigns" locations ";"
+  { assigns-clause } ::= { "assigns" locations ";" }
   \
-  locations ::= location ("," location) * | "\nothing"
+  { locations } ::= { location ("," location) * | "\nothing" }
   \
   ensures-clause ::= "ensures" predicate ";"
   \
@@ -21,6 +21,6 @@
   \
   assumes-clause ::= "assumes" predicate ";"
   \
-  completeness-clause ::= "complete" "behaviors" (id (","id)*)? ";";
-     | "disjoint" "behaviors" (id (","id)*)? ";"
+  { completeness-clause } ::= { "complete" "behaviors" (id (","id)*)? ";" } ;
+     | { "disjoint" "behaviors" (id (","id)*)? ";" }
 \end{syntax}

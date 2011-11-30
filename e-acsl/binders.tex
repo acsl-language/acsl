@@ -9,7 +9,7 @@
   logic-type-expr ::= built-in-logic-type ;
   | id ; type id
   \
-  built-in-logic-type ::= "boolean" | "integer" | "real"
+  built-in-logic-type ::= "boolean" | "integer" | { "real" }
   \
   variable-ident ::= id
   | "*" variable-ident ;

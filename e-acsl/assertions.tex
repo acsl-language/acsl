@@ -3,5 +3,5 @@
         \
   statement ::= assertion statement \
   assertion ::= "/*@" "assert" pred ";" "*/" ;
-  | "/*@" "for" id ("," id)* ":" "assert" pred ";" "*/" ;
+  | { "/*@" "for" id ("," id)* ":" "assert" pred ";" "*/" } ;
 \end{syntax}
