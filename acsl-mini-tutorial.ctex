@@ -536,7 +536,7 @@ parameter a label, which represent a memory state of the program. Indeed,
 as soon as we deal with pointers or arrays, we must refer to a
 particular memory state: \verb|reachable| has no absolute meaning, it
 must be tied to a point of the program. In a case like this, there is no
-need to explicitely instantiate the label when we use
+need to explicitly instantiate the label when we use
 \verb|reachable|: the memory state to which it refers will usually be
 inferred from the context ({\it e.g.} for a precondition, it is the
 state at the start of the function, and for a post-condition, it is
