@@ -15,10 +15,10 @@
        | [ { pred "?" pred ":" pred } ];
        | { "\let" id "=" term ";" pred }; local binding
        | { "\let" id "=" pred ";" pred };
-       | [ { "\forall" binders ";" } ] ; 
-           [ { integer-guards "==>" pred } ]; univ. integer quantification
-       | [ { "\exists" binders ";" } ];
-         [ { integer-guards "&&" pred } ] ; exist. integer quantification
+       | [ "\forall" binders ";" ] ; 
+           [ integer-guards "==>" pred ]; univ. integer quantification
+       | [ "\exists" binders ";" ];
+           [ integer-guards "&&" pred ] ; exist. integer quantification
        | [ { "\forall" binders ";" } ] ;
          [ { iterator-guard "==>" pred } ]; univ. iterator quantification
        | [ { "\exists" binders ";" } ];
@@ -27,13 +27,13 @@
        | [ { "\exists" binders ";" pred } ]; exist. quantification
        | id ":" pred ; syntactic naming
        \
-  [ { integer-guards } ] ::= [ { interv  ("&&" interv)* } ]
+  [ integer-guards ] ::= [ interv  ("&&" interv)* ]
        \
-  [ { interv } ]  ::= [ { (term integer-guard-op)+ } ];
-                  [ { id } ];
-                  [ { (integer-guard-op term)+ } ]
+  [ interv ]  ::= [ (term integer-guard-op)+ ] ;
+                  [ id ] ;
+                  [ (integer-guard-op term)+ ]
        \
-  [ { integer-guard-op } ] ::= [ { "<=" | "<" } ]
+  [ integer-guard-op ] ::= [ "<=" | "<" ]
        \
   [ { iterator-guard } ] ::= [ { id "(" term"," term ")" } ]
 \end{syntax}

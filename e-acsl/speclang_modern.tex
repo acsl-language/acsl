@@ -48,12 +48,12 @@ quantifications.
 \label{fig:gram:binders}
 \end{figure}
 
-\subsection*{\notimplemented{Quantification}}
+\subsection*{Quantification}
 \eacsl quantification must be computable. They are limited to two limited forms.
 
 \begin{description}
-\item[\notimplemented{Guarded integer quantification}] Guarded universal
-  quantification is denoted by 
+\item[Guarded integer quantification] Guarded universal quantification is
+  denoted by
 \begin{lstlisting}
 \forall $\tau$ $x_1$,$\ldots$,$x_n$;
   $a_1$ <= $x_1$ <= $b_1$ $\ldots$ && $a_n$ <= $x_n$ <= $b_n$
@@ -64,10 +64,15 @@ quantifications.
   $a_1$ <= $x_1$ <= $b_1$ $\ldots$ && $a_n$ <= $x_n$ <= $b_n$
   && p
 \end{lstlisting}
-Therefore each quantified variable belongs to a finite interval. Since finite
-interval is only computable in practice for integers, this form of quantifier is
-limited to \texttt{integer} and its subtype. Thus there is no guarded
-quantification over \texttt{float}, \texttt{real}, \C pointers or logic types.
+Each variable must be guarded exactly once and the guard of $x_i$ must appear
+before the guard of $x_j$ if $i < j$ (\emph{i.e.} order of guards must follow
+order of binders).
+
+Following the definition, each quantified variable belongs to a finite
+interval. Since finite interval is only computable in practice for integers,
+this form of quantifier is limited to \texttt{integer} and its subtype. Thus
+there is no guarded quantification over \texttt{float}, \texttt{real}, \C
+pointers or logic types.
 
 \item[\notimplemented{Guarded iterator quantification}] In order to iterate over
   non-integer types, \eacsl introduces a notion of $iterators$ over types:
