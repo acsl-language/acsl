@@ -21,11 +21,8 @@
 
 More precisely, grammars of terms and binders presented respectively
 Figures~\ref{fig:gram:term} and~\ref{fig:gram:binders} are the same than the one
-of \acsl, while Figure~\ref{fig:gram:pred} presents grammar of predicates.
-\begin{notimplementedenv}
-The only difference between \eacsl and \acsl predicates are
-quantifications.
-\end{notimplementedenv}
+of \acsl, while Figure~\ref{fig:gram:pred} presents grammar of predicates. The
+only difference between \eacsl and \acsl predicates are quantifications.
 
 \begin{figure}[htbp]
   \begin{cadre}
@@ -346,7 +343,7 @@ Figure~\ref{fig:gram:oldandresult} summarizes grammar extension of terms with
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Memory locations and \notimplemented{sets of terms}}
+\subsection{Memory locations and sets of terms}
 \label{sec:locations}
 
 \except{\notimplemented{ranges and set comprehensions} are limited in order to
@@ -355,8 +352,8 @@ Figure~\ref{fig:gram:oldandresult} summarizes grammar extension of terms with
 Figure~\ref{fig:gram:locations} describes grammar of sets of terms. The only
 differences with \acsl are that both lower and upper bounds of ranges are
 mandatory and that the predicate inside set comprehension must be guarded and
-bind only one variable. In that way, each \notimplemented{set of terms} is
-finite and their members easily identifiable.
+bind only one variable. In that way, each set of terms is finite and their
+members easily identifiable.
 \begin{figure}[htbp]
   \fbox{\begin{minipage}{0.97\textwidth}
       \input{loc_modern.bnf}
@@ -674,9 +671,9 @@ axiomatics.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{\notimplemented{Sets as first-class values}}
+\section{Sets as first-class values}
 \index{location}
-\notimplemented{\nodiff}
+\nodiff
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
