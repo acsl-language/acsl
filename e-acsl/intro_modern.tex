@@ -3,8 +3,8 @@
 
 This document is a reference manual for
 \ifthenelse{\boolean{PrintImplementationRq}}%
-{the \eacsl implementation provided by the \eacsl plug-in~\cite{eacsl-plugin} of
-  the \framac framework~\cite{framac}.}%
+{the \eacsl implementation provided by the \eacsl plug-in~\cite{eacsl-plugin}
+  (version\eacslversion) of the \framac framework~\cite{framac}.}%
 {E-ACSL.}
 \eacsl is an acronym for ``Executable ANSI/ISO C
 Specification Language''. It is an ``executable'' subset of
@@ -33,7 +33,7 @@ Not all of the features mentioned in this document are currently
 implemented in the \framac's \eacsl plug-in. Those who aren't yet are signaled
 as in the following line:
 \begin{quote}
-\notimplemented[Additional remarks on the feature may appear as footnote]%
+\notimplemented[Additional remarks on the feature may appear as footnote.]%
 {This feature is not currently supported by \framac's \eacsl plug-in.}
 \end{quote}
 
@@ -49,8 +49,6 @@ currently implemented into the \framac's \eacsl plug-in.
       terms
       & \lstinline|\\true| and \lstinline|\\false| \\
       & bitwise operators \\
-      & boolean operators \\
-      & conditional \\
       & let binding \\
       & typeof \\
       & t-sets \\
@@ -59,12 +57,9 @@ currently implemented into the \framac's \eacsl plug-in.
       \\
       \hline
       predicates 
-      & equivalence operator \lstinline|<==>| \\
       & exclusive or operator \\  %     \lstinline|^^|
-      & conditional \\
       & let bindings \\
-      & quantifications \\
-      & \lstinline|at| \\
+      & quantifications over non-integer types \\
       & \lstinline|valid| and \lstinline|valid\_range| \\
       & \lstinline|initialized| and \lstinline|specified|
       \\

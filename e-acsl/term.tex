@@ -25,7 +25,7 @@
        | [ "(" type-expr ")" term ] ; cast
        | { id "(" term ("," term)* ")" } ; function application
        | "(" term ")" ; parentheses
-       | [ { term "?" term ":" term } ] ; ternary condition
+       | [ term "?" term ":" term ] ; ternary condition
        | { "\let" id "=" term ";" term } ; local binding
        | "sizeof" "(" term ")" ;
        | "sizeof" "(" C-type-expr ")" ;

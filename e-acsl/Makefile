@@ -1,5 +1,5 @@
 MAIN=main
-DEPS_MODERN=macros_modern.tex framacversion.tex biblio.bib \
+DEPS_MODERN=macros_modern.tex eacslversion.tex biblio.bib \
 	intro_modern.tex speclang_modern.tex \
 	libraries_modern.tex concl_modern.tex changes_modern.tex \
 	term_modern.bnf binders_modern.bnf predicate_modern.bnf \
@@ -18,16 +18,16 @@ e-acsl: e-acsl-implementation.pdf e-acsl.pdf main.pdf
 
 all: e-acsl
 
-# install: acsl-implementation.pdf acsl.pdf
-# 	cp -f acsl-implementation.pdf acsl.pdf ../manuals/
+EACSL_DIR=$(HOME)/plugins/e-acsl
+install: e-acsl-implementation.pdf e-acsl.pdf
+	cp -f $^ $(EACSL_DIR)/doc/manuals
 
 include ../../MakeLaTeXModern
 
-framacversion.tex: ../../../VERSION Makefile
+EACSL_VERSION= 0.1
+eacslversion.tex: Makefile
 	rm -f $@
-	printf '\\newcommand{\\framacversion}{' > $@
-	cat $< >> $@
-	echo '}' >> $@
+	echo '\\newcommand{\\eacslversion}{$(EACSL_VERSION)}' > $@
 	chmod a-w $@
 
 %.1: %.mp
@@ -102,5 +102,5 @@ e-acsl.tex: e-acsl-implementation.tex Makefile
 	sed -e '/PrintImplementationRq/s/%--//' $^ > $@
 	chmod a-w $@
 
-# version pour le goupe de travail E-CSL
+# version pour le goupe de travail E-ACSL
 $(MAIN).pdf: $(DEPS_MODERN)

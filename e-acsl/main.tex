@@ -4,7 +4,7 @@
 \usepackage{ifthen}
 
 \input{./macros_modern}
-\input{framacversion.tex}
+\input{eacslversion.tex}
 %Do not touch the following line. It is used in a Makefile hack to
 %produce the ACSL documents for the ACSL working group.
 %--\setboolean{PrintRemarks}{false}
@@ -37,25 +37,26 @@
 \hbadness=10000
 
 \ifthenelse{\boolean{PrintImplementationRq}}%
-  {\coverpage{\vbox{\mbox{E-ACSL Version \version}\newline
-\mbox{Implementation in \framacversion{}}}}}%
-  {\coverpage{\vbox{\mbox{E-ACSL}\\[2mm]\vbox{\mbox{Executable ANSI/ISO C
-          Specification Language}}\\[2mm]
+  {\coverpage{\vbox{\mbox{E-ACSL Version \version}\\[5mm]
+\mbox{\huge{Implementation in Frama-C plug-in E-ACSL 
+    version \eacslversion{}}}}}}%
+  {\coverpage{\vbox{\mbox{E-ACSL}\\[2mm]\vbox{\mbox{\huge{Executable ANSI/ISO C
+          Specification Language}}}\\[2mm]
         \mbox{Version \version}}}}
 
 \begin{titlepage}
 \includegraphics[height=14mm]{cealistlogo.jpg}
 \vfill
-\title{E-ACSL\\[5mm]Executable ANSI/ISO C Specification Language}%
+\title{E-ACSL\\[5mm]\huge{Executable ANSI/ISO C Specification Language}}%
 {Version \version{}\ifthenelse{\boolean{PrintImplementationRq}}%
-{~--~\framacversion}{}}
+{~--~Frama-C plug-in E-ACSL version \eacslversion}{}}
 
 \author{Julien Signoles}
 
 CEA LIST, Software Reliability Laboratory\\
 \vfill
 \begin{flushleft}
-  \textcopyright 2011 CEA LIST
+  \textcopyright 2011-2012 CEA LIST
 
   This work has been supported by the `Hi-Lite' FUI project (FUI AAP 9).
 \end{flushleft}

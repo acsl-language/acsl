@@ -71,7 +71,7 @@ this form of quantifier is limited to \texttt{integer} and its subtype. Thus
 there is no guarded quantification over \texttt{float}, \texttt{real}, \C
 pointers or logic types.
 
-\item[\notimplemented{Guarded iterator quantification}] In order to iterate over
+\item[\notimplemented{Iterator quantification}] In order to iterate over
   non-integer types, \eacsl introduces a notion of $iterators$ over types:
   standard \acsl unguarded quantifications are only allowed over a type which an
   iterator is attached to.
@@ -399,13 +399,13 @@ Figure~\ref{fig:gram:assertions} summarizes grammar for assertions.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{\notimplemented{Loop annotations}}
+\subsection{Loop annotations}
 \label{sec:loop_annot}
 
 \except{\notimplemented{loop invariants} lose their inductive nature}
 
-Figure~\ref{fig:gram:loops} shows grammar for \notimplemented{loop
-  annotations}. There is no syntactic difference with \acsl.
+Figure~\ref{fig:gram:loops} shows grammar for loop annotations. There is no
+syntactic difference with \acsl. 
 \begin{figure}[htbp]
   \begin{cadre}
     \input{loops_modern.bnf}
@@ -458,7 +458,7 @@ loop invariants are not inductive.
 
 \end{example}
 
-\subsubsection{\notimplemented{General inductive invariant}}
+\subsubsection{General inductive invariant}
 
 Syntax of these kinds of invariant is shown Figure~\ref{fig:advancedinvariants}
 \begin{figure}[t]
