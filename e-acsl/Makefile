@@ -18,13 +18,19 @@ e-acsl: e-acsl-implementation.pdf e-acsl.pdf main.pdf
 
 all: e-acsl
 
+LANGUAGE_VERSION=1.5-4
+EACSL_VERSION= 0.1
+
 EACSL_DIR=$(HOME)/plugins/e-acsl
+DISTRIB_DIR=$(HOME)/frama-c/doc/www/distrib
 install: e-acsl-implementation.pdf e-acsl.pdf
 	cp -f $^ $(EACSL_DIR)/doc/manuals
+	cp -f e-acsl.pdf $(DISTRIB_DIR)/download/e-acsl-$(LANGUAGE_VERSION).pdf
+	cp -f e-acsl-implementation.pdf \
+	  $(DISTRIB_DIR)/download/e-acsl-implementation-$(EACSL_VERSION).pdf
 
 include ../../MakeLaTeXModern
 
-EACSL_VERSION= 0.1
 eacslversion.tex: Makefile
 	rm -f $@
 	echo '\\newcommand{\\eacslversion}{$(EACSL_VERSION)}' > $@
