@@ -2,6 +2,8 @@
 
 \subsection{Version \version}
 
+\subsection{Version 1.5-4}
+
 \begin{itemize}
 \item Fix typos.
 \item \changeinsection{expressions}{fix syntax of guards in iterators}
@@ -65,3 +67,25 @@ in \lstinline|\\at|}
 \begin{itemize}
 \item Initial version.
 \end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ifthenelse%
+    {\boolean{PrintImplementationRq}}%
+    {
+\section{Changes in \eacsl implementation}
+
+\subsection{Version \eacslversion}
+
+\begin{itemize}
+\item Implement bitwise complementation.
+\end{itemize}
+
+\subsection{Version 0.1}
+
+\begin{itemize}
+\item Initial version.
+\end{itemize}
+
+    }%
+    {}
