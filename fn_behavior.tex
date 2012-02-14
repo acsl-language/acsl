@@ -9,7 +9,8 @@
   \
   decreases-clause ::= "decreases" term ("for" ident)? ";"
   \
-  simple-clause ::= assigns-clause | ensures-clause | abrupt-clause-fn
+  simple-clause ::= assigns-clause | ensures-clause ;
+                | allocation-clause | abrupt-clause-fn 
   \
   assigns-clause ::= "assigns" locations ";"
   \

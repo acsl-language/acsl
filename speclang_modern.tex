@@ -960,19 +960,27 @@ et utiliser string\_literal\_foo a la place de "foo"
 
 
 Figure~\ref{fig:gram:contracts} shows a grammar for function
-contracts. \textsl{location} denotes a memory location and is defined
-in Section~\ref{sec:locations}. \textsl{abrupt-clauses}
-allow to specify what happens when the function does not return
-normally but \lstinline|exit|s abruptly. They are defined in
-Section~\ref{sec:abrupt-clauses}.
+contracts. \textsl{Location} denotes a memory location and is defined
+in Section~\ref{sec:locations}. 
+% [Patrick B.] START proposition:
+\textsl{Allocation-clauses} allow to specify which memory location 
+is dynamically allocated or deallocated by the function from the \textsl{heap}; 
+they are defined later in Section~\ref{sec:allocation-clause}.
+% END proposition
 
 This section is organized as follows.  First, the grammar for terms is
 extended with two new constructs.  Then
 Section~\ref{sec:simplecontracts} introduces \emph{simple contracts}.
 Finally, Section~\ref{subsec:behaviors} defines more general contracts
-involving \emph{named behaviors}. The \lstinline|decreases| and
+involving \emph{named behaviors}. 
+
+The \lstinline|decreases| and
 \lstinline|terminates| clauses are presented later in
 Section~\ref{sec:termination}.
+\textsl{Abrupt-clauses}
+allow to specify what happens when the function does not return
+normally but \lstinline|exit|s abruptly; they are defined in
+Section~\ref{sec:abrupt-clause}.
 
 
 \subsection{Built-in constructs %
@@ -993,7 +1001,6 @@ the other clauses already refer to the pre-state. In addition,
 \void{}.
 % See Section~\ref{sec:at} for more details on scoping rules for labels.
 
-% [Patrick B.] START proposition:
 Note C function parameters\index{formal parameter} are obtained by
 value from actual parameters that mostly remain unaltered by the
 function calls. For that reason, formal parameters in function
@@ -1001,7 +1008,6 @@ contracts are defined such that they always refer implicitly to their
 values interpreted in the pre-state.
 So, \lstinline|\old| construct is useless for formal parameters (in
 function contracts only).
-% END proposition
 
 
 
@@ -1063,7 +1069,6 @@ default status of clauses.
   The contract means that the function must be called with a
   nonnegative argument, and returns a value satisfying
   the conjunction of the three \ensures{} clauses.
-% [Patrick B.] START proposition:
   Inside these \ensures{} clauses, the use of the construct \lstinline|\old(x)|
   is not necessary, even if the function modifies the formal
   parameter\index{formal parameter}
@@ -1071,7 +1076,6 @@ default status of clauses.
   and the effective parameters remain unaltered.  In fact, \lstinline|x| denotes
   the effective parameter of \lstinline|isqrt| calls which has the same value
   interpreted in the pre-state than in the post-state.
-% END proposition
 
 \end{example}
 
@@ -1312,7 +1316,7 @@ means that all behaviors given in the contract should be taken into account.
 % behaviors related to error cases.
 
 \subsection{Memory locations and sets of terms}
-\label{sec:locations}
+\label{sec:locations}\indextt{location}
 
 % PB: Modified since \separated operates on pointers and not on locations
 There are several places where one needs to describe a set of memory
@@ -1411,7 +1415,7 @@ It is allowed to annotate each of these declarations with contracts.
 Those contracts are seen as a single contract with the union of the
 \requires\ clauses and behaviors.
 
-On the other hand a function may have no contract at all, or a
+On the other hand, a function may have no contract at all, or a
 contract with missing clauses. Missing \lstinline|requires| and
 \lstinline|ensures| clauses default to \lstinline!\true!.
 If no \lstinline|assigns| clause is given, it remains unspecified. If the
@@ -1452,7 +1456,7 @@ Annotations on C statements are of three kinds:
 \begin{itemize}
 \item Assertions: \index{assertion}allowed before any C statement or
   at end of blocks.
-\item\index{annotation!loop}\index{loop annotation}
+\item\index{annotation!loop}\index{loop!annotation}
   Loop annotations: invariant, assigns clause, variant; allowed
   before any loop statement: \lstinline|while|, \lstinline|for|, and
   \lstinline|do ... while|.
@@ -1506,11 +1510,16 @@ as an extension of the grammar of C statements.
 
 The syntax of loop annotations is given in Figure~\ref{fig:gram:loops},
 as an extension of the grammar of C statements.
+% [Patrick B.] START proposition:
+\textsl{Loop-allocation} clauses allow to specify which memory location 
+is dynamically allocated or deallocated by a loop from the \textsl{heap}; 
+they are defined later in Section~\ref{sec:allocation-clause}.
+% END proposition
 
-\subsubsection{Loop invariants}
-\index{invariant}
-The semantics of loop invariants is defined as follows: a simple loop
-annotation of the form
+\subsubsection{Loop invariants and loop assigns}
+\index{invariant!loop}\index{loop!invariant}\index{loop!assigns}
+The semantics of loop invariants and loop assigns is defined as follows: 
+a simple loop annotation of the form
 \begin{listing}{1}
 /*@ loop invariant I;
   @ loop assigns L;
@@ -1554,16 +1563,17 @@ the \lstinline|break| statement.
   entering the loop, and is not member of \lstinline|L| (interpreted in the
   current state), must remain allocated and has the same value as
   before entering the loop.
-% [Patrick B.] START proposition:
   In fact, the \lstinline|loop assigns| clause specifies an inductive
   invariant for the locations that are not member of \lstinline|L|.
-% END proposition:
 \end{itemize}
 
+\subsubsection{Loop behaviors}
+\index{loop!behavior}
 A loop annotation preceded by
 \lstinline|for id_1,$\ldots$,id_k:| is similar as above, but
-applies only for behaviors \lstinline|id_1|,$\ldots$,\lstinline|id_k|, hence in
-particular holds only under the assumption of their \texttt{assumes}
+applies only for behaviors \lstinline|id_1|,$\ldots$,\lstinline|id_k|
+of the current function, 
+hence in particular holds only under the assumption of their \texttt{assumes}
 clauses.
 
 
@@ -1577,10 +1587,8 @@ clauses.
   refer to another state (see Section~\ref{sec:at}).
 \item When a loop exits with \lstinline{break} or \lstinline{return} or
   \lstinline{goto}, it is not required that the loop invariant holds.
-% [Patrick B.] START proposition:
   In such cases, locations that are not member of $L$ can be disallocated
   or assigned between the end of the previous iteration and the exit statement.
-% END proposition:
 \end{itemize}
 
 \begin{example}
@@ -1592,8 +1600,8 @@ a loop invariant associated to a function behavior.
 
 \end{example}
 
-\subsubsection{Loop variants}
-\indextt{variant}\index{termination}
+\subsubsection{Loop variants}\label{sec:loop-variant}
+\indextt{variant}\index{termination}\index{loop!variant}
 
 Optionally, a loop annotation may include a loop variant of the form
 \begin{listing-nonumber}
@@ -1753,14 +1761,12 @@ and it refers to the post-state.
 
 \end{itemize}
 
-% [Patrick B.] START proposition:
 There is one particular case for \lstinline|assigns| and \lstinline|ensures|
 clauses of function contracts where formal parameters\index{formal parameter}
 of functions cannot refer to the label \lstinline|Post|.
 In such clauses formal parameters always refer implicitly to the label
 \lstinline|Pre|, and any \lstinline|\at| construct can modify the
 interpretation of formal parameters.
-% END proposition
 
 Note that no logic label is visible in global logic declarations
 such as lemmas, axioms, definition of predicate or logic
@@ -1819,12 +1825,44 @@ corresponding \assumes{} clause.
   Add an example with a \For{}.
 \end{todo}
 
-The \ensures\indextt{ensures} clause does not constraint the
-post-state when the annotated statement terminates abruptly
+% [Patrick B.] START proposition:
+The \ensures\indextt{ensures} clause does not constrain the
+post-state when the annotated statement terminates 
+by a \lstinline|goto| jumping out of it.
+There is the same kind of thing 
+when the annotated statement terminates abruptly
 with a \Break{}, \Continue{} or \Return{} statement,
 or a call to the \exit{} function.
 To specify such behaviors, \textsl{abrupt clauses} (described in
-Section~\ref{sec:abrupt-clauses}) need to be used.
+Section~\ref{sec:abrupt-clause}) need to be used.
+
+On the other hand, it is different with \assigns\indextt{assigns} clauses.
+The locations having their value modified during the path execution, starting
+at the begining of the annoted statement and leading 
+to a \lstinline|goto| jumping out of it, should be part of its 
+\assigns clause.
+
+\begin{example} The clause \lstinline|assigns \nothing;| does not hold for that statement,
+even if the clause \lstinline|ensures x==\old(x);| holds: 
+\begin{listing}{1}
+/*@ assigns x;
+  @ ensures x==\old(x);
+  @*/
+  if (c) {
+    x++;
+    goto L;
+  }
+L: ...
+\end{listing}
+\end{example}
+% END proposition
+
+% [Patrick B.] START proposition:
+\textsl{Allocation-clauses} allow to specify which memory location 
+is dynamically allocated or deallocated by the annotated statement from the \textsl{heap}; 
+they are defined later in Section~\ref{sec:allocation-clause}.
+% END proposition
+
 
 \section{Termination}
 \label{sec:termination}
@@ -1835,6 +1873,7 @@ calls.
 %  variant}\index{loop variant} clause, and functions can be annotated
 %with a \decreases{} clause.
 Termination is guaranteed by attaching a measure function to each loop
+(aspect already addressed in Section~\ref{sec:loop-variant}) 
 and each recursive function.
 By default, a measure is an
 integer expression, and measures are compared using the usual ordering
@@ -1860,16 +1899,23 @@ For recursive calls, or for loops, this expression must decrease for
 the
 relation \lstinline|R| defined by
 \begin{listing-nonumber}
-R(x,y) <==> x > y && x >= 0
+R(x,y) <==> x > y && x >= 0.
 \end{listing-nonumber}
 In other words, the measure must be a decreasing sequence of integers
 which remain nonnegative, except possibly for the last value of the
 sequence (See example~\ref{ex:loopvariant}).
 
 \begin{example}
-  In example~\ref{ex:bsearch2}, a loop variant \lstinline|u-l| decreases
+  The clause \lstinline|loop variant u-l;| can be added to the loop 
+  annotations of the example~\ref{ex:bsearch2}.
+  The measure \lstinline|u-l| decreases
   at each iteration, and remains nonnegative, except at the last
   iteration where it may become negative.
+\begin{listing}{16}
+  @ ...
+  @ loop variant u-l; */
+while ...
+\end{listing}
 \end{example}
 
 \subsection{General measures}
@@ -1886,11 +1932,12 @@ and for loops
 \end{listing-nonumber}
 In those cases, the logic expression \lstinline|e| has some type
 $\tau$ and \lstinline|R|
-must be relation on $\tau$, that is a binary predicate declared as
+must be relation on $\tau$, that is a binary predicate declared 
+(see Section~\ref{sec:logicspec} for details) as
 \begin{listing-nonumber}
 //@ predicate R($\tau$ x, $\tau$ y) $\cdots$
 \end{listing-nonumber}
-(see Section~\ref{sec:logicspec} for details). Of course, to guarantee
+Of course, to guarantee
 termination, it must be proved that \lstinline|R| is a well-founded relation.
 
 \begin{example}
@@ -2436,7 +2483,23 @@ definitions, like the \lstinline|List| module above.
 
 
 \section{Pointers and physical adressing}
-\label{sec:pointers}
+\label{sec:pointers} 
+% [Patrick B.] START proposition:
+First, the grammar for terms and predicates is
+extended with new constructs given in Figure~\ref{fig:gram:memory}. 
+\textsl{Location-address} denotes the address of a memory location. 
+It is a set of terms of some pointer type as defined in Section~\ref{sec:locations}.
+
+\begin{figure}[ht]
+  \fbox{\begin{minipage}{0.97\linewidth}
+      \input{memory_modern.bnf}
+    \end{minipage}}
+  \caption{Grammar extension of terms and predicates about memory}
+\label{fig:gram:memory}
+\end{figure}
+% END proposition:
+
+
 
 \subsection{Memory blocks and pointer dereferencing}
 \label{subsec:memory}
@@ -2539,7 +2602,23 @@ $i\neq j$, the intersection of locations \lstinline|*|$pt_i$ and \lstinline|*|$p
 $pt_i$ is a set of terms of some pointer type as defined in Section~\ref{sec:locations}.
 
 
-\subsection{Allocation and deallocation}
+\subsection{Allocation and deallocation}\label{sec:allocation-clause}
+\indextt{allocates}\indextt{frees}
+\index{allocation}\index{deallocation}
+\index{loop!allocation}\index{loop!deallocation}
+
+\begin{figure}[ht]
+  \fbox{\begin{minipage}{0.97\linewidth}
+      \input{allocation_modern.bnf}
+    \end{minipage}}
+  \caption{Grammar for dynamic allocations and deallocations}
+\label{fig:gram:allocation}
+\end{figure}
+
+Note that \lstinline|allocates \nothing| and \lstinline|frees \nothing| are respectively 
+equivalent to \lstinline|allocates \empty| and \lstinline|frees \empty|; 
+it is left for convenience.
+
 
 \experimental
 
@@ -2610,7 +2689,7 @@ to the postcondition
 \end{listing-nonumber}
 
 \section{Abrupt termination}
-\label{sec:abrupt-clauses}
+\label{sec:abrupt-clause}
 \index{abrupt clause}
 
 \experimental
@@ -2624,7 +2703,7 @@ to the postcondition
 \end{figure}
 
 The \ensures\indextt{ensures} clause of function and statement contracts
-does not constraint the post-state when the annotated function and
+does not constrain the post-state when the annotated function and
 statement terminates respectively abruptly. In such cases,
 \textsl{abrupt clauses} can be used inside \textsl{simple clause} or
 \textsl{behavior body}. The allowed constructs are shown in
@@ -2640,12 +2719,10 @@ Inside these clauses, the construct \lstinline|\old(e)|\indexttbs{old}
 is allowed and denotes, like for statement contracts
 \assigns{} and \ensures{}, the value of
 \lstinline|e| in the pre-state of the statement.
-% [Patrick B.] START proposition:
  More generally, the visibility in \textsl{abrupt clauses} of predefined 
 logics labels\indextt{Pre}\indextt{Here}\indextt{Old}\indextt{Post}
  (presented in Section~\ref{sec:default-logic-labels}) is the 
 same as in \ensures{} clauses.
-% END proposition:
 
 For the \lstinline|returns| case, the \result\indexttbs{result}
 construct is allowed and bounds to the returned value (if not a
@@ -2673,6 +2750,7 @@ and \assigns{} clauses. On the contrary,
 \result cannot be used in \exits{} clauses.
 
 \begin{example}
+\label{ex:assigns-and-abrupt-termination}
   Here is a complete specification of the \exit{} function which
   performs an unconditional exit of the \main{} function:
   \listinginput{1}{exit.c}
@@ -2684,11 +2762,23 @@ and \assigns{} clauses. On the contrary,
   \listinginput{8}{mayexit.c}
 \end{example}
 
+% [Patrick B.] START proposition:
+Contrary to the \ensures clause, the \assigns\indextt{assigns} clause of function 
+and statement contracts constrains the post-state 
+even when the annotated function and statement terminates respectively abruptly. 
+This is shown in example~\ref{ex:assigns-and-abrupt-termination} for a function contract.
+% END proposition:
+
 \begin{todo}
   Discuter de exit versus return pour la fonction main. Discuter
     du atexit() : le post-state de la clause exit est-il avant ou
     apres les fonctions enregistrees par atexit() ?
 
+\end{todo}
+
+\begin{todo}
+Discuter de la sémantique du assign en présence d'une terminaison abrupte
+dans un contrat de fonction et de statement.
 \end{todo}
 
 \oldremark{PC}{

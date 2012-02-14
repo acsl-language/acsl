@@ -1,0 +1,7 @@
+\begin{syntax}
+  allocation-clause ::= { "allocates" } location-addresses ";";
+                    | { "frees" } location-addresses ";" ;
+  \
+  loop-allocation ::= { "loop" "allocates" } location-addresses ";";
+                    | { "loop" "frees" } location-addresses ";" ;
+\end{syntax}
