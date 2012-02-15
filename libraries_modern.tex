@@ -74,35 +74,37 @@ introduce the following logic functions:
 \begin{notimplementedenv}
 \begin{listing}{1}
 /*@
-  @ logic integer \offset_min<a>(a *p);
-  @ logic integer \offset_max<a>(a *p);
+  @ logic integer \offset_min<a>{L}(a *p);
+  @ logic integer \offset_max<a>{L}(a *p);
   @/
 \end{listing}
 \end{notimplementedenv}
 
 \begin{itemize}
-\item \lstinline|\offset_min(p)| is the minimum integer
+\item \lstinline|\offset_min{L}(p)| is the minimum integer
 \lstinline|i| such that \lstinline|(p+i)| is a
-  valid pointer.
+  valid pointer at label \lstinline|L|.
 
-\item \lstinline|\offset_max(p)| is the maximum integer
+\item \lstinline|\offset_max{L}(p)| is the maximum integer
   \lstinline|i| such that \lstinline|(p+i)| is a
-  valid pointer.
+  valid pointer at label \lstinline|L|.
 \end{itemize}
 The following properties hold:
 \begin{listing}{1}
-\offset_min(p+i) == \offset_min(p)-i
-\offset_max(p+i) == \offset_max(p)-i
+\offset_min{L}(p+i) == \offset_min{L}(p)-i
+\offset_max{L}(p+i) == \offset_max{L}(p)-i
 \end{listing}
 It also introduces some syntactic sugar:
+\begin{notimplementedenv}
 \begin{listing}{1}
 /*@
-predicate \valid_range<a>(a *p,integer i,integer j) =
-  \offset_min(p) <= i && \offset_max(p) >= j;
+predicate \valid_range<a>{L}(a *p,integer i,integer j) =
+  \offset_min{L}(p) <= i && \offset_max{L}(p) >= j;
 */
 \end{listing}
-and the ACSL built-in predicate \lstinline|\valid(p)| is now equivalent to
-\lstinline|\valid_range(p,0,0)|.
+\end{notimplementedenv}
+and the ACSL built-in predicate \lstinline|\valid{L}(p+(a..b))| is now equivalent to
+\lstinline|\valid_range{L}(p,a,b)|.
 
 \subsection{Strings}
 

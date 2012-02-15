@@ -2509,7 +2509,7 @@ in case of an array declarator), or the pointer returned by the allocating
 function (when the allocation succeed) and their length.
 
 ACSL provides the following built-in functions to deal with allocated blocks.
-All of them takes optional label identifier as first argument. 
+All of them takes an optional label identifier as argument. 
 The default value of that label is defined in Section~\ref{sec:default-logic-labels}.
 \begin{itemize}
 \item \lstinline|\base_addr{L}(p)|\indexttbs{base\_addr}
@@ -2593,7 +2593,6 @@ Again, if there is no alignment constraints,
 \end{itemize}
 
 \subsection{Separation}\label{sec:separated} 
-\experimental
 
 ACSL provides a built-in function to deal with separation of locations:
 
@@ -2617,14 +2616,18 @@ $i\neq j$, \lstinline|\separated(s$_i$,s$_j$)|.
 \end{itemize}
 
 
-\subsection{Allocation and deallocation}\label{sec:allocation-clause}
+\subsection{Dynamic allocation and deallocation}\label{sec:allocation-clause}
 \indextt{allocates}\indextt{frees}
-\index{allocation}\index{deallocation}
+\index{allocation}\index{deallocation}\index{dynamic allocation}
 \index{loop!allocation}\index{loop!deallocation}
 
 \experimental
 
+\textsl{Allocation-clauses} allow to specify which memory location 
+is dynamically allocated or deallocated.
+The grammar for those constructions is given on Figure~\ref{fig:gram:allocation}.
 
+Figure~\ref{fig:gram:logicdecl}.
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
       \input{allocation_modern.bnf}
@@ -2632,6 +2635,20 @@ $i\neq j$, \lstinline|\separated(s$_i$,s$_j$)|.
   \caption{Grammar for dynamic allocations and deallocations}
 \label{fig:gram:allocation}
 \end{figure}
+
+\subsubsection{Allocation clauses for function and statement contracts}
+
+The semantics of the clauses \allocates and \frees cannot be defined separately from the other.
+The contract  
+\begin{listing-nonumber}
+/*@ \allocates $P_1$, $P_2$, ...
+  @ \frees  $Q_1$, $Q_2$, ... 
+\end{listing-nonumber}
+means that all memory addresses that do not belong to the set 
+$P_1 \union P_2 \union ...  \union \old(Q_1 \union Q_2 \union ...)$ 
+(set evaluated in the post-state) refer to memory those allocation statuses
+in the post-state are identical to those in the pre-state. 
+
 
 Note that \lstinline|allocates \nothing| and \lstinline|frees \nothing| are respectively 
 equivalent to \lstinline|allocates \empty| and \lstinline|frees \empty|; 
@@ -2649,8 +2666,8 @@ deallocation of memory blocks. They can be used in a postcondition
 \item \lstinline|\fresh(p)|\indexttbs{fresh}
 indicates that \lstinline|p| was not allocated in the pre-state.
 
-\item \begin{notimplementedenv}\lstinline|\freed(p)|\end{notimplementedenv}%
-\indexttbs{freed},
+\item \begin{notimplementedenv}\lstinline|\free{L}(p)|\end{notimplementedenv}%
+\indexttbs{free},
   indicates that \lstinline|p| was allocated in the pre-state but that it is not
   the case in the post-state.
 \end{itemize}
