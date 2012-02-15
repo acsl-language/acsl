@@ -29,7 +29,8 @@
   let c_keywords =
     let h = Hashtbl.create 97 in
     List.iter (fun s -> Hashtbl.add h s ())
-      [
+      [ 
+        "allocates" ; "free" ;
 	"auto"; "assert"; "break"; "case"; "continue"; "new";
 	"default"; "do"; "else"; "for"; "goto"; "if";
 	"return"; "switch"; "while";
@@ -52,8 +53,9 @@
     let h = Hashtbl.create 97 in
     List.iter (fun s -> Hashtbl.add h s "")
       [
-	"valid"; "valid_range"; "lambda" ; "sum" ; "match" ;
-	"base_addr" ; "strlen" ; "max" ; "block_length" ;
+	"separated"; "offset" ; "free" ; "allocated" ; "fresh" ;
+	"valid_range" ; "valid"; "lambda" ; "sum" ; "match" ;
+	"base_addr" ; "block_length" ; "strlen" ; "max" ; 
 	"initialized" ; "specified" ;
 	"null" ;
 	"old";
@@ -83,7 +85,10 @@
 
   let is_c_keyword s = Hashtbl.mem c_keywords s
   let is_c_keytype s = Hashtbl.mem c_types s
-  let bs_keyword s = Hashtbl.find bs_keywords s
+  let bs_keyword s =
+    if s =  "valid_range" then
+      Printf.eprintf "Obsolete construct \\%s\n" s ;
+    Hashtbl.find bs_keywords s
 
 
   let print_ident =

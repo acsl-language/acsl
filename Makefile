@@ -16,7 +16,7 @@ DEPS_MODERN=speclang_modern.tex macros_modern.tex framacversion.tex	\
 	oldandresult_modern.bnf at_modern.bnf loc_modern.bnf		\
 	assertions_modern.bnf loops_modern.bnf allocation_modern.bnf    \
 	generalinvariants_modern.bnf st_contracts_modern.bnf		\
-	moreterm_modern.bnf ghost_modern.bnf model_modern.bnf		\
+	ghost_modern.bnf model_modern.bnf		\
 	logic_modern.bnf inductive_modern.bnf logicdecl_modern.bnf	\
 	logictypedecl_modern.bnf higherorder_modern.bnf			\
 	logiclabels_modern.bnf logicreads_modern.bnf \

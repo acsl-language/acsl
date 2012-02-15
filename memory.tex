@@ -2,7 +2,7 @@
   term ::= "\null" ;
         | "\base_addr" { one-label? } "(" term ")" ;
         | "\block_length" { one-label? } "(" term ")" ;
-        | "\offset" { one-label? } "(" term ")" ;
+        | { "\offset" } one-label?  "(" term ")" ;
        \
   pred ::= "\valid" { one-label? } "(" location-address ")" ;
        |  { "\valid_read" } one-label? "(" location-address ")";
@@ -15,8 +15,7 @@
        \
   two-labels ::= "{" id, id "}" ;
        \
-  location-addresses ::= "\nothing" ;
-                    | location-address ("," location-address)*
+  location-addresses ::= location-address ("," location-address)*
   \
   location-address ::= tset
 \end{syntax}

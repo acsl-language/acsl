@@ -72,7 +72,7 @@ annotations. These are called \emph{logic expressions} in the following. They
 correspond to pure C expressions, with additional constructs
 that we will introduce progressively.
 
-\begin{figure}[ht]
+\begin{figure}[t]
   \begin{cadre}
     \input{term_modern.bnf}
   \end{cadre}
@@ -2490,7 +2490,7 @@ extended with new constructs given in Figure~\ref{fig:gram:memory}.
 \textsl{Location-address} denotes the address of a memory location. 
 It is a set of terms of some pointer type as defined in Section~\ref{sec:locations}.
 
-\begin{figure}[ht]
+\begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
       \input{memory_modern.bnf}
     \end{minipage}}
@@ -2510,18 +2510,21 @@ declarator or a call to one of the \lstinline|calloc|, \lstinline|malloc| or
 in case of an array declarator), or the pointer returned by the allocating 
 function (when the allocation succeed) and their length.
 
-ACSL provides the following built-in functions to deal with allocated blocks:
+ACSL provides the following built-in functions to deal with allocated blocks.
+All of them takes optional label identifier as first argument. 
+The default value of that label is defined in Section~\label{sec:default-logic-labels}.
 \begin{itemize}
-\item \baseaddr\indexttbs{base\_addr}
-returns the base address of the block containing an allocated pointer
+\item \lstinline|\baseaddr{L}(p)|\indexttbs{base\_addr}
+returns the base address of the allocated block
+containing, at the label \lstinline|L|, the pointer \lstinline|p|
 \begin{listing-nonumber}
-\base_addr : $\alpha$ * $\ra$ char*
+\base_addr{id} : $\alpha$ * $\ra$ char*
 \end{listing-nonumber}
-\item \blocklength\indexttbs{block\_length}
-  returns the length (in bytes) of the allocated block containing 
-  its argument pointer.
+\item \lstinline|\blocklength{L}(p)|\indexttbs{block\_length}
+  returns the length (in bytes) of the allocated block containing, 
+  at the label \lstinline|L|, its argument pointer.
 \begin{listing-nonumber}
-\block_length : $\alpha$ * $\ra$ size_t
+\block_length{id} : $\alpha$ * $\ra$ size_t
 \end{listing-nonumber}
 \end{itemize}
 
@@ -2532,10 +2535,13 @@ following built-in predicates deal with this notion:
 \begin{itemize}
 \item \valid\indexttbs{valid} applies to a set of terms 
 (see Section~\ref{sec:locations}) of some pointer type. 
-\lstinline|\valid(s)| holds if and only if
- dereferencing any $p\in \lstinline|s|$ is safe, both for reading from 
+\lstinline|\valid{L}(s)| holds if and only if
+ dereferencing any $p\in \lstinline|s|$ is safe  at label \lstinline|L|, both for reading from 
 \lstinline|*p| and writing to it. In particular,
-\lstinline|\valid(\empty)| holds. 
+\lstinline|\valid{L}(\empty)| holds for any label \lstinline|L|. 
+\begin{listing-nonumber}
+\valid{id} : set<$\alpha$ *> $\ra$ boolean
+\end{listing-nonumber}
 \item 
 \begin{notimplementedenv}
 [Actual implementation recognizes only one type of validity]
@@ -2543,18 +2549,21 @@ following built-in predicates deal with this notion:
 \end{notimplementedenv}
 applies to a set of terms of some pointer type and holds if and only
 if it is safe to read from all the pointers in the set
+\begin{listing-nonumber}
+\valid_read{id} : set<$\alpha$ *> $\ra$ boolean
+\end{listing-nonumber}
 \end{itemize}
 
-\lstinline|\valid(p)| implies \lstinline|\valid_read(p)| but the reverse is 
+\lstinline|\valid{L}(p)| implies \lstinline|\valid_read{L}(p)| but the reverse is 
 not true. In particular, it is allowed to read from a string literal, but not 
 to write in it (see \cite{standardc99}, section 6.4.5.6).
 
 Note in addition that the status of \valid depends on the
-type of its argument. Namely, \lstinline|\valid((int *) p)| and 
-\lstinline|\valid((char *)p)| are not equivalent. On the other hand, if we 
+type of its argument. Namely, \lstinline|\valid{L}((int *) p)| and 
+\lstinline|\valid{L}((char *)p)| are not equivalent. On the other hand, if we 
 ignore potential alignment constraints, the following equivalence is true:
 \begin{listing-nonumber}
-\valid(p) <==> \valid(((char *)p)+(0..sizeof(*p)))
+\valid{L}(p) <==> \valid{L}(((char *)p)+(0..sizeof(*p)))
 \end{listing-nonumber}
 
 Some shortcuts are provided:
@@ -2564,42 +2573,50 @@ Some shortcuts are provided:
   null pointer (\emph{i.e.} a shortcut for \lstinline|(void*)0|). Note that
   as in C itself (see \cite{standardc99}, par. 6.3.2.3),
   the constant \lstinline|0| can have any pointer type. In addition, 
-  \lstinline|\valid(\null)| is always false.
+  \lstinline|\valid{L}(\null)| is always false, for any logic label \lstinline|L|.
 % \footnote{or to \texttt{NULL}, if
 %    annotations are pre-processed are the appropriate inclusion of
 %    \texttt{stddef.h} is added}
-\item \begin{notimplementedenv}\lstinline|\offset(p)|\end{notimplementedenv}%
+\item \begin{notimplementedenv}\lstinline|\offset{L}(p)|\end{notimplementedenv}%
   \indexttbs{offset}
   returns the offset between \lstinline|p| and its base address
 
   \begin{tabular}{lcl}
-    \lstinline|\offset| &:& \lstinline|$\alpha$ * $\ra$ size_t| \\
-    \lstinline|\offset(p)| &=& \lstinline|(char*)p - \base_addr(p)| \\
+    \lstinline|\offset{id}| &:& \lstinline|$\alpha$ * $\ra$ size_t| \\
+    \lstinline|\offset{L}(p)| &=& \lstinline|(char*)p - \base_addr{L}(p)| \\
   \end{tabular} \\
 Again, if there is no alignment constraints,
   the following property holds: for any set of pointers
-\lstinline|s|, \lstinline|\valid(s)| if and only if for all \lstinline|p$\in$s|:
+\lstinline|s| and label \lstinline|L|, \lstinline|\valid{L}(s)| if and only if for all \lstinline|p$\in$s|:
   \begin{listing-nonumber}
-    \offset(p) >= 0 && \offset(p) + sizeof(*p) <= \block_length(p)
+    \offset{L}(p) >= 0 && \offset{L}(p) + sizeof(*p) <= \block_length{L}(p)
   \end{listing-nonumber}
 
 \end{itemize}
 
-\subsection{Separation}
-\label{sec:separated}
-
-%pointer separation :
-%\[
-%p \not\equiv q := \baseaddr(p) \neq \baseaddr(q) \lor |(\verb|char*|)p - (\verb|char*|)q| \geq \max(\sizeof(p),\sizeof(q))
-%\]
-
+\subsection{Separation}\label{sec:separated} 
 \experimental
 
-% PB: Modified since \separated operates on pointers and not on locations
-\lstinline|\separated($pt_1$,..,$pt_n$)|\indexttbs{separated}
-means that for each
-$i\neq j$, the intersection of locations \lstinline|*|$pt_i$ and \lstinline|*|$pt_j$ is empty. Each
-$pt_i$ is a set of terms of some pointer type as defined in Section~\ref{sec:locations}.
+ACSL provides a built-in function to deal with separation of locations:
+
+\begin{itemize}
+% [Patrick B.] START proposition:
+\item \lstinline|\separated|\indexttbs{separated}
+applies to sets of terms (see Section~\ref{sec:locations}) of some pointer type. 
+\lstinline|\separated(s$_1$,s$_2$)|
+holds for any set of pointers \lstinline|s$_1$| and \lstinline|s$_2$| 
+if and only if for all \lstinline|p$\in$s$_1$| and \lstinline|q$\in$s$_2$|:
+\begin{listing-nonumber}
+  forall integer i,j; 0 <= i < sizeof(*p), 0 <= j < sizeof(*q)
+     ==>  (char*)p + i != (char*)q + j 
+\end{listing-nonumber}
+
+In fact, \lstinline|\separated| is an n-ary predicate.\\
+\lstinline|\separated(s$_1$,..,s$_n$)|\indexttbs{separated} means
+that for each
+$i\neq j$, \lstinline|\separated(s$_i$,s$_j$)|.
+% END proposition:
+\end{itemize}
 
 
 \subsection{Allocation and deallocation}\label{sec:allocation-clause}
@@ -2607,7 +2624,10 @@ $pt_i$ is a set of terms of some pointer type as defined in Section~\ref{sec:loc
 \index{allocation}\index{deallocation}
 \index{loop!allocation}\index{loop!deallocation}
 
-\begin{figure}[ht]
+\experimental
+
+
+\begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
       \input{allocation_modern.bnf}
     \end{minipage}}
@@ -2619,8 +2639,6 @@ Note that \lstinline|allocates \nothing| and \lstinline|frees \nothing| are resp
 equivalent to \lstinline|allocates \empty| and \lstinline|frees \empty|; 
 it is left for convenience.
 
-
-\experimental
 
 \oldremark{PC}{
 
@@ -2639,7 +2657,7 @@ indicates that \lstinline|p| was not allocated in the pre-state.
   the case in the post-state.
 \end{itemize}
 
-\section{Sets as first-class values}
+\section{Sets as first-class values}\label{sec:sets}
 \index{location}
 Sets of terms, as defined in Section~\ref{sec:locations},
 can be used as first-class values in

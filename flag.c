@@ -4,7 +4,7 @@ typedef enum { BLUE, WHITE, RED } color;
   @*/
 
 /*@ predicate permut{L1,L2}(color *t1, color *t2, integer n) =
-  @  \at(\valid_range(t1,0,n),L1) && \at(\valid_range(t2,0,n),L2) &&
+  @  \at(\valid(t1+(0..n)),L1) && \at(\valid(t2+(0..n)),L2) &&
   @  \numof(0,n,\lambda integer i; \at(t1[i],L1) == BLUE) ==
   @  \numof(0,n,\lambda integer i; \at(t2[i],L2) == BLUE)
   @   &&
