@@ -1827,12 +1827,10 @@ corresponding \assumes{} clause.
 
 % [Patrick B.] START proposition:
 The \ensures\indextt{ensures} clause does not constrain the
-post-state when the annotated statement terminates 
-by a \lstinline|goto| jumping out of it.
-There is the same kind of thing 
-when the annotated statement terminates abruptly
-with a \Break{}, \Continue{} or \Return{} statement,
-or a call to the \exit{} function.
+post-state when the annotated statement is terminated 
+by a \lstinline|goto| jumping out of it,
+by a \Break{}, \Continue{} or \Return{} statement,
+or by a call to the \exit{} function.
 To specify such behaviors, \textsl{abrupt clauses} (described in
 Section~\ref{sec:abrupt-clause}) need to be used.
 
@@ -2512,15 +2510,15 @@ function (when the allocation succeed) and their length.
 
 ACSL provides the following built-in functions to deal with allocated blocks.
 All of them takes optional label identifier as first argument. 
-The default value of that label is defined in Section~\label{sec:default-logic-labels}.
+The default value of that label is defined in Section~\ref{sec:default-logic-labels}.
 \begin{itemize}
-\item \lstinline|\baseaddr{L}(p)|\indexttbs{base\_addr}
+\item \lstinline|\base_addr{L}(p)|\indexttbs{base\_addr}
 returns the base address of the allocated block
 containing, at the label \lstinline|L|, the pointer \lstinline|p|
 \begin{listing-nonumber}
 \base_addr{id} : $\alpha$ * $\ra$ char*
 \end{listing-nonumber}
-\item \lstinline|\blocklength{L}(p)|\indexttbs{block\_length}
+\item \lstinline|\block_length{L}(p)|\indexttbs{block\_length}
   returns the length (in bytes) of the allocated block containing, 
   at the label \lstinline|L|, its argument pointer.
 \begin{listing-nonumber}
@@ -2556,7 +2554,7 @@ if it is safe to read from all the pointers in the set
 
 \lstinline|\valid{L}(p)| implies \lstinline|\valid_read{L}(p)| but the reverse is 
 not true. In particular, it is allowed to read from a string literal, but not 
-to write in it (see \cite{standardc99}, section 6.4.5.6).
+to write in it (see \cite{standardc99}, 6.4.5\S6).
 
 Note in addition that the status of \valid depends on the
 type of its argument. Namely, \lstinline|\valid{L}((int *) p)| and 
@@ -2571,7 +2569,7 @@ Some shortcuts are provided:
 \item \lstinline|\null|\indexttbs{null} is an
   extra notation for the
   null pointer (\emph{i.e.} a shortcut for \lstinline|(void*)0|). Note that
-  as in C itself (see \cite{standardc99}, par. 6.3.2.3),
+  as in C itself (see \cite{standardc99}, 6.3.2.3\S3),
   the constant \lstinline|0| can have any pointer type. In addition, 
   \lstinline|\valid{L}(\null)| is always false, for any logic label \lstinline|L|.
 % \footnote{or to \texttt{NULL}, if
