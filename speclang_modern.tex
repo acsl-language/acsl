@@ -1017,20 +1017,20 @@ function contracts only).
 A simple function contract, having only simple clauses and no named behavior, takes the following
 form:\indextt{requires}\indextt{assigns}\indextt{ensures}
 \begin{listing}{1}
-/*@ requires $P_1$; requires $P_2$; `\dots`
-  @ assigns $L_1$;  assigns $L_2$;  `\dots`
-  @ ensures $E_1$;  ensures $E_2$;  `\dots`
+/*@ requires P$_1$; requires P$_2$; `\dots`
+  @ assigns L$_1$;  assigns L$_2$;  `\dots`
+  @ ensures E$_1$;  ensures E$_2$;  `\dots`
   @*/
 \end{listing}
 The semantics of such a contract is as follows:
 \begin{itemize}
 \item The caller of the function must guarantee that it is called in a
-  state where the property \lstinline|$P_1$ && $P_2$ && ...| holds.
+  state where the property \lstinline|P$_1$ && P$_2$ && ...| holds.
 \item The called function returns a state where the property
-  \lstinline|$E_1$ && $E_2$ && ...| holds.
+  \lstinline|E$_1$ && E$_2$ && ...| holds.
 \item All memory locations of the pre-state that do not belong to the
-  set $L_1 \cup L_2 \cup \dots$ remain allocated and are left unchanged in the
-  post-state. The set $L_1 \cup L_2 \cup \dots$ itself is interpreted in the
+  set \lstinline|L$_1$ $\cup$ L$_2$ $\cup \dots$| remain allocated and are left unchanged in the
+  post-state. The set \lstinline|L$_1$ $\cup$ L$_2$ $\cup \dots$| itself is interpreted in the
   pre-state.
 \end{itemize}
 
@@ -1040,9 +1040,9 @@ Notice that the multiplicity of clauses are proposed mainly to improve
 readibility since the contract above is equivalent to the following
 simplified one:
 \begin{listing}{1}
-/*@ requires $P_1$ && $P_2$ && `\dots`;
-  @ assigns $L_1$,$L_2$,`\dots`;
-  @ ensures $E_1$ && $E_2$ && `\dots`;
+/*@ requires P$_1$ && P$_2$ && `\dots`;
+  @ assigns L$_1$, L$_2$,`\dots`;
+  @ ensures E$_1$ && E$_2$ && `\dots`;
   @*/
 \end{listing}
 If no clause \requires\ is given, it defaults to
@@ -1101,30 +1101,30 @@ behaviors (restricted to two behaviors, in the following, for
 readability).
 \lstset{firstnumber=auto}
 \begin{lstlisting}[style=c,basicstyle=\lp@basic,numbers=left,name=behaviors]
-/*@ requires $P$;
-  @ behavior $b_1$:
-  @   assumes  $A_1$;
-  @   requires $R_1$;
-  @   assigns  $L_1$;
-  @   ensures  $E_1$;
-  @ behavior $b_2$:
-  @   assumes  $A_2$;
-  @   requires $R_2$;
-  @   assigns  $L_2$;
-  @   ensures  $E_2$;
+/*@ requires P;
+  @ behavior b$_1$:
+  @   assumes  A$_1$;
+  @   requires R$_1$;
+  @   assigns  L$_1$;
+  @   ensures  E$_1$;
+  @ behavior b$_2$:
+  @   assumes  A$_2$;
+  @   requires R$_2$;
+  @   assigns  L$_2$;
+  @   ensures  E$_2$;
   @*/
 \end{lstlisting}
 The semantics of such a contract is as follows:
 \begin{itemize}
 \item The caller of the function must guarantee that the call is
   performed in a state where the property
-  \lstinline|$P$ && ($A_1$ ==> $R_1$) && ($A_2$ ==> $R_2$)| holds.
+  \lstinline|P && (A$_1$ ==> R$_1$) && (A$_2$ ==> R$_2$)| holds.
 \item The called function returns a state where
-the properties \lstinline|\old($A_i$) ==> $E_i$| hold for each~$i$.
+the properties \lstinline|\old(A$_i$) ==> E$_i$| hold for each~$i$.
 \item For each $i$, if the function is called in a pre-state where
-  $A_i$ holds, then each memory location of that pre-state that does not
-  belong to the set $L_i$ remains allocated and is left unchanged
-  in the post-state.
+  \lstinline|A$_i$| holds, then each memory location of that pre-state 
+  that does not belong to the set \lstinline|L$_i$| remains allocated 
+  and is left unchanged in the post-state.
 % In any case, locations of $L$ are unchanged.
 \end{itemize}
 
@@ -1133,44 +1133,44 @@ mainly to improve readibility (to avoid some duplication of
 formulas), since the contract above is equivalent to the following
 simplified one:
 \begin{listing}{1}
-/*@ requires $P$ && ($A_1$ ==> $R_1$) && ($A_2$ ==> $R_2$);
-  @ assigns $L_1$,$L_2$;
-  @ ensures \old($A_1$) ==> $E_1$ && \old($A_2$) ==> $E_2$;
+/*@ requires P && (A$_1$ ==> R$_1$) && (A$_2$ ==> R$_2$);
+  @ assigns L$_1$,L$_2$;
+  @ ensures \old(A$_1$) ==> E$_1$ && \old(A$_2$) ==> E$_2$;
   @*/
 \end{listing}
 Note that a simple contract such as
 \begin{listing}{1}
-/*@ requires $P$; assigns $L$; ensures $E$; */
+/*@ requires P; assigns L; ensures E; */
 \end{listing}
 is actually equivalent to a single named behavior as follows:
 \begin{listing}{1}
-/*@ requires $P$;
+/*@ requires P;
   @ behavior <any name>:
   @   assumes \true;
-  @   assigns $L$;
-  @   ensures $E$;
+  @   assigns L;
+  @   ensures E;
   @*/
 \end{listing}
 Similarly, global \assigns\ and \ensures\ clauses are equivalent to a
 single named behavior. More precisely, the following contract
 \begin{listing}{1}
-/*@ requires $P$;
-  @ assigns $L$;
-  @ ensures $E$;
-  @ behavior $b_1$: `\dots`
-  @ behavior $b_2$: `\dots`
+/*@ requires P;
+  @ assigns L;
+  @ ensures E;
+  @ behavior b$_1$: `\dots`
+  @ behavior b$_2$: `\dots`
   @ `\dots`
   @*/
 \end{listing}
 is equivalent to
 \begin{listing}{1}
-/*@ requires $P$;
+/*@ requires P;
   @ behavior <any name>:
   @   assumes \true;
-  @   assigns $L$;
-  @   ensures $E$;
-  @ behavior $b_1$: `\dots`
-  @ behavior $b_2$: `\dots`
+  @   assigns L;
+  @   ensures E;
+  @ behavior b$_1$: `\dots`
+  @ behavior b$_2$: `\dots`
   @ `\dots`
   @*/
 \end{listing}
@@ -1189,8 +1189,8 @@ correspond respectively to the successful behavior and the failing
 behavior.
 
 Since the function is performing a binary search, it requires the
-array \lstinline|t| to be sorted in increasing order: this is the purpose of the
-predicate named \lstinline|t_is_sorted| in the \assumes\ clause of the
+array \lstinline|t| to be sorted in increasing order: this is the purpose of
+the predicate named \lstinline|t_is_sorted| in the \assumes\ clause of the
 behavior named \lstinline|failure|.
 
 See~\ref{sec:loop_annot} for a continuation of this example.
@@ -1211,22 +1211,22 @@ See~\ref{sec:loop_annot} for a continuation of this example.
 \subsubsection{Completeness of behaviors}
 \label{sec:compl-behav}
 Notice that in a contract with named behaviors, it is not required that
-the disjunction of the $A_i$ is true, \emph{i.e.} it is not mandatory to
-provide a ``complete'' set of behaviors.
+the disjunction of the \lstinline|A$_i$| is true, \emph{i.e.} it is not 
+mandatory to provide a ``complete'' set of behaviors.
 If such a condition is seeked, it is possible to add the following clause
 to a contract:
 \index{complete behaviors}
 \begin{listing-nonumber}
 /*@ `\dots`
-  @ complete behaviors $b_1$,$\ldots$,$b_n$;
+  @ complete behaviors b$_1$,`\dots`,b$_n$;
   @*/
 \end{listing-nonumber}
-It specifies that the set of behaviors $b_1,\ldots,b_n$ is complete \emph{i.e.}
-that
+It specifies that the set of behaviors \lstinline|b$_1$,$\ldots$,b$_n$| 
+is complete \emph{i.e.} that
 \begin{listing-nonumber}
-R ==> ($A_1$ || $A_2$ || ... || $A_n$)
+R ==> (A$_1$ || A$_2$ || ... || A$_n$)
 \end{listing-nonumber}
-holds, where $R$ is the precondition of the contract.
+holds, where \lstinline|R| is the precondition of the contract.
 The simplified version of that clause
 \begin{listing-nonumber}
 /*@ `\dots`
@@ -1240,13 +1240,13 @@ If desired, this can be specified with the following clause:
 \index{disjoint behaviors}
 \begin{listing-nonumber}
 /*@ ...
-  @ disjoint behaviors $b_1,\ldots,b_n$;
+  @ disjoint behaviors b$_1$,`\dots`,b$_n$;
   @*/
 \end{listing-nonumber}
 It means that the given behaviors are pairwise disjoint \emph{i.e.}
 that, for all distinct $i$ and $j$,
 \begin{listing-nonumber}
-R ==> ! ($A_i$ && $A_j$)
+R ==> ! (A$_i$ && A$_j$)
 \end{listing-nonumber}
 holds.
 The simplified version of that clause
@@ -1357,18 +1357,21 @@ where $s$ denotes any \textsl{tset}.
   \lstinline|x $\in$ s|.
 \item \lstinline|&s| denotes the set of \lstinline|&x| for each
   \lstinline|x $\in$ s|.
-\item \lstinline|$s_1$[$s_2$]| denotes the set of
-\lstinline|$x_1$[$x_2$]| for each $x_1 \in s_1$
-  and $x_2 \in s_2$.
-\item \lstinline|$t_1$ .. $t_2$| denotes the set of integers between $t_1$ and
-  $t_2$, included. If $t_1 > t_2$, this the same as \lstinline+\empty+
-\item \lstinline|\union($s_1$,$\ldots$,$s_n$)|\indexttbs{union}
-  denotes the union of $s_1,s_2,\ldots $ and $s_n$;
-\item \lstinline|\inter($s_1$,$\ldots$,$s_n$)|\indexttbs{inter}
-  denotes the intersection of $s_1,s_2,\ldots $ and $s_n$;
-\item \lstinline|$s_1$+$s_2$| denotes the set of
-  \lstinline|$x_1$+$x_2$| for each $x_1 \in s_1$
-  and $x_2 \in s_2$;
+\item \lstinline|s$_1$[s$_2$]| denotes the set of
+\lstinline|x$_1$[x$_2$]| for each \lstinline|x$_1$ $\in$ s$_1$|
+  and \lstinline|x$_2$ $\in$ s$_2$|.
+\item \lstinline|t$_1$ .. t$_2$| denotes the set of integers between 
+\lstinline|t$_1$| and \lstinline|t$_2$|, included. 
+If \lstinline|t$_1$ $>$ t$_2$|, this the same as \lstinline+\empty+
+\item \lstinline|\union(s$_1$,$\ldots$,s$_n$)|\indexttbs{union}
+denotes the union 
+of \lstinline|s$_1, $s$_2,\ldots $| and \lstinline|s$_n$|;
+\item \lstinline|\inter(s$_1$,$\ldots$,s$_n$)|\indexttbs{inter}
+denotes the intersection 
+of \lstinline|s$_1, $s$_2,\ldots $| and \lstinline|s$_n$|;
+\item \lstinline|s$_1$+s$_2$| denotes the set of
+  \lstinline|x$_1$+x$_2$| for each \lstinline|x$_1$ $\in$ s$_1$|
+  and \lstinline|x$_2$ $\in$ s$_2$|;
 \item \lstinline|(s)| denotes the same set as \lstinline|s|;
 \item \lstinline+{ s | b ; P }+ denotes set
   comprehension\index{comprehension},
@@ -1481,11 +1484,11 @@ as an extension of the grammar of C statements.
 
 \begin{itemize}
 \item
-  \lstinline|assert p|  means that \lstinline|p| must hold in the current state
+  \lstinline|assert P|  means that \lstinline|P| must hold in the current state
   (the sequence point where the assertion occurs).
 
-\item The variant \lstinline|for $id_1$,$\ldots$,$id_k$: assert p|
-  associates the assertion to the named behaviors $id_i$, each
+\item The variant \lstinline|for id$_1$,$\ldots$,id$_k$: assert P|
+  associates the assertion to the named behaviors \lstinline|id$_i$|, each
   of them being a behavior identifier for the current function (or a
   behavior of an enclosing block as defined later in
   Section~\ref{sec:statement_contract}).  It means that this assertion
@@ -1494,7 +1497,7 @@ as an extension of the grammar of C statements.
 
 \oldremark{Claude}{unifier les 2 derniers cas? car a-t-on besoin de
   nommer un assert en dehors d'un behavior de la fonction? Surtout que
-  l'on peut deja ecrire assert (id : p)
+  l'on peut deja ecrire assert (id : P)
 }
 
 \subsection{Loop annotations}
@@ -2080,28 +2083,29 @@ Figure~\ref{fig:gram:inductive}.
 \label{fig:gram:inductive}
 \end{figure}
 
-In general, an inductive definition of a predicate $P$ has the form
+In general, an inductive definition of a predicate \lstinline|P| has the form
 \begin{listing}{1}
-/*@ inductive P($x_1$,$\ldots$,$x_n$) {
-  @   case $c_1$ : $p_1$;
+/*@ inductive P(x$_1$,$\ldots$,x$_n$) {
+  @   case c$_1$ : p$_1$;
 ...
-  @   case $c_k$ : $p_k$;
+  @   case c$_k$ : p$_k$;
   @ }
   @*/
 \end{listing}
-where each $c_i$ is an identifier and each $p_i$ is a proposition.
+where each \lstinline|c$_i$| is an identifier and each \lstinline|p$_i$| 
+is a proposition.
 
 The semantics of such a definition is that \lstinline|P| is the least fixpoint
 of the cases, i.e. is the smallest predicate (in the sense that it is
-false the most often) satisfying the propositions $p_1,\ldots,p_k$.
+false the most often) satisfying the propositions \lstinline|p$_1,\ldots,$p$_k$|.
 With this general form, the existence of a least fixpoint is not
 guaranteed, so tools might enforce syntactic conditions on the form of
 inductive definitions. A standard syntactic restriction could be to
-allow only propositions $p_i$ of the form
+allow only propositions \lstinline|p$_i$| of the form
 \begin{listing-nonumber}
-\forall $y_1,\ldots,y_m$, $h_1$ ==> $\cdots$ ==> $h_l$ ==> P($t_1$,$\ldots$,$t_n$)
+\forall y$_1$,`\dots`,y$_m$, h$_1$ ==> $\cdots$ ==> h$_l$ ==> P(t$_1$,`\dots`,t$_n$)
 \end{listing-nonumber}
-where \lstinline|P| occurs only positively in hypotheses $h_1,\ldots,h_l$
+where \lstinline|P| occurs only positively in hypotheses \lstinline|h$_1,\ldots,$h$_l$|
 (definite Horn clauses,
 \url{http://en.wikipedia.org/wiki/Horn_clause}).
 
@@ -2221,19 +2225,19 @@ Figure~\ref{fig:gram:higherorder} introduces new term constructs for
 higher-order logic.
 \begin{description}
 \item[Abstraction]\indexttbs{lambda}
-  The term \lstinline|\lambda $\tau_1$ $x_1$,$\ldots$,$\tau_n$ $x_n$; t|
-  denotes the $n$-ary logic function which maps $x_1,\ldots,x_n$ to
+  The term \lstinline|\lambda $\tau_1$ x$_1$,$\ldots$,$\tau_n$ x$_n$; t|
+  denotes the $n$-ary logic function which maps \lstinline|x$_1,\ldots,$x$_n$| to
   \lstinline|t|. It has the same precedence as \Forall and \Exists
 \item[Extended quantifiers]
   Terms
-  $\backslash quant(t_1,t_2,t_3)$
-  where $quant$ is \lstinline|max|\indexttbs{max}
-  \lstinline|min|\indexttbs{min}
-  \lstinline|sum|\indexttbs{sum}
+ \lstinline|$\backslash quant$(t$_1$,t$_2$,t$_3$)|
+  where $quant$ is \lstinline|max|\indexttbs{max},
+  \lstinline|min|\indexttbs{min},
+  \lstinline|sum|\indexttbs{sum},
   \lstinline|product|\indexttbs{product}
   or \lstinline|numof|\indexttbs{numof}
-  are extended quantifications. $t_1$ and $t_2$ must have type
-  \lstinline|integer|, and $t_3$ must be a unary function with an integer
+  are extended quantifications. \lstinline|t$_1$| and \lstinline|t$_2$| must have type
+  \lstinline|integer|, and \lstinline|t$_3$| must be a unary function with an integer
   argument, and a numeric value (integer or real) except for
   \lstinline|\numof| for which it should have a boolean value. Their
   meanings are given as follows:
@@ -2515,15 +2519,12 @@ The default value of that label is defined in Section~\ref{sec:default-logic-lab
 \item \lstinline|\base_addr{L}(p)|\indexttbs{base\_addr}
 returns the base address of the allocated block
 containing, at the label \lstinline|L|, the pointer \lstinline|p|
-\begin{listing-nonumber}
-\base_addr{id} : $\alpha$ * $\ra$ char*
-\end{listing-nonumber}
+\\ \makebox[5mm]{} \lstinline|\base_addr{id} : $\alpha$ * $\ra$ char*|
+
 \item \lstinline|\block_length{L}(p)|\indexttbs{block\_length}
   returns the length (in bytes) of the allocated block containing, 
   at the label \lstinline|L|, its argument pointer.
-\begin{listing-nonumber}
-\block_length{id} : $\alpha$ * $\ra$ size_t
-\end{listing-nonumber}
+\\ \makebox[5mm]{} \lstinline|\block_length{id} : $\alpha$ * $\ra$ size_t|
 \end{itemize}
 
 In addition, dereferencing a pointer may lead to run-time errors. A pointer
@@ -2537,9 +2538,7 @@ following built-in predicates deal with this notion:
  dereferencing any $p\in \lstinline|s|$ is safe  at label \lstinline|L|, both for reading from 
 \lstinline|*p| and writing to it. In particular,
 \lstinline|\valid{L}(\empty)| holds for any label \lstinline|L|. 
-\begin{listing-nonumber}
-\valid{id} : set<$\alpha$ *> $\ra$ boolean
-\end{listing-nonumber}
+\\ \makebox[5mm]{} \lstinline|\valid{id} : set<$\alpha$ *> $\ra$ boolean|
 \item 
 \begin{notimplementedenv}
 [Actual implementation recognizes only one type of validity]
@@ -2547,21 +2546,20 @@ following built-in predicates deal with this notion:
 \end{notimplementedenv}
 applies to a set of terms of some pointer type and holds if and only
 if it is safe to read from all the pointers in the set
-\begin{listing-nonumber}
-\valid_read{id} : set<$\alpha$ *> $\ra$ boolean
-\end{listing-nonumber}
+\\ \makebox[5mm]{} \lstinline|\valid_read{id} : set<$\alpha$ *> $\ra$ boolean|
 \end{itemize}
 
-\lstinline|\valid{L}(p)| implies \lstinline|\valid_read{L}(p)| but the reverse is 
+\lstinline|\valid{L}(s)| implies \lstinline|\valid_read{L}(s)| but the reverse is 
 not true. In particular, it is allowed to read from a string literal, but not 
 to write in it (see \cite{standardc99}, 6.4.5\S6).
 
-Note in addition that the status of \valid depends on the
-type of its argument. Namely, \lstinline|\valid{L}((int *) p)| and 
+Note in addition that the status of \valid and \lstinline|\valid_read| constructs depends on the
+type of their argument. Namely, \lstinline|\valid{L}((int *) p)| and 
 \lstinline|\valid{L}((char *)p)| are not equivalent. On the other hand, if we 
-ignore potential alignment constraints, the following equivalence is true:
+ignore potential alignment constraints, the following equivalence is true for any pointer \lstinline|p|:
 \begin{listing-nonumber}
 \valid{L}(p) <==> \valid{L}(((char *)p)+(0..sizeof(*p)))
+\valid_read{L}(p) <==> \valid_read{L}(((char *)p)+(0..sizeof(*p)))
 \end{listing-nonumber}
 
 Some shortcuts are provided:
@@ -2572,20 +2570,20 @@ Some shortcuts are provided:
   as in C itself (see \cite{standardc99}, 6.3.2.3\S3),
   the constant \lstinline|0| can have any pointer type. In addition, 
   \lstinline|\valid{L}(\null)| is always false, for any logic label \lstinline|L|.
+  Of course, \lstinline|\valid_read{L}(\null)| is always false too.
 % \footnote{or to \texttt{NULL}, if
 %    annotations are pre-processed are the appropriate inclusion of
 %    \texttt{stddef.h} is added}
 \item \begin{notimplementedenv}\lstinline|\offset{L}(p)|\end{notimplementedenv}%
   \indexttbs{offset}
   returns the offset between \lstinline|p| and its base address
-
-  \begin{tabular}{lcl}
+\\ \makebox[5mm]{} \begin{tabular}{lll}
     \lstinline|\offset{id}| &:& \lstinline|$\alpha$ * $\ra$ size_t| \\
     \lstinline|\offset{L}(p)| &=& \lstinline|(char*)p - \base_addr{L}(p)| \\
   \end{tabular} \\
 Again, if there is no alignment constraints,
   the following property holds: for any set of pointers
-\lstinline|s| and label \lstinline|L|, \lstinline|\valid{L}(s)| if and only if for all \lstinline|p$\in$s|:
+\lstinline|s| and label \lstinline|L|, \lstinline|\valid_read{L}(s)| if and only if for all \lstinline|p$\in$s|:
   \begin{listing-nonumber}
     \offset{L}(p) >= 0 && \offset{L}(p) + sizeof(*p) <= \block_length{L}(p)
   \end{listing-nonumber}
@@ -2608,7 +2606,7 @@ if and only if for all \lstinline|p$\in$s$_1$| and \lstinline|q$\in$s$_2$|:
      ==>  (char*)p + i != (char*)q + j 
 \end{listing-nonumber}
 
-In fact, \lstinline|\separated| is an n-ary predicate.\\
+In fact, \lstinline|\separated| is an $n$-ary predicate.\\
 \lstinline|\separated(s$_1$,..,s$_n$)|\indexttbs{separated} means
 that for each
 $i\neq j$, \lstinline|\separated(s$_i$,s$_j$)|.
@@ -2627,7 +2625,11 @@ $i\neq j$, \lstinline|\separated(s$_i$,s$_j$)|.
 is dynamically allocated or deallocated.
 The grammar for those constructions is given on Figure~\ref{fig:gram:allocation}.
 
-Figure~\ref{fig:gram:logicdecl}.
+Note that \lstinline|allocates \nothing| and \lstinline|frees \nothing| are respectively 
+equivalent to \lstinline|allocates \empty| and \lstinline|frees \empty|; 
+it is left for convenience like \assigns clauses.
+
+
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
       \input{allocation_modern.bnf}
@@ -2639,38 +2641,112 @@ Figure~\ref{fig:gram:logicdecl}.
 \subsubsection{Allocation clauses for function and statement contracts}
 
 The semantics of the clauses \allocates and \frees cannot be defined separately from the other.
-The contract  
+The simple contract  
 \begin{listing-nonumber}
-/*@ \allocates $P_1$, $P_2$, ...
-  @ \frees  $Q_1$, $Q_2$, ... 
+/*@ \frees P$_1$,P$_2$,`\dots`
+  @ \allocates Q$_1$,Q$_2$,`\dots`
+  @*/
 \end{listing-nonumber}
-means that all memory addresses that do not belong to the set 
-$P_1 \union P_2 \union ...  \union \old(Q_1 \union Q_2 \union ...)$ 
-(set evaluated in the post-state) refer to memory those allocation statuses
+means that all memory addresses, that do not belong to the union of sets of terms
+\lstinline|P$_i$| and \lstinline|Q$_j$| of some pointer type,
+refer to memory those {\sl allocation statuses}
 in the post-state are identical to those in the pre-state. 
+While the sets \lstinline|P$_i$| are evaluated in the pre-state,
+the sets \lstinline|Q$_i$| are evaluated in the post-state.
+That is the only one difference between the clauses \lstinline|allocates| and \lstinline|frees|.
 
+Lets now define what is meaning by unmodified {\sl allocation status}:
+The clause \lstinline|allocates| \lstinline|Q$_1$,$\ldots$,Q$_n$| is equivalent
+to the postcondition
+\begin{listing-nonumber}
+\forall char* p; 
+\separated(\union(Q$_1$,$\ldots$,Q$_n$),p)==>(\allocation{Here}(p)==\allocation{Pre}(p)
+                               && \base_addr{Here}(p)==\base_addr{Pre}(p)
+                               && \block_length{Here}(p)==\block_length{Pre}(p)
+                               && \valid{Here}(p)<==>\valid{Pre}(p)
+                               && \valid_read{Here}(p)<==>\valid_read{Pre}(p))
+\end{listing-nonumber}
 
-Note that \lstinline|allocates \nothing| and \lstinline|frees \nothing| are respectively 
-equivalent to \lstinline|allocates \empty| and \lstinline|frees \empty|; 
-it is left for convenience.
+In fact, like the \assigns clause does not specify which memory location is assigned,
+the \textsl{Allocation-clauses} do not specify which memory location 
+is dynamically allocated or deallocated.
+Pre-conditions and post-conditions should be added to complete specifications
+about these allocations and deallocations.
+The following built-in constructs can be used for that:
 
-
-\oldremark{PC}{
-
-quid de la pile -> a voir
-
-}
-The following built-in predicates allow to deal with allocation and
-deallocation of memory blocks. They can be used in a postcondition
 \begin{itemize}
-\item \lstinline|\fresh(p)|\indexttbs{fresh}
-indicates that \lstinline|p| was not allocated in the pre-state.
-
-\item \begin{notimplementedenv}\lstinline|\free{L}(p)|\end{notimplementedenv}%
-\indexttbs{free},
-  indicates that \lstinline|p| was allocated in the pre-state but that it is not
-  the case in the post-state.
+\item  \begin{notimplementedenv}\lstinline|\allocation{L}(p)|\end{notimplementedenv}%
+  \indexttbs{allocation}
+ informs on the allocation status of the block containing, at the label \lstinline|L|, the pointer \lstinline|p| 
+\\ \makebox[5mm]{} \lstinline|\allocation{id} : $\alpha$ * $\ra$| 
+\begin{notimplementedenv}\lstinline|{\static, \register, \auto, \dynamic, \unallocated}|
+\end{notimplementedenv}%
+This function is such that for any pointer \lstinline|p| and label \lstinline|L|
+\begin{listing-nonumber}
+\allocation{L}(p) <==> \allocation{L}(\base_addr(p))
+\end{listing-nonumber}
+and
+\begin{listing-nonumber}
+\allocation{L}(p)==\unallocated ==> !\valid_read{L}(p)
+\end{listing-nonumber}
 \end{itemize}
+
+Some shorcuts are provided:
+
+\begin{itemize}
+\item \begin{notimplementedenv}\lstinline|\allocable{L}(p)|\end{notimplementedenv}%
+  \indexttbs{allocable}
+ holds if and only if
+the pointer \lstinline|p| refers, at the label \lstinline|L|, the base address of 
+an unallocated memory block.
+\\ \makebox[5mm]{} \lstinline|\allocable{id} : $\alpha$ * $\ra$ boolean|
+\\
+For any pointer \lstinline|p| and label \lstinline|L|
+\begin{listing-nonumber}
+\allocable{L}(p) <==> (\allocation{L}(p)==\unallocated && p==base_addr{L}(p)).
+\end{listing-nonumber}
+  
+\item \begin{notimplementedenv}\lstinline|\freeable{L}(p)|\end{notimplementedenv}%
+  \indexttbs{freeable}
+ holds if and only if
+the pointer \lstinline|p| refers, at the label \lstinline|L|, an allocated memory block 
+that can be safely released using the C function \lstinline|free|.
+\\ \makebox[5mm]{} \lstinline|\freeable{id} : $\alpha$ * $\ra$ boolean|
+\\
+For any pointer \lstinline|p| and label \lstinline|L|
+\begin{listing-nonumber}
+\freeable{L}(p) <==> (\allocation{L}(p)==\dynamic && p==base_addr{L}(p)).
+\end{listing-nonumber}
+  
+\item \begin{notimplementedenv}\lstinline|\fresh{L$_0$,L$_1$}(p,n)|\end{notimplementedenv}%
+\indexttbs{fresh},
+  indicates that \lstinline|p| refers an allocated memory block at label \lstinline|L$_1$|, 
+  but that it is not the case at label \lstinline|L$_0$|. 
+  The predicate ensures also that, at label \lstinline|L$_1$|, the length
+  (in bytes) of the block allocated dynamically equals to \lstinline|n|.
+\\ \makebox[5mm]{} \lstinline|\fresh{id,id} : $\alpha$ *, \integer $\ra$ boolean|
+\\
+For any pointer \lstinline|p| and label \lstinline|L|
+\begin{listing-nonumber}
+\fresh{L$_0$,L$_1$}(p,n) <==> (\allocable{L$_0$}(p) && 
+                         \freeable{L$_1$}(p) && 
+                         \block_length{L$_1$}(p)==n &&
+                         \valid{L$_1$}((char*)p+(0..n))
+\end{listing-nonumber}
+\end{itemize}
+
+\begin{example}
+  There is a first example giving specifications to \lstinline|malloc| and \lstinline|free| functions.
+  \listinginput{1}{malloc_free_fn.c}
+  Note that logic label \lstinline|Here| et \lstinline|Old| can be omitted.
+\end{example}
+
+\subsubsection{Allocation clauses for loop annotations}
+
+
+\subsubsection{Default value for allocation clauses}
+
+
 
 \section{Sets as first-class values}\label{sec:sets}
 \index{location}
@@ -2704,21 +2780,21 @@ each of its elements \lstinline|e| is converted to
 \end{example}
 
 Thus, the \separated predicate satisfies the following property (with
-$l_1$ of type \lstinline|set<$\tau_1$*>| and $l_2$ of type
+\lstinline|s$_1$| of type \lstinline|set<$\tau_1$*>| and \lstinline|s$_2$| of type
 \lstinline|set<$\tau_2$*>|)
 \begin{listing}{1}
-\separated($l_1$,$l_2$) <==>
+\separated(s$_1$,s$_2$) <==>
   (\forall \tau_1* p; \forall \tau_2* q;
-     \subset(p,$l_1$) && \subset(q,$l_2$) ==>
+     \subset(p,s$_1$) && \subset(q,s$_2$) ==>
        (\forall \integer i,j;
          0 <= i < \sizeof($\tau_1$) && 0 <= j < \sizeof($\tau_2$) ==>
            (char*)p + i != (char*)q + j))
 \end{listing}
 
-and a clause \lstinline|assigns $l_1$,...,$l_n$| is equivalent
+and a clause \lstinline|assigns L$_1$,$\ldots$,L$_n$| is equivalent
 to the postcondition
 \begin{listing-nonumber}
-\forall char* p; \separated(\union(&$l_1$,...,&$l_n$),p) ==> *p == \old(*p)
+\forall char* p; \separated(\union(&L$_1$,$\ldots$,&L$_n$),p) ==> *p == \old(*p)
 \end{listing-nonumber}
 
 \section{Abrupt termination}

@@ -2,6 +2,7 @@ MAIN=main
 DEPS_MODERN=speclang_modern.tex macros_modern.tex framacversion.tex	\
 	intro_modern.tex libraries_modern.tex compjml_modern.tex	\
 	div_lemma.c assigns.c invariants.c example-lt-modern.tex	\
+	malloc_free_fn.c \
 	isqrt.c sizeof.c incrstar.c parsing_annot_modern.tex		\
 	integer-cast-modern.tex max.c max_index.c cond_assigns.c	\
 	bsearch.c bsearch2.c assigns_array.c assigns_list.c sum.c	\
