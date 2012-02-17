@@ -883,7 +883,7 @@ the converse).
 \end{listing-nonumber}
 \end{example}
 
-An explicit cast from a array type to a pointer type is allowed only
+An explicit cast from an array type to a pointer type is allowed only
 for arrays that lies in C memory. As in C, the result of the cast is
 the address of the first element of the array (see
 Section~\ref{sec:address}).
@@ -2519,12 +2519,12 @@ The default value of that label is defined in Section~\ref{sec:default-logic-lab
 \item \lstinline|\base_addr{L}(p)|\indexttbs{base\_addr}
 returns the base address of the allocated block
 containing, at the label \lstinline|L|, the pointer \lstinline|p|
-\\ \makebox[5mm]{} \lstinline|\base_addr{id} : $\alpha$ * $\ra$ char*|
+\\ \makebox[5mm]{} \lstinline|\base_addr{id} : void* $\ra$ char*|
 
 \item \lstinline|\block_length{L}(p)|\indexttbs{block\_length}
   returns the length (in bytes) of the allocated block containing, 
   at the label \lstinline|L|, its argument pointer.
-\\ \makebox[5mm]{} \lstinline|\block_length{id} : $\alpha$ * $\ra$ size_t|
+\\ \makebox[5mm]{} \lstinline|\block_length{id} : void* $\ra$ size_t|
 \end{itemize}
 
 In addition, dereferencing a pointer may lead to run-time errors. A pointer
@@ -2559,6 +2559,9 @@ type of their argument. Namely, \lstinline|\valid{L}((int *) p)| and
 ignore potential alignment constraints, the following equivalence is true for any pointer \lstinline|p|:
 \begin{listing-nonumber}
 \valid{L}(p) <==> \valid{L}(((char *)p)+(0..sizeof(*p)))
+\end{listing-nonumber}
+and
+\begin{listing-nonumber}
 \valid_read{L}(p) <==> \valid_read{L}(((char *)p)+(0..sizeof(*p)))
 \end{listing-nonumber}
 
@@ -2578,7 +2581,7 @@ Some shortcuts are provided:
   \indexttbs{offset}
   returns the offset between \lstinline|p| and its base address
 \\ \makebox[5mm]{} \begin{tabular}{lll}
-    \lstinline|\offset{id}| &:& \lstinline|$\alpha$ * $\ra$ size_t| \\
+    \lstinline|\offset{id}| &:& \lstinline|void* $\ra$ size_t| \\
     \lstinline|\offset{L}(p)| &=& \lstinline|(char*)p - \base_addr{L}(p)| \\
   \end{tabular} \\
 Again, if there is no alignment constraints,
@@ -2678,8 +2681,8 @@ The following built-in constructs can be used for that:
 \item  \begin{notimplementedenv}\lstinline|\allocation{L}(p)|\end{notimplementedenv}%
   \indexttbs{allocation}
  informs on the allocation status of the block containing, at the label \lstinline|L|, the pointer \lstinline|p| 
-\\ \makebox[5mm]{} \lstinline|\allocation{id} : $\alpha$ * $\ra$| 
-\begin{notimplementedenv}\lstinline|{\static, \register, \auto, \dynamic, \unallocated}|
+\\ \makebox[5mm]{} \lstinline|\allocation{id} : void* $\ra$| 
+\begin{notimplementedenv}\lstinline|{\static, \register, \automatic, \dynamic, \unallocated}|
 \end{notimplementedenv}%
 This function is such that for any pointer \lstinline|p| and label \lstinline|L|
 \begin{listing-nonumber}
@@ -2691,7 +2694,7 @@ and
 \end{listing-nonumber}
 \end{itemize}
 
-Some shorcuts are provided:
+Some usefull shortcuts are provided:
 
 \begin{itemize}
 \item \begin{notimplementedenv}\lstinline|\allocable{L}(p)|\end{notimplementedenv}%
@@ -2699,7 +2702,7 @@ Some shorcuts are provided:
  holds if and only if
 the pointer \lstinline|p| refers, at the label \lstinline|L|, the base address of 
 an unallocated memory block.
-\\ \makebox[5mm]{} \lstinline|\allocable{id} : $\alpha$ * $\ra$ boolean|
+\\ \makebox[5mm]{} \lstinline|\allocable{id} : void* $\ra$ boolean|
 \\
 For any pointer \lstinline|p| and label \lstinline|L|
 \begin{listing-nonumber}
@@ -2711,7 +2714,7 @@ For any pointer \lstinline|p| and label \lstinline|L|
  holds if and only if
 the pointer \lstinline|p| refers, at the label \lstinline|L|, an allocated memory block 
 that can be safely released using the C function \lstinline|free|.
-\\ \makebox[5mm]{} \lstinline|\freeable{id} : $\alpha$ * $\ra$ boolean|
+\\ \makebox[5mm]{} \lstinline|\freeable{id} : void* $\ra$ boolean|
 \\
 For any pointer \lstinline|p| and label \lstinline|L|
 \begin{listing-nonumber}
@@ -2724,7 +2727,7 @@ For any pointer \lstinline|p| and label \lstinline|L|
   but that it is not the case at label \lstinline|L$_0$|. 
   The predicate ensures also that, at label \lstinline|L$_1$|, the length
   (in bytes) of the block allocated dynamically equals to \lstinline|n|.
-\\ \makebox[5mm]{} \lstinline|\fresh{id,id} : $\alpha$ *, \integer $\ra$ boolean|
+\\ \makebox[5mm]{} \lstinline|\fresh{id,id} : void*, \integer $\ra$ boolean|
 \\
 For any pointer \lstinline|p| and label \lstinline|L|
 \begin{listing-nonumber}
