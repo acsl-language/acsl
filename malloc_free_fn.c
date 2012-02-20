@@ -1,8 +1,11 @@
+//NOPP-BEGIN
+#include <stdlib.h> 
+//NOPP-END
 /*@ assigns \nothing;
   @ allocates \result;
   @ ensures fresh{Old,Here}(\result,n);
   @*/
-void * malloc(size_t n);
+void *malloc(size_t n);
 
 /*@ requires p!=\null ==> \freeable{Here}(p);
   @ assigns \nothing;

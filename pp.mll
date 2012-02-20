@@ -30,8 +30,7 @@
     let h = Hashtbl.create 97 in
     List.iter (fun s -> Hashtbl.add h s ())
       [ 
-        "allocates" ; "free" ;
-	"auto"; "assert"; "break"; "case"; "continue"; "new";
+        "auto"; "assert"; "break"; "case"; "continue"; "new";
 	"default"; "do"; "else"; "for"; "goto"; "if";
 	"return"; "switch"; "while";
 	"class" ; "interface" ; "ensures";
@@ -46,6 +45,8 @@
 	"axiomatic" ; "inductive" ;
 	"exit_behavior" ; "behavior" ; "model"; "ghost"; "terminates";
         "disjoint"; "behaviors"; "complete";
+	"allocates" ; "frees" ;
+        "Here" ; "Old" ; "Post" ; "Pre"
       ];
     h
 
@@ -53,13 +54,13 @@
     let h = Hashtbl.create 97 in
     List.iter (fun s -> Hashtbl.add h s "")
       [
-	"separated"; "offset" ; "free" ; "allocated" ; "fresh" ;
+	"separated"; "offset" ; "freeable" ; "allocable" ; "fresh" ;
 	"valid_range" ; "valid"; "lambda" ; "sum" ; "match" ;
 	"base_addr" ; "block_length" ; "strlen" ; "max" ; 
 	"initialized" ; "specified" ;
 	"null" ;
 	"old";
-	"fresh"; "from";
+	"from";
 	"nothing";
 	"result";
 	"let" ; "at"; "true"; "false"; "numof";
@@ -76,10 +77,11 @@
     let h = Hashtbl.create 97 in
     List.iter (fun s -> Hashtbl.add h s ())
       [
-	"char"; "const"; "double"; "enum"; "extern";
+	"char"; "double"; "enum"; "extern";
 	"float"; "int"; "long"; "register";
 	"short"; "signed"; "static"; "struct";
-	"typedef"; "union"; "unsigned"; "void"; "volatile"
+	"typedef"; "union"; "unsigned"; "void"; 
+        "const"; "volatile"
       ];
     h
 
