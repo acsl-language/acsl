@@ -2,7 +2,7 @@ MAIN=main
 DEPS_MODERN=speclang_modern.tex macros_modern.tex framacversion.tex	\
 	intro_modern.tex libraries_modern.tex compjml_modern.tex	\
 	div_lemma.c assigns.c invariants.c example-lt-modern.tex	\
-	malloc_free_fn.c \
+	malloc_free_fn.c malloc-free2-fn.c loop-frees.c\
 	isqrt.c sizeof.c incrstar.c parsing_annot_modern.tex		\
 	integer-cast-modern.tex max.c max_index.c cond_assigns.c	\
 	bsearch.c bsearch2.c assigns_array.c assigns_list.c sum.c	\
@@ -129,7 +129,7 @@ cond_assigns.c div_lemma.c dowhile.c euclide.c exit.c extremum-tut.c	\
 extremum2-tut.c fact.c flag.c footprint.c ghostpointer.c		\
 glob_var_masked.c glob_var_masked_sol.c global_invariant-tut.c		\
 incrstar.c initialized.c intlists.c isgcd.c isqrt.c listdecl.c		\
-listdef.c loopvariantnegative.c max-tut.c max.c max_index.c		\
+listdef.c loopvariantnegative.c max-tut.c max.c max_index.c	        \
 max_list-tut.c max_ptr-tut.c max_ptr2-tut.c max_ptr_bhv-tut.c		\
 max_ptr_false-tut.c max_seq-tut.c max_seq2-tut.c max_seq_assigns-tut.c	\
 max_seq_ghost-tut.c max_seq_inv-tut.c max_seq_old-tut.c			\
@@ -137,11 +137,12 @@ max_seq_old2-tut.c mayexit.c mean.c minitutorial.c mutualrec.c		\
 nb_occ.c nb_occ_reads.c non_terminating-tut.c non_terminating2-tut.c	\
 num_of_pos.c oldat.c permut.c permut_reads.c sizeof.c sign.c signdef.c	\
 sort.c sqsum-tut.c sqsum2-tut.c sum.c swap-tut.c terminates_list.c	\
-type_invariant-tut.c volatile.c \
+type_invariant-tut.c volatile.c
 
 BAD=acsl_allocator.c gen_code.c gen_spec_with_ghost.c			\
 gen_spec_with_model.c ghostcfg.c import.c invariants.c			\
-lexico.c listlengthdef.c listmodule.c  malloc_free_fn.c modifier.c      \
+lexico.c listlengthdef.c listmodule.c loop-frees.c                      \
+malloc_free_fn.c malloc-free2-fn.c modifier.c                           \
 out_char.c specified.c strcpyspec.c sum2.c
 
 check: acsl-mini-tutorial.tex
@@ -153,6 +154,10 @@ check: acsl-mini-tutorial.tex
 	failed_list=""; \
         passed_list=""; \
         for f in *.c ; do \
+	  if test `grep -c "NOPP-END." $$f` -ne 0 ; then \
+	    echo "Failure since NOPP-END should end the line: $$f"; \
+	    exit 1; \
+	  fi; \
           $(FRAMAC) -pp-annot -verbose 0 $$f ; \
           case $$? in \
             0) if echo "$(GOOD)" | grep -q -e "$$f"; then good=$$(($$good +1)); \

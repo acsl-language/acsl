@@ -1006,7 +1006,7 @@ value from actual parameters that mostly remain unaltered by the
 function calls. For that reason, formal parameters in function
 contracts are defined such that they always refer implicitly to their
 values interpreted in the pre-state.
-So, \lstinline|\old| construct is useless for formal parameters (in
+So, \old construct is useless for formal parameters (in
 function contracts only).
 
 
@@ -1321,7 +1321,7 @@ means that all behaviors given in the contract should be taken into account.
 % PB: Modified since \separated operates on pointers and not on locations
 There are several places where one needs to describe a set of memory
 locations: in \assigns{} clauses of function contracts, or
-in \lstinline|loop assigns| clauses.
+in \Loop \assigns clauses.
 A \emph{memory location} is then any set of terms denoting a set of
 l-values\index{l-value}. Moreover, a location given as argument to
 an \assigns{} clause must be a set of modifiable l-values, as described in
@@ -1538,7 +1538,7 @@ specifies that the following conditions hold.
   if \lstinline|I| is assumed true in some state where the condition
   \lstinline|c| is also true, and if execution of the loop body in
   that state ends normally at the end of the body or with a
-  \lstinline{continue} statement, \lstinline|I| is true in the
+  \Continue statement, \lstinline|I| is true in the
   resulting state. 
   If the loop condition has side effects, these are
   included in the loop body in a suitable way:
@@ -1557,16 +1557,16 @@ Note that if \lstinline|c| has side-effects, the invariant might not
 be true at the exit of the loop: the last ``step'' starts from a state
 where \lstinline|I| holds, performs the side-effects of \lstinline|c|,
 which in the end evaluates to false and exits the loop. Likewise, if a
-loop is exited through a \lstinline|break| statement, \lstinline|I|
+loop is exited through a \Break statement, \lstinline|I|
 does not necessarily hold, as side effects may occur between
 the last state in which \lstinline|I| was supposed to hold and 
-the \lstinline|break| statement.
+the \Break statement.
 
 \item At any loop iteration, any location that was allocated before
   entering the loop, and is not member of \lstinline|L| (interpreted in the
   current state), must remain allocated and has the same value as
   before entering the loop.
-  In fact, the \lstinline|loop assigns| clause specifies an inductive
+  In fact, the \Loop \assigns clause specifies an inductive
   invariant for the locations that are not member of \lstinline|L|.
 \end{itemize}
 
@@ -1576,7 +1576,7 @@ A loop annotation preceded by
 \lstinline|for id_1,$\ldots$,id_k:| is similar as above, but
 applies only for behaviors \lstinline|id_1|,$\ldots$,\lstinline|id_k|
 of the current function, 
-hence in particular holds only under the assumption of their \texttt{assumes}
+hence in particular holds only under the assumption of their \assumes
 clauses.
 
 
@@ -2620,7 +2620,6 @@ $i\neq j$, \lstinline|\separated(s$_i$,s$_j$)|.
 \subsection{Dynamic allocation and deallocation}\label{sec:allocation-clause}
 \indextt{allocates}\indextt{frees}
 \index{allocation}\index{deallocation}\index{dynamic allocation}
-\index{loop!allocation}\index{loop!deallocation}
 
 \experimental
 
@@ -2630,8 +2629,7 @@ The grammar for those constructions is given on Figure~\ref{fig:gram:allocation}
 
 Note that \lstinline|allocates \nothing| and \lstinline|frees \nothing| are respectively 
 equivalent to \lstinline|allocates \empty| and \lstinline|frees \empty|; 
-it is left for convenience like \assigns clauses.
-
+it is left for convenience like for \assigns clauses.
 
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
@@ -2646,8 +2644,8 @@ it is left for convenience like \assigns clauses.
 The semantics of the clauses \allocates and \frees cannot be defined separately from the other.
 The simple contract  
 \begin{listing-nonumber}
-/*@ \frees P$_1$,P$_2$,`\dots`
-  @ \allocates Q$_1$,Q$_2$,`\dots`
+/*@ \frees P$_1$,P$_2$,`\dots`;
+  @ \allocates Q$_1$,Q$_2$,`\dots`;
   @*/
 \end{listing-nonumber}
 means that all memory addresses, that do not belong to the union of sets of terms
@@ -2656,10 +2654,10 @@ refer to memory those {\sl allocation statuses}
 in the post-state are identical to those in the pre-state. 
 While the sets \lstinline|P$_i$| are evaluated in the pre-state,
 the sets \lstinline|Q$_i$| are evaluated in the post-state.
-That is the only one difference between the clauses \lstinline|allocates| and \lstinline|frees|.
+That is the only one difference between the clauses \allocates and \lstinline|frees|.
 
-Lets now define what is meaning by unmodified {\sl allocation status}:
-The clause \lstinline|allocates| \lstinline|Q$_1$,$\ldots$,Q$_n$| is equivalent
+Lets now define what is meaning by unmodified {\sl allocation statuses}:
+the clause \allocates \lstinline|Q$_1$,$\ldots$,Q$_n$| is equivalent
 to the postcondition
 \begin{listing-nonumber}
 \forall char* p; 
@@ -2671,7 +2669,7 @@ to the postcondition
 \end{listing-nonumber}
 
 In fact, like the \assigns clause does not specify which memory location is assigned,
-the \textsl{Allocation-clauses} do not specify which memory location 
+the \textsl{allocation-clauses} do not specify which memory location 
 is dynamically allocated or deallocated.
 Pre-conditions and post-conditions should be added to complete specifications
 about these allocations and deallocations.
@@ -2729,7 +2727,7 @@ For any pointer \lstinline|p| and label \lstinline|L|
   (in bytes) of the block allocated dynamically equals to \lstinline|n|.
 \\ \makebox[5mm]{} \lstinline|\fresh{id,id} : void*, \integer $\ra$ boolean|
 \\
-For any pointer \lstinline|p| and label \lstinline|L|
+For any pointer \lstinline|p| and labels \lstinline|L$_0$| and \lstinline|L$_1$|
 \begin{listing-nonumber}
 \fresh{L$_0$,L$_1$}(p,n) <==> (\allocable{L$_0$}(p) && 
                          \freeable{L$_1$}(p) && 
@@ -2741,15 +2739,79 @@ For any pointer \lstinline|p| and label \lstinline|L|
 \begin{example}
   There is a first example giving specifications to \lstinline|malloc| and \lstinline|free| functions.
   \listinginput{1}{malloc_free_fn.c}
-  Note that logic label \lstinline|Here| et \lstinline|Old| can be omitted.
+  Default labels for constructs dedicated to memory are 
+  such that logic labels \lstinline|Here| and \lstinline|Old| can be omitted.
+\end{example}
+
+When a behavior has only one of the two allocation clauses,
+the given clause specifies the whole set of memory addresses to consider.
+This means that the set value for the other clause of that behavior defaults to \nothing.
+Now, when none of the two allocation clauses is given, the meaning is different
+for anonymous behaviors and named behaviors:
+\begin{itemize}
+\item a named behavior without allocation clause does not specify anything about
+      allocations and deallocations. 
+      The allocated and deallocated memory blocks are in fact specified by the 
+      anonymous behavior of the contract.
+      There is no condition to verify for these named behaviors about allocations 
+      and deallocations;
+\item for an anonymous behavior, no allocation clause means that there is no newly 
+      allocated nor deallocated memory block. 
+      That is equivalent to give \allocates \nothing.
+\end{itemize}
+These rules are such that contracts without any allocation clause should be considered 
+as having only one \allocates \nothing leading to a condition to verify for 
+each anonymous behavior.
+
+\begin{example}
+  More precise specifications can be given using named behaviors under the 
+  assumption of \assumes clauses.
+  \listinginput{1}{malloc-free2-fn.c}
+  The behaviors named \lstinline|allocation| and \lstinline|deallocation| do not 
+  need an allocation clause.
+  For example, the allocation constraint of the \lstinline|allocation| behavior 
+  is given by the clause \allocates \result of the anonymous behavior of the  
+  \lstinline|malloc| function contract. 
+  To set a stronger contraint into the behavior named \lstinline|no_allocation|,
+  the clause \allocates \nothing should be given.
 \end{example}
 
 \subsubsection{Allocation clauses for loop annotations}
+\index{loop!allocation}\index{loop!deallocation}
+
+Loop annotations are complemented by similar clauses allowing to specify which memory location 
+is dynamically allocated or deallocated by a loop.
+The grammar for those constructions is given on Figure~\ref{fig:gram:allocation}.
+
+The semantics of the \Loop \allocates clause is defined as follows:
+\begin{listing-nonumber}
+//@ loop allocates Q$_1$,Q$_2$,`\dots`;
+\end{listing-nonumber}
+means that all memory addresses, that do not belong to the union of sets of terms
+\lstinline|Q$_1$ $\cup$ Q$_2$ $\cup \dots$| (interpreted in the current state), 
+refer to memory those {\sl allocation statuses}
+have the same value in the current state than before entering the loop.
+
+Lets name \lstinline|Here| the current state and \lstinline|L$_0$| the one before entering the loop
+for defining what is meaning by unmodified {\sl allocation statuses}:
+the clause \Loop \allocates \lstinline|Q$_1$,$\ldots$,Q$_n$| is equivalent
+to the postcondition
+\begin{listing-nonumber}
+\forall char* p; 
+\separated(\union(Q$_1$,$\ldots$,Q$_n$),p)==>(\allocation{Here}(p)==\allocation{L$_0$}(p)
+                               && \base_addr{Here}(p)==\base_addr{L$_0$}(p)
+                               && \block_length{Here}(p)==\block_length{L$_0$}(p)
+                               && \valid{Here}(p)<==>\valid{L$_0$}(p)
+                               && \valid_read{Here}(p)<==>\valid_read{L$_0$}(p))
+\end{listing-nonumber}
 
 
-\subsubsection{Default value for allocation clauses}
-
-
+\begin{example}
+The addresses of locations \lstinline|q[0..n]| are not modified by the loop, but their values are.
+  \listinginput{1}{loop-frees.c}
+It is the reason why the \Loop \allocates clause requires the use of the ghost label \lstinline|L0|,
+in order to catch the set of the released memory blocks.
+\end{example}
 
 \section{Sets as first-class values}\label{sec:sets}
 \index{location}
@@ -2794,7 +2856,7 @@ Thus, the \separated predicate satisfies the following property (with
            (char*)p + i != (char*)q + j))
 \end{listing}
 
-and a clause \lstinline|assigns L$_1$,$\ldots$,L$_n$| is equivalent
+and a clause \assigns \lstinline|L$_1$,$\ldots$,L$_n$| is equivalent
 to the postcondition
 \begin{listing-nonumber}
 \forall char* p; \separated(\union(&L$_1$,$\ldots$,&L$_n$),p) ==> *p == \old(*p)
@@ -2821,15 +2883,16 @@ statement terminates respectively abruptly. In such cases,
 \textsl{behavior body}. The allowed constructs are shown in
 Figure~\ref{fig:gram:abrupt-clauses}.
 
-The clauses \breaks{}, \continues{} and \returns{}
+The clauses \lstinline|breaks|\indextt{breaks}, \continues{}\indextt{continues} 
+and \returns{}\indextt{returns}
 can only be found in a statement contract and
 state properties on the program state which hold when the
 annotated statement terminates abruptly with the corresponding
-statement (\Break{}, \Continue{} or \Return{}).
+statement (\lstinline|break|, \Continue{} or \lstinline|return|).
 
 Inside these clauses, the construct \lstinline|\old(e)|\indexttbs{old}
 is allowed and denotes, like for statement contracts
-\assigns{} and \ensures{}, the value of
+\lstinline|ensures|, \assigns and \lstinline|allocates|, the value of
 \lstinline|e| in the pre-state of the statement.
  More generally, the visibility in \textsl{abrupt clauses} of predefined 
 logics labels\indextt{Pre}\indextt{Here}\indextt{Old}\indextt{Post}
@@ -2857,8 +2920,8 @@ is allowed and denotes the value of \lstinline|e| in the pre-state of
 the function or statement,
 and \lstinline|\exit_status| is bound to the return code,
 \emph{e.g} the value returned by \main{} or the argument passed to \exit{}.
-The  construct \lstinline|\exit_status|\indexttbs{exit_status} can be used only in \exits{}
-and \assigns{} clauses. On the contrary,
+The  construct \lstinline|\exit_status|\indexttbs{exit_status} can be used only in \exits{},
+ \assigns{} and \allocates{} clauses. On the contrary,
 \result cannot be used in \exits{} clauses.
 
 \begin{example}
@@ -2874,9 +2937,14 @@ and \assigns{} clauses. On the contrary,
   \listinginput{8}{mayexit.c}
 \end{example}
 
+\begin{todo}
+Discuter de la sémantique du assign en présence d'une terminaison abrupte
+dans un contrat de fonction et de statement.
+\end{todo}
 % [Patrick B.] START proposition:
-Contrary to the \ensures clause, the \assigns\indextt{assigns} clause of function 
-and statement contracts constrains the post-state 
+Contrary to \ensures clauses, \assigns\indextt{assigns}, 
+\allocates\indextt{allocates} and \frees\indextt{frees} clauses of function 
+and statement contracts constrain the post-state 
 even when the annotated function and statement terminates respectively abruptly. 
 This is shown in example~\ref{ex:assigns-and-abrupt-termination} for a function contract.
 % END proposition:
@@ -2886,11 +2954,6 @@ This is shown in example~\ref{ex:assigns-and-abrupt-termination} for a function 
     du atexit() : le post-state de la clause exit est-il avant ou
     apres les fonctions enregistrees par atexit() ?
 
-\end{todo}
-
-\begin{todo}
-Discuter de la sémantique du assign en présence d'une terminaison abrupte
-dans un contrat de fonction et de statement.
 \end{todo}
 
 \oldremark{PC}{
