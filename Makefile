@@ -141,8 +141,8 @@ type_invariant-tut.c volatile.c \
 
 BAD=acsl_allocator.c gen_code.c gen_spec_with_ghost.c			\
 gen_spec_with_model.c ghostcfg.c import.c invariants.c			\
-lexico.c listlengthdef.c listmodule.c modifier.c out_char.c		\
-specified.c strcpyspec.c sum2.c
+lexico.c listlengthdef.c listmodule.c  malloc_free_fn.c modifier.c      \
+out_char.c specified.c strcpyspec.c sum2.c
 
 check: acsl-mini-tutorial.tex
 	gcc -c -std=c99 *.c
