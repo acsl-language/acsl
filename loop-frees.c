@@ -7,7 +7,7 @@ void frees_n_blocks(int *p[], size_t n) {
 //NOPP-END
 //@ ghost L0: 
 /*@ loop assigns   q[0..i];
-  @ loop allocates \at(q[0..\at(i,Here)],L0);
+  @ loop frees \at(q[0..\at(i,Here)],L0);
   @*/
   while (i<n) {
     free(q[i]);

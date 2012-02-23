@@ -1,6 +1,4 @@
-
-
-Let's consider the following example:
+Let us consider the following example:
 \begin{listing-nonumber}
   int f(int a, int b) { return a < b; }
 \end{listing-nonumber}
@@ -9,7 +7,8 @@ Let's consider the following example:
   is not the right one because it is actually a shortcut for
   \lstinline[style=c]|\result == a && a < b|.
 \item adding parentheses results in a correct post-condition
-  \lstinline[style=c]|\result == (a < b)|. Note however that there is an implicit
+  \lstinline[style=c]|\result == (a < b)|. 
+Note however that there is an implicit
   conversion (see Sec.~\ref{sec:typing})
   from the \lstinline[style=c]|int| (the type of \lstinline[style=c]|\result|) to
   \lstinline[style=c]|boolean| (the type of \lstinline[style=c]|(a<b)|)

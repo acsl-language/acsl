@@ -121,17 +121,17 @@ With respect to C pure expressions, the additional constructs are as follows:
 \end{figure}
 
 \item[Local binding]
-    \lstinline|\let x = $e_1$;$e_2$|
-    introduces the name \lstinline|x| for
+    \lstinline|\let $x$ = $e_1$;$e_2$|
+    introduces the name \lstinline|$x$| for
     expression \lstinline|$e_1$| which can be used in expression
     \lstinline|$e_2$|.
 
-\item[Conditional] \lstinline|c ? $e_1$ : $e_2$|. There is a subtlety
+\item[Conditional] \lstinline|$c$ ? $e_1$ : $e_2$|. There is a subtlety
   here: the condition may be either a boolean term or a predicate.  In
   case of a predicate, the two branches must be also predicates, so
   that this construct acts as a connective with the following
-  semantics: \lstinline|c ? $e_1$ : $e_2$| is equivalent to
-  \lstinline|(c ==> $e_1$) && (! c ==> $e_2$)|.
+  semantics: \lstinline|$c$ ? $e_1$ : $e_2$| is equivalent to
+  \lstinline|($c$ ==> $e_1$) && (! $c$ ==> $e_2$)|.
 
 \item[Syntactic naming] \lstinline|id : e| is a term or a predicate
   equivalent to $e$. It is different from local naming with \lstinline|\let|:
@@ -141,16 +141,16 @@ With respect to C pure expressions, the additional constructs are as follows:
 \item[Functional modifier]
  \begin{notimplementedenv}
   The composite element modifier is an additional
-  operator in relation to the C structure field and array accessors.
+  operator related to C structure field and array accessors.
   The expression \lstinline|{ s \with .id = v }|
-  denotes the same structure than \lstinline|s|, except for the field
-  \lstinline|id| to be modified by \lstinline|v|.
+  denotes the same structure as \lstinline|s|, except for the field
+  \lstinline|id| that is equal to \lstinline|v|.
   The equivalent expression for an array is
   \lstinline|{ t \with [ i ] = v }|
-  which returns the same array than \lstinline|t|, except for the
-  \lstinline|i$^{th}$| element those value
-  is updated to \lstinline|v|.
-  See Section~\ref{sec:func-dep} for an example of use of these operators.
+  which returns the same array as \lstinline|t|, except for the
+  \lstinline|i$^{th}$| element whose value
+  is \lstinline|v|.
+  See section~\ref{sec:func-dep} for an example of use of these operators.
  \end{notimplementedenv}
 
 \item[Logic functions] Applications in terms and in propositions are not
@@ -171,9 +171,9 @@ Section~\ref{sec:logicspec} for detail.
   To enforce the same interpretation as in C expressions, one may need
   to add extra parentheses: \lstinline|a == b < c| is equivalent
   to \lstinline|a == b && b < c|, whereas
-  \lstinline |a == (b \< c)| is
+  \lstinline |a == (b < c)| is
   equivalent to \lstinline|\let x = b < c; a == x|.
-  This situation raises some issues, see example below.
+  This situation raises some issues, as in the example below.
 
 \oldremark{Virgile}{Dans le dernier cas, on pourrait vouloir avoir x, y
   et z deux à deux distincts, et eventuellement un prédicat n-aire
@@ -187,10 +187,6 @@ used in term position.
 \begin{example}
 \input{example-lt-modern.tex}
 \end{example}
-
-
-
-
 
 \subsection{Operators precedence}
 
@@ -336,7 +332,7 @@ to a mathematical integer. As a consequence, there is no
 
 Division and modulo are also mathematical operations, which coincide
 with the corresponding C operations on C machine integers, thus
-following the ANSI C99 conventions. In particular, these are not the
+following the ISO C99 conventions. In particular, these are not the
 usual mathematical Euclidean division and remainder.
 Generally speaking, division
 rounds the result towards zero. The results are not specified if
@@ -408,20 +404,20 @@ Thus the formula
 \end{listing-nonumber}
 is equivalent to
 \begin{listing-nonumber}
-\forall integer c; MIN_CHAR <= c <= MAX_CHAR ==> c <= 1000
+\forall integer c; CHAR_MIN <= c <= CHAR_MAX ==> c <= 1000
 \end{listing-nonumber}
-where the the bounds \verb|MIN_CHAR| and \verb|MAX_CHAR| are defined
+where the the bounds \verb|CHAR_MIN| and \verb|CHAR_MAX| are defined
 in \verb|limits.h|
 \end{example}
 
 
 \subsubsection{Size of C integer types}
 
-Note that the size of C types is architecture-dependent. ACSL does
+The size of C types is architecture-dependent. ACSL does
 not enforce these sizes either, hence the semantics of terms involving
 such types is also architecture-dependent. The
 \lstinline|sizeof|\indextt{sizeof} operator may be used in annotations and is
-assumed to be consistent with the C code. For instance, it should be
+consistent with its C counterpart. For instance, it should be
 possible to verify the following code:
 
 \listinginput{1}{sizeof.c}
@@ -439,7 +435,7 @@ if the cast was performed in the C code.
 \subsubsection{Bitwise operations}
 
 Like arithmetic operations, bitwise operations apply to any
-mathematical integer: any mathematical integer has an unique infinite
+mathematical integer: any mathematical integer has a unique infinite
 2-complement binary representation with infinitely many zeros (for
 non-negative numbers) or ones (for negative numbers) on the left.
 Bitwise operations apply to this representation.
@@ -460,7 +456,7 @@ Floating-point constants and operations are interpreted as
 mathematical real numbers: a C variable of type float or double is
 implicitly promoted to a real. Integers are promoted to reals if
 necessary. Usual binary operations are interpreted as operators on
-real numbers, hence they never involve any rounding nor overflow
+real numbers, hence they never involve any rounding nor overflow.
 
 \begin{example}
   In an annotation, \lstinline|1e+300 * 1e+300| is equal to
@@ -473,7 +469,7 @@ real numbers, hence they never involve any rounding nor overflow
 Unlike the promotion of C integer types to mathematical integers,
 there are special float values which do not naturally map to a real
 number, namely the IEEE-754 special values for ``not-a-number'',
-$+\infty$ and $-\infty$. See below for a detalied discussions on such
+$+\infty$ and $-\infty$. See below for a detailed discussion on such
 special values. However, remember that ACSL's logic has only total
 functions. Thus, there are implicit promotion functions
 \lstinline|real_of_float|\indextt{real\_of\_float} and
@@ -564,9 +560,9 @@ Finally, additional predicates are provided on float and double
 numbers, which check that their argument is NaN or a
 finite number respectively:
 \begin{listing}{1}
-predicate \is_NaN`\indexttbs{is\_NaN}`(float x); \\
-predicate \is_NaN`\indexttbs{is\_NaN}`(double x); \\
-predicate \is_finite`\indexttbs{is\_finite}`(float x); \\
+predicate \is_NaN`\indexttbs{is\_NaN}`(float x);
+predicate \is_NaN`\indexttbs{is\_NaN}`(double x);
+predicate \is_finite`\indexttbs{is\_finite}`(float x);
 predicate \is_finite`\indexttbs{is\_finite}`(double x);
 \end{listing}
 
@@ -709,15 +705,15 @@ The type system should provide a boolean information on whether a
 given logic term denotes a C memory location (i.e. a C left-value).
 \end{remark}
 
-Unlike C, there is no implicit cast from from an array type to a pointer type.
+Unlike in C, 
+there is no implicit cast from from an array type to a pointer type.
 Nevertheless, arithmetic and dereferencing over arrays lying in C memory are 
 allowed like in C.
 
 \begin{example}
-~
-Dereferencing a C array is equivalent an access 
+Dereferencing a C array is equivalent to an access 
 to the first element of the array~;
-shifting it from $i$ denotes the address of it $i^{th}$ element.
+shifting it from $i$ denotes the address of its $i^{th}$ element.
 \begin{listing-nonumber}
 int tab[10] = { 1 } ;
 int x ;
@@ -801,10 +797,9 @@ can be done with \lstinline|\length|.
   @*/
 \end{listing-nonumber}
 Beware that because of the principle of only total functions in logic,
-t[i] can be written even if i is outside the array bounds.
+t[i] can appear in ACSL annotations even if i is outside the array bounds.
 
 \end{example}
-
 
 \subsubsection{Functional updates}
 
@@ -820,8 +815,8 @@ Functional update of a structure is done by
 { origin \with .x = 3.0 }
 \end{listing-nonumber}
 
-There is no particular syntax for a functional update of an union, but of course the following
-equility is not be true for an \lstinline|object| of an union type:
+There is no particular syntax for functional update of an union. 
+For an \lstinline|object| of an union type, the following equality is not true 
 \begin{listing-nonumber}
 { { object \with .x = 3.0 }
            \with .y = 2.0 } == { { object \with .y = 2.0 }
@@ -957,8 +952,6 @@ et utiliser string\_literal\_foo a la place de "foo"
   \label{fig:gram:oldandresult}
 \end{figure}
 
-
-
 Figure~\ref{fig:gram:contracts} shows a grammar for function
 contracts. \textsl{Location} denotes a memory location and is defined
 in Section~\ref{sec:locations}. 
@@ -1001,15 +994,13 @@ the other clauses already refer to the pre-state. In addition,
 \void{}.
 % See Section~\ref{sec:at} for more details on scoping rules for labels.
 
-Note C function parameters\index{formal parameter} are obtained by
+C function parameters\index{formal parameter} are obtained by
 value from actual parameters that mostly remain unaltered by the
 function calls. For that reason, formal parameters in function
 contracts are defined such that they always refer implicitly to their
 values interpreted in the pre-state.
-So, \old construct is useless for formal parameters (in
+Thus, \old construct is useless for formal parameters (in
 function contracts only).
-
-
 
 \subsection{Simple function contracts}
 \label{sec:simplecontracts}
@@ -1028,15 +1019,20 @@ The semantics of such a contract is as follows:
   state where the property \lstinline|P$_1$ && P$_2$ && ...| holds.
 \item The called function returns a state where the property
   \lstinline|E$_1$ && E$_2$ && ...| holds.
-\item All memory locations of the pre-state that do not belong to the
-  set \lstinline|L$_1$ $\cup$ L$_2$ $\cup \dots$| remain allocated and are left unchanged in the
-  post-state. The set \lstinline|L$_1$ $\cup$ L$_2$ $\cup \dots$| itself is interpreted in the
-  pre-state.
+\item All memory locations that are allocated in both the pre-state and 
+  the post-state\footnote{Functions that allocate or free memory can be 
+    specified with additional clauses described in
+    section~\ref{sec:allocation-clause}.} 
+  and do not belong to the
+  set \lstinline|L$_1$ $\cup$ L$_2$ $\cup \dots$| are left unchanged in the
+  post-state. The set \lstinline|L$_1$ $\cup$ L$_2$ $\cup \dots$| 
+  itself is interpreted in the pre-state.
 \end{itemize}
 
 % TODO : donner une vision plus symétrique appelant/appelé d'un contrat
 
-Notice that the multiplicity of clauses are proposed mainly to improve
+Having multiple \lstinline|requires|, \lstinline|assigns|, or 
+\lstinline|ensures| clauses only improves 
 readibility since the contract above is equivalent to the following
 simplified one:
 \begin{listing}{1}
@@ -1123,12 +1119,12 @@ The semantics of such a contract is as follows:
 the properties \lstinline|\old(A$_i$) ==> E$_i$| hold for each~$i$.
 \item For each $i$, if the function is called in a pre-state where
   \lstinline|A$_i$| holds, then each memory location of that pre-state 
-  that does not belong to the set \lstinline|L$_i$| remains allocated 
-  and is left unchanged in the post-state.
+  that does not belong to the set \lstinline|L$_i$| is left unchanged in 
+  the post-state.
 % In any case, locations of $L$ are unchanged.
 \end{itemize}
 
-Notice that the \requires{} clauses in the behaviors are proposed
+\requires{} clauses in the behaviors are proposed
 mainly to improve readibility (to avoid some duplication of
 formulas), since the contract above is equivalent to the following
 simplified one:
@@ -1138,7 +1134,8 @@ simplified one:
   @ ensures \old(A$_1$) ==> E$_1$ && \old(A$_2$) ==> E$_2$;
   @*/
 \end{listing}
-Note that a simple contract such as
+
+A simple contract such as
 \begin{listing}{1}
 /*@ requires P; assigns L; ensures E; */
 \end{listing}
@@ -1210,7 +1207,7 @@ See~\ref{sec:loop_annot} for a continuation of this example.
 
 \subsubsection{Completeness of behaviors}
 \label{sec:compl-behav}
-Notice that in a contract with named behaviors, it is not required that
+In a contract with named behaviors, it is not required that
 the disjunction of the \lstinline|A$_i$| is true, \emph{i.e.} it is not 
 mandatory to provide a ``complete'' set of behaviors.
 If such a condition is seeked, it is possible to add the following clause
@@ -1256,6 +1253,8 @@ The simplified version of that clause
   @*/
 \end{listing-nonumber}
 means that all behaviors given in the contract should be taken into account.
+Multiple \lstinline|complete| and \lstinline|disjoint| sets of behaviors can
+be given for the same contract.
 
 \oldremark{Abandonne}{
 
@@ -1320,8 +1319,8 @@ means that all behaviors given in the contract should be taken into account.
 
 % PB: Modified since \separated operates on pointers and not on locations
 There are several places where one needs to describe a set of memory
-locations: in \assigns{} clauses of function contracts, or
-in \Loop \assigns clauses.
+locations: in \assigns clauses of function contracts, or
+in \Loop \assigns clauses (see section~\ref{sec:loop_annot}).
 A \emph{memory location} is then any set of terms denoting a set of
 l-values\index{l-value}. Moreover, a location given as argument to
 an \assigns{} clause must be a set of modifiable l-values, as described in
@@ -1470,7 +1469,7 @@ Annotations on C statements are of three kinds:
 
 \subsection{Assertions}
 \indextt{assert}
-
+\label{sec:assertions}
 \begin{figure}[t]
   \begin{cadre}
     \input{assertions_modern.bnf}
@@ -1564,7 +1563,7 @@ the \Break statement.
 
 \item At any loop iteration, any location that was allocated before
   entering the loop, and is not member of \lstinline|L| (interpreted in the
-  current state), must remain allocated and has the same value as
+  current state) has the same value as
   before entering the loop.
   In fact, the \Loop \assigns clause specifies an inductive
   invariant for the locations that are not member of \lstinline|L|.
@@ -1582,16 +1581,13 @@ clauses.
 
 \paragraph{Remarks}
 \begin{itemize}
-\item \begin{notimplementedenv}[This is not checked]
-    The \old{} construct is not
-    allowed
-    \end{notimplementedenv}
- in loop annotations. The \lstinline|\at| form should be used to
+\item The \old{} construct is not allowed
+  in loop annotations. The \lstinline|\at| form should be used to
   refer to another state (see Section~\ref{sec:at}).
 \item When a loop exits with \lstinline{break} or \lstinline{return} or
   \lstinline{goto}, it is not required that the loop invariant holds.
-  In such cases, locations that are not member of $L$ can be disallocated
-  or assigned between the end of the previous iteration and the exit statement.
+  In such cases, locations that are not member of $L$ can be
+  assigned between the end of the previous iteration and the exit statement.
 \end{itemize}
 
 \begin{example}
@@ -1608,17 +1604,15 @@ a loop invariant associated to a function behavior.
 
 Optionally, a loop annotation may include a loop variant of the form
 \begin{listing-nonumber}
-/*@ loop variant m;
-  @*/
-...
+/*@ loop variant m; */
 \end{listing-nonumber}
 where \lstinline|m| is a term of type \lstinline|integer|.
 
 The semantics is as follows: for each loop iteration that terminates
 normally or with \lstinline|continue|, the value of \lstinline|m| at end of the
 iteration must be smaller that its value at the beginning of the
-iteration. Moreover, its value at the beginning must be nonnegative.
-Note that the value of \lstinline|m| at loop exit might be
+iteration. Moreover, its value at the beginning of the iteration 
+must be nonnegative. Note that the value of \lstinline|m| at loop exit might be
 negative. It does not compromise termination of the
 loop. Here is an example:
 
@@ -1638,7 +1632,7 @@ It is actually allowed to pose an inductive invariant
 anywhere inside a loop body.
 For example, it makes sense for a
 \lstinline|do s while (c);| loop to contain an invariant right after statement
-\lstinline|s|. Such an invariant is a kind of assertions, as
+\lstinline|s|. Such an invariant is a kind of assertion, as
 shown in Figure~\ref{fig:advancedinvariants}.
 
 \begin{figure}[t]
@@ -1771,7 +1765,7 @@ In such clauses formal parameters always refer implicitly to the label
 \lstinline|Pre|, and any \lstinline|\at| construct can modify the
 interpretation of formal parameters.
 
-Note that no logic label is visible in global logic declarations
+No logic label is visible in global logic declarations
 such as lemmas, axioms, definition of predicate or logic
 functions. When such an annotation needs to refer to a given memory
 state, it has to be given a label binder: this is described in
@@ -2198,11 +2192,11 @@ possible too.
 %  \input{mutualrec.pp}
 %\end{example}
 
-Notice that there is no syntactic condition on such recursive
+There is no syntactic condition on such recursive
 definitions, such as limitation to primitive recursion. In essence, a
 recursive definition of the form \lstinline+f(args) = e;+ where
 \lstinline+f+ occurs in expression \lstinline+e+ is just a shortcut
-for axiomatic declaration of \lstinline+f+ with an axiom
+for an axiomatic declaration of \lstinline+f+ with an axiom
 \lstinline+\forall args; f(args) = e+.  In other words, recursive
 definitions are not guaranteed to be consistent, in the same way that
 axiomatics may introduce inconsistency. Of course, tools might provide
@@ -2293,12 +2287,12 @@ higher-order logic.
 
 
 Logic types may not only be declared but also be given a
-definition. Defined logic types can be either under record
+definition. Defined logic types can be either record
 types\index{record}\index{type!record}, or sum
 types\index{sum}\index{type!sum}. These definitions may be recursive.
 For record types, the field access notation $t.id$ can be used, and
-for sum types, a pattern-matching construction is available. The
-grammar rules for these additional constructions are given in
+for sum types, a pattern-matching construction is available.
+Grammar rules for these additional constructions are given in
 Figure~\ref{fig:gram:logictype}
 
 \oldremark{All}{
@@ -2359,7 +2353,7 @@ context.
 
 \begin{example}\label{ex:nb_occ}
   The following annotations declare a function which returns the
-  number of occurrences of a given double in an array of doubles
+  number of occurrences of a given double in a memory block storing doubles
   between the given indexes, together with the related axioms.  It
   should be noted that without labels, this axiomatization would be
   inconsistent, since the function would not depend on the values
@@ -2370,9 +2364,9 @@ context.
 
 \begin{example}
   This second example defines a predicate which indicates whether two
-  arrays of the same size are a permutation of each other. It
+  memory blocks of the same size are a permutation of each other. It
   illustrates the use of more than a single label. Thus, the \lstinline|\at|
-  operator is mandatory here. Indeed the two arrays
+  operator is mandatory here. Indeed the two blocks
   may come from two distinct memory states. Typically, one of the post
   condition of a sorting function would be \lstinline|permut{Pre,Post}(t,t)|.
   \listinginput{1}{permut.c}
@@ -2396,7 +2390,7 @@ context.
 Logic declaration can be augmented with a \reads{} clause, with the
 syntax given in Figure~\ref{fig:gram:logicreads}, which extends the
 one of Figure~\ref{fig:gram:logic}. This feature allows to specify the
-\emph{footprint} of a hybrid predicate or function, that is the set of
+\emph{footprint} of an hybrid predicate or function, that is the set of
 memory locations which it depends on. From such an information, one
 might deduce properties of the form $f\{L_1\}(args) = f\{L_2\}(args)$
 if it is known that between states $L_1$ and $L_2$, the memory changes are
@@ -2487,7 +2481,7 @@ definitions, like the \lstinline|List| module above.
 \section{Pointers and physical adressing}
 \label{sec:pointers} 
 % [Patrick B.] START proposition:
-First, the grammar for terms and predicates is
+Grammar for terms and predicates is
 extended with new constructs given in Figure~\ref{fig:gram:memory}. 
 \textsl{Location-address} denotes the address of a memory location. 
 It is a set of terms of some pointer type as defined in Section~\ref{sec:locations}.
@@ -2553,7 +2547,7 @@ if it is safe to read from all the pointers in the set
 not true. In particular, it is allowed to read from a string literal, but not 
 to write in it (see \cite{standardc99}, 6.4.5\S6).
 
-Note in addition that the status of \valid and \lstinline|\valid_read| constructs depends on the
+The status of \valid and \lstinline|\valid_read| constructs depends on the
 type of their argument. Namely, \lstinline|\valid{L}((int *) p)| and 
 \lstinline|\valid{L}((char *)p)| are not equivalent. On the other hand, if we 
 ignore potential alignment constraints, the following equivalence is true for any pointer \lstinline|p|:
@@ -2569,10 +2563,11 @@ Some shortcuts are provided:
 \begin{itemize}
 \item \lstinline|\null|\indexttbs{null} is an
   extra notation for the
-  null pointer (\emph{i.e.} a shortcut for \lstinline|(void*)0|). Note that
-  as in C itself (see \cite{standardc99}, 6.3.2.3\S3),
+  null pointer (\emph{i.e.} a shortcut for \lstinline|(void*)0|). 
+  As in C itself (see \cite{standardc99}, 6.3.2.3\S3),
   the constant \lstinline|0| can have any pointer type. In addition, 
-  \lstinline|\valid{L}(\null)| is always false, for any logic label \lstinline|L|.
+  \lstinline|\valid{L}(\null)| is always false, for any
+  logic label \lstinline|L|.
   Of course, \lstinline|\valid_read{L}(\null)| is always false too.
 % \footnote{or to \texttt{NULL}, if
 %    annotations are pre-processed are the appropriate inclusion of
@@ -2627,7 +2622,7 @@ $i\neq j$, \lstinline|\separated(s$_i$,s$_j$)|.
 is dynamically allocated or deallocated.
 The grammar for those constructions is given on Figure~\ref{fig:gram:allocation}.
 
-Note that \lstinline|allocates \nothing| and \lstinline|frees \nothing| are respectively 
+\lstinline|allocates \nothing| and \lstinline|frees \nothing| are respectively 
 equivalent to \lstinline|allocates \empty| and \lstinline|frees \empty|; 
 it is left for convenience like for \assigns clauses.
 
@@ -2641,24 +2636,20 @@ it is left for convenience like for \assigns clauses.
 
 \subsubsection{Allocation clauses for function and statement contracts}
 
-The semantics of the clauses \allocates and \frees cannot be defined separately from the other.
-The simple contract  
+Clauses \allocates and \frees are tied together. The simple contract  
 \begin{listing-nonumber}
-/*@ \frees P$_1$,P$_2$,`\dots`;
-  @ \allocates Q$_1$,Q$_2$,`\dots`;
+/*@ frees P$_1$,P$_2$,`\dots`;
+  @ allocates Q$_1$,Q$_2$,`\dots`;
   @*/
 \end{listing-nonumber}
-means that all memory addresses, that do not belong to the union of sets of terms
-\lstinline|P$_i$| and \lstinline|Q$_j$| of some pointer type,
-refer to memory those {\sl allocation statuses}
-in the post-state are identical to those in the pre-state. 
-While the sets \lstinline|P$_i$| are evaluated in the pre-state,
-the sets \lstinline|Q$_i$| are evaluated in the post-state.
-That is the only one difference between the clauses \allocates and \lstinline|frees|.
+means that any memory address that do not belong to the union of sets of terms
+\lstinline|P$_i$| and \lstinline|Q$_j$| has the same {\sl allocation status} 
+(see below) in the post-state than in the pre-state. The only one difference 
+between \lstinline|allocates| and \lstinline|frees| is that sets 
+\lstinline|P$_i$| are evaluated 
+in the pre-state, and sets \lstinline|Q$_i$| are evaluated in the post-state.
 
-Lets now define what is meaning by unmodified {\sl allocation statuses}:
-the clause \allocates \lstinline|Q$_1$,$\ldots$,Q$_n$| is equivalent
-to the postcondition
+\allocates \lstinline|Q$_1$,$\ldots$,Q$_n$| is equivalent to the postcondition
 \begin{listing-nonumber}
 \forall char* p; 
 \separated(\union(Q$_1$,$\ldots$,Q$_n$),p)==>(\allocation{Here}(p)==\allocation{Pre}(p)
@@ -2672,19 +2663,19 @@ In fact, like the \assigns clause does not specify which memory location is assi
 the \textsl{allocation-clauses} do not specify which memory location 
 is dynamically allocated or deallocated.
 Pre-conditions and post-conditions should be added to complete specifications
-about these allocations and deallocations.
+about allocations and deallocations.
 The following built-in constructs can be used for that:
 
 \begin{itemize}
 \item  \begin{notimplementedenv}\lstinline|\allocation{L}(p)|\end{notimplementedenv}%
   \indexttbs{allocation}
- informs on the allocation status of the block containing, at the label \lstinline|L|, the pointer \lstinline|p| 
+returns the allocation status of the block containing, at the label \lstinline|L|, the pointer \lstinline|p| 
 \\ \makebox[5mm]{} \lstinline|\allocation{id} : void* $\ra$| 
 \begin{notimplementedenv}\lstinline|{\static, \register, \automatic, \dynamic, \unallocated}|
 \end{notimplementedenv}%
 This function is such that for any pointer \lstinline|p| and label \lstinline|L|
 \begin{listing-nonumber}
-\allocation{L}(p) <==> \allocation{L}(\base_addr(p))
+\allocation{L}(p) == \allocation{L}(\base_addr(p))
 \end{listing-nonumber}
 and
 \begin{listing-nonumber}
@@ -2698,7 +2689,8 @@ Some usefull shortcuts are provided:
 \item \begin{notimplementedenv}\lstinline|\allocable{L}(p)|\end{notimplementedenv}%
   \indexttbs{allocable}
  holds if and only if
-the pointer \lstinline|p| refers, at the label \lstinline|L|, the base address of 
+the pointer \lstinline|p| refers, at the label \lstinline|L|, 
+to the base address of 
 an unallocated memory block.
 \\ \makebox[5mm]{} \lstinline|\allocable{id} : void* $\ra$ boolean|
 \\
@@ -2710,7 +2702,8 @@ For any pointer \lstinline|p| and label \lstinline|L|
 \item \begin{notimplementedenv}\lstinline|\freeable{L}(p)|\end{notimplementedenv}%
   \indexttbs{freeable}
  holds if and only if
-the pointer \lstinline|p| refers, at the label \lstinline|L|, an allocated memory block 
+the pointer \lstinline|p| refers, at the label \lstinline|L|, 
+to an allocated memory block 
 that can be safely released using the C function \lstinline|free|.
 \\ \makebox[5mm]{} \lstinline|\freeable{id} : void* $\ra$ boolean|
 \\
@@ -2721,7 +2714,8 @@ For any pointer \lstinline|p| and label \lstinline|L|
   
 \item \begin{notimplementedenv}\lstinline|\fresh{L$_0$,L$_1$}(p,n)|\end{notimplementedenv}%
 \indexttbs{fresh},
-  indicates that \lstinline|p| refers an allocated memory block at label \lstinline|L$_1$|, 
+  indicates that \lstinline|p| refers to an allocated memory block at label 
+  \lstinline|L$_1$|, 
   but that it is not the case at label \lstinline|L$_0$|. 
   The predicate ensures also that, at label \lstinline|L$_1$|, the length
   (in bytes) of the block allocated dynamically equals to \lstinline|n|.
@@ -2737,10 +2731,10 @@ For any pointer \lstinline|p| and labels \lstinline|L$_0$| and \lstinline|L$_1$|
 \end{itemize}
 
 \begin{example}
-  There is a first example giving specifications to \lstinline|malloc| and \lstinline|free| functions.
+  \lstinline|malloc| and \lstinline|free| functions can be specified as follows.
   \listinginput{1}{malloc_free_fn.c}
   Default labels for constructs dedicated to memory are 
-  such that logic labels \lstinline|Here| and \lstinline|Old| can be omitted.
+  such that logic label \lstinline|Here| can be omitted.
 \end{example}
 
 When a behavior has only one of the two allocation clauses,
@@ -2779,23 +2773,25 @@ each anonymous behavior.
 \subsubsection{Allocation clauses for loop annotations}
 \index{loop!allocation}\index{loop!deallocation}
 
-Loop annotations are complemented by similar clauses allowing to specify which memory location 
+Loop annotations are complemented by similar clauses allowing to specify which 
+memory location 
 is dynamically allocated or deallocated by a loop.
 The grammar for those constructions is given on Figure~\ref{fig:gram:allocation}.
 
-The semantics of the \Loop \allocates clause is defined as follows:
+\lstinline|loop allocates| and \lstinline|loop frees| have the same semantics.
 \begin{listing-nonumber}
 //@ loop allocates Q$_1$,Q$_2$,`\dots`;
 \end{listing-nonumber}
-means that all memory addresses, that do not belong to the union of sets of terms
-\lstinline|Q$_1$ $\cup$ Q$_2$ $\cup \dots$| (interpreted in the current state), 
-refer to memory those {\sl allocation statuses}
-have the same value in the current state than before entering the loop.
+means that any memory address that do not belong to the union of sets of 
+terms
+\lstinline|Q$_1$ $\cup$ Q$_2$ $\cup \dots$|, interpreted in the current state, 
+has the same allocation status in the current state than 
+before entering the loop. Namely, as for \lstinline|loop assigns|, 
+\lstinline|loop allocates| defines a loop invariant.
 
-Lets name \lstinline|Here| the current state and \lstinline|L$_0$| the one before entering the loop
-for defining what is meaning by unmodified {\sl allocation statuses}:
-the clause \Loop \allocates \lstinline|Q$_1$,$\ldots$,Q$_n$| is equivalent
-to the postcondition
+More precisely, with \lstinline|L$_0$| labelling the state before entering
+the loop, the clause \lstinline|loop allocates Q$_1$,$\ldots$,Q$_n$|
+is equivalent to the postcondition
 \begin{listing-nonumber}
 \forall char* p; 
 \separated(\union(Q$_1$,$\ldots$,Q$_n$),p)==>(\allocation{Here}(p)==\allocation{L$_0$}(p)
@@ -2807,9 +2803,11 @@ to the postcondition
 
 
 \begin{example}
-The addresses of locations \lstinline|q[0..n]| are not modified by the loop, but their values are.
-  \listinginput{1}{loop-frees.c}
-It is the reason why the \Loop \allocates clause requires the use of the ghost label \lstinline|L0|,
+ \listinginput{1}{loop-frees.c}
+The addresses of locations \lstinline|q[0..n]| are not modified by the loop, 
+but their values are.
+It is the reason why the \lstinline|loop frees| clause requires 
+the use of the ghost label \lstinline|L0|,
 in order to catch the set of the released memory blocks.
 \end{example}
 
@@ -2829,13 +2827,13 @@ each of its elements \lstinline|e| is converted to
 \lstinline|(char*)e + (0..sizeof(*e)-1)|.
 
 \begin{example}
-  Here is an example where we defined the \emph{footprint} of a
+  The following example defines the \emph{footprint} of a
   structure, that is the set of locations that can be accessed from an
   object of this type.
 
   \listinginput{1}{footprint.c}
 
-  Notice that in the first definition, since union is made with a
+  In the first definition, since union is made with a
   \lstinline|set<char*>| and a \lstinline|set<int*>|,
   the result is a \lstinline|set<char*>| (accordingly to typing of union). In
   other words, the two definitions above are equivalent.
@@ -2849,7 +2847,7 @@ Thus, the \separated predicate satisfies the following property (with
 \lstinline|set<$\tau_2$*>|)
 \begin{listing}{1}
 \separated(s$_1$,s$_2$) <==>
-  (\forall \tau_1* p; \forall \tau_2* q;
+  (\forall $\tau_1$* p; \forall $\tau_2$* q;
      \subset(p,s$_1$) && \subset(q,s$_2$) ==>
        (\forall \integer i,j;
          0 <= i < \sizeof($\tau_1$) && 0 <= j < \sizeof($\tau_2$) ==>
@@ -2900,17 +2898,16 @@ logics labels\indextt{Pre}\indextt{Here}\indextt{Old}\indextt{Post}
 same as in \ensures{} clauses.
 
 For the \lstinline|returns| case, the \result\indexttbs{result}
-construct is allowed and bounds to the returned value (if not a
-\void{} function).
+construct is allowed (if the function is not returning \void) and is bound
+to the returned value.
 
 \begin{example}
-  Here is an example which illustrates each of these special
-  clauses for statement contracts.
+  The following example illustrates each abrupt
+  clause of a statement contracts.
   \listinginput{1}{abrupt_termination.c}
 \end{example}
 
-
-The \exits{} clause can be used either in function or statement
+The \exits{} clause can be used in both function and statement
 contracts to give behavioral properties to the \main{} function
 or to any function that may exit the program,
 \emph{e.g.} by calling the \exit{} function.
@@ -3005,31 +3002,11 @@ corresponding contract.
 \begin{example}
  \begin{notimplementedenv}
   % This exemple is referenced in a previous section.
-  The composite element modifier operators are useful additional constructs for such functional expressions.
+  The composite element modifier operators 
+  can be useful for writing such functional expressions.
  \end{notimplementedenv}
   \listinginput{1}{modifier.c}
 \end{example}
-
-\oldremark{All}{
-
-  Ceci n'est pas au bon endroit, et n'est peut-etre pas du tout utile
-
-\begin{itemize}
-\item functional  of array : \notimplemented{$\{ t \lstinline$\with$ [i] {\tt=} e \} $}
-\item functional update of struct : \notimplemented{$\{ s \lstinline$\with$ f {\tt=} e \} $}
-
-\item arrays or structs given extensionaly, syntax like for C
-  initializers :  \notimplemented{$\{ t_1, \ldots, t_n \}$}
-\end{itemize}
-%trouver une syntaxe pour introduire les noms des fonctions implicites
-%derriere la construction
-}
-
-\oldremark{PC}{
-
-  Ne comprends pas ce que ca veut dire
-
-}
 
 \section{Data invariants}
 \label{sec:invariants}
@@ -3106,7 +3083,7 @@ which they are supposed to hold.
   entrance and exit, and applies to any global variable or formal
   parameter with static type $\tau$. If the result of the
   function is of type $\tau$, the result must also satisfy its
-  weak invariant at function exit. However, it says nothing of fields,
+  weak invariant at function exit. However, it says nothing about fields,
   array elements, memory locations, etc. of type $\tau$.
 
   \oldremark{Claude}{
@@ -3120,7 +3097,7 @@ which they are supposed to hold.
   with static type $\tau$. If the
   result of the function has type $\tau$, the result must also
   satisfy its strong invariant at function exit. Again, it says
-  nothing of fields, array elements, memory locations, etc. of type
+  nothing about fields, array elements, memory locations, etc. of type
   $\tau$.
 
 \end{itemize}
@@ -3252,7 +3229,7 @@ but visible only in the specifications. They are introduced by the
 \lstinline|ghost| keyword at the beginning of the annotation
 (i.e. \lstinline|/*@ ghost ... */| or \lstinline|//@ ghost ...|
 for a one-line
-ghost code, as mentionned in section~\ref{sec:gener-about-annot}).
+ghost code, as mentioned in section~\ref{sec:gener-about-annot}).
 The grammar is given in Figure~\ref{fig:gram:ghost}, in which only the
 first form of annotation is used. In this figure, the \textit{C-*}
 non-terminals refer to the corresponding grammar rules of the ISO standard,

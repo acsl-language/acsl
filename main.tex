@@ -87,10 +87,11 @@ $^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405
 \end{tabular}
 \vfill
 \begin{flushleft}
-  \textcopyright 2009-2010 CEA LIST and INRIA
+  \textcopyright 2009-2012 CEA LIST and INRIA
 
   This work has been supported by the `CAT' ANR project
-  (ANR-05-RNTL-0030x) and by the ANR CIFRE contract 2005/973.
+  (ANR-05-RNTL-0030x), by the ANR CIFRE contract 2005/973, by the ANR project
+  U3CAT (08-SEGI-021-xx), and ANR PICF project DEVICE-Soft (2009-CARN-006-01).
 \end{flushleft}
 \end{titlepage}
 
@@ -213,7 +214,7 @@ De'tailler (avec un exemple), meme si c'est dans la
 \input{template_modern}
 
 \section{Illustrative example}
-
+\label{sec:illustrative-example}
 This is an attempt to define an example for ACSL, much as the Purse
 example in JML description papers.  It is a memory allocator, whose
 main functions are \lstinline|memory_alloc| and \lstinline|memory_free|, to
@@ -227,6 +228,11 @@ as much as possible of ACSL.
 
 \subsection{Version 1.x}
 \begin{itemize}
+\item Added missing logical xor operator (figure~\ref{fig:gram:term}).
+\item Introduction of \lstinline|\freeable|, \lstinline|\allocable|, 
+  and \lstinline|\allocation| (section~\ref{sec:allocation-clause}).
+\item Introduction of \lstinline|allocates| and \lstinline|frees| clauses
+  (section~\ref{sec:allocation-clause}).
 \item Introduction of \lstinline|\valid_read| built-in and clarification of
 the notion of validity (section~\ref{subsec:memory}).
 \item Improvements to the \lstinline|volatile| clause 

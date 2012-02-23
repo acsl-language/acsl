@@ -6,7 +6,7 @@ This document is a reference manual for
 {the ACSL implementation provided by the Frama-C
   framework~\cite{frama-c}.}%
 {ACSL.}
-ACSL is an acronym for ``ANSI C
+ACSL is an acronym for ``ANSI/ISO C
 Specification Language''. This is a Behavioral Interface Specification
 Language (BISL) implemented in the \textsc{Frama-C} framework.
 It aims at specifying behavioral properties of C
@@ -31,16 +31,18 @@ Hoare in the late 60's and early 70's, and originally implemented in
 the \textsc{Eiffel} language.
 
 In this document, we assume that the reader has a good knowledge of
-the ANSI C programming language~\cite{KR88,standardc99}.
+the ISO C programming language~\cite{KR88,standardc99}.
 
 \section{Organization of this document}
 
 In this preliminary chapter we introduce some definitions and
 vocabulary, and discuss generalities about this specification
 language.  Chapter~\ref{chap:base} presents the specification language
-itself.  Chapter~\ref{chap:lib} presents additional informations about
-\emph{libraries} of specifications.  Finally, Appendix~\ref{chap:appendix}
-provides a few additional information.  A detailed table of
+itself.  Chapter~\ref{chap:lib} presents additional information about
+\emph{libraries} of specifications. Appendix~\ref{chap:appendix} provides
+specific hindsight over type-checking ACSL annotations, 
+the relation between ACSL and JML, and specification templates.
+A detailed table of
 contents is given on page~\pageref{chap:contents}.
 A glossary is given in Appendix~\ref{sec:glossary}.
 
@@ -152,15 +154,16 @@ Section~\ref{sec:multiplecontracts}).
   \item \emph{logic specifications}\,: definitions of logic functions
     or predicates, lemmas, axiomatizations by declaration of new logic
     types, logic functions, predicates with axioms they satisfy. Such an
-    annotation is placed at the level of global declarations.
+    annotation is placed at the level of global declarations. 
+    See section~\ref{sec:logicspec}
 
   \end{itemize}
 
 \item Statement annotations:
   \begin{itemize}
-  \item \emph{\assert clause}\,: these are allowed
+  \item \emph{assertion}\,: these are allowed
     everywhere a C label is allowed, or just before a
-    block closing brace.
+    block closing brace. See section~\ref{sec:assertions}.
     \oldremark{Claude}{About \assume{} clauses: current
       discussion is that it is not considered as an element of
       specification, so not present here. This should be part of proof
