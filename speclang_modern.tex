@@ -1459,7 +1459,7 @@ Annotations on C statements are of three kinds:
 \item Assertions: \index{assertion}allowed before any C statement or
   at end of blocks.
 \item\index{annotation!loop}\index{loop!annotation}
-  Loop annotations: invariant, assigns clause, variant; allowed
+  Loop annotations: \invariant, \assigns clause, \variant; allowed
   before any loop statement: \lstinline|while|, \lstinline|for|, and
   \lstinline|do ... while|.
 \item\index{statement contract}\index{contract}
@@ -2845,8 +2845,8 @@ each of its elements \lstinline|e| is converted to
   the result is a \lstinline|set<char*>| (accordingly to typing of union). In
   other words, the two definitions above are equivalent.
 
-  This logic function can be used as argument of \separated or in
-  assigns clause.
+  This logic function can be used as argument of \separated or
+  \assigns clause.
 \end{example}
 
 Thus, the \separated predicate satisfies the following property (with
