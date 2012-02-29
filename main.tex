@@ -229,27 +229,29 @@ as much as possible of ACSL.
 \subsection{Version 1.x}
 \begin{itemize}
 \item Added missing logical xor operator (figure~\ref{fig:gram:term}).
-\item Introduction of \lstinline|\freeable|, \lstinline|\allocable|, 
-  and \lstinline|\allocation| (section~\ref{sec:allocation-clause}).
-\item Introduction of \lstinline|allocates| and \lstinline|frees| clauses
+\item Introduction of built-in \lstinline|\allocable|, \lstinline|\allocation|, 
+  \lstinline|\freeable| and \lstinline|\fresh| (section~\ref{sec:allocation-clause}).
+\item Introduction of \allocates and \frees clauses
   (section~\ref{sec:allocation-clause}).
 \item Introduction of \lstinline|\valid_read| built-in and clarification of
 the notion of validity (section~\ref{subsec:memory}).
-\item Improvements to the \lstinline|volatile| clause 
-(section~\ref{sec:volatile-variables})
+\item Addition of labels to built-in related to memory blocks.
+\item Clarify the semantics of \assigns clauses into statement contract.
+\item Improvements to the \volatile clause 
+(section~\ref{sec:volatile-variables}).
 \item Clarify the evaluation of arrays inside an \lstinline|at| 
-  (section~\ref{sec:at})
+  (section~\ref{sec:at}).
 \end{itemize}
 
 \subsection{Version 1.5}
 
 \begin{itemize}
-\item Clarify the status of \lstinline|loop invariant| in presence of
-  \lstinline|break| or side-effects in the loop test.
+\item Clarify the status of \Loop \invariant in presence of
+  \Break or side-effects in the loop test.
 \item Introduction of \lstinline|\with| keyword for functional updates.
 \item Added bnf entry for completeness of function behaviors.
 \item Order of clauses in statement contracts is now fixed.
-\item Requires clauses are allowed before behaviors of statement contracts.
+\item \requires clauses are allowed before behaviors of statement contracts.
 \item Added explicit singleton construct for sets.
 \item Introduction of logical arrays.
 \item Operations over pointers and arrays have been precised.

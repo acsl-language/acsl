@@ -1,9 +1,9 @@
 \begin{syntax}
-  allocation-clause ::= { "allocates" } dyn-allocation-addresses ";";
-                    | { "frees" } dyn-allocation-addresses ";" ;
+  allocation-clause ::= "allocates" dyn-allocation-addresses ";";
+                      | "frees" dyn-allocation-addresses ";" ;
   \
-  loop-allocation ::= { "loop" "allocates" } dyn-allocation-addresses ";";
-                    | { "loop" "frees" } dyn-allocation-addresses ";" ;
+  loop-allocation ::= "loop" "allocates"  dyn-allocation-addresses ";";
+                    | "loop" "frees"  dyn-allocation-addresses ";" ;
   \
   dyn-allocation-addresses ::= location-addresses ;
                        | \nothing

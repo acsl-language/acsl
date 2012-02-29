@@ -2778,7 +2778,7 @@ memory location
 is dynamically allocated or deallocated by a loop.
 The grammar for those constructions is given on Figure~\ref{fig:gram:allocation}.
 
-\lstinline|loop allocates| and \lstinline|loop frees| have the same semantics.
+\Loop \allocates and \Loop \frees have the same semantics.
 \begin{listing-nonumber}
 //@ loop allocates Q$_1$,Q$_2$,`\dots`;
 \end{listing-nonumber}
@@ -2786,11 +2786,11 @@ means that any memory address that do not belong to the union of sets of
 terms
 \lstinline|Q$_1$ $\cup$ Q$_2$ $\cup \dots$|, interpreted in the current state, 
 has the same allocation status in the current state than 
-before entering the loop. Namely, as for \lstinline|loop assigns|, 
-\lstinline|loop allocates| defines a loop invariant.
+before entering the loop. Namely, as for \Loop \assigns, 
+\Loop \allocates defines a loop invariant.
 
 More precisely, with \lstinline|L$_0$| labelling the state before entering
-the loop, the clause \lstinline|loop allocates Q$_1$,$\ldots$,Q$_n$|
+the loop, the clause \Loop \allocates \lstinline|Q$_1$,$\ldots$,Q$_n$|
 is equivalent to the postcondition
 \begin{listing-nonumber}
 \forall char* p; 
@@ -2810,6 +2810,13 @@ It is the reason why the \lstinline|loop frees| clause requires
 the use of the ghost label \lstinline|L0|,
 in order to catch the set of the released memory blocks.
 \end{example}
+
+A {\sl loop-clause} without allocation clause implicitly contents \Loop \allocates \nothing.
+That means the {\sl allocation status} is not modified by the loop body.
+A {\sl loop-behavior} without allocation clause means that  
+the allocated and deallocated memory blocks are in fact specified by the allocation clauses
+of the {\sl loop-clauses}
+(Grammar of {\sl loop-clauses} and {\sl loop-behaviors} is given in Figure~\ref{fig:gram:loops}).
 
 \section{Sets as first-class values}\label{sec:sets}
 \index{location}
