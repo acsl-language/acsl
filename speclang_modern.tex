@@ -906,7 +906,7 @@ $\tau[]$ returns a logic array $t$ such that
 \lstinline|length|(t) = (
 \blocklength\indexttbs{block\_length}
 (p) - 
-\begin{notimplementedenv}\lstinline|\offset|\end{notimplementedenv}%
+\lstinline|\offset|
 (p))/\lstinline|sizeof|(\tau)
 \]
 
@@ -2534,10 +2534,7 @@ following built-in predicates deal with this notion:
 \lstinline|\valid{L}(\empty)| holds for any label \lstinline|L|. 
 \\ \makebox[5mm]{} \lstinline|\valid{id} : set<$\alpha$ *> $\ra$ boolean|
 \item 
-\begin{notimplementedenv}
-[Actual implementation recognizes only one type of validity]
 \lstinline|\valid_read|\indexttbs{valid_read}
-\end{notimplementedenv}
 applies to a set of terms of some pointer type and holds if and only
 if it is safe to read from all the pointers in the set
 \\ \makebox[5mm]{} \lstinline|\valid_read{id} : set<$\alpha$ *> $\ra$ boolean|
@@ -2572,7 +2569,7 @@ Some shortcuts are provided:
 % \footnote{or to \texttt{NULL}, if
 %    annotations are pre-processed are the appropriate inclusion of
 %    \texttt{stddef.h} is added}
-\item \begin{notimplementedenv}\lstinline|\offset{L}(p)|\end{notimplementedenv}%
+\item \lstinline|\offset{L}(p)|%
   \indexttbs{offset}
   returns the offset between \lstinline|p| and its base address
 \\ \makebox[5mm]{} \begin{tabular}{lll}
@@ -2712,7 +2709,7 @@ For any pointer \lstinline|p| and label \lstinline|L|
 \freeable{L}(p) <==> (\allocation{L}(p)==\dynamic && p==base_addr{L}(p)).
 \end{listing-nonumber}
   
-\item \begin{notimplementedenv}\lstinline|\fresh{L$_0$,L$_1$}(p,n)|\end{notimplementedenv}%
+\item \lstinline|\fresh{L$_0$,L$_1$}(p,n)|
 \indexttbs{fresh},
   indicates that \lstinline|p| refers to an allocated memory block at label 
   \lstinline|L$_1$|, 
