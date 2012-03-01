@@ -1,15 +1,15 @@
 \begin{syntax}
   term ::= "\null" ;
-        | "\base_addr" { one-label? } "(" term ")" ;
-        | "\block_length" { one-label? } "(" term ")" ;
-        | "\offset" { one-label? }  "(" term ")" ;
-        | { "\allocation" one-label? }  "(" term ")" ;
+        | "\base_addr" one-label? "(" term ")" ;
+        | "\block_length" one-label? "(" term ")" ;
+        | "\offset" one-label?  "(" term ")" ;
+        | { "\allocation" } one-label?   "(" term ")" ;
        \
-  pred ::=  { "\allocable" one-label? }"(" term ")" ;
-       |  { "\freeable" one-label? }"(" term ")" ;
-       | "\fresh"  { two-labels? }"(" term, term ")" ;
-       | "\valid" { one-label? } "(" location-address ")" ;
-       | "\valid_read" { one-label?} "(" location-address ")";
+  pred ::=  "\allocable" one-label? "(" term ")" ;
+       |  "\freeable" one-label? "(" term ")" ;
+       | "\fresh"   two-labels? "(" term, term ")" ;
+       | "\valid"  one-label?  "(" location-address ")" ;
+       | "\valid_read"  one-label? "(" location-address ")";
        | "\separated" "(" location-address "," location-addresses ")" ;
        \
   one-label ::= "{" id "}" ;

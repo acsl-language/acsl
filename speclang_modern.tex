@@ -2683,9 +2683,8 @@ and
 Some usefull shortcuts are provided:
 
 \begin{itemize}
-\item \begin{notimplementedenv}\lstinline|\allocable{L}(p)|\end{notimplementedenv}%
-  \indexttbs{allocable}
- holds if and only if
+\item \lstinline|\allocable{L}(p)|\indexttbs{allocable}
+holds if and only if
 the pointer \lstinline|p| refers, at the label \lstinline|L|, 
 to the base address of 
 an unallocated memory block.
@@ -2696,9 +2695,8 @@ For any pointer \lstinline|p| and label \lstinline|L|
 \allocable{L}(p) <==> (\allocation{L}(p)==\unallocated && p==base_addr{L}(p)).
 \end{listing-nonumber}
   
-\item \begin{notimplementedenv}\lstinline|\freeable{L}(p)|\end{notimplementedenv}%
-  \indexttbs{freeable}
- holds if and only if
+\item \lstinline|\freeable{L}(p)|\indexttbs{freeable}
+holds if and only if
 the pointer \lstinline|p| refers, at the label \lstinline|L|, 
 to an allocated memory block 
 that can be safely released using the C function \lstinline|free|.
