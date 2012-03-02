@@ -3415,21 +3415,25 @@ or only written to, the unused accessor function can be omitted from the
 
 \subsection{Initialization}
 \indexttbs{initialized}
-\lstinline|\initialized| is a predicate taking a set of l-values as
-argument and means that each l-value in this set is initialized.
+\lstinline|\initialized{L}(p)| is a predicate taking a set of some pointer to l-values as
+argument and means that each l-value in this set is initialized at label \lstinline|L|.
+\\ \makebox[5mm]{} \lstinline|\initialized{id} : set<$\alpha$*> $\ra$ bool|
 
 \begin{example}
   In the following, the assertion is true.
   \listinginput{1}{initialized.c}
+  Default labels are 
+  such that logic label \lstinline|{Here}| can be omitted.
 \end{example}
 
 \subsection{Unspecified values}
 \indexttbs{specified}
-\begin{notimplementedenv}\lstinline|\specified|\end{notimplementedenv}
-is a predicate taking a set of l-values as
+\begin{notimplementedenv}\lstinline|\specified{L}|\end{notimplementedenv}
+is a predicate taking a set of some pointer to l-values as
 argument and means that each l-value in this set has a \emph{specified
-  value}: its value is not a dangling pointer (that is, the value
-is not the address of a local variable refered to outside of its scope)
+  value} at label \lstinline|L|: its value is not a dangling pointer (that is, the value
+is not the address of a local variable refered to outside of its scope).
+\\ \makebox[5mm]{} \lstinline|\specified{id} : set<$\alpha$*> $\ra$ bool|
 
 \begin{example}
   In the following, the assertion is not true.

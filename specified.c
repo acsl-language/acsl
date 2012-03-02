@@ -6,6 +6,6 @@ int* f() {
 
 int* g() {
   int* p = f();
-  //@ assert \specified(p);
+  //@ assert \specified{Here}(p);
   return p+1;
 }
