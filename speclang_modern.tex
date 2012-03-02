@@ -2639,7 +2639,7 @@ Clauses \allocates and \frees are tied together. The simple contract
   @ allocates Q$_1$,Q$_2$,`\dots`;
   @*/
 \end{listing-nonumber}
-means that any memory address that do not belong to the union of sets of terms
+means that any memory address that does not belong to the union of sets of terms
 \lstinline|P$_i$| and \lstinline|Q$_j$| has the same {\sl allocation status} 
 (see below) in the post-state than in the pre-state. The only one difference 
 between \lstinline|allocates| and \lstinline|frees| is that sets 
@@ -2773,11 +2773,12 @@ memory location
 is dynamically allocated or deallocated by a loop.
 The grammar for those constructions is given on Figure~\ref{fig:gram:allocation}.
 
-\Loop \allocates and \Loop \frees have the same semantics.
+The clauses \Loop \allocates and \Loop \frees have the same semantics.
+The simple loop annotation
 \begin{listing-nonumber}
 //@ loop allocates Q$_1$,Q$_2$,`\dots`;
 \end{listing-nonumber}
-means that any memory address that do not belong to the union of sets of 
+means that any memory address that does not belong to the union of sets of 
 terms
 \lstinline|Q$_1$ $\cup$ Q$_2$ $\cup \dots$|, interpreted in the current state, 
 has the same allocation status in the current state than 
@@ -2786,7 +2787,7 @@ before entering the loop. Namely, as for \Loop \assigns,
 
 More precisely, with \lstinline|L$_0$| labelling the state before entering
 the loop, the clause \Loop \allocates \lstinline|Q$_1$,$\ldots$,Q$_n$|
-is equivalent to the postcondition
+is equivalent to the postcondition:
 \begin{listing-nonumber}
 \forall char* p; 
 \separated(\union(Q$_1$,$\ldots$,Q$_n$),p)==>(\allocation{Here}(p)==\allocation{L$_0$}(p)
@@ -2798,8 +2799,8 @@ is equivalent to the postcondition
 
 
 \begin{example}
- \listinginput{1}{loop-frees.c}
 The addresses of locations \lstinline|q[0..n]| are not modified by the loop, 
+ \listinginput{1}{loop-frees.c}
 but their values are.
 It is the reason why the \lstinline|loop frees| clause requires 
 the use of the ghost label \lstinline|L0|,
