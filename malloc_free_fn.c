@@ -3,7 +3,7 @@
 //NOPP-END
 /*@ assigns   \nothing;
   @ allocates \result;
-  @ ensures   \result==\null || fresh{Old,Here}(\result,n);
+  @ ensures   \result==\null || \fresh{Old,Here}(\result,n);
   @*/
 void *malloc(size_t n);
 
