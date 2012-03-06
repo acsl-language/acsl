@@ -43,7 +43,8 @@ tutorial: tutorial-check acsl-mini-tutorial.pdf acsl-mini-tutorial.html
 install: acsl-implementation.pdf acsl.pdf
 	cp -f acsl-implementation.pdf acsl.pdf ../manuals/
 
-FRAMAC=FRAMAC_PLUGIN=../../lib/plugins ../../bin/toplevel.byte
+FRAMAC=FRAMAC_SHARE=../../share FRAMAC_PLUGIN=../../lib/plugins \
+       ../../bin/toplevel.byte
 
 HAS_JESSIE=`if $(FRAMAC) -jessie-help; then echo yes; else echo no; fi`
 
