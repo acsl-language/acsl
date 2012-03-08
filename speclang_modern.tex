@@ -2803,8 +2803,8 @@ has the same allocation status in the current state than
 before entering the loop. 
 The only one difference between these two clauses is that sets \lstinline|P$_i$|are evaluated in the state before entering the loop (label \begin{notimplementedenv}\lstinline|LoopEntry|\end{notimplementedenv}), and \lstinline|Q$_i$| are evaluated in the current loop state (label \begin{notimplementedenv}\lstinline|LoopCurrent|\end{notimplementedenv}).
 
-Namely, as for \Loop \assigns, 
-\Loop \frees and \Loop \allocates defines a loop invariant.
+Namely, as for \Loop \assigns, loop annotations
+\Loop \frees and \Loop \allocates define a loop invariant.
 
 More precisely, using \lstinline|LoopEntry|\indextt{LoopEntry} labelling the state before entering
 the loop, the loop annotation
