@@ -1725,10 +1725,10 @@ These rules are exactly the same rules as for the visibility of local
 variables within C statements (see~\cite{KR88}, Section A11.1).
 
 \subsubsection*{Default logic labels}\label{sec:default-logic-labels}
-\indextt{Pre}\indextt{Here}\indextt{Old}\indextt{Post}
-There are four predefined logic labels: \lstinline|Pre|, \lstinline|Here|,
-\lstinline|Old| and
-\lstinline|Post|. \lstinline|\old(e)|\indexttbs{old} is
+\indextt{Pre}\indextt{Here}\indextt{Old}\indextt{Post}\indextt{LoopEntry}\indextt{LoopCurrent}
+There are six predefined logic labels: \lstinline|Pre|, \lstinline|Here|,
+\lstinline|Old|,
+\lstinline|Post|, \lstinline|LoopEntry| and \lstinline|LoopCurrent|. \lstinline|\old(e)|\indexttbs{old} is
 in fact syntactic sugar for \lstinline|\at(e,Old)|.
 
 \begin{itemize}
@@ -1748,13 +1748,31 @@ It is also visible in data invariants, presented in Section~\ref{sec:invariants}
   of this contract.
 % [Patrick B.] START remarque:
 % ``Old'' peut également s'utiliser dans les clauses relatives aux
-% terminaisons abruptes des contrats d'instructions. Ce n'est pas dit ici.
+% terminaisons abruptes des contrats d'instructions. 
+%Ce n'est pas dit ici.
 % END remarque
 \item The label \lstinline|Pre| is visible in all statement annotations,
   and refers to the pre-state of the function it occurs in.
 \item The label \lstinline|Post| is visible in
 \lstinline|assigns| and \lstinline|ensures| clauses of all contracts,
 and it refers to the post-state.
+
+\item The label \begin{notimplementedenv}\lstinline|LoopEntry|\end{notimplementedenv} is visible in
+all annotations related to a statement enclosed by a loop 
+and refers to the state just before entering that loop.
+When the annotation is a loop annotation, the label is always visible 
+and refers to the state just before entering the annoted loop,
+and not the enclosed loop.
+
+\item The label \begin{notimplementedenv}\lstinline|LoopCurrent|\end{notimplementedenv} is visible in
+all annotations related to a statement enclosed by a loop 
+and refers to the state just before the body of that loop.
+When the annotation is a loop annotation, the label is always visible 
+and refers to the state just before the body of that annoted loop,
+and not the enclosed loop.
+Inside loop annotations, the labels \lstinline|LoopCurrent| and \lstinline|Here| are equivalent,
+except inside clauses \Loop \frees (see section~\ref{sec:allocation-clause}) 
+where \lstinline|Here| is equivalent to \lstinline|LoopEntry|.
 
 \end{itemize}
 
@@ -2788,7 +2806,7 @@ The only one difference between these two clauses is that sets \lstinline|P$_i$|
 Namely, as for \Loop \assigns, 
 \Loop \frees and \Loop \allocates defines a loop invariant.
 
-More precisely, using \lstinline|LoopEntry| labelling the state before entering
+More precisely, using \lstinline|LoopEntry|\indextt{LoopEntry} labelling the state before entering
 the loop, the loop annotation
 \begin{listing-nonumber}
 //@ loop allocates Q$_1$,`\dots`,Q$_n$; */
@@ -2805,7 +2823,7 @@ is equivalent to the loop invariant:
 \end{listing-nonumber}
 
 \begin{example}
-The addresses of locations \lstinline|q[0..n]| are not modified by the loop, 
+The addresses of locations \lstinline|q[0..n]| are not modified by the loop,\indextt{LoopEntry}\indextt{LoopCurrent} 
  \listinginput{1}{loop-frees.c}
 but their values are.
 The clause \Loop \frees catches the set of the memory blocks that can be released by the previous loop iterations.
