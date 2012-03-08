@@ -27,7 +27,7 @@ DEPS_MODERN=speclang_modern.tex macros_modern.tex framacversion.tex	\
 	exitbehavior_modern.bnf dependencies_modern.bnf sum2.c		\
 	modifier.c gen_spec_with_ghost.c terminates_list.c		\
 	glob_var_masked.c glob_var_masked_sol.c intlists.c sign.c	\
-	signdef.c oldat.c mean.c isgcd.c exit.c mayexit.c
+	signdef.c oldat.c mean.c isgcd.c exit.c mayexit.c loop_current.c
 
 TUTORIAL_EXAMPLES=max_ptr-tut.c max_ptr2-tut.c max_ptr_bhv-tut.c \
                   max_seq_ghost-tut.c
@@ -145,7 +145,7 @@ terminates_list.c type_invariant-tut.c volatile.c
 BAD=acsl_allocator.c gen_code.c gen_spec_with_ghost.c			\
 gen_spec_with_model.c ghostcfg.c import.c invariants.c			\
 lexico.c listlengthdef.c listmodule.c loop-frees.c  			\
-modifier.c out_char.c specified.c sum2.c
+modifier.c out_char.c specified.c sum2.c loop_current.c
 
 check: acsl-mini-tutorial.tex
 	gcc -c -std=c99 *.c

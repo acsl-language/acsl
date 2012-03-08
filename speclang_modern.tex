@@ -1319,8 +1319,8 @@ be given for the same contract.
 
 % PB: Modified since \separated operates on pointers and not on locations
 There are several places where one needs to describe a set of memory
-locations: in \assigns clauses of function contracts, or
-in \Loop \assigns clauses (see section~\ref{sec:loop_annot}).
+locations: in \lstinline|assigns| clauses of function contracts, or
+in \lstinline|loop assigns| clauses (see section~\ref{sec:loop_annot}).
 A \emph{memory location} is then any set of terms denoting a set of
 l-values\index{l-value}. Moreover, a location given as argument to
 an \assigns{} clause must be a set of modifiable l-values, as described in
@@ -1519,6 +1519,7 @@ they are defined later in Section~\ref{sec:allocation-clause}.
 % END proposition
 
 \subsubsection{Loop invariants and loop assigns}
+\label{sec:loop-invariants}
 \index{invariant!loop}\index{loop!invariant}\index{loop!assigns}
 The semantics of loop invariants and loop assigns is defined as follows: 
 a simple loop annotation of the form
@@ -1728,7 +1729,8 @@ variables within C statements (see~\cite{KR88}, Section A11.1).
 \indextt{Pre}\indextt{Here}\indextt{Old}\indextt{Post}\indextt{LoopEntry}\indextt{LoopCurrent}
 There are six predefined logic labels: \lstinline|Pre|, \lstinline|Here|,
 \lstinline|Old|,
-\lstinline|Post|, \lstinline|LoopEntry| and \lstinline|LoopCurrent|. \lstinline|\old(e)|\indexttbs{old} is
+\lstinline|Post|, \lstinline|LoopEntry| and \lstinline|LoopCurrent|.
+\lstinline|\old(e)|\indexttbs{old} is
 in fact syntactic sugar for \lstinline|\at(e,Old)|.
 
 \begin{itemize}
@@ -1757,24 +1759,33 @@ It is also visible in data invariants, presented in Section~\ref{sec:invariants}
 \lstinline|assigns| and \lstinline|ensures| clauses of all contracts,
 and it refers to the post-state.
 
-\item The label \begin{notimplementedenv}\lstinline|LoopEntry|\end{notimplementedenv} is visible in
-all annotations related to a statement enclosed by a loop 
-and refers to the state just before entering that loop.
-When the annotation is a loop annotation, the label is always visible 
-and refers to the state just before entering the annoted loop,
-and not the enclosed loop.
+\item The label 
+\begin{notimplementedenv}\lstinline|LoopEntry|\end{notimplementedenv}
+is visible in loop annotations and
+all annotations related to a statement enclosed in a loop.
+It refers to the state just before entering that loop
+for the first time --but after initialization took place in the case of a 
+\lstinline|for| loop, as for \lstinline|loop invariant| 
+(section~\ref{sec:loop-invariants}). When \lstinline|LoopEntry| is used in a 
+statement enclosed in nested loops, it
+refers to the innermost loop containing that statement.
 
-\item The label \begin{notimplementedenv}\lstinline|LoopCurrent|\end{notimplementedenv} is visible in
-all annotations related to a statement enclosed by a loop 
-and refers to the state just before the body of that loop.
-When the annotation is a loop annotation, the label is always visible 
-and refers to the state just before the body of that annoted loop,
-and not the enclosed loop.
-Inside loop annotations, the labels \lstinline|LoopCurrent| and \lstinline|Here| are equivalent,
-except inside clauses \Loop \frees (see section~\ref{sec:allocation-clause}) 
-where \lstinline|Here| is equivalent to \lstinline|LoopEntry|.
-
+\item The label
+\begin{notimplementedenv}\lstinline|LoopCurrent|\end{notimplementedenv} 
+is visible in loop annotations and
+all other annotations related to a statement enclosed in a loop.
+It refers to the state at the beginning of the current step of the loop (see
+section~\ref{sec:loop-invariants} for more details on what constitute a loop
+step in presence of side-effects in the condition). When
+\lstinline|LoopCurrent| is used in a statement enclosed in nested loops, it
+refers to the innermost loop containing that statement.
 \end{itemize}
+
+Inside loop annotations, the labels \lstinline|LoopCurrent| and 
+\lstinline|Here| are equivalent,
+except inside clauses \lstinline|loop frees|
+(see section~\ref{sec:allocation-clause}) 
+where \lstinline|Here| is equivalent to \lstinline|LoopEntry|.
 
 There is one particular case for \lstinline|assigns| and \lstinline|ensures|
 clauses of function contracts where formal parameters\index{formal parameter}
@@ -1814,6 +1825,13 @@ Section~\ref{sec:logicalstates}.
   wrong too because again in \lstinline|t[i]|, the value of $i$ in the
   pre-state is considered.
 
+\end{example}
+
+\begin{example}
+Here is an example illustrating the use of \lstinline|LoopEntry| and
+\lstinline|LoopCurrent|
+
+\listinginput{1}{loop_current.c}
 \end{example}
 
 \subsection{Statement contracts}
@@ -2628,7 +2646,8 @@ $i\neq j$, \lstinline|\separated(s$_i$,s$_j$)|.
 \end{itemize}
 
 
-\subsection{Dynamic allocation and deallocation}\label{sec:allocation-clause}
+\subsection{Dynamic allocation and deallocation}
+\label{sec:allocation-clause}
 \indextt{allocates}\indextt{frees}
 \index{allocation}\index{deallocation}\index{dynamic allocation}
 
@@ -2650,7 +2669,8 @@ it is left for convenience like for \assigns clauses.
 \label{fig:gram:allocation}
 \end{figure}
 
-\subsubsection{Allocation clauses for function and statement contracts}
+\subsubsection{Allocation clauses for function 
+and statement contracts}
 
 Clauses \allocates and \frees are tied together. The simple contract  
 \begin{listing-nonumber}
@@ -2665,23 +2685,26 @@ between \lstinline|allocates| and \lstinline|frees| is that sets
 \lstinline|P$_i$| are evaluated 
 in the pre-state, and sets \lstinline|Q$_i$| are evaluated in the post-state.
 
-\allocates \lstinline|Q$_1$,$\ldots$,Q$_n$| is equivalent to the postcondition
+The built-in type \indextt{allocation\_status}\lstinline|allocation_status|
+can take the following values:
+\indexttbs{static}\indexttbs{register}\indexttbs{automatic}\indexttbs{dynamic}
+\indexttbs{unallocated}
+\begin{notimplementedenv}
 \begin{listing-nonumber}
-\forall char* p; 
-\separated(\union(Q$_1$,$\ldots$,Q$_n$),p)==>(\base_addr{Here}(p)==\base_addr{Pre}(p)
-                               && \block_length{Here}(p)==\block_length{Pre}(p)
-                               && \valid{Here}(p)<==>\valid{Pre}(p)
-                               && \valid_read{Here}(p)<==>\valid_read{Pre}(p)
-                               \allocation{Here}(p)==\allocation{Pre}(p))
+/*@
+type allocation_status = 
+    \static | \register | \automatic | \dynamic | \unallocated;
+*/
 \end{listing-nonumber}
-where
-\begin{itemize}
-\item  \begin{notimplementedenv}\lstinline|\allocation{L}(p)|\end{notimplementedenv}%
-  \indexttbs{allocation}
-returns the allocation status of the block containing, at the label \lstinline|L|, the pointer \lstinline|p| 
-\\ \makebox[5mm]{} \lstinline|\allocation{id} : void* $\ra$| 
-\begin{notimplementedenv}\lstinline|{\static, \register, \automatic, \dynamic, \unallocated}|
-\end{notimplementedenv}%
+\end{notimplementedenv}
+
+Built-in function
+\begin{notimplementedenv}\lstinline|\allocation{L}(p)|\end{notimplementedenv}%
+\indexttbs{allocation}
+returns the allocation status of the block containing, at the label 
+\lstinline|L|, the pointer \lstinline|p| 
+\\ \makebox[5mm]{} \lstinline|\allocation{id} : void* $\ra$ allocation_status|
+
 This function is such that for any pointer \lstinline|p| and label \lstinline|L|
 \begin{listing-nonumber}
 \allocation{L}(p) == \allocation{L}(\base_addr(p))
@@ -2690,9 +2713,20 @@ and
 \begin{listing-nonumber}
 \allocation{L}(p)==\unallocated ==> !\valid_read{L}(p)
 \end{listing-nonumber}
-\end{itemize}
 
-In fact, like the \assigns clause does not specify which memory location is assigned,
+\allocates \lstinline|Q$_1$,$\ldots$,Q$_n$| is equivalent to the postcondition
+\begin{listing-nonumber}
+\forall char* p; 
+\separated(\union(Q$_1$,$\ldots$,Q$_n$),p)==>
+     (\base_addr{Here}(p)==\base_addr{Pre}(p)
+      && \block_length{Here}(p)==\block_length{Pre}(p)
+      && \valid{Here}(p)<==>\valid{Pre}(p)
+      && \valid_read{Here}(p)<==>\valid_read{Pre}(p)
+      && \allocation{Here}(p)==\allocation{Pre}(p))
+\end{listing-nonumber}
+
+In fact, like the \assigns clause does not specify which memory location is
+assigned,
 the \textsl{allocation-clauses} do not specify which memory location 
 is dynamically allocated or deallocated.
 Pre-conditions and post-conditions should be added to complete specifications
@@ -2749,7 +2783,7 @@ For any pointer \lstinline|p| and labels \lstinline|L$_0$| and \lstinline|L$_1$|
   such that logic label \lstinline|Here| can be omitted.
 \end{example}
 
-When a behavior has only one of the two allocation clauses,
+When a behavior contains only one of the two allocation clauses,
 the given clause specifies the whole set of memory addresses to consider.
 This means that the set value for the other clause of that behavior defaults to \nothing.
 Now, when none of the two allocation clauses is given, the meaning is different
@@ -2765,15 +2799,18 @@ for anonymous behaviors and named behaviors:
       allocated nor deallocated memory block. 
       That is equivalent to give \allocates \nothing.
 \end{itemize}
-These rules are such that contracts without any allocation clause should be considered 
-as having only one \allocates \nothing leading to a condition to verify for 
+These rules are such that contracts without any allocation clause
+should be considered 
+as having only one \lstinline|allocates \nothing;| 
+leading to a condition to verify for 
 each anonymous behavior.
 
 \begin{example}
   More precise specifications can be given using named behaviors under the 
   assumption of \assumes clauses.
   \listinginput{1}{malloc-free2-fn.c}
-  The behaviors named \lstinline|allocation| and \lstinline|deallocation| do not 
+  The behaviors named \lstinline|allocation| and
+  \lstinline|deallocation| do not 
   need an allocation clause.
   For example, the allocation constraint of the \lstinline|allocation| behavior 
   is given by the clause \allocates \result of the anonymous behavior of the  
@@ -2788,7 +2825,8 @@ each anonymous behavior.
 Loop annotations are complemented by similar clauses allowing to specify which 
 memory location 
 is dynamically allocated or deallocated by a loop.
-The grammar for those constructions is given on Figure~\ref{fig:gram:allocation}.
+The grammar for those constructions is given on
+ Figure~\ref{fig:gram:allocation}.
 
 The clauses \Loop \allocates and \Loop \frees are tied together.
 The simple loop annotation
@@ -2801,34 +2839,42 @@ terms
 \lstinline|P$_i$| and  \lstinline|Q$_i$|
 has the same allocation status in the current state than 
 before entering the loop. 
-The only one difference between these two clauses is that sets \lstinline|P$_i$|are evaluated in the state before entering the loop (label \begin{notimplementedenv}\lstinline|LoopEntry|\end{notimplementedenv}), and \lstinline|Q$_i$| are evaluated in the current loop state (label \begin{notimplementedenv}\lstinline|LoopCurrent|\end{notimplementedenv}).
+The only difference between these two clauses is that sets 
+\lstinline|P$_i$| are evaluated in the state before entering the loop
+(label \begin{notimplementedenv}\lstinline|LoopEntry|\end{notimplementedenv}), 
+and \lstinline|Q$_i$| are evaluated in the current loop state 
+(label \begin{notimplementedenv}\lstinline|LoopCurrent|\end{notimplementedenv}).
 
-Namely, as for \Loop \assigns, loop annotations
-\Loop \frees and \Loop \allocates define a loop invariant.
+Namely, as for \lstinline|loop assigns|, loop annotations
+\lstinline|loop frees| and \lstinline|loop allocates| define a loop invariant.
 
-More precisely, using \lstinline|LoopEntry|\indextt{LoopEntry} labelling the state before entering
-the loop, the loop annotation
+More precisely, the following loop annotation:
 \begin{listing-nonumber}
 //@ loop allocates Q$_1$,`\dots`,Q$_n$; */
 \end{listing-nonumber}
 is equivalent to the loop invariant:
 \begin{listing-nonumber}
 \forall char* p; 
-\separated(\union(Q$_1$,$\ldots$,Q$_n$),p)
- ==>(\base_addr{Here}(p)==\base_addr{LoopEntry}(p)
-  && \block_length{Here}(p)==\block_length{LoopEntry}(p)
-  && \valid{Here}(p)<==>\valid{LoopEntry}(p)
-  && \valid_read{Here}(p)<==>\valid_read{LoopEntry}(p)
-  && \allocation{Here}(p)==\allocation{LoopEntry}(p))
+\separated(\union(Q$_1$,$\ldots$,Q$_n$),p) ==>
+   (\base_addr{Here}(p)==\base_addr{LoopEntry}(p)
+    && \block_length{Here}(p)==\block_length{LoopEntry}(p)
+    && \valid{Here}(p)<==>\valid{LoopEntry}(p)
+    && \valid_read{Here}(p)<==>\valid_read{LoopEntry}(p)
+    && \allocation{Here}(p)==\allocation{LoopEntry}(p))
 \end{listing-nonumber}
 
 \begin{example}
-The addresses of locations \lstinline|q[0..n]| are not modified by the loop,\indextt{LoopEntry}\indextt{LoopCurrent} 
- \listinginput{1}{loop-frees.c}
+~
+\listinginput{1}{loop-frees.c}
+The addresses of locations \lstinline|q[0..n]| are not modified by the loop,
 but their values are.
-The clause \Loop \frees catches the set of the memory blocks that can be released by the previous loop iterations.
-The first \Loop \invariant defines exactly these memory blocks
-while the second defines the memory blocks to be released by next iterations.
+The clause \lstinline|loop frees| catches the set of the memory blocks 
+that may have been released by the previous loop iterations.
+The first \lstinline|loop invariant| defines exactly these memory blocks.
+On the other hand, \lstinline|loop frees| indicates that the remaining blocks
+have not been freed since the beginning of the loop. Hence, they are still
+\lstinline|\freeable| as expressed by the initial \lstinline|assert|, and
+\lstinline|free(q[i])| will succeed at next step.
 \end{example}
 
 A {\sl loop-clause} without allocation clause implicitly contents \Loop \allocates \nothing.
