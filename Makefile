@@ -131,7 +131,7 @@ extremum2-tut.c fact.c flag.c footprint.c ghostpointer.c		\
 glob_var_masked.c glob_var_masked_sol.c global_invariant-tut.c		\
 incrstar.c initialized.c intlists.c isgcd.c isqrt.c listdecl.c		\
 listdef.c loopvariantnegative.c 					\
-loop-frees.c malloc_free_fn.c malloc-free2-fn.c 			\
+malloc_free_fn.c malloc-free2-fn.c 					\
 max-tut.c max.c max_index.c	        				\
 max_list-tut.c max_ptr-tut.c max_ptr2-tut.c max_ptr_bhv-tut.c		\
 max_ptr_false-tut.c max_seq-tut.c max_seq2-tut.c max_seq_assigns-tut.c	\
@@ -144,7 +144,7 @@ terminates_list.c type_invariant-tut.c volatile.c
 
 BAD=acsl_allocator.c gen_code.c gen_spec_with_ghost.c			\
 gen_spec_with_model.c ghostcfg.c import.c invariants.c			\
-lexico.c listlengthdef.c listmodule.c                                   \
+lexico.c listlengthdef.c listmodule.c loop-frees.c  			\
 modifier.c out_char.c specified.c sum2.c
 
 check: acsl-mini-tutorial.tex
