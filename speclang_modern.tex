@@ -2519,6 +2519,7 @@ containing, at the label \lstinline|L|, the pointer \lstinline|p|
   returns the length (in bytes) of the allocated block containing, 
   at the label \lstinline|L|, its argument pointer.
 \\ \makebox[5mm]{} \lstinline|\block_length{id} : void* $\ra$ size_t|
+
 \end{itemize}
 
 In addition, dereferencing a pointer may lead to run-time errors. A pointer
@@ -2649,20 +2650,13 @@ in the pre-state, and sets \lstinline|Q$_i$| are evaluated in the post-state.
 \allocates \lstinline|Q$_1$,$\ldots$,Q$_n$| is equivalent to the postcondition
 \begin{listing-nonumber}
 \forall char* p; 
-\separated(\union(Q$_1$,$\ldots$,Q$_n$),p)==>(\allocation{Here}(p)==\allocation{Pre}(p)
-                               && \base_addr{Here}(p)==\base_addr{Pre}(p)
+\separated(\union(Q$_1$,$\ldots$,Q$_n$),p)==>(\base_addr{Here}(p)==\base_addr{Pre}(p)
                                && \block_length{Here}(p)==\block_length{Pre}(p)
                                && \valid{Here}(p)<==>\valid{Pre}(p)
-                               && \valid_read{Here}(p)<==>\valid_read{Pre}(p))
+                               && \valid_read{Here}(p)<==>\valid_read{Pre}(p)
+                               \allocation{Here}(p)==\allocation{Pre}(p))
 \end{listing-nonumber}
-
-In fact, like the \assigns clause does not specify which memory location is assigned,
-the \textsl{allocation-clauses} do not specify which memory location 
-is dynamically allocated or deallocated.
-Pre-conditions and post-conditions should be added to complete specifications
-about allocations and deallocations.
-The following built-in constructs can be used for that:
-
+where
 \begin{itemize}
 \item  \begin{notimplementedenv}\lstinline|\allocation{L}(p)|\end{notimplementedenv}%
   \indexttbs{allocation}
@@ -2680,7 +2674,12 @@ and
 \end{listing-nonumber}
 \end{itemize}
 
-Some usefull shortcuts are provided:
+In fact, like the \assigns clause does not specify which memory location is assigned,
+the \textsl{allocation-clauses} do not specify which memory location 
+is dynamically allocated or deallocated.
+Pre-conditions and post-conditions should be added to complete specifications
+about allocations and deallocations.
+The following shortcuts can be used for that:
 
 \begin{itemize}
 \item \lstinline|\allocable{L}(p)|\indexttbs{allocable}
@@ -2692,7 +2691,7 @@ an unallocated memory block.
 \\
 For any pointer \lstinline|p| and label \lstinline|L|
 \begin{listing-nonumber}
-\allocable{L}(p) <==> (\allocation{L}(p)==\unallocated && p==base_addr{L}(p)).
+\allocable{L}(p) <==> (\allocation{L}(p)==\unallocated && p==\base_addr{L}(p)).
 \end{listing-nonumber}
   
 \item \lstinline|\freeable{L}(p)|\indexttbs{freeable}
@@ -2704,7 +2703,7 @@ that can be safely released using the C function \lstinline|free|.
 \\
 For any pointer \lstinline|p| and label \lstinline|L|
 \begin{listing-nonumber}
-\freeable{L}(p) <==> (\allocation{L}(p)==\dynamic && p==base_addr{L}(p)).
+\freeable{L}(p) <==> (\allocation{L}(p)==\dynamic && p==\base_addr{L}(p)).
 \end{listing-nonumber}
   
 \item \lstinline|\fresh{L$_0$,L$_1$}(p,n)|
@@ -2773,38 +2772,45 @@ memory location
 is dynamically allocated or deallocated by a loop.
 The grammar for those constructions is given on Figure~\ref{fig:gram:allocation}.
 
-The clauses \Loop \allocates and \Loop \frees have the same semantics.
+The clauses \Loop \allocates and \Loop \frees are tied together.
 The simple loop annotation
 \begin{listing-nonumber}
-//@ loop allocates Q$_1$,Q$_2$,`\dots`;
+/*@ loop frees P$_1$,P$_2$,`\dots`;
+  @ loop allocates Q$_1$,Q$_2$,`\dots`; */
 \end{listing-nonumber}
 means that any memory address that does not belong to the union of sets of 
 terms
-\lstinline|Q$_1$ $\cup$ Q$_2$ $\cup \dots$|, interpreted in the current state, 
+\lstinline|P$_i$| and  \lstinline|Q$_i$|
 has the same allocation status in the current state than 
-before entering the loop. Namely, as for \Loop \assigns, 
-\Loop \allocates defines a loop invariant.
+before entering the loop. 
+The only one difference between these two clauses is that sets \lstinline|P$_i$|are evaluated in the state before entering the loop (label \begin{notimplementedenv}\lstinline|LoopEntry|\end{notimplementedenv}), and \lstinline|Q$_i$| are evaluated in the current loop state (label \begin{notimplementedenv}\lstinline|LoopCurrent|\end{notimplementedenv}).
 
-More precisely, with \lstinline|L$_0$| labelling the state before entering
-the loop, the clause \Loop \allocates \lstinline|Q$_1$,$\ldots$,Q$_n$|
-is equivalent to the postcondition:
+Namely, as for \Loop \assigns, 
+\Loop \frees and \Loop \allocates defines a loop invariant.
+
+More precisely, using \lstinline|LoopEntry| labelling the state before entering
+the loop, the loop annotation
+\begin{listing-nonumber}
+//@ loop allocates Q$_1$,`\dots`,Q$_n$; */
+\end{listing-nonumber}
+is equivalent to the loop invariant:
 \begin{listing-nonumber}
 \forall char* p; 
-\separated(\union(Q$_1$,$\ldots$,Q$_n$),p)==>(\allocation{Here}(p)==\allocation{L$_0$}(p)
-                               && \base_addr{Here}(p)==\base_addr{L$_0$}(p)
-                               && \block_length{Here}(p)==\block_length{L$_0$}(p)
-                               && \valid{Here}(p)<==>\valid{L$_0$}(p)
-                               && \valid_read{Here}(p)<==>\valid_read{L$_0$}(p))
+\separated(\union(Q$_1$,$\ldots$,Q$_n$),p)
+ ==>(\base_addr{Here}(p)==\base_addr{LoopEntry}(p)
+  && \block_length{Here}(p)==\block_length{LoopEntry}(p)
+  && \valid{Here}(p)<==>\valid{LoopEntry}(p)
+  && \valid_read{Here}(p)<==>\valid_read{LoopEntry}(p)
+  && \allocation{Here}(p)==\allocation{LoopEntry}(p))
 \end{listing-nonumber}
-
 
 \begin{example}
 The addresses of locations \lstinline|q[0..n]| are not modified by the loop, 
  \listinginput{1}{loop-frees.c}
 but their values are.
-It is the reason why the \lstinline|loop frees| clause requires 
-the use of the ghost label \lstinline|L0|,
-in order to catch the set of the released memory blocks.
+The clause \Loop \frees catches the set of the memory blocks that can be released by the previous loop iterations.
+The first \Loop \invariant defines exactly these memory blocks
+while the second defines the memory blocks to be released by next iterations.
 \end{example}
 
 A {\sl loop-clause} without allocation clause implicitly contents \Loop \allocates \nothing.

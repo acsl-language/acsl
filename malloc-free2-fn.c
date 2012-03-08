@@ -2,15 +2,17 @@
 #include <stdlib.h> 
 //NOPP-END
 //@ ghost int heap_status;
-/*@ predicates is_allocable(size_t n) // Can a block of n bytes be allocated?
-  @              reads heap_status; 
+/*@ axiomatic dynamic_allocation {
+  @   predicate is_allocable(size_t n) // Can a block of n bytes be allocated?
+  @               reads heap_status; 
+  @  }
   @*/
  
 /*@ allocates \result;
   @ behavior allocation:
   @   assumes   is_allocable(n);
   @   assigns   heap_status;
-  @   ensures   fresh(\result,n);
+  @   ensures   \fresh(\result,n);
   @ behavior no_allocation:
   @   assumes   !is_allocable(n);
   @   assigns   \nothing;

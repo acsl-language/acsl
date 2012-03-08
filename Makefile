@@ -130,7 +130,8 @@ cond_assigns.c div_lemma.c dowhile.c euclide.c exit.c extremum-tut.c	\
 extremum2-tut.c fact.c flag.c footprint.c ghostpointer.c		\
 glob_var_masked.c glob_var_masked_sol.c global_invariant-tut.c		\
 incrstar.c initialized.c intlists.c isgcd.c isqrt.c listdecl.c		\
-listdef.c loopvariantnegative.c loop-frees.c malloc_free_fn.c 		\
+listdef.c loopvariantnegative.c 					\
+loop-frees.c malloc_free_fn.c malloc-free2-fn.c 			\
 max-tut.c max.c max_index.c	        				\
 max_list-tut.c max_ptr-tut.c max_ptr2-tut.c max_ptr_bhv-tut.c		\
 max_ptr_false-tut.c max_seq-tut.c max_seq2-tut.c max_seq_assigns-tut.c	\
@@ -138,13 +139,13 @@ max_seq_ghost-tut.c max_seq_inv-tut.c max_seq_old-tut.c			\
 max_seq_old2-tut.c mayexit.c mean.c minitutorial.c mutualrec.c		\
 nb_occ.c nb_occ_reads.c non_terminating-tut.c non_terminating2-tut.c	\
 num_of_pos.c oldat.c permut.c permut_reads.c sizeof.c sign.c signdef.c	\
-sort.c sqsum-tut.c sqsum2-tut.c strcpyspec.c sum.c swap-tut.c          \
+sort.c sqsum-tut.c sqsum2-tut.c strcpyspec.c sum.c swap-tut.c          	\
 terminates_list.c type_invariant-tut.c volatile.c
 
 BAD=acsl_allocator.c gen_code.c gen_spec_with_ghost.c			\
 gen_spec_with_model.c ghostcfg.c import.c invariants.c			\
 lexico.c listlengthdef.c listmodule.c                                   \
-malloc-free2-fn.c modifier.c out_char.c specified.c sum2.c
+modifier.c out_char.c specified.c sum2.c
 
 check: acsl-mini-tutorial.tex
 	gcc -c -std=c99 *.c
