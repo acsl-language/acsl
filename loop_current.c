@@ -5,5 +5,6 @@ int f (int n) {
   while (j++ < i) {
     /*@ assert \at(j,LoopInit) == 0; */
     /*@ assert \at(j,LoopCurrent) + 1 == j; */
+    }
   }
 }

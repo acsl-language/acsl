@@ -156,6 +156,7 @@ check: acsl-mini-tutorial.tex
 	failed_list=""; \
         passed_list=""; \
         for f in *.c ; do \
+	  echo "considering $$f"; \
 	  if test `grep -c "NOPP-END." $$f` -ne 0 ; then \
 	    echo "Failure since NOPP-END should end the line: $$f"; \
 	    exit 1; \
