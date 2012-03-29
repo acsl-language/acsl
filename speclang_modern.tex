@@ -1759,8 +1759,7 @@ It is also visible in data invariants, presented in Section~\ref{sec:invariants}
 \lstinline|assigns| and \lstinline|ensures| clauses of all contracts,
 and it refers to the post-state.
 
-\item The label 
-\begin{notimplementedenv}\lstinline|LoopEntry|\end{notimplementedenv}
+\item The label \lstinline|LoopEntry|
 is visible in loop annotations and
 all annotations related to a statement enclosed in a loop.
 It refers to the state just before entering that loop
@@ -1770,12 +1769,11 @@ for the first time --but after initialization took place in the case of a
 statement enclosed in nested loops, it
 refers to the innermost loop containing that statement.
 
-\item The label
-\begin{notimplementedenv}\lstinline|LoopCurrent|\end{notimplementedenv} 
+\item The label \lstinline|LoopCurrent|
 is visible in loop annotations and
 all other annotations related to a statement enclosed in a loop.
 It refers to the state at the beginning of the current step of the loop (see
-section~\ref{sec:loop-invariants} for more details on what constitute a loop
+section~\ref{sec:loop-invariants} for more details on what constitutes a loop
 step in presence of side-effects in the condition). When
 \lstinline|LoopCurrent| is used in a statement enclosed in nested loops, it
 refers to the innermost loop containing that statement.
