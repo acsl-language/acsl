@@ -3220,10 +3220,11 @@ void reset(S *p) {
 \end{example}
 
 \subsection{Model variables and model fields}
+\label{sec:model}
 \index{model} \notimplemented{A \emph{model variable} is a variable
   introduced in the specification with the keyword
   \lstinline|model|}. Its type must be a logic type. Analogously,
-\notimplemented {structures may have \emph{model fields}}.  These are
+types may have \emph{model fields}.  These are
 used to provide abstract specifications to functions whose concrete
 implementation must remain private.
 
@@ -3238,8 +3239,7 @@ implementation must remain private.
 
 The precise syntax for declaring model variables and fields is given
 in Figure~\ref{fig:gram:model}. It is presented as additions to the
-regular C grammar for variable declarations and structure field
-declarations.
+regular C grammar for declarations
 
 Informal semantics of model variables is as follows.
 \begin{itemize}
@@ -3260,6 +3260,23 @@ Thus, in practice, the only way to prove that a function body
 satisfies a contract with model variables is to provide an invariant
 relating model variables and concrete variables, as in the example
 below.
+
+Model fields behave the same, but they are attached to any value whose static
+type is the one of the model declaration. A model field can be attached to any
+C type, not only to \texttt{struct}. When it is attached to a compound type,
+however, it must not have the same name as a C field of the corresponding type.
+In addition, model fields are ``inherited'' by a \texttt{typedef} 
+in the sense that the newly defined type has also the model fields of its
+parents (and can acquire more, which will not be present for the parent).
+For instance, in the following code, \texttt{t1} has one model field
+\texttt{m1}, while \texttt{t2} has two model fields,
+\texttt{m1} and \texttt{m2}.
+\begin{lstlisting}[style=c,basicstyle=\lp@basic,numbers=left]
+typedef int t1;
+typedef t1 t2;
+/*@ model t1 { int m1 }; */
+/*@ model t2 { int m2 }; */
+\end{lstlisting}
 
 \begin{example}\label{ex:model}
   Here is an example of a specification for a function which generates
