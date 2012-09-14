@@ -139,7 +139,6 @@ With respect to C pure expressions, the additional constructs are as follows:
   for readibility purposes.
 
 \item[Functional modifier]
- \begin{notimplementedenv}
   The composite element modifier is an additional
   operator related to C structure field and array accessors.
   The expression \lstinline|{ s \with .id = v }|
@@ -151,7 +150,6 @@ With respect to C pure expressions, the additional constructs are as follows:
   \lstinline|i$^{th}$| element whose value
   is \lstinline|v|.
   See section~\ref{sec:func-dep} for an example of use of these operators.
- \end{notimplementedenv}
 
 \item[Logic functions] Applications in terms and in propositions are not
 applications of C functions, but of logic functions or predicates; see
@@ -3038,7 +3036,7 @@ This is shown in example~\ref{ex:assigns-and-abrupt-termination} for a function 
 An extended syntax of \assigns clauses, described in
 Figure~\ref{fig:gram:dep} allows to specify data
 dependencies\index{dependency} and
-\emph{functional expressions}\index{functional expression}.
+\notimplemented{\emph{functional expressions}}\index{functional expression}.
 
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth}
@@ -3071,11 +3069,9 @@ corresponding contract.
 
 
 \begin{example}
- \begin{notimplementedenv}
   % This exemple is referenced in a previous section.
   The composite element modifier operators 
   can be useful for writing such functional expressions.
- \end{notimplementedenv}
   \listinginput{1}{modifier.c}
 \end{example}
 

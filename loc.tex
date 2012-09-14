@@ -11,10 +11,10 @@
        | tset "+" tset ;
        | "(" tset ")" ;
        | "{" tset "|" binders (";" pred)? "}" ; set comprehension
-       | { "{" term "}" } ; explicit singleton
+       | {[the given term cannot itself be a set] "{" term "}" } ; explicit singleton
        | term ; implicit singleton
        \
-  pred ::= {"\subset" "(" tset "," tset ")"} ; set inclusion
+  pred ::= "\subset" "(" tset "," tset ")" ; set inclusion
 \end{syntax}
 
 %%% Local Variables:
