@@ -1,4 +1,10 @@
 \begin{syntax}
+  literal ::= "\true" | "\false" ; boolean constants
+       | integer ; integer constants
+       | real ; real constants
+       | string ; string constants
+       | character ; character constants
+       \ 
   bin-op ::= "+" | "-" | "*" | "/" | "%" ;
        | "==" | "!=" | "<=" | ">=" | ">" | "<" ;
        | "&&" | "||" | "^^"  ; boolean operations
@@ -11,9 +17,7 @@
        | "*" ; pointer dereferencing
        | "&" ; address-of operator
        \
-  term ::= "\true" | "\false" ;
-       | integer ; integer constants
-       | real ; real constants
+  term ::= literal ; literal constants
        | id ; variables
        | unary-op term ;
        | term bin-op term ;
@@ -30,6 +34,7 @@
        | "sizeof" "(" term ")" ;
        | "sizeof" "(" C-type-expr ")" ;
        | id ":" term ; syntactic naming
+       | string ":" term ; syntactic naming
 \end{syntax}
 
 %%% Local Variables:
