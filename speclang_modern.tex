@@ -1128,8 +1128,14 @@ formulas), since the contract above is equivalent to the following
 simplified one:
 \begin{listing}{1}
 /*@ requires P && (A$_1$ ==> R$_1$) && (A$_2$ ==> R$_2$);
-  @ assigns L$_1$,L$_2$;
-  @ ensures \old(A$_1$) ==> E$_1$ && \old(A$_2$) ==> E$_2$;
+  @ behavior b$_1$:
+  @   assumes A$_1$;
+  @   assigns L$_1$;
+  @   ensures E$_2$;
+  @ behavior b$_2$:
+  @   assumes A$_2$;
+  @   assigns L$_2$;
+  @   ensures E$_2$;
   @*/
 \end{listing}
 
