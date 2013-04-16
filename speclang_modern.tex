@@ -1089,7 +1089,7 @@ default status of clauses.
 
 \subsection{Contracts with named behaviors}
 \label{subsec:behaviors}
-\index{function behavior}\index{behavior}
+\index{function behavior}\indextt{behavior}
 The general form of a function contract contains several named
 behaviors (restricted to two behaviors, in the following, for
 readability).
@@ -1319,7 +1319,7 @@ be given for the same contract.
 % behaviors related to error cases.
 
 \subsection{Memory locations and sets of terms}
-\label{sec:locations}\indextt{location}
+\label{sec:locations}\index{location}
 
 % PB: Modified since \separated operates on pointers and not on locations
 There are several places where one needs to describe a set of memory
@@ -2161,7 +2161,7 @@ functions, which amounts to declare the expected profiles and a set of
 axioms. The grammar for those constructions is given on
 Figure~\ref{fig:gram:logicdecl}.
 
-\index{axiomatic}
+\indextt{axiomatic}
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.97\linewidth} \input{logicdecl_modern.bnf}
     \end{minipage}}
@@ -2307,7 +2307,7 @@ higher-order logic.
 
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.98\linewidth}
-      \index{record}\index{sum}
+      \index{type!record}\index{type!sum}
       \input{logictypedecl_modern.bnf}
     \end{minipage}}
   \caption{Grammar for concrete logic types and pattern-matching}
@@ -2326,8 +2326,8 @@ higher-order logic.
 
 Logic types may not only be declared but also be given a
 definition. Defined logic types can be either record
-types\index{record}\index{type!record}, or sum
-types\index{sum}\index{type!sum}. These definitions may be recursive.
+types\index{type!record}, or sum
+types\index{type!sum}. These definitions may be recursive.
 For record types, the field access notation $t.id$ can be used, and
 for sum types, a pattern-matching construction is available.
 Grammar rules for these additional constructions are given in
@@ -2573,7 +2573,7 @@ following built-in predicates deal with this notion:
 \lstinline|\valid{L}(\empty)| holds for any label \lstinline|L|. 
 \\ \makebox[5mm]{} \lstinline|\valid{id} : set<$\alpha$ *> $\ra$ boolean|
 \item 
-\lstinline|\valid_read|\indexttbs{valid_read}
+\lstinline|\valid_read|\indexttbs{valid\_read}
 applies to a set of terms of some pointer type and holds if and only
 if it is safe to read from all the pointers in the set
 \\ \makebox[5mm]{} \lstinline|\valid_read{id} : set<$\alpha$ *> $\ra$ boolean|
@@ -2992,7 +2992,8 @@ is allowed and denotes the value of \lstinline|e| in the pre-state of
 the function or statement,
 and \lstinline|\exit_status| is bound to the return code,
 \emph{e.g} the value returned by \main{} or the argument passed to \exit{}.
-The  construct \lstinline|\exit_status|\indexttbs{exit_status} can be used only in \exits{},
+The  construct \lstinline|\exit_status|\indexttbs{exit\_status}
+can be used only in \exits{},
  \assigns{} and \allocates{} clauses. On the contrary,
 \result cannot be used in \exits{} clauses.
 
@@ -3027,12 +3028,6 @@ This is shown in example~\ref{ex:assigns-and-abrupt-termination} for a function 
     apres les fonctions enregistrees par atexit() ?
 
 \end{todo}
-
-\oldremark{PC}{
-
-  utilite de la clause assigns ?
-
-}
 
 \section{Dependencies information}
 \label{sec:func-dep}
@@ -3223,7 +3218,7 @@ void reset(S *p) {
 
 \subsection{Model variables and model fields}
 \label{sec:model}
-\index{model} \notimplemented{A \emph{model variable} is a variable
+\indextt{model} \notimplemented{A \emph{model variable} is a variable
   introduced in the specification with the keyword
   \lstinline|model|}. Its type must be a logic type. Analogously,
 types may have \emph{model fields}.  These are
@@ -3313,7 +3308,7 @@ we deliberately do not provide a precise semantics in this document .
 
 \section{Ghost variables and statements}
 \label{sec:ghost}
-\index{ghost}
+\indextt{ghost}
 Ghost variables and statements are like C variables and statements,
 but visible only in the specifications. They are introduced by the
 \lstinline|ghost| keyword at the beginning of the annotation
@@ -3452,7 +3447,7 @@ are executable.
 \end{example}
 
 \subsection{Volatile variables}\label{sec:volatile-variables}
-\index{volatile}
+\indextt{volatile}
 \experimental
 
 Volatile variables can not be used in logic terms, since reading such
