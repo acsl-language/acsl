@@ -239,8 +239,9 @@ $(MAIN).pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
 
 %.pdf: %.tex
 	pdflatex $*
-	makeindex $*
 	bibtex $*
+	pdflatex $*
+	makeindex $*
 	pdflatex $*
 	pdflatex $*
 
