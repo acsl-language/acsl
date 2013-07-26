@@ -74,8 +74,8 @@ introduce the following logic functions:
 \begin{notimplementedenv}
 \begin{listing}{1}
 /*@
-  @ logic integer \offset_min<a>{L}(a *p);
-  @ logic integer \offset_max<a>{L}(a *p);
+  @ logic integer \offset_min{L}<a>(a *p);
+  @ logic integer \offset_max{L}<a>(a *p);
   @/
 \end{listing}
 \end{notimplementedenv}
@@ -98,7 +98,7 @@ It also introduces some syntactic sugar:
 \begin{notimplementedenv}
 \begin{listing}{1}
 /*@
-predicate \valid_range<a>{L}(a *p,integer i,integer j) =
+predicate \valid_range{L}<a>(a *p,integer i,integer j) =
   \offset_min{L}(p) <= i && \offset_max{L}(p) >= j;
 */
 \end{listing}
