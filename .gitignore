@@ -1,0 +1,9 @@
+*.bnf
+*.pdf
+transf
+*.out
+*.idx
+acsl-implementation.tex
+acsl.tex
+frama-c-book.cls
+framacversion.tex
