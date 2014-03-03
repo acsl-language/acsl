@@ -41,6 +41,7 @@ all: acsl install tutorial check
 tutorial: tutorial-check acsl-mini-tutorial.pdf acsl-mini-tutorial.html
 
 install: acsl-implementation.pdf acsl.pdf
+	rm -f  ../manuals/acsl-implementation.pdf  ../manuals/acsl.pdf
 	cp -f acsl-implementation.pdf acsl.pdf ../manuals/
 
 FRAMAC=FRAMAC_SHARE=../../share FRAMAC_PLUGIN=../../lib/plugins \
