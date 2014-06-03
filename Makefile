@@ -203,7 +203,10 @@ tutorial-check: acsl-mini-tutorial.tex
         else echo "All examples from the tutorial are accepted. Good!"; \
         fi
 
-BUILTINS=C-struct-declaration C-statement
+BUILTINS=real integer string character id \
+         function-contract global-invariant type-invariant logic-specification \
+         assertion loop-annotation statement-contract \
+         ghost-code
 
 grammar-check: transf
 	./transf -check $(addprefix -builtin ,$(BUILTINS)) $(BNF_FILES)
