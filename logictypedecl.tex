@@ -35,7 +35,7 @@
     | id "(" pat ( "," pat)* ")" ; non-constant constructor
     | pat "|" pat ; or pattern
     | "_" ; any pattern
-    | cst ; numeric constant
+    | literal
     | "{" ("."id "=" pat)* "}" ; record pattern
     | "(" pat ( "," pat )* ")" ; tuple pattern
     | pat "as" id ; pattern binding

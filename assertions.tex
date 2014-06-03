@@ -1,7 +1,7 @@
 \begin{syntax}
-  compound-statement ::= "{" declaration* statement* assertion+ "}"
+  C-compound-statement ::= "{" declaration* statement* assertion+ "}"
         \
-  statement ::= assertion statement \
+  C-statement ::= assertion C-statement \
   assertion ::= "/*@" "assert" pred ";" "*/" ;
   | "/*@" "for" id ("," id)* ":" "assert" pred ";" "*/" ;
 \end{syntax}

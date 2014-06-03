@@ -1,10 +1,10 @@
 \begin{syntax}
-  C-global-decl ::= "/*@" logic-def+ "*/"
+  C-external-declaration ::= "/*@" logic-def+ "*/"
   \
   logic-def ::= logic-const-def ;
           | logic-function-def ;
           | logic-predicate-def ;
-          | lemma-def ;
+          | lemma-decl ;
   \
   type-var ::= id
   \
