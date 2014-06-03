@@ -3,7 +3,7 @@
   \
   logic-def ::= logic-const-def ;
           | logic-function-def ;
-          | predicate-def ;
+          | logic-predicate-def ;
           | lemma-def ;
   \
   type-var ::= id
@@ -26,7 +26,7 @@
   poly-id parameters "=";
   term ";"
   \
-  predicate-def ::=
+  logic-predicate-def ::=
   "predicate";
   poly-id parameters? "=";
   pred ";"

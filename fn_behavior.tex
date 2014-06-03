@@ -3,7 +3,7 @@
                         decreases-clause? simple-clause*;
                         named-behavior* completeness-clause*
   \
-  requires-clause ::= "requires" predicate ";"
+  requires-clause ::= "requires" pred ";"
   \
   terminates-clause ::= "terminates" pred ";"
   \
@@ -18,13 +18,13 @@
   \
   location ::= tset
   \
-  ensures-clause ::= "ensures" predicate ";"
+  ensures-clause ::= "ensures" pred ";"
   \
   named-behavior ::= "behavior" id ":" behavior-body
   \
   behavior-body ::= assumes-clause* requires-clause* simple-clause* 
   \
-  assumes-clause ::= "assumes" predicate ";"
+  assumes-clause ::= "assumes" pred ";"
   \
   completeness-clause ::= "complete" "behaviors" (id (","id)*)? ";";
      | "disjoint" "behaviors" (id (","id)*)? ";"
