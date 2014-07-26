@@ -3511,11 +3511,13 @@ argument and means that each l-value in this set is initialized at label \lstinl
 
 \subsection{Unspecified values}
 \indexttbs{specified}
-\begin{notimplementedenv}\lstinline|\specified{L}|\end{notimplementedenv}
+\lstinline|\specified{L}|
 is a predicate taking a set of some pointer to l-values as
 argument and means that each l-value in this set has a \emph{specified
-  value} at label \lstinline|L|: its value is not a dangling pointer (that is, the value
-is not the address of a local variable refered to outside of its scope).
+  value} at label \lstinline|L|: its value is not a dangling pointer.
+(``Not dangling'' means that the value is neither the address of a local
+variable refered to outside of its scope, nor the address of a variable that
+has been dynamically allocated, then deallocated.)
 \\ \makebox[5mm]{} \lstinline|\specified{id} : set<$\alpha$*> $\ra$ bool|
 
 \begin{example}
@@ -3523,6 +3525,12 @@ is not the address of a local variable refered to outside of its scope).
   \listinginput{1}{specified.c}
 \end{example}
 
+In most cases, the arguments to \lstinline|\specified| are pointers to
+l-values that themselves have type pointer, so the usual signature
+of \lstinline|\specified| is actually \lstinline|set<$\alpha$**> $\ra$ bool|.
+The signature \lstinline|set<$\alpha$*> $\ra$ bool| is useful to handle
+pointer values that have been written inside scalar variables through
+heterogeneous casts.
 
 
 %\section{Module constructions}
