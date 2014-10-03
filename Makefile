@@ -92,10 +92,7 @@ include ../MakeLaTeXModern
 	ocamllex $<
 
 %.pdf: %.tex
-	pdflatex $<
-	bibtex $(<:.tex=)
-	pdflatex $<
-	pdflatex $<
+	rubber -W refs -W misc -d $<
 
 pp: pp.ml
 	ocamlopt -o $@ str.cmxa $^
@@ -204,12 +201,6 @@ BUILTINS=real integer string character id \
 grammar-check: transf
 	./transf -check $(addprefix -builtin ,$(BUILTINS)) $(BNF_FILES)
 
-acsl-mini-tutorial.pdf: acsl-mini-tutorial.tex mini-biblio.bib
-	pdflatex acsl-mini-tutorial
-	bibtex acsl-mini-tutorial
-	pdflatex acsl-mini-tutorial
-	pdflatex acsl-mini-tutorial
-
 acsl-mini-tutorial.html: acsl-mini-tutorial.tex mini-biblio.bib
 	hevea -bib mini-biblio.bib acsl-mini-tutorial.tex
 
@@ -225,28 +216,20 @@ clean:
 acsl-implementation.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN) ../../VERSION
 
 acsl-implementation.tex: $(MAIN).tex Makefile
-	rm -f $@
-	sed -e '/PrintRemarks/s/%--//' $^ > $@
-	chmod a-w $@
+	@rm -f $@
+	sed -e '/PrintRemarks/s/%--//' $< > $@
+	@chmod a-w $@
 
 # version WEB du langage ACSL
 acsl.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
 
 acsl.tex: acsl-implementation.tex Makefile
 	rm -f $@
-	sed -e '/PrintImplementationRq/s/%--//' $^ > $@
+	sed -e '/PrintImplementationRq/s/%--//' $< > $@
 	chmod a-w $@
 
 # version pour le goupe de travail ACSL
 $(MAIN).pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
-
-%.pdf: %.tex
-	pdflatex $*
-	bibtex $*
-	pdflatex $*
-	makeindex $*
-	pdflatex $*
-	pdflatex $*
 
 tutorial-www: acsl-mini-tutorial.pdf acsl-mini-tutorial.html
 	rm -f ../www/src/acsl_tutorial_index.hevea
