@@ -10,7 +10,7 @@ BNF_FILES=term.tex predicate.tex binders.tex fn_behavior.tex \
 
 BNF_DEPS=$(BNF_FILES:.tex=_modern.bnf)
 
-DEPS_MODERN=speclang_modern.tex macros_modern.tex framacversion.tex	\
+DEPS_MODERN=speclang_modern.tex macros_modern.tex	\
 	intro_modern.tex libraries_modern.tex compjml_modern.tex	\
 	div_lemma.c assigns.c invariants.c example-lt-modern.tex	\
 	malloc_free_fn.c malloc-free2-fn.c loop-frees.c isqrt.c		\
@@ -60,13 +60,6 @@ tutorial-valid: $(TUTORIAL_EXAMPLES:.c=.proved)
 endif
 
 include ../MakeLaTeXModern
-
-framacversion.tex: ../../VERSION Makefile
-	rm -f $@
-	printf '\\newcommand{\\framacversion}{' > $@
-	cat $< >> $@
-	echo '}' >> $@
-	chmod a-w $@
 
 %.1: %.mp
 	mpost -interaction=batchmode $<
@@ -229,7 +222,7 @@ clean:
 		transf trans.ml pp.ml pp
 
 # version WEB liée à ce qui est implementé
-acsl-implementation.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
+acsl-implementation.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN) ../../VERSION
 
 acsl-implementation.tex: $(MAIN).tex Makefile
 	rm -f $@
