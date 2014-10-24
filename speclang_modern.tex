@@ -2774,7 +2774,7 @@ For any pointer \lstinline|p| and labels \lstinline|L$_0$| and \lstinline|L$_1$|
 \fresh{L$_0$,L$_1$}(p,n) <==> (\allocable{L$_0$}(p) && 
                          \freeable{L$_1$}(p) && 
                          \block_length{L$_1$}(p)==n &&
-                         \valid{L$_1$}((char*)p+(0..n))
+                         \valid{L$_1$}((char*)p+(0 .. (n-1)))
 \end{listing-nonumber}
 \end{itemize}
 
