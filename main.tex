@@ -1,10 +1,13 @@
 %; whizzy section -pdf -initex "pdflatex -ini"
-\documentclass[a4paper,web]{frama-c-book}
+% rubber: watch main.cb
+% rubber: watch main.cb2
+% rubber: depend ../../VERSION
+\documentclass[web]{frama-c-book}
 %\usepackage{hevea}
 \usepackage{ifthen}
 
 \input{./macros_modern}
-\input{framacversion.tex}
+\newcommand{\framacversion}{\input{../../VERSION}}
 %Do not touch the following line. It is used in a Makefile hack to
 %produce the ACSL documents for the ACSL working group.
 %--\setboolean{PrintRemarks}{false}

@@ -1,6 +1,6 @@
 \documentclass{report}
 \usepackage[utf8]{inputenc}
-\usepackage[a4paper=true,pdftex,colorlinks=true,urlcolor=blue,pdfstartview=FitH]{hyperref}
+\usepackage[pdftex,colorlinks=true,urlcolor=blue,pdfstartview=FitH]{hyperref}
 
 \usepackage{graphicx}
 \usepackage[T1]{fontenc}
@@ -76,9 +76,9 @@
 \begin{titlepage}
 \begin{center}
 \begin{latexonly}
-\includegraphics[height=14mm]{cealistlogo.jpg}
+\includegraphics[height=14mm]{cealistlogo}
 \hfill
-\includegraphics[height=14mm]{inriasaclaylogo.png}
+\includegraphics[height=14mm]{inria}
 
 \vfill
 %\includegraphics[height=60mm]{FramaC.jpg}
