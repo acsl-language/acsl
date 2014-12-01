@@ -217,7 +217,7 @@ acsl-implementation.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN) ../../VERSION
 
 acsl-implementation.tex: $(MAIN).tex Makefile
 	@rm -f $@
-	sed -e 's/main.cb/acsl-implementation.cb/' -e '/PrintRemarks/s/%--//' $< > $@
+	sed -e 's/main.cb/acsl-implementation.cb/' -e '/PrintRemarks/s/%--//' $^ > $@
 	@chmod a-w $@
 
 # version WEB du langage ACSL
@@ -225,7 +225,7 @@ acsl.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
 
 acsl.tex: acsl-implementation.tex Makefile
 	rm -f $@
-	sed -e '/PrintImplementationRq/s/%--//' $< > $@
+	sed -e '/PrintImplementationRq/s/%--//' $^ > $@
 	chmod a-w $@
 
 # version pour le goupe de travail ACSL
