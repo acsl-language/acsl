@@ -25,7 +25,7 @@ DEPS_MODERN=speclang_modern.tex macros_modern.tex	\
 	fact.c mutualrec.c abrupt_termination.c				\
 	advancedloopinvariants.c inductiveloopinvariants_modern.tex	\
 	$(BNF_DEPS) cfg.mps volatile.c euclide.c initialized.c		\
-	specified.c sum2.c modifier.c gen_spec_with_ghost.c		\
+	dangling.c sum2.c modifier.c gen_spec_with_ghost.c		\
 	terminates_list.c glob_var_masked.c glob_var_masked_sol.c	\
 	intlists.c sign.c signdef.c oldat.c mean.c isgcd.c exit.c	\
 	mayexit.c loop_current.c
