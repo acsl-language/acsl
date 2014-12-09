@@ -132,7 +132,7 @@ max_seq_old2-tut.c mayexit.c mean.c minitutorial.c mutualrec.c		\
 nb_occ.c nb_occ_reads.c non_terminating-tut.c non_terminating2-tut.c	\
 num_of_pos.c oldat.c permut.c permut_reads.c sizeof.c sign.c signdef.c	\
 sort.c specified.c sqsum-tut.c sqsum2-tut.c strcpyspec.c sum.c          \
-swap-tut.c terminates_list.c type_invariant-tut.c volatile.c
+swap-tut.c terminates_list.c type_invariant-tut.c volatile.c dangling.c
 
 BAD=acsl_allocator.c gen_code.c gen_spec_with_ghost.c			\
 gen_spec_with_model.c ghostcfg.c import.c invariants.c			\

@@ -6,6 +6,6 @@ int* f() {
 
 int* g() {
   int* p = f();
-  //@ assert \dangling_contents{Here}(&p);
+  //@ assert \dangling{Here}(&p);
   return p+1;
 }

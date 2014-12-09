@@ -3518,14 +3518,14 @@ argument and means that each l-value in this set has a \emph{dangling
 of) a dangling address: either the address of a local
 variable refered to outside of its scope, or the address of a variable that
 has been dynamically allocated, then deallocated.
-\\ \makebox[5mm]{} \lstinline|\dangling_contents{id} : set<$\alpha$*> $\ra$ bool|
+\\ \makebox[5mm]{} \lstinline|\dangling{id} : set<$\alpha$*> $\ra$ bool|
 
 \begin{example}
   In the following, the assertion holds.
   \listinginput{1}{dangling.c}
 \end{example}
 
-In most cases, the arguments to \lstinline|\dangling_contents| are pointers to
+In most cases, the arguments to \lstinline|\dangling| are pointers to
 l-values that themselves have type pointer, so the usual signature
 of \lstinline|\dangling_contents| is actually
 \lstinline|set<$\alpha$**> $\ra$ bool|.
