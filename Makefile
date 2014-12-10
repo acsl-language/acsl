@@ -45,8 +45,10 @@ install: acsl-implementation.pdf acsl.pdf
 	rm -f  ../manuals/acsl-implementation.pdf  ../manuals/acsl.pdf
 	cp -f acsl-implementation.pdf acsl.pdf ../manuals/
 
+FRAMAC_BINARY:= $(shell ls -t ../../bin/toplevel.* | head -1)
+
 FRAMAC=FRAMAC_SHARE=../../share FRAMAC_PLUGIN=../../lib/plugins \
-       ../../bin/toplevel.byte
+       $(FRAMAC_BINARY)
 
 HAS_JESSIE=`if $(FRAMAC) -jessie-help; then echo yes; else echo no; fi`
 
@@ -140,7 +142,7 @@ lexico.c listlengthdef.c listmodule.c                                   \
 modifier.c out_char.c sum2.c loop_current.c
 
 check: acsl-mini-tutorial.tex
-	gcc -c -std=c99 *.c
+	gcc -c -std=c99 *.c -Wall
 	@good=0; \
         bad=0; \
         failed=0; \

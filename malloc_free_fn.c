@@ -1,6 +1,6 @@
-//NOPP-BEGIN
-#include <stdlib.h> 
-//NOPP-END
+
+typedef unsigned long size_t;
+
 /*@ assigns   \nothing;
   @ allocates \result;
   @ ensures   \result==\null || \fresh{Old,Here}(\result,n);

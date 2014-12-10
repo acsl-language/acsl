@@ -1,6 +1,6 @@
-//NOPP-BEGIN
-#include <stdlib.h> 
-//NOPP-END
+
+typedef unsigned long size_t;
+
 //@ ghost int heap_status;
 /*@ axiomatic dynamic_allocation {
   @   predicate is_allocable(size_t n) // Can a block of n bytes be allocated?
