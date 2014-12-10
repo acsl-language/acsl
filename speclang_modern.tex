@@ -3509,25 +3509,26 @@ argument and means that each l-value in this set is initialized at label \lstinl
   such that logic label \lstinline|{Here}| can be omitted.
 \end{example}
 
-\subsection{Unspecified values}
+\subsection{Dangling pointers}
 \indexttbs{specified}
-\lstinline|\specified{L}|
+\lstinline|\dangling_contents{L}|
 is a predicate taking a set of some pointer to l-values as
-argument and means that each l-value in this set has a \emph{specified
-  value} at label \lstinline|L|: its value is not a dangling pointer.
-(``Not dangling'' means that the value is neither the address of a local
-variable refered to outside of its scope, nor the address of a variable that
-has been dynamically allocated, then deallocated.)
-\\ \makebox[5mm]{} \lstinline|\specified{id} : set<$\alpha$*> $\ra$ bool|
+argument and means that each l-value in this set has a \emph{dangling
+  content} at label \lstinline|L|. That, its value is (or contains bits
+of) a dangling address: either the address of a local
+variable refered to outside of its scope, or the address of a variable that
+has been dynamically allocated, then deallocated.
+\\ \makebox[5mm]{} \lstinline|\dangling{id} : set<$\alpha$*> $\ra$ bool|
 
 \begin{example}
-  In the following, the assertion is not true.
-  \listinginput{1}{specified.c}
+  In the following, the assertion holds.
+  \listinginput{1}{dangling.c}
 \end{example}
 
-In most cases, the arguments to \lstinline|\specified| are pointers to
+In most cases, the arguments to \lstinline|\dangling| are pointers to
 l-values that themselves have type pointer, so the usual signature
-of \lstinline|\specified| is actually \lstinline|set<$\alpha$**> $\ra$ bool|.
+of \lstinline|\dangling_contents| is actually
+\lstinline|set<$\alpha$**> $\ra$ bool|.
 The signature \lstinline|set<$\alpha$*> $\ra$ bool| is useful to handle
 pointer values that have been written inside scalar variables through
 heterogeneous casts.

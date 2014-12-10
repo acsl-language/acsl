@@ -25,7 +25,7 @@ DEPS_MODERN=speclang_modern.tex macros_modern.tex	\
 	fact.c mutualrec.c abrupt_termination.c				\
 	advancedloopinvariants.c inductiveloopinvariants_modern.tex	\
 	$(BNF_DEPS) cfg.mps volatile.c euclide.c initialized.c		\
-	specified.c sum2.c modifier.c gen_spec_with_ghost.c		\
+	dangling.c sum2.c modifier.c gen_spec_with_ghost.c		\
 	terminates_list.c glob_var_masked.c glob_var_masked_sol.c	\
 	intlists.c sign.c signdef.c oldat.c mean.c isgcd.c exit.c	\
 	mayexit.c loop_current.c
@@ -134,7 +134,7 @@ max_seq_old2-tut.c mayexit.c mean.c minitutorial.c mutualrec.c		\
 nb_occ.c nb_occ_reads.c non_terminating-tut.c non_terminating2-tut.c	\
 num_of_pos.c oldat.c permut.c permut_reads.c sizeof.c sign.c signdef.c	\
 sort.c specified.c sqsum-tut.c sqsum2-tut.c strcpyspec.c sum.c          \
-swap-tut.c terminates_list.c type_invariant-tut.c volatile.c
+swap-tut.c terminates_list.c type_invariant-tut.c volatile.c dangling.c
 
 BAD=acsl_allocator.c gen_code.c gen_spec_with_ghost.c			\
 gen_spec_with_model.c ghostcfg.c import.c invariants.c			\
@@ -219,7 +219,7 @@ acsl-implementation.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN) ../../VERSION
 
 acsl-implementation.tex: $(MAIN).tex Makefile
 	@rm -f $@
-	sed -e 's/main.cb/acsl-implementation.cb/' -e '/PrintRemarks/s/%--//' $< > $@
+	sed -e 's/main.cb/acsl-implementation.cb/' -e '/PrintRemarks/s/%--//' $^ > $@
 	@chmod a-w $@
 
 # version WEB du langage ACSL
@@ -227,7 +227,7 @@ acsl.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
 
 acsl.tex: acsl-implementation.tex Makefile
 	rm -f $@
-	sed -e '/PrintImplementationRq/s/%--//' $< > $@
+	sed -e '/PrintImplementationRq/s/%--//' $^ > $@
 	chmod a-w $@
 
 # version pour le goupe de travail ACSL
