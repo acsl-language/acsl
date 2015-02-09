@@ -3510,8 +3510,8 @@ argument and means that each l-value in this set is initialized at label \lstinl
 \end{example}
 
 \subsection{Dangling pointers}
-\indexttbs{specified}
-\lstinline|\dangling_contents{L}|
+\indexttbs{danling}
+\lstinline|\dangling{L}|
 is a predicate taking a set of some pointer to l-values as
 argument and means that each l-value in this set has a \emph{dangling
   content} at label \lstinline|L|. That, its value is (or contains bits
@@ -3527,7 +3527,7 @@ has been dynamically allocated, then deallocated.
 
 In most cases, the arguments to \lstinline|\dangling| are pointers to
 l-values that themselves have type pointer, so the usual signature
-of \lstinline|\dangling_contents| is actually
+of \lstinline|\dangling| is actually
 \lstinline|set<$\alpha$**> $\ra$ bool|.
 The signature \lstinline|set<$\alpha$*> $\ra$ bool| is useful to handle
 pointer values that have been written inside scalar variables through
