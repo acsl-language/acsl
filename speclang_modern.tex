@@ -174,7 +174,7 @@ Section~\ref{sec:logicspec} for detail.
   This situation raises some issues, as in the example below.
 
 \oldremark{Virgile}{Dans le dernier cas, on pourrait vouloir avoir x, y
-  et z deux à deux distincts, et eventuellement un prédicat n-aire
+  et z deux Ã  deux distincts, et eventuellement un prÃ©dicat n-aire
 \distinct(x,y,z) comme dans SMT-lib}
 
 \end{description}
@@ -266,7 +266,7 @@ are valid, since they are instances of the axiom $\forall x,
 x=x$ of first-order logic. The reader should not be alarmed, because
 there is no way to deduce anything useful from such terms.
 \oldremark{Anonyme}{Donc on ne peut pas introduire de construction
-non-déterministe comme  $(\texttt{any} x \mid P)$
+non-dÃ©terministe comme  $(\texttt{any} x \mid P)$
 }
 As usual, it is up to the specification designer to write
 consistent assertions. For example, when introducing the following lemma
@@ -1027,7 +1027,7 @@ The semantics of such a contract is as follows:
   itself is interpreted in the pre-state.
 \end{itemize}
 
-% TODO : donner une vision plus symétrique appelant/appelé d'un contrat
+% TODO : donner une vision plus symÃ©trique appelant/appelÃ© d'un contrat
 
 Having multiple \lstinline|requires|, \lstinline|assigns|, or 
 \lstinline|ensures| clauses only improves 
@@ -1296,7 +1296,7 @@ be given for the same contract.
   Stephane confirme qu'AIRBUS utilise dans leur methodologie la notion
   d'assumes, mais pas celle de post-assumes.
 
-  La possibilité d'ecrire des assumes permettra de reduire la taille
+  La possibilitÃ© d'ecrire des assumes permettra de reduire la taille
   des postconditions actuelles et conduira a moins de repetitions des
   conditions de behaviors.
   Par contre, placer les actuelles preconditions dans des behaviors
@@ -1304,8 +1304,8 @@ be given for the same contract.
   Il est important pour AIRBUS de pouvoir eviter les repetitions de termes
   dans les proprietes.
 
-  Ne serait-il pas possible de définir dans les contrats de fonctions
-  des prédicats ou termes parlant des operandes de la fonction, sans
+  Ne serait-il pas possible de dÃ©finir dans les contrats de fonctions
+  des prÃ©dicats ou termes parlant des operandes de la fonction, sans
   passer par des fonctions logiques auxquelles on passerait en
   argument les operandes de la fonctions ?
 
@@ -1333,9 +1333,9 @@ More generally, we introduce syntactic constructs to denote \emph{sets of
   terms} that are also useful for the \separated predicate (see Section~\ref{sec:separated})
 
 \oldremark{PB+VP}{
-  préciser le statut de \textbackslash{}result: est-ce une modifiable
-  l-value ou pas? D'un côté, ce n'en est pas vraiment une en C, mais
-  on aimerait peut-être pouvoir écrire des assigns un peu raffinés
+  prÃ©ciser le statut de \textbackslash{}result: est-ce une modifiable
+  l-value ou pas? D'un cÃ´tÃ©, ce n'en est pas vraiment une en C, mais
+  on aimerait peut-Ãªtre pouvoir Ã©crire des assigns un peu raffinÃ©s
   comme \texttt{assigns \textbackslash{}result.a \textbackslash{}from i = i;}}
 
 \begin{figure}
@@ -1754,7 +1754,7 @@ It is also visible in data invariants, presented in Section~\ref{sec:invariants}
   Section~\ref{sec:statement_contract}), and refers to the pre-state
   of this contract.
 % [Patrick B.] START remarque:
-% ``Old'' peut également s'utiliser dans les clauses relatives aux
+% ``Old'' peut Ã©galement s'utiliser dans les clauses relatives aux
 % terminaisons abruptes des contrats d'instructions. 
 %Ce n'est pas dit ici.
 % END remarque
@@ -2457,7 +2457,7 @@ disjoint from the declared footprint.
 %   \oldremark{Claude}{
 %     expliquer mieux
 
-%     De plus, si l'on oublie la clause reads ça reste
+%     De plus, si l'on oublie la clause reads Ã§a reste
 %     correct, donc il faudrait prevoir un warning pour un predicat avec un
 %     type pointeur en argument sans reads...
 %   }
@@ -3019,7 +3019,7 @@ can be used only in \exits{},
 \end{example}
 
 \begin{todo}
-Discuter de la sémantique du assign en présence d'une terminaison abrupte
+Discuter de la sÃ©mantique du assign en prÃ©sence d'une terminaison abrupte
 dans un contrat de fonction et de statement.
 \end{todo}
 % [Patrick B.] START proposition:
