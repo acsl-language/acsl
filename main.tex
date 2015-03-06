@@ -41,7 +41,7 @@
 %\setlength{\textwidth}{160mm}
 %\setlength{\oddsidemargin}{0mm}
 %\setlength{\evensidemargin}{0mm}
-\newcommand{\version}{1.8}
+\newcommand{\version}{1.9}
 
 \renewcommand{\textfraction}{0.01}
 \renewcommand{\topfraction}{0.99}
@@ -231,10 +231,17 @@ as much as possible of ACSL.
 
 \section{Changes}
 
-\subsection{Version dev}
+\subsection{Version 1.9}
 \begin{itemize}
-\item Fixes typo in definition of \lstinline|\fresh| predicate 
+\item Fix typo in definition of \lstinline|\fresh| predicate
   (section~\ref{sec:allocation-clause})
+\item Fix grammar inconsistencies
+  \begin{itemize}
+  \item use proper C rules names
+  \item fix mismatch in non-terminal names
+  \end{itemize}
+\item Rename "Unspecified values" to "Dangling pointers" and precise it
+  (section~\ref{sec:dangling_pointers})
 \end{itemize}
 
 \subsection{Version 1.8}
