@@ -136,7 +136,7 @@ With respect to C pure expressions, the additional constructs are as follows:
 \item[Syntactic naming] \lstinline|id : e| is a term or a predicate
   equivalent to $e$. It is different from local naming with \lstinline|\let|:
   the name cannot be reused in other terms or predicates. It is only
-  for readibility purposes.
+  for readability purposes.
 
 \item[Functional modifier]
   The composite element modifier is an additional
@@ -1031,7 +1031,7 @@ The semantics of such a contract is as follows:
 
 Having multiple \lstinline|requires|, \lstinline|assigns|, or 
 \lstinline|ensures| clauses only improves 
-readibility since the contract above is equivalent to the following
+readability since the contract above is equivalent to the following
 simplified one:
 \begin{listing}{1}
 /*@ requires P$_1$ && P$_2$ && `\dots`;
@@ -1123,7 +1123,7 @@ the properties \lstinline|\old(A$_i$) ==> E$_i$| hold for each~$i$.
 \end{itemize}
 
 \requires{} clauses in the behaviors are proposed
-mainly to improve readibility (to avoid some duplication of
+mainly to improve readability (to avoid some duplication of
 formulas), since the contract above is equivalent to the following
 simplified one:
 \begin{listing}{1}
@@ -1214,7 +1214,7 @@ See~\ref{sec:loop_annot} for a continuation of this example.
 In a contract with named behaviors, it is not required that
 the disjunction of the \lstinline|A$_i$| is true, \emph{i.e.} it is not 
 mandatory to provide a ``complete'' set of behaviors.
-If such a condition is seeked, it is possible to add the following clause
+If such a condition is sought, it is possible to add the following clause
 to a contract:
 \index{complete behaviors}
 \begin{listing-nonumber}
@@ -1330,7 +1330,7 @@ l-values\index{l-value}. Moreover, a location given as argument to
 an \assigns{} clause must be a set of modifiable l-values, as described in
 Section~\ref{sec:glossary}. 
 More generally, we introduce syntactic constructs to denote \emph{sets of
-  terms} which are also usefull for \separated predicate (see Section~\ref{sec:separated})
+  terms} which are also useful for \separated predicate (see Section~\ref{sec:separated})
 
 \oldremark{PB+VP}{
   préciser le statut de \textbackslash{}result: est-ce une modifiable
@@ -1616,7 +1616,7 @@ where \lstinline|m| is a term of type \lstinline|integer|.
 The semantics is as follows: for each loop iteration that terminates
 normally or with \lstinline|continue|, the value of \lstinline|m| at end of the
 iteration must be smaller that its value at the beginning of the
-iteration. Moreover, its value at the beginning of the iteration 
+iteration. Moreover, its value at the beginning of the iteration
 must be nonnegative. Note that the value of \lstinline|m| at loop exit might be
 negative. It does not compromise termination of the
 loop. Here is an example:
@@ -1871,7 +1871,7 @@ Section~\ref{sec:abrupt-clause}) need to be used.
 
 On the other hand, it is different with \assigns\indextt{assigns} clauses.
 The locations having their value modified during the path execution, starting
-at the begining of the annoted statement and leading 
+at the beginning of the annotated statement and leading
 to a \lstinline|goto| jumping out of it, should be part of its 
 \assigns clause.
 
@@ -2516,7 +2516,7 @@ definitions, like the \lstinline|List| module above.
 
 
 
-\section{Pointers and physical adressing}
+\section{Pointers and physical addressing}
 \label{sec:pointers} 
 % [Patrick B.] START proposition:
 Grammar for terms and predicates is
@@ -2819,7 +2819,7 @@ each anonymous behavior.
   For example, the allocation constraint of the \lstinline|allocation| behavior 
   is given by the clause \allocates \result of the anonymous behavior of the  
   \lstinline|malloc| function contract. 
-  To set a stronger contraint into the behavior named \lstinline|no_allocation|,
+  To set a stronger constraint into the behavior named \lstinline|no_allocation|,
   the clause \allocates \nothing should be given.
 \end{example}
 
@@ -2970,7 +2970,7 @@ is allowed and denotes, like for statement contracts
 \lstinline|ensures|, \assigns and \lstinline|allocates|, the value of
 \lstinline|e| in the pre-state of the statement.
  More generally, the visibility in \textsl{abrupt clauses} of predefined 
-logics labels\indextt{Pre}\indextt{Here}\indextt{Old}\indextt{Post}
+logic labels\indextt{Pre}\indextt{Here}\indextt{Old}\indextt{Post}
  (presented in Section~\ref{sec:default-logic-labels}) is the 
 same as in \ensures{} clauses.
 
@@ -3513,13 +3513,13 @@ argument and means that each l-value in this set is initialized at label \lstinl
 
 \subsection{Dangling pointers}
 \label{sec:dangling_pointers}
-\indexttbs{danling}
+\indexttbs{dangling}
 \lstinline|\dangling{L}|
 is a predicate taking a set of some pointer to l-values as
 argument and means that each l-value in this set has a \emph{dangling
   content} at label \lstinline|L|. That, its value is (or contains bits
 of) a dangling address: either the address of a local
-variable refered to outside of its scope, or the address of a variable that
+variable referred to outside of its scope, or the address of a variable that
 has been dynamically allocated, then deallocated.
 \\ \makebox[5mm]{} \lstinline|\dangling{id} : set<$\alpha$*> $\ra$ bool|
 
