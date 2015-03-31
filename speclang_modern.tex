@@ -2753,6 +2753,8 @@ holds if and only if
 the pointer \lstinline|p| refers, at the label \lstinline|L|, 
 to an allocated memory block 
 that can be safely released using the C function \lstinline|free|.
+Note that \lstinline|\freeable{\null}| does not hold, despite \lstinline|\null|
+being a valid argument to \lstinline|free|.
 \\ \makebox[5mm]{} \lstinline|\freeable{id} : void* $\ra$ boolean|
 \\
 For any pointer \lstinline|p| and label \lstinline|L|
