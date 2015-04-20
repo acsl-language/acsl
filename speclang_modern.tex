@@ -1730,10 +1730,11 @@ These rules are exactly the same rules as for the visibility of local
 variables within C statements (see~\cite{KR88}, Section A11.1).
 
 \subsubsection*{Default logic labels}\label{sec:default-logic-labels}
-\indextt{Pre}\indextt{Here}\indextt{Old}\indextt{Post}\indextt{LoopEntry}\indextt{LoopCurrent}
-There are six predefined logic labels: \lstinline|Pre|, \lstinline|Here|,
+\indextt{Init}\indextt{Pre}\indextt{Here}\indextt{Old}\indextt{Post}\indextt{LoopEntry}\indextt{LoopCurrent}
+There are seven predefined logic labels: \lstinline|Pre|, \lstinline|Here|,
 \lstinline|Old|,
-\lstinline|Post|, \lstinline|LoopEntry| and \lstinline|LoopCurrent|.
+\lstinline|Post|, \lstinline|LoopEntry|, \lstinline|LoopCurrent|
+and \lstinline|Init|.
 \lstinline|\old(e)|\indexttbs{old} is
 in fact syntactic sugar for \lstinline|\at(e,Old)|.
 
@@ -1781,6 +1782,10 @@ section~\ref{sec:loop-invariants} for more details on what constitutes a loop
 step in presence of side-effects in the condition). When
 \lstinline|LoopCurrent| is used in a statement enclosed in nested loops, it
 refers to the innermost loop containing that statement.
+
+\item The label \lstinline|Init| is visible in all statement annotations and 
+contracts. It refers to the state just before the call to the \lstinline|main| 
+function, once the global data have been initialized.
 \end{itemize}
 
 Inside loop annotations, the labels \lstinline|LoopCurrent| and 
