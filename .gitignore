@@ -1,5 +1,4 @@
 *.bnf
-*.pdf
 transf
 *.out
 *.idx
@@ -11,3 +10,11 @@ acsl-mini-tutorial.tex
 *-tut.c
 pp
 pp.ml
+
+# PDFs
+acsl-implementation.pdf
+acsl.pdf
+main.pdf
+frama-c-cover.pdf
+frama-c-left.pdf
+frama-c-right.pdf
