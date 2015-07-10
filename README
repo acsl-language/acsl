@@ -1,6 +1,6 @@
-Pour la génération des fichiers:
- ./acsl.pdf                  <-- version de référence
- ./acsl-implementation.pdf   <-- idem + détails implémentation
+Pour la gÃ©nÃ©ration des fichiers:
+ ./acsl.pdf                  <-- version de rÃ©fÃ©rence
+ ./acsl-implementation.pdf   <-- idem + dÃ©tails implÃ©mentation
  ./main.pdf                  <-- idem + remarques
  Usage: make acsl (cible par defaut)
 
@@ -17,3 +17,7 @@ Utilitaires pour syntaxe:
 - transf pour pretty-printer une BNF via latex
   Usage du Makefile: .tex -> .bnf
   Usage general: ./transf < file.tex > file.bnf
+
+Pour installer des paquets Ubuntu utiles pour compiler la documentation
+(testÃ© avec Ubuntu 14.04):
+sudo apt-get install rubber texlive-latex-extra texlive-fonts-recommended
