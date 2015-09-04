@@ -2477,7 +2477,7 @@ P{L2} ou P est la formule de l'axiome
   \listinginput{1}{nb_occ_reads.c}
   If for example a
   piece of code between labels \lstinline|L_1| and \lstinline|L_2|
-  modifies \lstinline|t[k]| for
+  only modifies \lstinline|t[k]| for
   some index \lstinline|k| outside \lstinline|i..j|, then one can deduce that
   \lstinline|nb_occ{L_1}(t,i,j,e)==nb_occ{L_2}(t,i,j,e)|.
 \end{example}
@@ -2595,7 +2595,7 @@ ignore potential alignment constraints, the following equivalence is true for an
 \begin{listing-nonumber}
 \valid{L}(p) <==> \valid{L}(((char *)p)+(0..sizeof(*p)))
 \end{listing-nonumber}
-and
+and similarly for \lstinline|\valid_read|
 \begin{listing-nonumber}
 \valid_read{L}(p) <==> \valid_read{L}(((char *)p)+(0..sizeof(*p)))
 \end{listing-nonumber}
@@ -3296,6 +3296,8 @@ typedef t1 t2;
     it is ``fresh'';
   \item the new set of forbidden values contains both the value
     returned and the previous forbidden values.
+    The new set may have more values than the union of \lstinline|{\result}| 
+    and \lstinline|\old(forbidden)|.
   \end{itemize}
   An implementation of this function might be as follows, where a
   decision has been made to generate values in increasing order, so
@@ -3337,10 +3339,10 @@ grammar are the following:
 \item Comments must be introduced by \lstinline|//| and extend until the
   end of the line (the ghost code itself is placed inside a C
   comment. \lstinline|/* ... */| would thus lead to incorrect C code).
-\item It is however possible to write multi-line annotations for ghost
+\item It is however possible to write multi-line annotations inside ghost
   code. These annotations are enclosed between
   \notimplemented{\lstinline|/@| and \lstinline|@/|}.
-  As in normal annotations, \lstinline|@|s at the beginning of a
+  As in normal annotations, \lstinline|@| characters at the beginning of a
   line and at the end of the comment (before the final \lstinline|@/|) are
   considered as blank.
   \oldremark{Claude}{
