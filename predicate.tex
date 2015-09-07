@@ -3,7 +3,7 @@
        \
   pred ::= "\true" | "\false" ;
        | term (rel-op term)+ ; comparisons (see remark)
-       | id "(" term ("," term)* ")" ; predicate application
+       | ident "(" term ("," term)* ")" ; predicate application
        | "(" pred ")" ; parentheses
        | pred "&&" pred ; conjunction
        | pred "||" pred ; disjunction
@@ -19,4 +19,6 @@
        | "\exists" binders ";" pred ; existential quantification
        | id ":" pred ; syntactic naming
        | string ":" pred ; syntactic naming
+       \
+  ident ::= id ; normal identifier
 \end{syntax}

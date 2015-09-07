@@ -16,8 +16,8 @@
   type-var-binders ::= "<" type-var;
                        (, type-var)* ">"
   \
-  poly-id ::= id ; normal identifier
-  | id type-var-binders ; polymorphic object identifier
+  poly-id ::= ident ; normal identifier
+  | ident type-var-binders ; polymorphic object identifier
   \
   logic-const-def ::= "logic" type-expr;
     poly-id "=" term ";"
