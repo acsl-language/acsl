@@ -3342,9 +3342,10 @@ grammar are the following:
   comment. \lstinline|/* ... */| would thus lead to incorrect C code).
 \item It is however possible to write multi-line annotations inside ghost
   code. These annotations are enclosed between
-  \notimplemented{\lstinline|/@| and \lstinline|@/|}.
+  \notimplemented{\lstinline|/@| and \lstinline|@/|}
+  (as previously, \lstinline|/*@ ... */| leads to incorrect C code).
   As in normal annotations, \lstinline|@| characters at the beginning of a
-  line and at the end of the comment (before the final \lstinline|@/|) are
+  line and at the end of an annotation (before the final \lstinline|@/|) are
   considered as blank.
   \oldremark{Claude}{
     faudrait supprimer ca. Je propose de maniere generale que le code
