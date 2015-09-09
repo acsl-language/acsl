@@ -1593,6 +1593,9 @@ clauses.
   \lstinline{goto}, it is not required that the loop invariant holds.
   In such cases, locations that are not members of $L$ can be
   assigned between the end of the previous iteration and the exit statement.
+\item If no loop assigns clause is given, assignments remain unspecified.
+  It is left to tools to compute an over-approximation of the sets
+  of assigned locations.
 \end{itemize}
 
 \begin{example}
