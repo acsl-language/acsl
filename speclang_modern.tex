@@ -870,7 +870,7 @@ the converse).
 \begin{listing-nonumber}
 //@ logic point square[4] = { origin, ... };
 
-//@ ... perimeter(square);          // well typed
+//@ ... perimeter(square);          // well-typed
 //@ ... centroid(square);           // wrongly typed
 //@ ... centroid((triangle)square); // well-typed (truncation)
 \end{listing-nonumber}
@@ -1593,7 +1593,8 @@ clauses.
   \lstinline{goto}, it is not required that the loop invariant holds.
   In such cases, locations that are not members of $L$ can be
   assigned between the end of the previous iteration and the exit statement.
-\item If no loop assigns clause is given, assignments remain unspecified.
+\item If no \lstinline{loop assigns}
+  clause is given, assignments remain unspecified.
   It is left to tools to compute an over-approximation of the sets
   of assigned locations.
 \end{itemize}
@@ -2183,7 +2184,7 @@ Figure~\ref{fig:gram:logicdecl}.
   \listinginput{1}{intlists.c}
 \end{example}
 
-Like inductive definitions, there are no syntactic conditions that
+Unlike inductive definitions, there is no syntactic condition that
 would guarantee axiomatic definitions to be consistent. It is usually
 up to the user to ensure that the introduction of axioms does not lead
 to a logical inconsistency.
@@ -2366,12 +2367,11 @@ Example: n-reines.
 \index{hybrid!function}
 \index{hybrid!predicate}
 
-Logic functions and predicates may take both (pure) C types and logic
-types as arguments. Such a hybrid predicate (or function)
+Logic functions and predicates may take arguments with
+either (pure) C type or logic
+type. Such a predicate (or function)
 can either be defined with the same syntax as before (or axiomatized).
-
-Be it defined either directly by an expression or through a set of axioms,
-a hybrid function (or predicate) usually depends on one or
+However, such definitions usually depends on one or
 more program points, because it depends upon memory states, \emph{via}
 expressions such as:
 \begin{itemize}
@@ -2382,7 +2382,8 @@ expressions such as:
 % \item others ?
 \end{itemize}
 To make such a definition safe, it is mandatory to add after the
-declared identifier a set of labels, between curly braces.
+declared identifier a set of labels, between curly braces. We then speak
+of a \textit{hybrid} predicate (or function).
 The grammar for identifier is extended as shown on
 Figure~\ref{fig:gram:logiclabels}. Expressions
 as above must then be enclosed into the \at{} construct to refer to a
@@ -2597,11 +2598,11 @@ type of their argument. Namely, \lstinline|\valid{L}((int *) p)| and
 \lstinline|\valid{L}((char *)p)| are not equivalent. On the other hand, if we 
 ignore potential alignment constraints, the following equivalence is true for any pointer \lstinline|p|:
 \begin{listing-nonumber}
-\valid{L}(p) <==> \valid{L}(((char *)p)+(0..sizeof(*p)))
+\valid{L}(p) <==> \valid{L}(((char *)p)+(0 .. sizeof(*p)-1))
 \end{listing-nonumber}
 and similarly for \lstinline|\valid_read|
 \begin{listing-nonumber}
-\valid_read{L}(p) <==> \valid_read{L}(((char *)p)+(0..sizeof(*p)))
+\valid_read{L}(p) <==> \valid_read{L}(((char *)p)+(0 .. sizeof(*p)-1))
 \end{listing-nonumber}
 
 Some shortcuts are provided:
@@ -3346,7 +3347,8 @@ grammar are the following:
 \item It is however possible to write multi-line annotations inside ghost
   code. These annotations are enclosed between
   \notimplemented{\lstinline|/@| and \lstinline|@/|}
-  (as previously, \lstinline|/*@ ... */| leads to incorrect C code).
+  (since as indicated above, \lstinline|/*@ ... */| would lead
+  to incorrect C code).
   As in normal annotations, \lstinline|@| characters at the beginning of a
   line and at the end of an annotation (before the final \lstinline|@/|) are
   considered as blank.
