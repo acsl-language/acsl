@@ -2,6 +2,9 @@
 transf
 *.out
 *.idx
+/main.fdb_latexmk
+/main.fls
+/main.synctex*
 acsl-implementation.tex
 acsl.tex
 frama-c-book.cls
