@@ -1,1 +1,1 @@
-//@ open List;
+//@ import List;

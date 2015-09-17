@@ -2521,7 +2521,10 @@ Module components are then accessible using a qualified notation like
 Predefined algebraic specifications can be provided as
 libraries\index{library} (see
 section~\ref{chap:lib}), and imported using a construct like
-\listinginput{1}{import.c} where the file \lstinline|list.acsl| contains logic
+\begin{notimplementedenv}
+\listinginput{1}{import.c}
+\end{notimplementedenv}
+where the file \lstinline|List.acsl| contains logic
 definitions, like the \lstinline|List| module above.
 
 
@@ -2765,7 +2768,7 @@ to an allocated memory block
 that can be safely released using the C function \lstinline|free|.
 Note that \lstinline|\freeable{\null}| does not hold, despite \lstinline|NULL|
 being a valid argument to the C function \lstinline|free|.
-%Note: free() is described in ง7.20.3.2 of the ISO/IEC 9899/1999 (C99) standard
+%Note: free() is described in ยง7.20.3.2 of the ISO/IEC 9899/1999 (C99) standard
 \\ \makebox[5mm]{} \lstinline|\freeable{id} : void* $\ra$ boolean|
 \\
 For any pointer \lstinline|p| and label \lstinline|L|
