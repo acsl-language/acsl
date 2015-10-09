@@ -10,8 +10,10 @@
        | "\inter" "(" tset ("," tset)* ")" ; intersection
        | tset "+" tset ;
        | "(" tset ")" ;
-       | "{" tset "|" binders (";" pred)? "}" ; set comprehension
-       | {[the given term cannot itself be a set] "{" term "}" } ; explicit singleton
+       | {[the given term cannot itself be a set]
+           "{" tset "|" binders (";" pred)? "}"} ; set comprehension
+       | {[the given terms cannot themselves be a set] 
+          "{" (tset ("," tset)*)? "}" };
        | term ; implicit singleton
        \
   pred ::= "\subset" "(" tset "," tset ")" ; set inclusion
