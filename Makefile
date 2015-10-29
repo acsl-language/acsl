@@ -94,7 +94,7 @@ include ../MakeLaTeXModern
 	ocamllex $<
 
 %.pdf: %.tex
-	rubber -W refs -W misc -d $<
+	latexmk -silent -pdf $<
 
 pp: pp.ml
 	ocamlopt -o $@ str.cmxa $^
