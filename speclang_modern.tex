@@ -3491,11 +3491,9 @@ the following shape:
 \begin{lstlisting}[style=c-basic,firstnumber=1,name=volatile,numbers=left]
 volatile $\tau$ x;
 \end{lstlisting}
-\begin{notimplementedenv}
 \begin{lstlisting}[style=c-basic,name=volatile,numbers=left]
 //@ volatile x reads f writes g;
 \end{lstlisting}
-\end{notimplementedenv}
 where \lstinline|f| and \lstinline|g| are ghost functions with the following prototypes:
 \begin{lstlisting}[style=c-basic,name=volatile,numbers=left]
 $\tau$ f(volatile $\tau$* p);
