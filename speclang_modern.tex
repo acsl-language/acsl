@@ -3513,6 +3513,7 @@ or only written to, the unused accessor function can be omitted from the
   \listinginput{1}{volatile.c}
 \end{example}
 
+
 \section{Undefined values, dangling pointers}
 
 \subsection{Initialization}
@@ -3553,6 +3554,41 @@ of \lstinline|\dangling| is actually
 The signature \lstinline|set<$\alpha$*> $\ra$ bool| is useful to handle
 pointer values that have been written inside scalar variables through
 heterogeneous casts.
+
+
+\section{Well-typed pointers}
+\label{sec:welltyped}
+\experimental
+\indextt{valid\_function}
+
+\begin{figure}[h]
+  \fbox{\begin{minipage}{0.97\linewidth}
+      \input{welltyped_modern.bnf}
+    \end{minipage}}
+  \caption{Grammar for predicates related to well-typedness }
+\label{fig:gram:welltyped}
+\end{figure}
+
+The predicates of Figure~\ref{fig:gram:welltyped} are used to relate
+the type of a pointer to the effective type of the memory location or function
+that is being pointed.
+
+Currently, only the compatibility of a pointer function with the type of
+the function it points to is axiomatized, through the predicate
+\lstinline|\valid_function|. This predicate has type
+\lstinline|set<$\alpha$*> $\ra$ bool|,
+and \lstinline|\valid_function{L}(p)| holds if and only if
+\begin{itemize}
+\item \lstinline|p| is a pointer to a function type \lstinline|t|;
+\item \lstinline|\at(*p,L)| is a function whose type is \emph{compatible}
+  with \lstinline|t|, in the sense of \cite[\S6.2.7]{standardc99}
+\end{itemize}
+
+\begin{example}
+  In the following, the assertion are true.
+  \listinginput{1}{welltyped.c}
+\end{example}
+
 
 
 %\section{Module constructions}

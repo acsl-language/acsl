@@ -6,7 +6,7 @@ BNF_FILES=term.tex predicate.tex binders.tex fn_behavior.tex \
           st_contracts.tex ghost.tex model.tex logic.tex inductive.tex \
           logicdecl.tex logictypedecl.tex higherorder.tex logiclabels.tex \
           logicreads.tex memory.tex data_invariants.tex volatile-gram.tex \
-          exitbehavior.tex dependencies.tex
+          exitbehavior.tex dependencies.tex welltyped.tex
 
 BNF_DEPS=$(BNF_FILES:.tex=_modern.bnf)
 
@@ -28,7 +28,7 @@ DEPS_MODERN=speclang_modern.tex macros_modern.tex	\
 	dangling.c sum2.c modifier.c gen_spec_with_ghost.c		\
 	terminates_list.c glob_var_masked.c glob_var_masked_sol.c	\
 	intlists.c sign.c signdef.c oldat.c mean.c isgcd.c exit.c	\
-	mayexit.c loop_current.c
+	mayexit.c loop_current.c welltyped.c
 
 TUTORIAL_EXAMPLES=max_ptr-tut.c max_ptr2-tut.c max_ptr_bhv-tut.c \
                   max_seq_ghost-tut.c
@@ -134,7 +134,8 @@ max_seq_old2-tut.c mayexit.c mean.c minitutorial.c mutualrec.c		\
 nb_occ.c nb_occ_reads.c non_terminating-tut.c non_terminating2-tut.c	\
 num_of_pos.c oldat.c permut.c permut_reads.c sizeof.c sign.c signdef.c	\
 sort.c specified.c sqsum-tut.c sqsum2-tut.c strcpyspec.c sum.c          \
-swap-tut.c terminates_list.c type_invariant-tut.c volatile.c dangling.c
+swap-tut.c terminates_list.c type_invariant-tut.c volatile.c dangling.c \
+welltyped.c
 
 BAD=acsl_allocator.c gen_code.c gen_spec_with_ghost.c			\
 gen_spec_with_model.c ghostcfg.c import.c invariants.c			\
