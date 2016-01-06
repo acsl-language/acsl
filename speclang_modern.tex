@@ -3577,10 +3577,10 @@ Currently, only the compatibility of a pointer function with the type of
 the function it points to is axiomatized, through the predicate
 \lstinline|\valid_function|. This predicate has type
 \lstinline|set<$\alpha$*> $\ra$ bool|,
-and \lstinline|\valid_function{L}(p)| holds if and only if
+and \lstinline|\valid_function(p)| holds if and only if
 \begin{itemize}
 \item \lstinline|p| is a pointer to a function type \lstinline|t|;
-\item \lstinline|\at(*p,L)| is a function whose type is \emph{compatible}
+\item \lstinline|*p| is a function whose type is \emph{compatible}
   with \lstinline|t|, in the sense of \cite[\S6.2.7]{standardc99}
 \end{itemize}
 
