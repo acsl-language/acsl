@@ -3573,7 +3573,7 @@ The predicates of Figure~\ref{fig:gram:welltyped} are used to relate
 the type of a pointer to the effective type of the memory location or function
 that is being pointed.
 
-Currently, only the compatibility of a pointer function with the type of
+Currently, only the compatibility of a function pointer with the type of
 the function it points to is axiomatized, through the predicate
 \lstinline|\valid_function|. This predicate has type
 \lstinline|set<$\alpha$*> $\ra$ bool|,
@@ -3585,7 +3585,7 @@ and \lstinline|\valid_function(p)| holds if and only if
 \end{itemize}
 
 \begin{example}
-  In the following, the assertion are true.
+  In the following, the assertions are true.
   \listinginput{1}{welltyped.c}
 \end{example}
 
