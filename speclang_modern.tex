@@ -881,9 +881,8 @@ for arrays that lie in C memory. As in C, the result of the cast is
 the address of the first element of the array (see
 Section~\ref{sec:address}).
 
-Conversely, an explicit cast from a pointer type to an array type or a
-structure type is allowed, and acts as collecting the values it points
-to.
+Conversely, an explicit cast from a pointer type to an array type
+acts as collecting the values it points to.
 
 Subtyping and cast recursively applies to fields.
 
@@ -907,6 +906,23 @@ $\tau[]$ returns a logic array $t$ such that
 \lstinline|\offset|
 (p))/\lstinline|sizeof|(\tau)
 \]
+
+More generaly, an explicit cast from a C aggregate of type $\tau$ to another C 
+aggregate type is allowed for being able to specify such a value conversion into logical functions or function contracts without using the addressing operator \lstinline|&|.
+
+\begin{example}
+Unlike in C, conversion of an aggregate of C type \lstinline|struct| $\tau$  to another structure type is allowed.
+
+\begin{listing-nonumber}
+  struct long_st { int x1,y2;};
+  struct st { char x,y; };
+  
+  //@ ensures \result == (struct st) s;
+  struct st from_long_st(struct long_st s) {
+     return *(struct st *)&s;
+  }
+\end{listing-nonumber}
+\end{example}
 
 %\subsection{String literals}
 
