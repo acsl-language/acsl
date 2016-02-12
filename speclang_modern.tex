@@ -2919,7 +2919,9 @@ the allocated and deallocated memory blocks are in fact specified by the allocat
 of the {\sl loop-clauses}
 (Grammar of {\sl loop-clauses} and {\sl loop-behaviors} is given in Figure~\ref{fig:gram:loops}).
 
-\section{Sets as first-class values}\label{sec:sets}
+\section{Sets and lists as first-class values}
+
+\subsection{Finite sets}\label{sec:sets}
 \index{location}
 Sets of terms, as defined in Section~\ref{sec:locations},
 can be used as first-class values in
@@ -2967,6 +2969,53 @@ to the postcondition
 \begin{listing-nonumber}
 \forall char* p; \separated(\union(&L$_1$,$\ldots$,&L$_n$),p) ==> *p == \old(*p)
 \end{listing-nonumber}
+
+\subsection{Finite lists}\label{sec:lists}
+The built-in type \lstinline|\list<A>|\indexttbs{list} can be used for finite 
+sequences of elements of the same type \lstinline|A|. 
+For constructing such homogeneous lists, built-in functions and notations are 
+available.
+
+The term \lstinline|\Nil|\indexttbs{Nil} denotes the empty sequence.
+\begin{listing-nonumber}
+\list<A> \Nil<A>;
+\end{listing-nonumber}
+
+The function \lstinline|\Cons|\indexttbs{Cons} prepends an element \lstinline|elt| 
+onto a sequence \lstinline|tail|
+\begin{listing-nonumber}
+\list<A> \Cons<A>(<A> elt, \list<A> tail);
+\end{listing-nonumber}
+while \lstinline|\concat|\indexttbs{concat} concanates two sequences
+\begin{listing-nonumber}
+\list<A> \concat<A>(\list<A> front, \list<A> tail);
+\end{listing-nonumber}
+and \lstinline|\repeat|\indexttbs{repeat} repeats a sequence a positive number
+\lstinline|n| of time
+\begin{listing-nonumber}
+\list<A> \repeat<A>(\list<A> seq, integer n);
+\end{listing-nonumber}
+
+The semantics of these functions rely on two useful functions: 
+\lstinline|\length|\indexttbs{length} returns the number of elements of 
+a sequence \lstinline|seq| 
+\begin{listing-nonumber}
+integer \length<A>(\list<A> seq);
+\end{listing-nonumber}
+and \lstinline|\nth|\indexttbs{nth} returns the element that is at position 
+\lstinline|n| of the given sequence \lstinline|seq|.
+Namely, the first element is at position $0$. 
+\begin{listing-nonumber}
+<A> \nth<A>(\list<A> seq, integer n);
+\end{listing-nonumber}
+
+Last but not least, the functions \lstinline|\nth| and \lstinline|\repeat| 
+aren't defined for negative number \lstinline|n|.
+
+The notation \lstinline![| |]! is just the same thing as \lstinline|\Nil| and
+\lstinline![|1,2,3|]! is the sequence of three integers.
+In addition the infix operator \lstinline|^| (resp. \lstinline|*^|) 
+is the same as function \lstinline|\concat| (resp. \lstinline|\repeat|).
 
 \section{Abrupt termination}
 \label{sec:abrupt-clause}
