@@ -2991,7 +2991,7 @@ while \lstinline|\concat|\indexttbs{concat} concanates two sequences
 \list<A> \concat<A>(\list<A> front, \list<A> tail);
 \end{listing-nonumber}
 and \lstinline|\repeat|\indexttbs{repeat} repeats a sequence a positive number
-\lstinline|n| of time
+\lstinline|n| of times
 \begin{listing-nonumber}
 \list<A> \repeat<A>(\list<A> seq, integer n);
 \end{listing-nonumber}
@@ -3016,6 +3016,12 @@ The notation \lstinline![| |]! is just the same thing as \lstinline|\Nil| and
 \lstinline![|1,2,3|]! is the sequence of three integers.
 In addition the infix operator \lstinline|^| (resp. \lstinline|*^|) 
 is the same as function \lstinline|\concat| (resp. \lstinline|\repeat|).
+
+\begin{example}
+  The following example illustrates the use of a such data structure and notations in connexion with ghost statements. 
+  \listinginput{1}{list-observer.c}
+\end{example}
+
 
 \section{Abrupt termination}
 \label{sec:abrupt-clause}
