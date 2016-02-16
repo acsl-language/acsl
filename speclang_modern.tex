@@ -3018,8 +3018,13 @@ In addition the infix operator \lstinline|^| (resp. \lstinline|*^|)
 is the same as function \lstinline|\concat| (resp. \lstinline|\repeat|).
 
 \begin{example}
-  The following example illustrates the use of a such data structure and notations in connexion with ghost statements. 
+  The following example illustrates the use of a such data structure and 
+  notations in connexion with ghost code.
   \listinginput{1}{list-observer.c}
+  The function \lstinline|track| adds a value to the tail of a ghost trace variable. 
+  Calls to that function inside ghost statements allow to modify that trace; 
+  and properties about the \lstinline|observed_trace| can be specified. 
+  Notice that the assigned ghost variable is \lstinline|ghost_trace|.
 \end{example}
 
 
