@@ -1,0 +1,12 @@
+\begin{syntax}
+  term ::=  "[|" "|]" ; empty list
+       | "[|" term ("," term)* "|]" ; list of elements
+       | term "^" term ; list concatenation (overloading bitwise-xor 
+                         ; operator)
+       | term "*^" term ; list repetition
+\end{syntax}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

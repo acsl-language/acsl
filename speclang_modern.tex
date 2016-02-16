@@ -3017,6 +3017,14 @@ The notation \lstinline![| |]! is just the same thing as \lstinline|\Nil| and
 In addition the infix operator \lstinline|^| (resp. \lstinline|*^|) 
 is the same as function \lstinline|\concat| (resp. \lstinline|\repeat|).
 
+\begin{figure}[t]
+  \fbox{\begin{minipage}{0.97\linewidth}
+      \input{list-gram_modern.bnf}
+    \end{minipage}}
+  \caption{Notations for built-in list datatype}
+\label{fig:gram:datainvariants}
+\end{figure}
+
 \begin{example}
   The following example illustrates the use of a such data structure and 
   notations in connexion with ghost code.
