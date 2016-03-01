@@ -27,21 +27,6 @@
            {\end{tabular}\end{quote}}}%
       {\excludecomment{todo}}
 
-\ifthenelse{\boolean{PrintRemarks}}%
-      {\newenvironment{remark}[1]{%
-             \begin{quote}\itshape%
-             \begin{tabular}{||p{0.8\textwidth}}Remarque de {#1}~:}%
-           {\end{tabular}\end{quote}}}%
-      {\excludecomment{remark}}
-
-\newcommand{\oldremark}[2]{%
-\ifthenelse{\boolean{PrintRemarks}}{%
-            %\begin{quote}\itshape%
-            %\begin{tabular}{||p{0.8\textwidth}}Vieille remarque de {#1}~: #2%
-            %\end{tabular}\end{quote}%
-}%
-{}}
-
 \newcommand{\highlightnotreviewed}{%
 \color{blue}%
 }%
