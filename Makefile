@@ -1,4 +1,5 @@
 MAIN=main
+PDF_OUTPUTS=acsl-implementation.pdf acsl.pdf
 
 BNF_FILES=term.tex predicate.tex binders.tex fn_behavior.tex \
           oldandresult.tex at.tex loc.tex assertions.tex loops.tex  \
@@ -35,7 +36,7 @@ TUTORIAL_EXAMPLES=max_ptr-tut.c max_ptr2-tut.c max_ptr_bhv-tut.c \
 
 .PHONY: all install acsl tutorial
 
-acsl: acsl-implementation.pdf acsl.pdf main.pdf
+acsl: acsl-implementation.pdf acsl.pdf
 
 all: acsl install tutorial check
 
@@ -210,10 +211,16 @@ acsl-mini-tutorial.html: acsl-mini-tutorial.tex mini-biblio.bib
 .PHONY: clean
 
 clean:
+	@echo "Cleaning..."
 	rm -rf *~ *.aux *.log *.nav *.out *.snm *.toc *.lof *.pp *.bnf \
 		*.haux  *.hbbl *.htoc \
-                *.cb *.cm? *.bbl *.blg *.idx *.ind *.ilg \
+                *.cb? *.cm? *.bbl *.blg *.idx *.ind *.ilg *.fls *.fdb_latexmk \
 		transf trans.ml pp.ml pp
+
+.PHONY: super-clean
+super-clean: clean
+	@echo "Removing PDF outputs: $(PDF_OUTPUTS)"
+	rm -f $(PDF_OUTPUTS)
 
 # version WEB liée à ce qui est implementé
 acsl-implementation.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN) ../../VERSION
@@ -230,9 +237,6 @@ acsl.tex: acsl-implementation.tex Makefile
 	rm -f $@
 	sed -e '/PrintImplementationRq/s/%--//' $^ > $@
 	chmod a-w $@
-
-# version pour le goupe de travail ACSL
-$(MAIN).pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
 
 tutorial-www: acsl-mini-tutorial.pdf acsl-mini-tutorial.html
 	rm -f ../www/src/acsl_tutorial_index.hevea
