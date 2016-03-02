@@ -1009,7 +1009,7 @@ The semantics of such a contract is as follows:
   itself is interpreted in the pre-state.
 \end{itemize}
 
-% TODO : donner une vision plus symétrique appelant/appelé d'un contrat
+%% TODO : donner une vision plus symétrique appelant/appelé d'un contrat
 
 Having multiple \lstinline|requires|, \lstinline|assigns|, or 
 \lstinline|ensures| clauses only improves 
@@ -1831,9 +1831,7 @@ Such contracts are only valid for the
 corresponding behaviors, in particular only under the
 corresponding \assumes{} clause.
 
-\begin{todo}
-  Add an example with a \For{}.
-\end{todo}
+%% TODO: Add an example with a \For{}.
 
 % [Patrick B.] START proposition:
 The \ensures\indextt{ensures} clause does not constrain the
@@ -1980,18 +1978,17 @@ applies when \lstinline|g| is \lstinline|f| itself.
 
 % \subsection{Function termination}
 
-% TODO: a mettre plutot dans les contrats
-
-% clause 'terminates P' specifie que si P est vrai dans le pre-state,
-% alors la fonction ou le statement objet du contrat se termine en temps
-% fini.
-
-% pas de valeur par defaut
-
-% Patrick propose plutot la negation: 'diverges P' car ce que l'on veut
-% specifier c'est que la fonction ne boucle indefiniment.
-
-% en faveur de prendre 'diverges' : c'est comme ca en JML.
+%% TODO: a mettre plutot dans les contrats
+%% clause 'terminates P' specifie que si P est vrai dans le pre-state,
+%% alors la fonction ou le statement objet du contrat se termine en temps
+%% fini.
+%%
+%% pas de valeur par defaut
+%%
+%% Patrick propose plutot la negation: 'diverges P' car ce que l'on veut
+%% specifier c'est que la fonction ne boucle indefiniment.
+%%
+%% en faveur de prendre 'diverges' : c'est comme ca en JML.
 
 
 \subsection{Non-terminating functions}
@@ -3044,10 +3041,10 @@ can be used only in \exits{},
   \listinginput{8}{mayexit.c}
 \end{example}
 
-\begin{todo}
-Discuter de la sémantique du assign en présence d'une terminaison abrupte
-dans un contrat de fonction et de statement.
-\end{todo}
+%% TODO:
+%% Discuter de la sémantique du assign en présence d'une terminaison abrupte
+%% dans un contrat de fonction et de statement.
+
 % [Patrick B.] START proposition:
 Contrary to \ensures clauses, \assigns\indextt{assigns}, 
 \allocates\indextt{allocates} and \frees\indextt{frees} clauses of function 
@@ -3056,12 +3053,10 @@ even when the annotated function and statement terminates respectively abruptly.
 This is shown in example~\ref{ex:assigns-and-abrupt-termination} for a function contract.
 % END proposition:
 
-\begin{todo}
-  Discuter de exit versus return pour la fonction main. Discuter
-    du atexit() : le post-state de la clause exit est-il avant ou
-    apres les fonctions enregistrees par atexit() ?
-
-\end{todo}
+%% TODO:
+%%  Discuter de exit versus return pour la fonction main. Discuter
+%%    du atexit() : le post-state de la clause exit est-il avant ou
+%%    apres les fonctions enregistrees par atexit() ?
 
 \section{Dependencies information}
 \label{sec:func-dep}

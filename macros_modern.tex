@@ -4,11 +4,6 @@
 
 \usepackage{comment}
 
-% true = prints remarks for the ACSL working group.
-% false = prints no remark for the distributed version of ASCL documents
-\newboolean{PrintRemarks}
-\setboolean{PrintRemarks}{false}
-
 % true = prints marks signaling the state of the implementation
 % false = prints only the ACSL definition, without remarks on implementation.
 \newboolean{PrintImplementationRq}
@@ -19,37 +14,6 @@
 % false = they are rendered with an underline
 \newboolean{ColorImplementationRq}
 \setboolean{ColorImplementationRq}{true}
-
-\ifthenelse{\boolean{PrintRemarks}}%
-      {\newenvironment{todo}{%
-            \begin{quote}%
-            \begin{tabular}{||p{0.8\textwidth}}TODO~:\itshape}%
-           {\end{tabular}\end{quote}}}%
-      {\excludecomment{todo}}
-
-\newcommand{\highlightnotreviewed}{%
-\color{blue}%
-}%
-
-\newcommand{\notreviewed}[2][]{%
-\ifthenelse{\boolean{PrintRemarks}}{%
-  \begin{changebar}%
-  {\highlightnotreviewed #2}%
-  \ifthenelse{\equal{#1}{}}{}{\footnote{#1}}%
-  \end{changebar}%
-}%
-{}}
-
-\ifthenelse{\boolean{PrintRemarks}}{%
-\newenvironment{notreviewedenv}[1][]{%
-  \begin{changebar}%
-  \highlightnotreviewed%
-  \ifthenelse{\equal{#1}{}}{}{\def\myrq{#1}}%
-  \bgroup}%
- {\egroup%
-  \ifthenelse{\isundefined{\myrq}}{}{\footnote{\myrq}}\end{changebar}}}%
-{\excludecomment{notreviewedenv}}
-
 
 %%% Commandes et environnements pour la version relative à l'implementation
 \newcommand{\highlightnotimplemented}{%
