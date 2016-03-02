@@ -237,15 +237,16 @@ acsl-implementation.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN) ../../VERSION
 
 acsl-implementation.tex: $(MAIN).tex Makefile
 	@rm -f $@
-	sed -e 's/main.cb/acsl-implementation.cb/' $^ > $@
+	sed -e '/^% rubber:/s/main.cb/acsl-implementation.cb/g' $^ > $@
 	@chmod a-w $@
 
 # version WEB du langage ACSL
 acsl.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
 
-acsl.tex: acsl-implementation.tex Makefile
+acsl.tex: $(MAIN).tex Makefile
 	rm -f $@
-	sed -e '/PrintImplementationRq/s/%--//' $^ > $@
+	sed -e '/^% rubber:/s/main.cb/acsl.cb/g' \
+	    -e '/^%--.*{PrintImplementationRq}/s/%--//' $^ > $@
 	chmod a-w $@
 
 tutorial-www: acsl-mini-tutorial.pdf acsl-mini-tutorial.html
