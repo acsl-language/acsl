@@ -45,10 +45,7 @@ install: acsl-implementation.pdf acsl.pdf
 	rm -f  ../manuals/acsl-implementation.pdf  ../manuals/acsl.pdf
 	cp -f acsl-implementation.pdf acsl.pdf ../manuals/
 
-FRAMAC_BINARY:= $(shell ls -t ../../bin/toplevel.* | head -1)
-
-FRAMAC=FRAMAC_SHARE=../../share FRAMAC_PLUGIN=../../lib/plugins \
-       $(FRAMAC_BINARY)
+FRAMAC=../../bin/frama-c.byte
 
 HAS_JESSIE=`if $(FRAMAC) -jessie-help; then echo yes; else echo no; fi`
 
