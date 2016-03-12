@@ -450,6 +450,7 @@ Bitwise operations apply to this representation.
 \end{example}
 
 \subsection{Real numbers and floating point numbers}
+\label{sec:floating-point}
 
 Floating-point constants and operations are interpreted as
 mathematical real numbers: a C variable of type float or double is
@@ -553,15 +554,20 @@ in C is equal to the float number \lstinline|-0.0|, which is not
 \lstinline|\eq_float| to \lstinline|0.0|, which is the value of the logic
 expression \lstinline|(float)(-0.0 + -0.0)|.
 
-Finally, additional predicates are provided on float and double
-numbers, which check that their argument is NaN or a
-finite number respectively:
+Finally, additional predicates are provided, that check that their argument
+is a finite number, an infinite one, or a NaN:
 \begin{listing}{1}
-predicate \is_NaN`\indexttbs{is\_NaN}`(float x);
-predicate \is_NaN`\indexttbs{is\_NaN}`(double x);
-predicate \is_finite`\indexttbs{is\_finite}`(float x);
-predicate \is_finite`\indexttbs{is\_finite}`(double x);
+predicate \is_finite`\indexttbs{is\_finite}`(double x); // is a finite double
+predicate \is_plus_infinity`\indexttbs{is\_plus\_infinity}`(double x); // is equal to +infinity
+predicate \is_minus_infinity`\indexttbs{is\_minus\_infinity}`(double x); // is equal to -infinity
+predicate \is_infinite`\indexttbs{is\_infinite}`(double x); // is equal to +infinity or -infinity
+predicate \is_NaN`\indexttbs{is\_NaN}`(double x); // is a NaN double
 \end{listing}
+\lstinline|\is_finite|, \lstinline|\is_plus_infinity|,
+\lstinline|\is_minus_infinity| and \lstinline|\is_NaN| are mutually
+exclusive predicates.
+All these predicates also exist for the \lstinline|float| type.
+
 
 %% \begin{remark}{Claude} et les long double
 %% \end{remark}
@@ -569,6 +575,20 @@ predicate \is_finite`\indexttbs{is\_finite}`(double x);
 %% \oldremark{Claude}{on pourrait enonce un certain nombre de proprietes:
 %%  \is_finite_float(x) ==> (float)(\real_of_float(x)) == x
 %% }
+
+\subsubsection{Sign}
+
+The sign of a non-NaN floating-point  can be extracted by
+the function \lstinline|\sign|\indexttbs{sign}:
+\begin{listing}{1}
+/*@
+ type sign = \Positive | \Negative;
+
+ logic sign \sign(float x);
+ logic sign \sign(double x);
+*/
+\end{listing}
+
 
 \subsubsection{Quantification}
 
