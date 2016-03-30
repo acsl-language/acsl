@@ -2871,7 +2871,7 @@ the allocated and deallocated memory blocks are in fact specified by the allocat
 of the {\sl loop-clauses}
 (Grammar of {\sl loop-clauses} and {\sl loop-behaviors} is given in Figure~\ref{fig:gram:loops}).
 
-\section{Sets and lists as first-class values}
+\section{Sets and lists}
 
 \subsection{Finite sets}\label{sec:sets}
 \index{location}
@@ -2938,12 +2938,11 @@ onto a sequence \lstinline|tail|
 \begin{listing-nonumber}
 \list<A> \Cons<A>(<A> elt, \list<A> tail);
 \end{listing-nonumber}
-while \lstinline|\concat|\indexttbs{concat} concanates two sequences
+while \lstinline|\concat|\indexttbs{concat} concatenates two sequences
 \begin{listing-nonumber}
 \list<A> \concat<A>(\list<A> front, \list<A> tail);
 \end{listing-nonumber}
-and \lstinline|\repeat|\indexttbs{repeat} repeats a sequence a positive number
-\lstinline|n| of times
+and \lstinline|\repeat|\indexttbs{repeat} repeats a sequence \lstinline|n| times, \lstinline|n| being a positive number
 \begin{listing-nonumber}
 \list<A> \repeat<A>(\list<A> seq, integer n);
 \end{listing-nonumber}
@@ -2956,13 +2955,15 @@ integer \length<A>(\list<A> seq);
 \end{listing-nonumber}
 and \lstinline|\nth|\indexttbs{nth} returns the element that is at position 
 \lstinline|n| of the given sequence \lstinline|seq|.
-Namely, the first element is at position $0$. 
+The first element is at position $0$. 
 \begin{listing-nonumber}
 <A> \nth<A>(\list<A> seq, integer n);
 \end{listing-nonumber}
 
-Last but not least, the functions \lstinline|\nth| and \lstinline|\repeat| 
-aren't defined for negative number \lstinline|n|.
+Last but not least, the functions \lstinline|\repeat| and \lstinline|\nth| 
+aren't specified for negative number \lstinline|n|. 
+The function \lstinline|\nth(l)| is also unspecified for index greater than or 
+equal to \lstinline|\length(l)|.
 
 The notation \lstinline![| |]! is just the same thing as \lstinline|\Nil| and
 \lstinline![|1,2,3|]! is the sequence of three integers.
