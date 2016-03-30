@@ -8,9 +8,6 @@
 
 \input{./macros_modern}
 \newcommand{\framacversion}{\input{../../VERSION}}
-%Do not touch the following line. It is used in a Makefile hack to
-%produce the ACSL documents for the ACSL working group.
-%--\setboolean{PrintRemarks}{false}
 
 %Do not touch the following line. It is used in a Makefile hack to
 %produce the ACSL document shipped with the Frama-C distribution.
@@ -184,11 +181,9 @@ Asma Tafat.
   variables declared as \texttt{const} or of some array type with
   explicit length.
 
-  \oldremark{DP}{
-De'tailler (avec un exemple), meme si c'est dans la
-    norme, la difference entre lvalue modifiable et non-modifiable
-  }
-
+%% \oldremark{DP}{
+%% De'tailler (avec un exemple), meme si c'est dans la
+%% norme, la difference entre lvalue modifiable et non-modifiable}
 
 \item[pre-state and post-state]
     \index{pre-state}\index{post-state}
@@ -235,10 +230,15 @@ as much as possible of ACSL.
 
 \subsection{Version Dev}
 \begin{itemize}
-\item new section for predicates related to well-typedness
+\item Functions related to infinites and the sign of floating-point value
+  (section~\ref{sec:floating-point})
+\item New section for predicates related to well-typedness
   (section~\ref{sec:welltyped})
-\item syntax for defining a set by giving explicitely its elements
+\item Syntax for defining a set by giving explicitely its elements
 (section~\ref{sec:locations})
+\item Adding lists as first-class values (section~\ref{sec:lists})
+\item Change the associativity of bitwise operator \lstinline|-->| to right, in accordance with the one of \lstinline|==>| operator
+\item Glyph used for \lstinline|^^| operator (xor) fixed
 \end{itemize}
 
 \subsection{Version 1.10}

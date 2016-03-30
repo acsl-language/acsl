@@ -73,19 +73,17 @@ Frama-C include in particular:
 }%
 {}
 
-\oldremark{Claude}{
-ce document doit etre illustré par des
-exemples. Toute construction qui ne serait pas illustrée par un
-exemple sera non-retenue.
-}
+%% \oldremark{Claude}{ce document doit etre illustré par des exemples. 
+%%  Toute construction qui ne serait pas illustrée par un
+%%  exemple sera non-retenue.
+%% }
 
-\oldremark{Patrick}{
-utiliser en priorité les constructions de JML,
-ensuite les généraliser lorsque cela a un sens, et en dernier recours,
-en créer de nouvelles. Il y a peut-être des constructions
-du C++ ou C\# à utiliser ou à généraliser.
-Idem avec les extensions de GCC.
-}
+%% \oldremark{Patrick}{utiliser en priorité les constructions de JML,
+%%  ensuite les généraliser lorsque cela a un sens, et en dernier recours,
+%%  en créer de nouvelles. Il y a peut-être des constructions
+%%  du C++ ou C\# à utiliser ou à généraliser.
+%%  Idem avec les extensions de GCC.
+%% }
 
 
 \section{Generalities about Annotations}\label{sec:gener-about-annot}
@@ -107,33 +105,19 @@ to a copy of the function profile (see
 Section~\ref{sec:multiplecontracts}).
 
 
-\oldremark{All}{
+%% \oldremark{All}{ Elaborer plus sur ce que peuvent faire les outils pour 
+%%  permettre des annotations dans des fichiers a part.
+%%  Mettre a part le cas simple des annotations globales (qui peuvent
+%%  etre dans un .h a part)
+%% }
 
-  Elaborer plus sur ce que peuvent faire les outils pour permettre des
-  annotations dans des fichiers a part.
-
-  Mettre a part le cas simple des annotations globales (qui peuvent
-  etre dans un .h a part)
-
-}
-
-\oldremark{DP}{
-
-  discuter sur les facons d'annoter les statements sans modifier le code source
-  mais en les donnant a part.
-
-  idee :
-
-  . fichier patchs
-  . autres
-
-  a discuter en appendice de ce document. (?)
-
-}
-
-
-
-
+%% \oldremark{DP}{ discuter sur les facons d'annoter les statements sans
+%%  modifier le code source mais en les donnant a part.
+%%  idee :
+%%  . fichier patchs
+%%  . autres
+%%   a discuter en appendice de ce document. (?)
+%% }
 
 \subsection{Kinds of annotations}
 
@@ -164,17 +148,17 @@ Section~\ref{sec:multiplecontracts}).
   \item \emph{assertion}\,: these are allowed
     everywhere a C label is allowed, or just before a
     block closing brace. See section~\ref{sec:assertions}.
-    \oldremark{Claude}{About \assume{} clauses: current
-      discussion is that it is not considered as an element of
-      specification, so not present here. This should be part of proof
-      management done by tools.
-    }
-    \oldremark{Patrick}{En C, seules les
-      instructions peuvent être étiquettées. GCC étend cela aux
-      accolades fermantes des blocs, y compris celle fermant le corps
-      de fonction. On peut dire que l'on fait de même lorsque l'on
-      place des annotations juste avant la fermerture d'un bloc.
-    }
+%%  \oldremark{Claude}{About \assume{} clauses: current
+%%    discussion is that it is not considered as an element of
+%%    specification, so not present here. This should be part of proof
+%%    management done by tools.
+%%  }
+%%  \oldremark{Patrick}{En C, seules les
+%%    instructions peuvent être étiquettées. GCC étend cela aux
+%%    accolades fermantes des blocs, y compris celle fermant le corps
+%%    de fonction. On peut dire que l'on fait de même lorsque l'on
+%%    place des annotations juste avant la fermerture d'un bloc.
+%%  }
 
   \item \emph{loop annotation} (invariant, variant, assign clauses): is
     allowed immediately before a loop statement: \For, \While,
@@ -184,11 +168,11 @@ Section~\ref{sec:multiplecontracts}).
     placed before a statement or a block.  Semantic conditions must
     be checked (no goto going inside, no goto
     going outside).  See Section~\ref{sec:statement_contract}.
-    \oldremark{Patrick}{
-      as-t'on droit au \old dans le \ensures de
-      cette annotation~? Oui, pour refer a l'etat avant le statement
-      consider\'e
-    }
+%%  \oldremark{Patrick}{
+%%    as-t'on droit au \old dans le \ensures de
+%%    cette annotation~? Oui, pour refer a l'etat avant le statement
+%%    consider\'e
+%%  }
 
   \item \emph{ghost code}\,: regular C code, only visible from the
     specifications, that is only allowed to modify ghost
@@ -216,9 +200,8 @@ Additional keywords of the specification language start with a
 backslash, if they are used in the position of a term or a predicate
 (which are defined in the following).  Otherwise they do not start
 with a backslash (like \ensures{}) and they remain valid identifiers.
-\oldremark{Claude}{
-cas particulier de 'integer' et 'real'  et 'boolean'
-}
+%% \oldremark{Claude}{ cas particulier de 'integer' et 'real'  et 'boolean' }
+
 \section{Notations for grammars}
 
 In this document, grammar rules are given in BNF form. In grammar

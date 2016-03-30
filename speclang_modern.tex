@@ -37,7 +37,7 @@ must be noted.
       \hline
       \lstinline+||+ & \ensuremath{\lor} & 0x2228 \\
       \hline
-      \lstinline+^^+ & \ensuremath{\oplus} & 0x22BB \\
+      \lstinline+^^+ (xor) & \underline{\ensuremath{\lor}} & 0x22BB \\
       \hline
       \lstinline+!+ & \ensuremath{\neg} & 0x00AC \\
       \hline
@@ -173,9 +173,9 @@ Section~\ref{sec:logicspec} for detail.
   equivalent to \lstinline|\let x = b < c; a == x|.
   This situation raises some issues, as in the example below.
 
-\oldremark{Virgile}{Dans le dernier cas, on pourrait vouloir avoir x, y
-  et z deux à deux distincts, et eventuellement un prédicat n-aire
-\distinct(x,y,z) comme dans SMT-lib}
+%% oldremark{Virgile}{Dans le dernier cas, on pourrait vouloir avoir x, y
+%% et z deux à deux distincts, et eventuellement un prédicat n-aire
+%% \distinct(x,y,z) comme dans SMT-lib}
 
 \end{description}
 
@@ -207,14 +207,15 @@ of same priority are presented on the same line.
       multiplicative & left & \lstinline|*| \lstinline|/|  \lstinline|%| \\
       additive & left & \lstinline|+| \lstinline|-| \\
       shift 	& left & \lstinline|<<| \lstinline|>>| \\
-      comparison & left & \lstinline|<| \lstinline|<=| \lstinline|>| \lstinline|>=| \\
-      comparison & left & \lstinline|==| \lstinline|!=| \\
+      comparison & - & \lstinline|<| \lstinline|<=| \lstinline|>| \lstinline|>=| \\
+      comparison & - & \lstinline|==| \lstinline|!=| \\
       bitwise and & left & \lstinline|&| \\
-      bitwise xor & left & \lstinline|^| \\
+      list repetition & left & \lstinline|*^| \\
+      bitwise xor/list concatenation & left & \lstinline|^| \\
       bitwise or & left & \lstinline+|+ \\
-      bitwise implies & left & \lstinline+-->+ \\
+      bitwise implies & right & \lstinline+-->+ \\
       bitwise equiv & left & \lstinline+<-->+ \\
-      connective and     & left & \lstinline|&&| \\
+      connective and & left & \lstinline|&&| \\
       connective xor & left & \lstinline+^^+ \\
       connective or & left & \lstinline+||+ \\
       connective implies & right & \lstinline|==>| \\
@@ -265,9 +266,9 @@ particular, the predicates
 are valid, since they are instances of the axiom $\forall x,
 x=x$ of first-order logic. The reader should not be alarmed, because
 there is no way to deduce anything useful from such terms.
-\oldremark{Anonyme}{Donc on ne peut pas introduire de construction
-non-déterministe comme  $(\texttt{any} x \mid P)$
-}
+%% \oldremark{Anonyme}{Donc on ne peut pas introduire de construction
+%% non-déterministe comme  $(\texttt{any} x \mid P)$
+%% }
 As usual, it is up to the specification designer to write
 consistent assertions. For example, when introducing the following lemma
 (see Section~\ref{sec:logicspec}):
@@ -378,15 +379,15 @@ To express in the logic the value of a C
 expression, one has to add all the necessary casts. For
 example, the logic expression denoting the value of the C expression
 \lstinline|x*y+z| is \lstinline|(int)((int)(x*y)+z)|.
-\oldremark{Claude}{Si la conjecture suivante est vraie, alors il
-  faudrait en parler: Si e1 et e2 sont des expressions d'un type
-  entier de C, quels qu'ils soient et si op est une operation binaire
-  sur entiers, alors l'operation C $e1~op~e2$ (de type $\tau$),donne
-  le meme resultat que l'expression logique $(\tau)(e_1~op~e_2)$ ou
-  $op$ est l'operation logique sur $Z$. Ce cast permet donc a
-  l'utilisateur de parler du resultat du calcul C d'une expressions
-  dans la logique
-}
+%% \oldremark{Claude}{Si la conjecture suivante est vraie, alors il
+%%  faudrait en parler: Si e1 et e2 sont des expressions d'un type
+%%  entier de C, quels qu'ils soient et si op est une operation binaire
+%%  sur entiers, alors l'operation C $e1~op~e2$ (de type $\tau$),donne
+%%  le meme resultat que l'expression logique $(\tau)(e_1~op~e_2)$ ou
+%%  $op$ est l'operation logique sur $Z$. Ce cast permet donc a
+%%  l'utilisateur de parler du resultat du calcul C d'une expressions
+%%  dans la logique
+%% }
 Note that there is no implicit cast from integers to C integral types.
 \input{integer-cast-modern}
 
@@ -449,6 +450,7 @@ Bitwise operations apply to this representation.
 \end{example}
 
 \subsection{Real numbers and floating point numbers}
+\label{sec:floating-point}
 
 Floating-point constants and operations are interpreted as
 mathematical real numbers: a C variable of type float or double is
@@ -536,12 +538,10 @@ Notice also that unlike for integers, suffixes \lstinline|f| and
 \lstinline|l| are
 meaningful, because they implicitly add a cast operator as above.
 
-% \begin{remark}{Claude}
-%   ne devrait-on pas ajouter le suffixe d dans la logique ?
-
-%   par ex. 0.1d -> (double)0.1
-
-% \end{remark}
+%% \begin{remark}{Claude}
+%%   ne devrait-on pas ajouter le suffixe d dans la logique ?
+%%   par ex. 0.1d -> (double)0.1
+%% \end{remark}
 
 This semantics of casts ensures that the float result \lstinline|r| of
 a C operation \lstinline|$e_1$ op $e_2$| on floats, if there is no
@@ -554,29 +554,41 @@ in C is equal to the float number \lstinline|-0.0|, which is not
 \lstinline|\eq_float| to \lstinline|0.0|, which is the value of the logic
 expression \lstinline|(float)(-0.0 + -0.0)|.
 
-Finally, additional predicates are provided on float and double
-numbers, which check that their argument is NaN or a
-finite number respectively:
+Finally, additional predicates are provided, that check that their argument
+is a finite number, an infinite one, or a NaN:
 \begin{listing}{1}
-predicate \is_NaN`\indexttbs{is\_NaN}`(float x);
-predicate \is_NaN`\indexttbs{is\_NaN}`(double x);
-predicate \is_finite`\indexttbs{is\_finite}`(float x);
-predicate \is_finite`\indexttbs{is\_finite}`(double x);
+predicate \is_finite`\indexttbs{is\_finite}`(double x); // is a finite double
+predicate \is_plus_infinity`\indexttbs{is\_plus\_infinity}`(double x); // is equal to +infinity
+predicate \is_minus_infinity`\indexttbs{is\_minus\_infinity}`(double x); // is equal to -infinity
+predicate \is_infinite`\indexttbs{is\_infinite}`(double x); // is equal to +infinity or -infinity
+predicate \is_NaN`\indexttbs{is\_NaN}`(double x); // is a NaN double
+\end{listing}
+\lstinline|\is_finite|, \lstinline|\is_plus_infinity|,
+\lstinline|\is_minus_infinity| and \lstinline|\is_NaN| are mutually
+exclusive predicates.
+All these predicates also exist for the \lstinline|float| type.
+
+
+%% \begin{remark}{Claude} et les long double
+%% \end{remark}
+
+%% \oldremark{Claude}{on pourrait enonce un certain nombre de proprietes:
+%%  \is_finite_float(x) ==> (float)(\real_of_float(x)) == x
+%% }
+
+\subsubsection{Sign}
+
+The sign of a non-NaN floating-point  can be extracted by
+the function \lstinline|\sign|\indexttbs{sign}:
+\begin{listing}{1}
+/*@
+ type sign = \Positive | \Negative;
+
+ logic sign \sign(float x);
+ logic sign \sign(double x);
+*/
 \end{listing}
 
-\begin{remark}{Claude}
-
-  et les long double
-
-\end{remark}
-
-\oldremark{Claude}{
-
-on pourrait enonce un certain nombre de proprietes:
-
-\is_finite_float(x) ==> (float)(\real_of_float(x)) == x
-
-}
 
 \subsubsection{Quantification}
 
@@ -594,13 +606,10 @@ doubles). In particular, this does not include NaN, +infinity and
 Classical mathematical operations like exponential, sine, cosine, and
 such are available as built-in:
 
-\begin{remark}{Virgile}
-  Il faut indexer ces fonctions
-
-  Il faut mentionner quelque part que la surcharge des finctions
-  logiques est possible.
-
-\end{remark}
+%% \begin{remark}{Virgile}
+%%   Il faut indexer ces fonctions et mentionner quelque part que la surcharge 
+%%   des finctions logiques est possible.
+%% \end{remark}
 
 \begin{listing-nonumber}
 integer \min(integer x, integer y) ;
@@ -637,13 +646,10 @@ real \hypot(real x, real y) ;
 \end{listing-nonumber}
 
 
-\oldremark{All}{  syntaxe pour abs et power ? a priori non, on peut
-  fournir une library pour les reels avec abs(), power(), mais
-  proposer des syntaxes speciales parait difficile
-
-  mais: on pourrait permettre des definition d'operateurs infixes
-
-}
+%% \oldremark{All}{  syntaxe pour abs et power ? a priori non, on peut
+%%  fournir une library pour les reels avec abs(), power(), mais
+%%  proposer des syntaxes speciales parait difficile
+%%  mais: on pourrait permettre des definition d'operateurs infixes}
 
 \subsubsection{Exact computations}
 
@@ -675,17 +681,11 @@ float cosine(float x) {
 \end{listing-nonumber}
 \end{example}
 
-\begin{remark}{JCF+All}
-
-Que deviennent les champs modeles de caduceus ?
-
-Il faudrait les integrer a une traitement plus general des modeles
-pour des types de donnees
-
-\end{remark}
-
-
-
+%% \begin{remark}{JCF+All}
+%% Que deviennent les champs modeles de caduceus ?
+%% Il faudrait les integrer a une traitement plus general des modeles
+%% pour des types de donnees
+%% \end{remark}
 
 \subsection{C arrays and pointers}
 
@@ -698,10 +698,10 @@ These operators are similar to their corresponding C operators.
 Values in logic do not lie in C memory so it does not mean
 anything to talk about their ``address''.
 
-\begin{remark}{???}
-The type system should provide a boolean information on whether a
-given logic term denotes a C memory location (i.e. a C left-value).
-\end{remark}
+%% \begin{remark}{???}
+%% The type system should provide a boolean information on whether a
+%% given logic term denotes a C memory location (i.e. a C left-value).
+%% \end{remark}
 
 Unlike in C, 
 there is no implicit cast from an array type to a pointer type.
@@ -823,11 +823,9 @@ For an \lstinline|object| of an union type, the following equality is not true
 
 \end{example}
 
-\begin{remark}{}
-other built-in constructs: array.sub ? array.map ? (later)
-\end{remark}
-
-
+%% \begin{remark}{}
+%% other built-in constructs: array.sub ? array.map ? (later)
+%% \end{remark}
 
 The equality predicate \lstinline|==| applies to aggregate values, but it
 is required that they have the same type. Then equality amounts to
@@ -881,9 +879,8 @@ for arrays that lie in C memory. As in C, the result of the cast is
 the address of the first element of the array (see
 Section~\ref{sec:address}).
 
-Conversely, an explicit cast from a pointer type to an array type or a
-structure type is allowed, and acts as collecting the values it points
-to.
+Conversely, an explicit cast from a pointer type to an array type
+acts as collecting the values it points to.
 
 Subtyping and cast recursively applies to fields.
 
@@ -908,27 +905,32 @@ $\tau[]$ returns a logic array $t$ such that
 (p))/\lstinline|sizeof|(\tau)
 \]
 
-%\subsection{String literals}
+More generaly, an explicit cast from a C aggregate of type $\tau$ to another C 
+aggregate type is allowed for being able to specify such a value conversion into logical functions or function contracts without using the addressing operator \lstinline|&|.
 
-\begin{remark}{Pascal, Benjamin}
+\begin{example}
+Unlike in C, conversion of an aggregate of C type \lstinline|struct| $\tau$  to another structure type is allowed.
 
-Quelle est la semantique des constanes chaines dans les annotations
-logiques ?
+\begin{listing-nonumber}
+  struct long_st { int x1,y2;};
+  struct st { char x,y; };
+  
+  //@ ensures \result == (struct st) s;
+  struct st from_long_st(struct long_st s) {
+     return *(struct st *)&s;
+  }
+\end{listing-nonumber}
+\end{example}
 
-Une reponse simple possible : equivalent a une constante globale ghost
-
-
-"foo" devient:
-
-
-ghost char string\_literal\_foo [4] = "foo" (avec le 0 final)
-
-et utiliser string\_literal\_foo a la place de "foo"
-
-
-\end{remark}
-
-
+%% \subsection{String literals}
+%% \begin{remark}{Pascal, Benjamin}
+%%  Quelle est la semantique des constanes chaines dans les annotations
+%%  logiques ?
+%%  Une reponse simple possible : equivalent a une constante globale ghost
+%%  "foo" devient:
+%%  ghost char string\_literal\_foo [4] = "foo" (avec le 0 final)
+%%  et utiliser string\_literal\_foo a la place de "foo"
+%% \end{remark}
 
 \section{Function contracts}
 \label{sec:fn-behavior}
@@ -1027,7 +1029,7 @@ The semantics of such a contract is as follows:
   itself is interpreted in the pre-state.
 \end{itemize}
 
-% TODO : donner une vision plus symétrique appelant/appelé d'un contrat
+%% TODO : donner une vision plus symétrique appelant/appelé d'un contrat
 
 Having multiple \lstinline|requires|, \lstinline|assigns|, or 
 \lstinline|ensures| clauses only improves 
@@ -1047,12 +1049,8 @@ the caller has no information at all on this function's side
 effects. See Section~\ref{sec:multiplecontracts} for more details on
 default status of clauses.
 
-\oldremark{Colaco}{
-
-  les assigns doivent etre exhaustifs, et doivent etre prouve corrects
-  selon le corps de la function.
-
-}
+%% \oldremark{Colaco}{les assigns doivent etre exhaustifs, 
+%% et doivent etre prouve corrects selon le corps de la function.}
 
 \begin{example}
   The following function is given a simple contract for computation of
@@ -1260,57 +1258,48 @@ means that all behaviors given in the contract should be taken into account.
 Multiple \lstinline|complete| and \lstinline|disjoint| sets of behaviors can
 be given for the same contract.
 
-\oldremark{Abandonne}{
-
-  2) on veut faire des behaviors differents suivant le post-state
-     -> clause 'post assumes'
-
-  exemples : (voir aussi annexe (Error Handling without exception))
-
-  3) On pourrait avoir envie de specifier que les behavior sont
-     mutuellement exclusifs et/ou couvrent tous les cas SELON
-     LEURS CLAUSES "post assumes".
-
-     ON NE TRAITE PAS CE CAS S'IL N'Y A PAS DE BESOIN, et il est
-     alors interdit d'utiliser les clauses "complete behavior" et
-     "disjoint behavior" sur des behavior contenant des "post assumes"
-
-     la semantique serait:
-
-    La condition de d'exclusion mutuelle des cas de behaviors
-    est: pour toute paire de behavior $B_1$ et $B_2$ : postcondition
-    supplementaire
-\[
-           not ((\old(assumes_1) et postassume_1)
-                 et
-                (\old(assumes_2) et postassume_2))
-\]
-    La condition de couverture des cas de behaviors est :
-
-    la disjunction des $(\old(assumes_i) et postassume_i)$ est une postconditionn supplementaire
-
-}
+%% \oldremark{Abandonne}{
+%%  2) on veut faire des behaviors differents suivant le post-state
+%%     -> clause 'post assumes'
+%%  exemples : (voir aussi annexe (Error Handling without exception))
+%%  3) On pourrait avoir envie de specifier que les behavior sont
+%%     mutuellement exclusifs et/ou couvrent tous les cas SELON
+%%     LEURS CLAUSES "post assumes".
+%%     ON NE TRAITE PAS CE CAS S'IL N'Y A PAS DE BESOIN, et il est
+%%     alors interdit d'utiliser les clauses "complete behavior" et
+%%     "disjoint behavior" sur des behavior contenant des "post assumes"
+%%     la semantique serait:
+%%
+%%  La condition de d'exclusion mutuelle des cas de behaviors est
+%%    pour toute paire de behavior $B_1$ et $B_2$ la postcondition
+%%    supplementaire est :
+%%     not (     (\old(assumes_1) and postassume_1)
+%%           and (\old(assumes_2) and postassume_2))
+%%
+%%  La condition de couverture des cas de behaviors est :
+%%    la disjunction des $(\old(assumes_i) and postassume_i)$ est une 
+%%    postcondition supplementaire}
 
 
-\oldremark{SD+Patrick}{
-  Stephane confirme qu'AIRBUS utilise dans leur methodologie la notion
-  d'assumes, mais pas celle de post-assumes.
-
-  La possibilité d'ecrire des assumes permettra de reduire la taille
-  des postconditions actuelles et conduira a moins de repetitions des
-  conditions de behaviors.
-  Par contre, placer les actuelles preconditions dans des behaviors
-  devrait conduire a plus de repetitions dans les clauses requires.
-  Il est important pour AIRBUS de pouvoir eviter les repetitions de termes
-  dans les proprietes.
-
-  Ne serait-il pas possible de définir dans les contrats de fonctions
-  des prédicats ou termes parlant des operandes de la fonction, sans
-  passer par des fonctions logiques auxquelles on passerait en
-  argument les operandes de la fonctions ?
-
-  Ces predicats ou termes aurait une portee locale a la fonction.
-}
+%% \oldremark{SD+Patrick}{
+%%  Stephane confirme qu'AIRBUS utilise dans leur methodologie la notion
+%%  d'assumes, mais pas celle de post-assumes.
+%%
+%%  La possibilité d'ecrire des assumes permettra de reduire la taille
+%%  des postconditions actuelles et conduira a moins de repetitions des
+%%  conditions de behaviors.
+%%  Par contre, placer les actuelles preconditions dans des behaviors
+%%  devrait conduire a plus de repetitions dans les clauses requires.
+%%  Il est important pour AIRBUS de pouvoir eviter les repetitions de termes
+%%  dans les proprietes.
+%%
+%%  Ne serait-il pas possible de définir dans les contrats de fonctions
+%%  des prédicats ou termes parlant des operandes de la fonction, sans
+%%  passer par des fonctions logiques auxquelles on passerait en
+%%  argument les operandes de la fonctions ?
+%%
+%%  Ces predicats ou termes aurait une portee locale a la fonction.
+%%}
 
 
 % \subsubsection{Error cases}
@@ -1332,11 +1321,11 @@ Section~\ref{sec:glossary}.
 More generally, we introduce syntactic constructs to denote \emph{sets of
   terms} that are also useful for the \separated predicate (see Section~\ref{sec:separated})
 
-\oldremark{PB+VP}{
-  préciser le statut de \textbackslash{}result: est-ce une modifiable
-  l-value ou pas? D'un côté, ce n'en est pas vraiment une en C, mais
-  on aimerait peut-être pouvoir écrire des assigns un peu raffinés
-  comme \texttt{assigns \textbackslash{}result.a \textbackslash{}from i = i;}}
+%% \oldremark{PB+VP}{
+%%  préciser le statut de \textbackslash{}result: est-ce une modifiable
+%%  l-value ou pas? D'un côté, ce n'en est pas vraiment une en C, mais
+%%  on aimerait peut-être pouvoir écrire des assigns un peu raffinés
+%%  comme \texttt{assigns \textbackslash{}result.a \textbackslash{}from i = i;}}
 
 \begin{figure}
   \fbox{\begin{minipage}{0.97\textwidth}
@@ -1436,29 +1425,26 @@ mandatory. On the other hand, if that function has a body, giving no
 compute an over-approximation of the sets of assigned locations.
 
 
-\oldremark{Claude}{
-
-  Attention, cette semantique est dangereuse car si en pratique on
-  inclut une partie seulement du contrat, on peut oublier de verifier
-  un requires.
-
-  Autres solutions:
-
-  1) interdire les contrats multiples
-
-  2) proposer une syntaxe pour distinguer les contrats initiaux, et
-     les contrats complementaires (comme le also de JML)
-
-}
+%% \oldremark{Claude}{
+%%  Attention, cette semantique est dangereuse car si en pratique on
+%%  inclut une partie seulement du contrat, on peut oublier de verifier
+%%  un requires.
+%%
+%%  Autres solutions:
+%%  1) interdire les contrats multiples
+%%  2) proposer une syntaxe pour distinguer les contrats initiaux, et
+%%     les contrats complementaires (comme le also de JML)
+%% }
 
 \section{Statement annotations}
 \index{annotation}
-\oldremark{Claude}{
-  Il faut absolument ajouter des regles de portee, a plusieurs
-  endroits dans ce document
 
-  Note c'est maintenant fait pour les \at
-}
+%% \oldremark{Claude}{
+%%  Il faut absolument ajouter des regles de portee, a plusieurs
+%%  endroits dans ce document
+%%
+%%  Note c'est maintenant fait pour les \at
+%%}
 
 Annotations on C statements are of three kinds:
 \begin{itemize}
@@ -1500,10 +1486,10 @@ as an extension of the grammar of C statements.
   must hold only for the considered behaviors.
 \end{itemize}
 
-\oldremark{Claude}{unifier les 2 derniers cas? car a-t-on besoin de
-  nommer un assert en dehors d'un behavior de la fonction? Surtout que
-  l'on peut deja ecrire assert (id : P)
-}
+%% \oldremark{Claude}{unifier les 2 derniers cas? car a-t-on besoin de
+%%  nommer un assert en dehors d'un behavior de la fonction? Surtout que
+%%  l'on peut deja ecrire assert (id : P)
+%% }
 
 \subsection{Loop annotations}
 \label{sec:loop_annot}
@@ -1672,9 +1658,7 @@ loop iteration. Several invariants are allowed at different places in
 a loop body. These extensions are useful when dealing with complex
 control flows.
 
-\oldremark{Claude}{TODO(citer une ref
-a propos des invariants inductifs)
-}
+%% \oldremark{Claude}{TODO(citer une ref a propos des invariants inductifs) }
 
 \begin{example}
 Here is a program annotated with an invariant inside the loop body:
@@ -1867,9 +1851,7 @@ Such contracts are only valid for the
 corresponding behaviors, in particular only under the
 corresponding \assumes{} clause.
 
-\begin{todo}
-  Add an example with a \For{}.
-\end{todo}
+%% TODO: Add an example with a \For{}.
 
 % [Patrick B.] START proposition:
 The \ensures\indextt{ensures} clause does not constrain the
@@ -2016,18 +1998,17 @@ applies when \lstinline|g| is \lstinline|f| itself.
 
 % \subsection{Function termination}
 
-% TODO: a mettre plutot dans les contrats
-
-% clause 'terminates P' specifie que si P est vrai dans le pre-state,
-% alors la fonction ou le statement objet du contrat se termine en temps
-% fini.
-
-% pas de valeur par defaut
-
-% Patrick propose plutot la negation: 'diverges P' car ce que l'on veut
-% specifier c'est que la fonction ne boucle indefiniment.
-
-% en faveur de prendre 'diverges' : c'est comme ca en JML.
+%% TODO: a mettre plutot dans les contrats
+%% clause 'terminates P' specifie que si P est vrai dans le pre-state,
+%% alors la fonction ou le statement objet du contrat se termine en temps
+%% fini.
+%%
+%% pas de valeur par defaut
+%%
+%% Patrick propose plutot la negation: 'diverges P' car ce que l'on veut
+%% specifier c'est que la fonction ne boucle indefiniment.
+%%
+%% en faveur de prendre 'diverges' : c'est comme ca en JML.
 
 
 \subsection{Non-terminating functions}
@@ -2202,7 +2183,6 @@ to a logical inconsistency.
 \subsection{Polymorphic logic types}\label{sec:polym-logic-types}
 \index{type!polymorphic}
 \index{polymorphism}
-\experimental
 
 We consider here an algebraic specification setting based on
 multi-sorted logic, where types can be \emph{polymorphic} that is
@@ -2325,15 +2305,10 @@ higher-order logic.
 \label{fig:gram:logictype}
 \end{figure}
 
-\oldremark{SD6+All}{
-
-  faire une analogie avec les types sommes (de Caml, des spec algebriques)
-
-  c'est plutot des types avec constructeurs dans les spec algebriques
-
-
-}
-
+%% \oldremark{SD6+All}{
+%%  faire une analogie avec les types sommes (de Caml, des spec algebriques)
+%%  c'est plutot des types avec constructeurs dans les spec algebriques
+%% }
 
 Logic types may not only be declared but also be given a
 definition. Defined logic types can be either record
@@ -2344,16 +2319,13 @@ for sum types, a pattern-matching construction is available.
 Grammar rules for these additional constructions are given in
 Figure~\ref{fig:gram:logictype}
 
-\oldremark{All}{
-
-TODO: ajouter les types tableaux logiques: tableaux fonctionnels.
-
-sucre syntaxique: t[i] pour select(t,i),  et dans le cas de code ghost, t[i] = e pour t = store(t,i,e)
-
-Example: n-reines.
-
-
-}
+%% \oldremark{All}{
+%%  TODO: ajouter les types tableaux logiques: tableaux fonctionnels.
+%%  sucre syntaxique: t[i] pour select(t,i),  
+%%  et dans le cas de code ghost, t[i] = e pour t = store(t,i,e)
+%%
+%%  Example: n-reines.
+%% }
 
 \begin{example}
   The declaration
@@ -2461,22 +2433,20 @@ disjoint from the declared footprint.
 %   last axioms would say both that $a=b+1$ and $a=b$ for some $a$ and
 %   $b$.
 
-%   \oldremark{Claude}{
-%     expliquer mieux
+%%   \oldremark{Claude}{expliquer mieux
+%%
+%%     De plus, si l'on oublie la clause reads ça reste
+%%     correct, donc il faudrait prevoir un warning pour un predicat avec un
+%%     type pointeur en argument sans reads...
+%%   }
+%% \end{example}
 
-%     De plus, si l'on oublie la clause reads ça reste
-%     correct, donc il faudrait prevoir un warning pour un predicat avec un
-%     type pointeur en argument sans reads...
-%   }
-% \end{example}
 
-\begin{remark}{Claude}
-on peut indiquer des conditions semantiques de validite des axiomes:
-
-pour tout etat L1, L2 qui sont identiques sur le footprint, P{L1} =>
-P{L2} ou P est la formule de l'axiome
-
-\end{remark}
+%% \begin{remark}{Claude}
+%%  on peut indiquer des conditions semantiques de validite des axiomes:
+%%  pour tout etat L1, L2 qui sont identiques sur le footprint, P{L1} =>
+%%  P{L2} ou P est la formule de l'axiome
+%% \end{remark}
 
 \begin{example}
   The following is the same as example~\ref{ex:nb_occ} augmented with
@@ -2499,16 +2469,13 @@ P{L2} ou P est la formule de l'axiome
 %   \listinginput{1}{permut_reads.c}
 % \end{example}
 
-% \oldremark{SD7+All}{
-
-%   As shown above, hybrid predicates and functions declared with reads
-%   clauses should be used with caution, since they do not depend only
-%   on the values of their parameters but also in an implicit way on the
-%   values stored in memory.
-
-%   reutiliser l'exemple en question ? (en le faisant mieux)
-
-% }
+%% \oldremark{SD7+All}{
+%%   As shown above, hybrid predicates and functions declared with reads
+%%   clauses should be used with caution, since they do not depend only
+%%   on the values of their parameters but also in an implicit way on the
+%%   values stored in memory.
+%%   reutiliser l'exemple en question ? (en le faisant mieux)
+%% }
 
 \subsection{Specification Modules}
 \label{sec:specmodules}
@@ -2904,7 +2871,9 @@ the allocated and deallocated memory blocks are in fact specified by the allocat
 of the {\sl loop-clauses}
 (Grammar of {\sl loop-clauses} and {\sl loop-behaviors} is given in Figure~\ref{fig:gram:loops}).
 
-\section{Sets as first-class values}\label{sec:sets}
+\section{Sets and lists}
+
+\subsection{Finite sets}\label{sec:sets}
 \index{location}
 Sets of terms, as defined in Section~\ref{sec:locations},
 can be used as first-class values in
@@ -2953,11 +2922,76 @@ to the postcondition
 \forall char* p; \separated(\union(&L$_1$,$\ldots$,&L$_n$),p) ==> *p == \old(*p)
 \end{listing-nonumber}
 
+\subsection{Finite lists}\label{sec:lists}
+The built-in type \lstinline|\list<A>|\indexttbs{list} can be used for finite 
+sequences of elements of the same type \lstinline|A|. 
+For constructing such homogeneous lists, built-in functions and notations are 
+available.
+
+The term \lstinline|\Nil|\indexttbs{Nil} denotes the empty sequence.
+\begin{listing-nonumber}
+\list<A> \Nil<A>;
+\end{listing-nonumber}
+
+The function \lstinline|\Cons|\indexttbs{Cons} prepends an element \lstinline|elt| 
+onto a sequence \lstinline|tail|
+\begin{listing-nonumber}
+\list<A> \Cons<A>(<A> elt, \list<A> tail);
+\end{listing-nonumber}
+while \lstinline|\concat|\indexttbs{concat} concatenates two sequences
+\begin{listing-nonumber}
+\list<A> \concat<A>(\list<A> front, \list<A> tail);
+\end{listing-nonumber}
+and \lstinline|\repeat|\indexttbs{repeat} repeats a sequence \lstinline|n| times, \lstinline|n| being a positive number
+\begin{listing-nonumber}
+\list<A> \repeat<A>(\list<A> seq, integer n);
+\end{listing-nonumber}
+
+The semantics of these functions rely on two useful functions: 
+\lstinline|\length|\indexttbs{length} returns the number of elements of 
+a sequence \lstinline|seq| 
+\begin{listing-nonumber}
+integer \length<A>(\list<A> seq);
+\end{listing-nonumber}
+and \lstinline|\nth|\indexttbs{nth} returns the element that is at position 
+\lstinline|n| of the given sequence \lstinline|seq|.
+The first element is at position $0$. 
+\begin{listing-nonumber}
+<A> \nth<A>(\list<A> seq, integer n);
+\end{listing-nonumber}
+
+Last but not least, the functions \lstinline|\repeat| and \lstinline|\nth| 
+aren't specified for negative number \lstinline|n|. 
+The function \lstinline|\nth(l)| is also unspecified for index greater than or 
+equal to \lstinline|\length(l)|.
+
+The notation \lstinline![| |]! is just the same thing as \lstinline|\Nil| and
+\lstinline![|1,2,3|]! is the sequence of three integers.
+In addition the infix operator \lstinline|^| (resp. \lstinline|*^|) 
+is the same as function \lstinline|\concat| (resp. \lstinline|\repeat|).
+
+\begin{figure}[t]
+  \fbox{\begin{minipage}{0.97\linewidth}
+      \input{list-gram_modern.bnf}
+    \end{minipage}}
+  \caption{Notations for built-in list datatype}
+\label{fig:gram:list}
+\end{figure}
+
+\begin{example}
+  The following example illustrates the use of a such data structure and 
+  notations in connexion with ghost code.
+  \listinginput{1}{list-observer.c}
+  The function \lstinline|track| adds a value to the tail of a ghost trace variable. 
+  Calls to that function inside ghost statements allow to modify that trace; 
+  and properties about the \lstinline|observed_trace| can be specified. 
+  Notice that the assigned ghost variable is \lstinline|ghost_trace|.
+\end{example}
+
+
 \section{Abrupt termination}
 \label{sec:abrupt-clause}
 \index{abrupt clause}
-
-\experimental
 
 \begin{figure}[t]
   \fbox{\begin{minipage}{0.98\textwidth}
@@ -3028,10 +3062,10 @@ can be used only in \exits{},
   \listinginput{8}{mayexit.c}
 \end{example}
 
-\begin{todo}
-Discuter de la sémantique du assign en présence d'une terminaison abrupte
-dans un contrat de fonction et de statement.
-\end{todo}
+%% TODO:
+%% Discuter de la sémantique du assign en présence d'une terminaison abrupte
+%% dans un contrat de fonction et de statement.
+
 % [Patrick B.] START proposition:
 Contrary to \ensures clauses, \assigns\indextt{assigns}, 
 \allocates\indextt{allocates} and \frees\indextt{frees} clauses of function 
@@ -3040,12 +3074,10 @@ even when the annotated function and statement terminates respectively abruptly.
 This is shown in example~\ref{ex:assigns-and-abrupt-termination} for a function contract.
 % END proposition:
 
-\begin{todo}
-  Discuter de exit versus return pour la fonction main. Discuter
-    du atexit() : le post-state de la clause exit est-il avant ou
-    apres les fonctions enregistrees par atexit() ?
-
-\end{todo}
+%% TODO:
+%%  Discuter de exit versus return pour la fonction main. Discuter
+%%    du atexit() : le post-state de la clause exit est-il avant ou
+%%    apres les fonctions enregistrees par atexit() ?
 
 \section{Dependencies information}
 \label{sec:func-dep}
@@ -3142,13 +3174,10 @@ to \texttt{weak}.
   \listinginput{1}{invariants.c}
 \end{example}
 
-\oldremark{SD8}{
-
-  montrer un example qui exprime des proprietes d'initialisation de
-  variables globales, i.e un tableau contient des valeurs distinctes 2
-  a 2.
-
-}
+%% \oldremark{SD8}{
+%%  montrer un example qui exprime des proprietes d'initialisation de
+%%  variables globales, i.e un tableau contient des valeurs distinctes 2
+%%  a 2.}
 
 \subsection{Semantics}
 
@@ -3172,11 +3201,8 @@ which they are supposed to hold.
   weak invariant at function exit. However, it says nothing about fields,
   array elements, memory locations, etc. of type $\tau$.
 
-  \oldremark{Claude}{
+%% \oldremark{Claude}{et les var locales d'une fonction appelante ?}
 
-    et les var locales d'une fonction appelante ?
-
-  }
 \item A strong type invariant on type $\tau$ must hold at any step
   during execution, and applies to any global variable, local
   variable, or formal parameter\index{formal parameter}
@@ -3195,39 +3221,26 @@ which they are supposed to hold.
   \listinginput{1}{out_char.c}
 \end{example}
 
+%% \oldremark{PC}{remise en cause de la politique d'invariants:
+%% - Weak invariants do not hold in any state but can be temporarily violated.
+%% - Such invariants are allowed under some sound policy~\cite{barnett04jot}.
+%%}
 
-
-\oldremark{PC}{
-
-  remise en cause de la politique d'invariants
-
-
-
-Weak invariants do not hold in any state but can be temporarily violated.
-Such invariants are allowed under some sound policy~\cite{barnett04jot}.
-
-}
-
-\oldremark{Claude}{
-
-  il faut decider comment sont lies les declarations d'invariants et
-  les type associe'.
-
-Example:
-
-
-typedef struct S {
-  int x;
-} S;
-
-void reset(S *p) {
-  p->x = 0;
-}
-
-//@ type invariant I(S *p) { p.x > 0 }
-
--> reset ne respecte pas cet invariant
-}
+%% \oldremark{Claude}{
+%%  il faut decider comment sont lies les declarations d'invariants et
+%%  les type associe'.
+%%
+%% Example:
+%% typedef struct S {
+%%   int x;
+%% } S;
+%% void reset(S *p) {
+%%  p->x = 0;
+%% }
+%% //@ type invariant I(S *p) { p.x > 0 }
+%%
+%% -> reset ne respecte pas cet invariant
+%%}
 
 \begin{example}
   Here is a longer example, the famous Dijkstra's Dutch flag algorithm.\\
@@ -3357,11 +3370,11 @@ grammar are the following:
   As in normal annotations, \lstinline|@| characters at the beginning of a
   line and at the end of an annotation (before the final \lstinline|@/|) are
   considered as blank.
-  \oldremark{Claude}{
-    faudrait supprimer ca. Je propose de maniere generale que le code
-    annote sans les "/*@ ..*/" doit etre parsable aussi, meme s'il
-    n'est pas parsable par un compilo.
-}
+%% \oldremark{Claude}{
+%%  faudrait supprimer ca. Je propose de maniere generale que le code
+%%  annote sans les "/*@ ..*/" doit etre parsable aussi, meme s'il
+%%  n'est pas parsable par un compilo.
+%% }
 \item \notimplemented{Logical types, such as \lstinline|integer| or
 \lstinline|real| are authorized in ghost code}.
 \item \notimplemented{A non-ghost function can take ghost
@@ -3438,18 +3451,15 @@ statically detected as ghost must be semantically ghost.
   \listinginput{1}{ghostcfg.c}
 \end{example}
 
-\oldremark{Claude}{
-  d'autres exemples, valides ou non valides, serait bienvenus
-}
+%% \oldremark{Claude}{d'autres exemples, valides ou non valides, 
+%%   serait bienvenus 
+%% }
 
-\oldremark{All}{
-
-On veut des tableaux ghost de taille infinie -> cf tableaux fonctionnels de la section sur les assigns from
-
-}
+%% \oldremark{All}{ On veut des tableaux ghost de taille infinie 
+%%  -> cf tableaux fonctionnels de la section sur les assigns from
+%% }
 
 \paragraph{Differences between model variables and ghost variables}
-
 
 A ghost variable is an additional specification variable which is
 assigned in ghost code like any C variable. On the other hand, a model
@@ -3470,7 +3480,6 @@ are executable.
 
 \subsection{Volatile variables}\label{sec:volatile-variables}
 \indextt{volatile}
-\experimental
 
 Volatile variables can not be used in logic terms, since reading such
 a variable may have a side effect, in particular two successive reads

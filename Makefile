@@ -1,12 +1,18 @@
 MAIN=main
 
+PDF_OUTPUTS=acsl-implementation.pdf acsl.pdf
+
+## Notes:
+## ARCHIVED_PDF_OUTPUTS=acsl-mini-tutorial.pdf
+## PDF_OUPUTS are copied to "../manuals" directory bg "install" target
+ 
 BNF_FILES=term.tex predicate.tex binders.tex fn_behavior.tex \
           oldandresult.tex at.tex loc.tex assertions.tex loops.tex  \
           assertions.tex loops.tex allocation.tex generalinvariants.tex \
           st_contracts.tex ghost.tex model.tex logic.tex inductive.tex \
           logicdecl.tex logictypedecl.tex higherorder.tex logiclabels.tex \
           logicreads.tex memory.tex data_invariants.tex volatile-gram.tex \
-          exitbehavior.tex dependencies.tex welltyped.tex
+          exitbehavior.tex dependencies.tex welltyped.tex list-gram.tex
 
 BNF_DEPS=$(BNF_FILES:.tex=_modern.bnf)
 
@@ -28,14 +34,14 @@ DEPS_MODERN=speclang_modern.tex macros_modern.tex	\
 	dangling.c sum2.c modifier.c gen_spec_with_ghost.c		\
 	terminates_list.c glob_var_masked.c glob_var_masked_sol.c	\
 	intlists.c sign.c signdef.c oldat.c mean.c isgcd.c exit.c	\
-	mayexit.c loop_current.c welltyped.c
+	mayexit.c loop_current.c welltyped.c list-observer.c
 
 TUTORIAL_EXAMPLES=max_ptr-tut.c max_ptr2-tut.c max_ptr_bhv-tut.c \
                   max_seq_ghost-tut.c
 
 .PHONY: all install acsl tutorial
 
-acsl: acsl-implementation.pdf acsl.pdf main.pdf
+acsl: acsl-implementation.pdf acsl.pdf
 
 all: acsl install tutorial check
 
@@ -90,6 +96,11 @@ include ../MakeLaTeXModern
 %.ml: %.mll
 	ocamllex $<
 
+.PHONY: main.pdf
+main.pdf:
+	@echo "Deprecated '$@' target:"
+	@echo "please, make 'acsl-implementation.pdf' or else 'acsl.pdf'"
+
 %.pdf: %.tex
 	latexmk -silent -pdf $<
 
@@ -132,7 +143,7 @@ nb_occ.c nb_occ_reads.c non_terminating-tut.c non_terminating2-tut.c	\
 num_of_pos.c oldat.c permut.c permut_reads.c sizeof.c sign.c signdef.c	\
 sort.c specified.c sqsum-tut.c sqsum2-tut.c strcpyspec.c sum.c          \
 swap-tut.c terminates_list.c type_invariant-tut.c volatile.c dangling.c \
-welltyped.c
+welltyped.c list-observer.c
 
 BAD=acsl_allocator.c gen_code.c gen_spec_with_ghost.c			\
 gen_spec_with_model.c ghostcfg.c import.c invariants.c			\
@@ -207,29 +218,33 @@ acsl-mini-tutorial.html: acsl-mini-tutorial.tex mini-biblio.bib
 .PHONY: clean
 
 clean:
+	@echo "Cleaning..."
 	rm -rf *~ *.aux *.log *.nav *.out *.snm *.toc *.lof *.pp *.bnf \
 		*.haux  *.hbbl *.htoc \
-                *.cb *.cm? *.bbl *.blg *.idx *.ind *.ilg \
+                *.cb? *.cm? *.bbl *.blg *.idx *.ind *.ilg *.fls *.fdb_latexmk \
 		transf trans.ml pp.ml pp
+
+.PHONY: super-clean
+super-clean: clean
+	@echo "Removing PDF outputs: $(PDF_OUTPUTS)"
+	rm -f $(PDF_OUTPUTS)
 
 # version WEB liée à ce qui est implementé
 acsl-implementation.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN) ../../VERSION
 
 acsl-implementation.tex: $(MAIN).tex Makefile
 	@rm -f $@
-	sed -e 's/main.cb/acsl-implementation.cb/' -e '/PrintRemarks/s/%--//' $^ > $@
+	sed -e '/^% rubber:/s/main.cb/acsl-implementation.cb/g' $^ > $@
 	@chmod a-w $@
 
 # version WEB du langage ACSL
 acsl.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
 
-acsl.tex: acsl-implementation.tex Makefile
+acsl.tex: $(MAIN).tex Makefile
 	rm -f $@
-	sed -e '/PrintImplementationRq/s/%--//' $^ > $@
+	sed -e '/^% rubber:/s/main.cb/acsl.cb/g' \
+	    -e '/^%--.*{PrintImplementationRq}/s/%--//' $^ > $@
 	chmod a-w $@
-
-# version pour le goupe de travail ACSL
-$(MAIN).pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
 
 tutorial-www: acsl-mini-tutorial.pdf acsl-mini-tutorial.html
 	rm -f ../www/src/acsl_tutorial_index.hevea
