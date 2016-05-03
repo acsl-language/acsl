@@ -114,8 +114,8 @@ With respect to C pure expressions, the additional constructs are as follows:
   quantification by \lstinline|\exists $\tau$ $x_1$,$\ldots$,$x_n$; e|.
 
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\textwidth} \input{binders_modern.bnf}
-    \end{minipage}}
+  \begin{cadre} \input{binders_modern.bnf}
+    \end{cadre}
   \caption{Grammar of binders and type expressions}
 \label{fig:gram:binders}
 \end{figure}
@@ -1328,9 +1328,9 @@ More generally, we introduce syntactic constructs to denote \emph{sets of
 %%  comme \texttt{assigns \textbackslash{}result.a \textbackslash{}from i = i;}}
 
 \begin{figure}
-  \fbox{\begin{minipage}{0.97\textwidth}
+  \begin{cadre}
       \input{loc_modern.bnf}
-    \end{minipage}}
+    \end{cadre}
   \caption{Grammar for sets of terms}
 \label{fig:gram:locations}
 \end{figure}
@@ -2058,8 +2058,8 @@ void f() { while(1); }
 \label{sec:logicspec}
 \index{logic specification}\index{specification}
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\linewidth}\vfill \input{logic_modern.bnf}
-    \vfill\end{minipage}}
+  \begin{cadre}\vfill \input{logic_modern.bnf}
+    \vfill\end{cadre}
   \caption{Grammar for global logic definitions}
 \label{fig:gram:logic}
 \end{figure}
@@ -2101,8 +2101,8 @@ grammar for those style of definitions is given on
 Figure~\ref{fig:gram:inductive}.
 \index{inductive definitions}
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\linewidth} \input{inductive_modern.bnf}
-    \end{minipage}}
+  \begin{cadre} \input{inductive_modern.bnf}
+    \end{cadre}
   \caption{Grammar for inductive definitions}
 \label{fig:gram:inductive}
 \end{figure}
@@ -2155,8 +2155,8 @@ Figure~\ref{fig:gram:logicdecl}.
 
 \indextt{axiomatic}
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\linewidth} \input{logicdecl_modern.bnf}
-    \end{minipage}}
+  \begin{cadre} \input{logicdecl_modern.bnf}
+    \end{cadre}
   \caption{Grammar for axiomatic declarations}
 \label{fig:gram:logicdecl}
 \end{figure}
@@ -2237,9 +2237,9 @@ a way to check consistency.
 \experimental
 
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.98\linewidth}
+  \begin{cadre}
       \input{higherorder_modern.bnf}
-    \end{minipage}}
+    \end{cadre}
   \caption{Grammar for higher-order constructs}
 \label{fig:gram:higherorder}
 \end{figure}
@@ -2297,10 +2297,10 @@ higher-order logic.
 \experimental
 
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.98\linewidth}
+  \begin{cadre}
       \index{type!record}\index{type!sum}
       \input{logictypedecl_modern.bnf}
-    \end{minipage}}
+    \end{cadre}
   \caption{Grammar for concrete logic types and pattern-matching}
 \label{fig:gram:logictype}
 \end{figure}
@@ -2366,9 +2366,9 @@ is allowed to omit a label whenever there is only one label in the
 context.
 
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\linewidth}
+  \begin{cadre}
       \input{logiclabels_modern.bnf}
-    \end{minipage}}
+    \end{cadre}
   \caption{Grammar for logic declarations with labels}
 \label{fig:gram:logiclabels}
 \end{figure}
@@ -2399,9 +2399,9 @@ context.
 \subsection{Memory footprint specification: \texorpdfstring{\lstinline|reads|}{reads} clause}
 
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\linewidth}
+  \begin{cadre}
       \input{logicreads_modern.bnf}
-    \end{minipage}}
+    \end{cadre}
   \caption{Grammar for logic declarations with \lstinline|reads| clauses}
 \label{fig:gram:logicreads}
 \end{figure}
@@ -2507,9 +2507,9 @@ extended with new constructs given in Figure~\ref{fig:gram:memory}.
 It is a set of terms of some pointer type as defined in Section~\ref{sec:locations}.
 
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\linewidth}
+  \begin{cadre}
       \input{memory_modern.bnf}
-    \end{minipage}}
+    \end{cadre}
   \caption{Grammar extension of terms and predicates about memory}
 \label{fig:gram:memory}
 \end{figure}
@@ -2646,9 +2646,9 @@ equivalent to \lstinline|allocates \empty| and \lstinline|frees \empty|;
 it is left for convenience like for \assigns clauses.
 
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\linewidth}
+  \begin{cadre}
       \input{allocation_modern.bnf}
-    \end{minipage}}
+    \end{cadre}
   \caption{Grammar for dynamic allocations and deallocations}
 \label{fig:gram:allocation}
 \end{figure}
@@ -2971,9 +2971,9 @@ In addition the infix operator \lstinline|^| (resp. \lstinline|*^|)
 is the same as function \lstinline|\concat| (resp. \lstinline|\repeat|).
 
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\linewidth}
+  \begin{cadre}
       \input{list-gram_modern.bnf}
-    \end{minipage}}
+    \end{cadre}
   \caption{Notations for built-in list datatype}
 \label{fig:gram:list}
 \end{figure}
@@ -2994,9 +2994,9 @@ is the same as function \lstinline|\concat| (resp. \lstinline|\repeat|).
 \index{abrupt clause}
 
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.98\textwidth}
+  \begin{cadre}
      \input{exitbehavior_modern.bnf}
-    \end{minipage}}
+    \end{cadre}
     \caption{Grammar of contracts about abrupt terminations}
   \label{fig:gram:abrupt-clauses}
 \end{figure}
@@ -3090,9 +3090,9 @@ dependencies\index{dependency} and
 \notimplemented{\emph{functional expressions}}\index{functional expression}.
 
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\linewidth}
+  \begin{cadre}
       \input{dependencies_modern.bnf}
-    \end{minipage}}
+    \end{cadre}
   \caption{Grammar for dependencies information}
 \label{fig:gram:dep}
 \end{figure}
@@ -3149,9 +3149,9 @@ between:
 \end{itemize}
 
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.97\linewidth}
+  \begin{cadre}
       \input{data_invariants_modern.bnf}
-    \end{minipage}}
+    \end{cadre}
   \caption{Grammar for declarations of data invariants}
 \label{fig:gram:datainvariants}
 \end{figure}
@@ -3257,9 +3257,9 @@ used to provide abstract specifications to functions whose concrete
 implementation must remain private.
 
 \begin{figure}[b]
-  \fbox{\begin{minipage}{0.97\linewidth}
+  \begin{cadre}
       \input{model_modern.bnf}
-    \end{minipage}}
+    \end{cadre}
   \caption{Grammar for declarations of model variables and fields}
 \label{fig:gram:model}
 \end{figure}
@@ -3394,9 +3394,9 @@ grammar are the following:
 \end{itemize}
 
 \begin{figure}[t]
-  \fbox{\begin{minipage}{0.98\linewidth}
+  \begin{cadre}
       \input{ghost_modern.bnf}
-    \end{minipage}}
+    \end{cadre}
   \caption{Grammar for ghost statements}
 \label{fig:gram:ghost}
 \end{figure}
@@ -3486,9 +3486,9 @@ a variable may have a side effect, in particular two successive reads
 may return different values.
 
 \begin{figure}[h]
-  \fbox{\begin{minipage}{0.97\linewidth}
+  \begin{cadre}
       \input{volatile-gram_modern.bnf}
-    \end{minipage}}
+    \end{cadre}
   \caption{Grammar for volatile constructs}
 \label{fig:gram:volatile}
 \end{figure}
@@ -3571,9 +3571,9 @@ heterogeneous casts.
 \indextt{valid\_function}
 
 \begin{figure}[h]
-  \fbox{\begin{minipage}{0.97\linewidth}
+  \begin{cadre}
       \input{welltyped_modern.bnf}
-    \end{minipage}}
+    \end{cadre}
   \caption{Grammar for predicates related to well-typedness }
 \label{fig:gram:welltyped}
 \end{figure}
