@@ -2,7 +2,8 @@
   statement ::= "/*@" statement-contract "*/" statement
   \
   statement-contract ::= ("for" id ("," id)* ":")? requires-clause* ;
-    simple-clause-stmt* named-behavior-stmt*
+    simple-clause-stmt* named-behavior-stmt* ;
+    completeness-clause*
   \
   simple-clause-stmt::= simple-clause ;
                       | allocation-clause | abrupt-clause-stmt
