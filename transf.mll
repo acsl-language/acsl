@@ -218,6 +218,7 @@ and syntax = parse
           print_string "\\begin{notimplementedenv}";
           check_implementation_note lexbuf }
   | "}" { print_string "\\end{notimplementedenv}"; syntax lexbuf }
+  | "[" {  add_used (); print_string "\\footnote{"; footnote lexbuf }
   | "\n" { incr current_line; print_char '\n'; syntax lexbuf }
   | _ {
       print_char (lexeme_char lexbuf 0);
@@ -270,6 +271,10 @@ and nonterm_note = parse
     "]" { print_string "}"; syntax lexbuf }
   | _  { print_char (lexeme_char lexbuf 0);
            nonterm_note lexbuf }
+and footnote = parse
+    "]" { print_string "}"; syntax lexbuf }
+  | _  { print_char (lexeme_char lexbuf 0);
+           footnote lexbuf }
 
 {
 
