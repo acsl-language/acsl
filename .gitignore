@@ -7,7 +7,6 @@
 /main.synctex*
 /acsl-implementation.tex
 /acsl.tex
-/frama-c-book.cls
 /framacversion.tex
 /acsl-mini-tutorial.tex
 /*-tut.c
@@ -17,6 +16,3 @@
 # PDFs
 /acsl-implementation.pdf
 /acsl.pdf
-/frama-c-cover.pdf
-/frama-c-left.pdf
-/frama-c-right.pdf

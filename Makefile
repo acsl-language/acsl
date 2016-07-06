@@ -1,3 +1,5 @@
+default: acsl.pdf
+
 MAIN=main
 
 PDF_OUTPUTS=acsl-implementation.pdf acsl.pdf
@@ -40,31 +42,6 @@ TUTORIAL_EXAMPLES=max_ptr-tut.c max_ptr2-tut.c max_ptr_bhv-tut.c \
                   max_seq_ghost-tut.c
 
 .PHONY: all install acsl tutorial
-
-acsl: acsl-implementation.pdf acsl.pdf
-
-all: acsl install tutorial check
-
-tutorial: tutorial-check acsl-mini-tutorial.pdf acsl-mini-tutorial.html
-
-install: acsl-implementation.pdf acsl.pdf
-	rm -f  ../manuals/acsl-implementation.pdf  ../manuals/acsl.pdf
-	cp -f acsl-implementation.pdf acsl.pdf ../manuals/
-
-FRAMAC=../../bin/frama-c.byte
-
-HAS_JESSIE=`if $(FRAMAC) -jessie-help; then echo yes; else echo no; fi`
-
-ifeq ($(HAS_JESSIE),no)
-tutorial-valid:
-	@echo "you need a working jessie plugin (and alt-ergo) to verify that \
-               the examples of the tutorial are all proved"
-	@exit 2
-else
-tutorial-valid: $(TUTORIAL_EXAMPLES:.c=.proved)
-endif
-
-include ../MakeLaTeXModern
 
 %.1: %.mp
 	mpost -interaction=batchmode $<
@@ -246,6 +223,31 @@ tutorial-www: acsl-mini-tutorial.pdf acsl-mini-tutorial.html
 	cp acsl-mini-tutorial.html ../www/src/acsl_tutorial_index.hevea
 	chmod a-w ../www/src/acsl_tutorial_index.hevea
 	cp acsl-mini-tutorial.pdf ../www/distrib/acsl-mini-tutorial.pdf
+
+# Internal to Frama-C 
+
+acsl: acsl-implementation.pdf acsl.pdf
+
+all: acsl install tutorial check
+
+tutorial: tutorial-check acsl-mini-tutorial.pdf acsl-mini-tutorial.html
+
+install: acsl-implementation.pdf acsl.pdf
+	rm -f  ../manuals/acsl-implementation.pdf  ../manuals/acsl.pdf
+	cp -f acsl-implementation.pdf acsl.pdf ../manuals/
+
+FRAMAC=../../bin/frama-c.byte
+
+HAS_JESSIE=`if $(FRAMAC) -jessie-help; then echo yes; else echo no; fi`
+
+ifeq ($(HAS_JESSIE),no)
+tutorial-valid:
+	@echo "you need a working jessie plugin (and alt-ergo) to verify that \
+               the examples of the tutorial are all proved"
+	@exit 2
+else
+tutorial-valid: $(TUTORIAL_EXAMPLES:.c=.proved)
+endif
 
 # Command to produce a diff'ed document. Must be refined to flatten automatically the files
 # latexdiff --type=CFONT --append-textcmd="_,sep,alt,newl,is" --append-safecmd="term,nonterm,indexttbase,indextt,indexttbs,keyword,ensuremath" --config "PICTUREENV=(?:picture|latexonly)[\\w\\d*@]*,MATHENV=(?:syntax),MATHREPL=syntax"  full.tex current/full.tex > diff.tex
