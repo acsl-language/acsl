@@ -1,23 +1,17 @@
-Pour la génération des fichiers:
- ./acsl.pdf                  <-- version de référence
- ./acsl-implementation.pdf   <-- idem + détails implémentation
- ./main.pdf                  <-- idem + remarques
- Usage: make acsl (cible par defaut)
+# Description
 
-Pour copier les deux documents (ceux sans les remarques) en:
- ../manuals/acsl.pdf 
- ../manuals/acsl-implementation.pdf
-  Usage: make install
+This directory contains the LaTeX source files for the ACSL reference manual.
+ACSL stands for ANSI/ISO C Specification Language and is meant to formally
+specify the intended behavior of C programs, in particular through the usage
+of function contracts. ACSL is used in particular by the Frama-C platform
+(http://frama-c.com/) that gathers a set of C analysis tools.
 
-Utilitaires pour syntaxe:
-- pp.ml pour pretty-printer via latex un fichier C:
-  Usage du Makefile: .tex -> .pp
-  Usage general: ocaml pp.ml -color file.tex > file.pp
+# Requirements
 
-- transf pour pretty-printer une BNF via latex
-  Usage du Makefile: .tex -> .bnf
-  Usage general: ./transf < file.tex > file.bnf
+In order to generate a pdf version of the manual, you will need the following:
 
-Pour installer des paquets Ubuntu utiles pour compiler la documentation
-(testé avec Ubuntu 14.04):
-sudo apt-get install rubber texlive-latex-extra texlive-fonts-recommended
+- a TeX distribution (e.g. TeXlive), including metapost
+- latexmk
+- ocaml
+
+then, typing `make` should produce the `acsl.pdf` document
