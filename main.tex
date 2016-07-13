@@ -4,6 +4,13 @@
 % rubber: depend ../../VERSION
 \documentclass[web]{frama-c-book}
 %\usepackage{hevea}
+
+\usepackage[
+type={CC},
+modifier={by},
+version={4.0}]
+{doclicense}
+
 \usepackage{ifthen}
 
 \input{./macros_modern}
@@ -88,6 +95,9 @@ $^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405
 \end{tabular}
 \vfill
 \begin{flushleft}
+  \doclicenseImage[imagewidth=5em] \doclicenseText\\
+  Sources are available at \url{https://github.com/acsl/acsl}.
+
   \textcopyright 2009-2016 CEA LIST and INRIA
 
   This work has been supported by the ANR project CAT
