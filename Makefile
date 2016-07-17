@@ -3,9 +3,9 @@ MAIN=main
 PDF_OUTPUTS=acsl-implementation.pdf acsl.pdf
 
 ## Notes:
-## ARCHIVED_PDF_OUTPUTS=acsl-mini-tutorial.pdf
-## PDF_OUPUTS are copied to "../manuals" directory bg "install" target
- 
+## no longer built target: acsl-mini-tutorial.pdf
+## PDF_OUTPUTS are copied to "../manuals" directory bg "install" target
+
 BNF_FILES=term.tex predicate.tex binders.tex fn_behavior.tex \
           oldandresult.tex at.tex loc.tex assertions.tex loops.tex  \
           assertions.tex loops.tex allocation.tex generalinvariants.tex \
