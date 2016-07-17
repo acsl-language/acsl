@@ -74,7 +74,7 @@ that we will introduce progressively.
 
 \begin{figure}[t]
   \begin{cadre}
-    \input{term_modern.bnf}
+    \input{term.bnf}
   \end{cadre}
   \caption{Grammar of terms}
 \label{fig:gram:term}
@@ -82,7 +82,7 @@ that we will introduce progressively.
 
 \begin{figure}[hb]
   \begin{cadre}
-    \input{predicate_modern.bnf}
+    \input{predicate.bnf}
   \end{cadre}
   \caption{Grammar of predicates}
 \label{fig:gram:pred}
@@ -115,7 +115,7 @@ With respect to C pure expressions, the additional constructs are as follows:
   quantification by \lstinline|\exists $\tau$ $x_1$,$\ldots$,$x_n$; e|.
 
 \begin{figure}[t]
-  \begin{cadre} \input{binders_modern.bnf}
+  \begin{cadre} \input{binders.bnf}
     \end{cadre}
   \caption{Grammar of binders and type expressions}
 \label{fig:gram:binders}
@@ -939,7 +939,7 @@ Unlike in C, conversion of an aggregate of C type \lstinline|struct| $\tau$  to 
 
 \begin{figure}[t]
   \begin{cadre}
-      \input{fn_behavior_modern.bnf}
+      \input{fn_behavior.bnf}
    \end{cadre}
     \caption{Grammar of function contracts}
   \label{fig:gram:contracts}
@@ -947,7 +947,7 @@ Unlike in C, conversion of an aggregate of C type \lstinline|struct| $\tau$  to 
 
 \begin{figure}[t]
   \begin{cadre}
-      \input{oldandresult_modern.bnf}
+      \input{oldandresult.bnf}
     \end{cadre}
     \caption{\protect\old and \protect\result in terms}
   \label{fig:gram:oldandresult}
@@ -1330,7 +1330,7 @@ More generally, we introduce syntactic constructs to denote \emph{sets of
 
 \begin{figure}
   \begin{cadre}
-      \input{loc_modern.bnf}
+      \input{loc.bnf}
     \end{cadre}
   \caption{Grammar for sets of terms}
 \label{fig:gram:locations}
@@ -1465,7 +1465,7 @@ Annotations on C statements are of three kinds:
 \label{sec:assertions}
 \begin{figure}[t]
   \begin{cadre}
-    \input{assertions_modern.bnf}
+    \input{assertions.bnf}
   \end{cadre}
   \caption{Grammar for assertions}
   \label{fig:gram:assertions}
@@ -1497,7 +1497,7 @@ as an extension of the grammar of C statements.
 
 \begin{figure}[t]
   \begin{cadre}
-    \input{loops_modern.bnf}
+    \input{loops.bnf}
   \end{cadre}
   \caption{Grammar for loop annotations}
   \label{fig:gram:loops}
@@ -1635,7 +1635,7 @@ shown in Figure~\ref{fig:advancedinvariants}.
 
 \begin{figure}[t]
   \begin{cadre}
-    \input{generalinvariants_modern.bnf}
+    \input{generalinvariants.bnf}
   \end{cadre}
   \caption{Grammar for general inductive invariants}
   \label{fig:advancedinvariants}
@@ -1837,7 +1837,7 @@ Here is an example illustrating the use of \lstinline|LoopEntry| and
 \index{statement contract}\index{contract}
 \begin{figure}[t]
   \begin{cadre}
-    \input{st_contracts_modern.bnf}
+    \input{st_contracts.bnf}
   \end{cadre}
   \caption{Grammar for statement contracts}
   \label{fig:gram:stcontracts}
@@ -2059,7 +2059,7 @@ void f() { while(1); }
 \label{sec:logicspec}
 \index{logic specification}\index{specification}
 \begin{figure}[t]
-  \begin{cadre}\vfill \input{logic_modern.bnf}
+  \begin{cadre}\vfill \input{logic.bnf}
     \vfill\end{cadre}
   \caption{Grammar for global logic definitions}
 \label{fig:gram:logic}
@@ -2102,7 +2102,7 @@ grammar for those style of definitions is given on
 Figure~\ref{fig:gram:inductive}.
 \index{inductive definitions}
 \begin{figure}[t]
-  \begin{cadre} \input{inductive_modern.bnf}
+  \begin{cadre} \input{inductive.bnf}
     \end{cadre}
   \caption{Grammar for inductive definitions}
 \label{fig:gram:inductive}
@@ -2156,7 +2156,7 @@ Figure~\ref{fig:gram:logicdecl}.
 
 \indextt{axiomatic}
 \begin{figure}[t]
-  \begin{cadre} \input{logicdecl_modern.bnf}
+  \begin{cadre} \input{logicdecl.bnf}
     \end{cadre}
   \caption{Grammar for axiomatic declarations}
 \label{fig:gram:logicdecl}
@@ -2239,7 +2239,7 @@ a way to check consistency.
 
 \begin{figure}[t]
   \begin{cadre}
-      \input{higherorder_modern.bnf}
+      \input{higherorder.bnf}
     \end{cadre}
   \caption{Grammar for higher-order constructs}
 \label{fig:gram:higherorder}
@@ -2300,7 +2300,7 @@ higher-order logic.
 \begin{figure}[t]
   \begin{cadre}
       \index{type!record}\index{type!sum}
-      \input{logictypedecl_modern.bnf}
+      \input{logictypedecl.bnf}
     \end{cadre}
   \caption{Grammar for concrete logic types and pattern-matching}
 \label{fig:gram:logictype}
@@ -2368,7 +2368,7 @@ context.
 
 \begin{figure}[t]
   \begin{cadre}
-      \input{logiclabels_modern.bnf}
+      \input{logiclabels.bnf}
     \end{cadre}
   \caption{Grammar for logic declarations with labels}
 \label{fig:gram:logiclabels}
@@ -2401,7 +2401,7 @@ context.
 
 \begin{figure}[t]
   \begin{cadre}
-      \input{logicreads_modern.bnf}
+      \input{logicreads.bnf}
     \end{cadre}
   \caption{Grammar for logic declarations with \lstinline|reads| clauses}
 \label{fig:gram:logicreads}
@@ -2509,7 +2509,7 @@ It is a set of terms of some pointer type as defined in Section~\ref{sec:locatio
 
 \begin{figure}[t]
   \begin{cadre}
-      \input{memory_modern.bnf}
+      \input{memory.bnf}
     \end{cadre}
   \caption{Grammar extension of terms and predicates about memory}
 \label{fig:gram:memory}
@@ -2648,7 +2648,7 @@ it is left for convenience like for \assigns clauses.
 
 \begin{figure}[t]
   \begin{cadre}
-      \input{allocation_modern.bnf}
+      \input{allocation.bnf}
     \end{cadre}
   \caption{Grammar for dynamic allocations and deallocations}
 \label{fig:gram:allocation}
@@ -2973,7 +2973,7 @@ is the same as function \lstinline|\concat| (resp. \lstinline|\repeat|).
 
 \begin{figure}[t]
   \begin{cadre}
-      \input{list-gram_modern.bnf}
+      \input{list-gram.bnf}
     \end{cadre}
   \caption{Notations for built-in list datatype}
 \label{fig:gram:list}
@@ -2996,7 +2996,7 @@ is the same as function \lstinline|\concat| (resp. \lstinline|\repeat|).
 
 \begin{figure}[t]
   \begin{cadre}
-     \input{exitbehavior_modern.bnf}
+     \input{exitbehavior.bnf}
     \end{cadre}
     \caption{Grammar of contracts about abrupt terminations}
   \label{fig:gram:abrupt-clauses}
@@ -3092,7 +3092,7 @@ dependencies\index{dependency} and
 
 \begin{figure}[t]
   \begin{cadre}
-      \input{dependencies_modern.bnf}
+      \input{dependencies.bnf}
     \end{cadre}
   \caption{Grammar for dependencies information}
 \label{fig:gram:dep}
@@ -3151,7 +3151,7 @@ between:
 
 \begin{figure}[t]
   \begin{cadre}
-      \input{data_invariants_modern.bnf}
+      \input{data_invariants.bnf}
     \end{cadre}
   \caption{Grammar for declarations of data invariants}
 \label{fig:gram:datainvariants}
@@ -3259,7 +3259,7 @@ implementation must remain private.
 
 \begin{figure}[b]
   \begin{cadre}
-      \input{model_modern.bnf}
+      \input{model.bnf}
     \end{cadre}
   \caption{Grammar for declarations of model variables and fields}
 \label{fig:gram:model}
@@ -3396,7 +3396,7 @@ grammar are the following:
 
 \begin{figure}[t]
   \begin{cadre}
-      \input{ghost_modern.bnf}
+      \input{ghost.bnf}
     \end{cadre}
   \caption{Grammar for ghost statements}
 \label{fig:gram:ghost}
@@ -3488,7 +3488,7 @@ may return different values.
 
 \begin{figure}[h]
   \begin{cadre}
-      \input{volatile-gram_modern.bnf}
+      \input{volatile-gram.bnf}
     \end{cadre}
   \caption{Grammar for volatile constructs}
 \label{fig:gram:volatile}
@@ -3573,7 +3573,7 @@ heterogeneous casts.
 
 \begin{figure}[h]
   \begin{cadre}
-      \input{welltyped_modern.bnf}
+      \input{welltyped.bnf}
     \end{cadre}
   \caption{Grammar for predicates related to well-typedness }
 \label{fig:gram:welltyped}

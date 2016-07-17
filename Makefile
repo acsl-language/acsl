@@ -14,9 +14,9 @@ BNF_FILES=term.tex predicate.tex binders.tex fn_behavior.tex \
           logicreads.tex memory.tex data_invariants.tex volatile-gram.tex \
           exitbehavior.tex dependencies.tex welltyped.tex list-gram.tex
 
-BNF_DEPS=$(BNF_FILES:.tex=_modern.bnf)
+BNF_DEPS=$(BNF_FILES:.tex=.bnf)
 
-DEPS_MODERN=speclang_modern.tex macros_modern.tex	\
+DEPS=   speclang_modern.tex macros_modern.tex	\
 	intro_modern.tex libraries_modern.tex compjml_modern.tex	\
 	div_lemma.c assigns.c invariants.c example-lt-modern.tex	\
 	malloc_free_fn.c malloc-free2-fn.c loop-frees.c isqrt.c		\
@@ -86,11 +86,6 @@ include ../MakeLaTeXModern
 %.bnf: %.tex transf
 	@rm -f $@
 	./transf $< > $@
-	@chmod a-w $@
-
-%_modern.bnf: %.tex transf
-	@rm -f $@
-	./transf -modern $< > $@
 	@chmod a-w $@
 
 %.ml: %.mll
@@ -230,7 +225,7 @@ super-clean: clean
 	rm -f $(PDF_OUTPUTS)
 
 # what is implemented in Frama-C
-acsl-implementation.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN) ../../VERSION
+acsl-implementation.pdf: $(DEPS) $(FRAMAC_MODERN) ../../VERSION
 
 acsl-implementation.tex: $(MAIN).tex Makefile
 	@rm -f $@
@@ -238,7 +233,7 @@ acsl-implementation.tex: $(MAIN).tex Makefile
 	@chmod a-w $@
 
 # the ACSL langage itself
-acsl.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
+acsl.pdf: $(DEPS) $(FRAMAC_MODERN)
 
 acsl.tex: $(MAIN).tex Makefile
 	@rm -f $@

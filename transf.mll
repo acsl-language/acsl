@@ -2,8 +2,6 @@
   let idx = Buffer.create 5
   let full_kw = Buffer.create 5
 
-  let modern = ref false
-
   let check = ref false
 
   let defined = Hashtbl.create 17
@@ -121,11 +119,7 @@
     let index = Buffer.contents idx in
     print_string "\\addspace";
     if not !check then begin
-      if !modern then
-        Printf.printf
-          "\\lstinline$%s$" keyword
-      else
-        Printf.printf "\\texttt{%s}" (escape_keyword keyword);
+      Printf.printf "\\lstinline$%s$" keyword;
       if index <> "" then
         Printf.printf "\\indextt%s{%s}"
           (if keyword.[0] = '\\' then "bs" else "") index;
@@ -274,8 +268,7 @@ and nonterm_note = parse
 {
 
   let () = Arg.parse
-    [ "-modern", Arg.Set modern, "set modern style"; 
-      "-check", Arg.Set check, "check grammar coherence";
+    [ "-check", Arg.Set check, "check grammar coherence";
       "-builtin",
       Arg.String builtin_rule, "<s> : consider s as a valid non-terminal"
     ]
