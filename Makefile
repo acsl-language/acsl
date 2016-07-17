@@ -79,19 +79,19 @@ include ../MakeLaTeXModern
 	./pp -utf8 -c $< > $@
 
 %.tex: %.ctex pp
-	rm -f $@
+	@rm -f $@
 	./pp $< > $@
-	chmod a-w $@
+	@chmod a-w $@
 
 %.bnf: %.tex transf
-	rm -f $@
+	@rm -f $@
 	./transf $< > $@
-	chmod a-w $@
+	@chmod a-w $@
 
 %_modern.bnf: %.tex transf
-	rm -f $@
+	@rm -f $@
 	./transf -modern $< > $@
-	chmod a-w $@
+	@chmod a-w $@
 
 %.ml: %.mll
 	ocamllex $<
@@ -241,10 +241,10 @@ acsl-implementation.tex: $(MAIN).tex Makefile
 acsl.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
 
 acsl.tex: $(MAIN).tex Makefile
-	rm -f $@
+	@rm -f $@
 	sed -e '/^% rubber:/s/main.cb/acsl.cb/g' \
 	    -e '/^%--.*{PrintImplementationRq}/s/%--//' $^ > $@
-	chmod a-w $@
+	@chmod a-w $@
 
 tutorial-www: acsl-mini-tutorial.pdf acsl-mini-tutorial.html
 	rm -f ../www/src/acsl_tutorial_index.hevea
