@@ -229,7 +229,7 @@ super-clean: clean
 	@echo "Removing PDF outputs: $(PDF_OUTPUTS)"
 	rm -f $(PDF_OUTPUTS)
 
-# version WEB liée à ce qui est implementé
+# what is implemented in Frama-C
 acsl-implementation.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN) ../../VERSION
 
 acsl-implementation.tex: $(MAIN).tex Makefile
@@ -237,7 +237,7 @@ acsl-implementation.tex: $(MAIN).tex Makefile
 	sed -e '/^% rubber:/s/main.cb/acsl-implementation.cb/g' $^ > $@
 	@chmod a-w $@
 
-# version WEB du langage ACSL
+# the ACSL langage itself
 acsl.pdf: $(DEPS_MODERN) $(FRAMAC_MODERN)
 
 acsl.tex: $(MAIN).tex Makefile
