@@ -2491,6 +2491,8 @@ disjoint from the declared footprint.
 \label{sec:specmodules}
 \index{module}
 
+\experimental
+
 \notimplemented{Specification modules can be provided} to encapsulate
 several logic definitions, for example
 \listinginput{1}{listmodule.c}
@@ -3072,10 +3074,9 @@ can be used only in \exits{},
   \listinginput{8}{mayexit.c}
 \end{example}
 
-%% TODO:
+%% DONE:
 %% Discuter de la sémantique du assign en présence d'une terminaison abrupte
 %% dans un contrat de fonction et de statement.
-
 % [Patrick B.] START proposition:
 Contrary to \ensures clauses, \assigns\indextt{assigns}, 
 \allocates\indextt{allocates} and \frees\indextt{frees} clauses of function 
