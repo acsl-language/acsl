@@ -578,11 +578,6 @@ doubles). In particular, this does not include NaN, +infinity and
 Classical mathematical operations like exponential, sine, cosine, and
 such are available as built-in:
 
-%% \begin{remark}{Virgile}
-%%   Il faut indexer ces fonctions et mentionner quelque part que la surcharge 
-%%   des finctions logiques est possible.
-%% \end{remark}
-
 \begin{listing-nonumber}
 integer \min(integer x, integer y) ;
 integer \max(integer x, integer y) ;
@@ -647,12 +642,6 @@ float cosine(float x) {
 \end{listing-nonumber}
 \end{example}
 
-%% \begin{remark}{JCF+All}
-%% Que deviennent les champs modeles de caduceus ?
-%% Il faudrait les integrer a une traitement plus general des modeles
-%% pour des types de donnees
-%% \end{remark}
-
 \subsection{C arrays and pointers}
 
 \subsubsection{Address operator, array access, pointer arithmetic and dereferencing}
@@ -663,11 +652,6 @@ These operators are similar to their corresponding C operators.
 \emph{address-of} operator should be used with caution.
 Values in logic do not lie in C memory so it does not mean
 anything to talk about their ``address''.
-
-%% \begin{remark}{???}
-%% The type system should provide a boolean information on whether a
-%% given logic term denotes a C memory location (i.e. a C left-value).
-%% \end{remark}
 
 Unlike in C, 
 there is no implicit cast from an array type to a pointer type.
@@ -789,10 +773,6 @@ For an \lstinline|object| of an union type, the following equality is not true
 
 \end{example}
 
-%% \begin{remark}{}
-%% other built-in constructs: array.sub ? array.map ? (later)
-%% \end{remark}
-
 The equality predicate \lstinline|==| applies to aggregate values, but it
 is required that they have the same type. Then equality amounts to
 recursively checking equality of fields.  Equality of arrays of different
@@ -887,16 +867,6 @@ Unlike in C, conversion of an aggregate of C type \lstinline|struct| $\tau$  to 
   }
 \end{listing-nonumber}
 \end{example}
-
-%% \subsection{String literals}
-%% \begin{remark}{Pascal, Benjamin}
-%%  Quelle est la semantique des constanes chaines dans les annotations
-%%  logiques ?
-%%  Une reponse simple possible : equivalent a une constante globale ghost
-%%  "foo" devient:
-%%  ghost char string\_literal\_foo [4] = "foo" (avec le 0 final)
-%%  et utiliser string\_literal\_foo a la place de "foo"
-%% \end{remark}
 
 \section{Function contracts}
 \label{sec:fn-behavior}
