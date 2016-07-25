@@ -1,11 +1,11 @@
 \begin{syntax}
   statement ::= "/*@" statement-contract "*/" statement
   \
-  statement-contract ::= ("for" id ("," id)* ":")? requires-clause* ;
-    simple-clause-stmt* named-behavior-stmt*
+  statement-contract [empty contracts are forbidden] ::= ("for" id ("," id)* ":")? requires-clause* ;
+    simple-clause-stmt* named-behavior-stmt* ;
+    completeness-clause*
   \
-  simple-clause-stmt::= simple-clause ;
-                      | allocation-clause | abrupt-clause-stmt
+  simple-clause-stmt::= simple-clause | abrupt-clause-stmt
   \
   named-behavior-stmt ::= "behavior" id ":" behavior-body-stmt
   \

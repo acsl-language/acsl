@@ -11,7 +11,7 @@
   "do" C-statement ;
   "while" "(" C-expression ")" ";"
   \
-  loop-annot ::= loop-clause* loop-behavior* ;
+  loop-annot [empty loop annotations are forbidden] ::= loop-clause* loop-behavior* ;
                  loop-variant?
   \
   loop-clause ::= loop-invariant | loop-assigns ;
@@ -19,8 +19,7 @@
   \
   loop-invariant ::= "loop" "invariant" pred ";" 
   \
-  loop-assigns ::= "loop" 
-                   "assigns" locations ";" ;
+  loop-assigns ::= "loop" "assigns" locations ";" ;
   \
   loop-behavior ::= "for" id ("," id)* ":" loop-clause+ ; annotation for behavior $id$
   \

@@ -1,7 +1,11 @@
 \begin{syntax}
-  term ::= "\at" "(" term "," id ")"
-       \ 
-  pred ::= "\at" "(" pred "," id ")" 
+  term ::= "\at" "(" term "," label-id ")"
+  \ 
+  pred ::= "\at" "(" pred "," label-id ")" 
+  \
+  label-id ::= "Here" | "Old" | "Pre" | "Post" ;
+             | "LoopEntry" | "LoopCurrent" | "Init" | ;
+             | id ;
 \end{syntax}
 
 %%% Local Variables:
