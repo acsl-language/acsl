@@ -174,10 +174,6 @@ Section~\ref{sec:logicspec} for detail.
   equivalent to \lstinline|\let x = b < c; a == x|.
   This situation raises some issues, as in the example below.
 
-%% oldremark{Virgile}{Dans le dernier cas, on pourrait vouloir avoir x, y
-%% et z deux à deux distincts, et eventuellement un prédicat n-aire
-%% \distinct(x,y,z) comme dans SMT-lib}
-
 \end{description}
 
 There is a subtlety regarding comparison operators: they are
@@ -267,9 +263,6 @@ particular, the predicates
 are valid, since they are instances of the axiom $\forall x,
 x=x$ of first-order logic. The reader should not be alarmed, because
 there is no way to deduce anything useful from such terms.
-%% \oldremark{Anonyme}{Donc on ne peut pas introduire de construction
-%% non-déterministe comme  $(\texttt{any} x \mid P)$
-%% }
 As usual, it is up to the specification designer to write
 consistent assertions. For example, when introducing the following lemma
 (see Section~\ref{sec:logicspec}):
@@ -380,15 +373,6 @@ To express in the logic the value of a C
 expression, one has to add all the necessary casts. For
 example, the logic expression denoting the value of the C expression
 \lstinline|x*y+z| is \lstinline|(int)((int)(x*y)+z)|.
-%% \oldremark{Claude}{Si la conjecture suivante est vraie, alors il
-%%  faudrait en parler: Si e1 et e2 sont des expressions d'un type
-%%  entier de C, quels qu'ils soient et si op est une operation binaire
-%%  sur entiers, alors l'operation C $e1~op~e2$ (de type $\tau$),donne
-%%  le meme resultat que l'expression logique $(\tau)(e_1~op~e_2)$ ou
-%%  $op$ est l'operation logique sur $Z$. Ce cast permet donc a
-%%  l'utilisateur de parler du resultat du calcul C d'une expressions
-%%  dans la logique
-%% }
 Note that there is no implicit cast from integers to C integral types.
 \input{integer-cast-modern}
 
@@ -539,11 +523,6 @@ Notice also that unlike for integers, suffixes \lstinline|f| and
 \lstinline|l| are
 meaningful, because they implicitly add a cast operator as above.
 
-%% \begin{remark}{Claude}
-%%   ne devrait-on pas ajouter le suffixe d dans la logique ?
-%%   par ex. 0.1d -> (double)0.1
-%% \end{remark}
-
 This semantics of casts ensures that the float result \lstinline|r| of
 a C operation \lstinline|$e_1$ op $e_2$| on floats, if there is no
 overflow and if the default
@@ -568,14 +547,6 @@ predicate \is_NaN`\indexttbs{is\_NaN}`(double x); // is a NaN double
 \lstinline|\is_minus_infinity| and \lstinline|\is_NaN| are mutually
 exclusive predicates.
 All these predicates also exist for the \lstinline|float| type.
-
-
-%% \begin{remark}{Claude} et les long double
-%% \end{remark}
-
-%% \oldremark{Claude}{on pourrait enonce un certain nombre de proprietes:
-%%  \is_finite_float(x) ==> (float)(\real_of_float(x)) == x
-%% }
 
 \subsubsection{Sign}
 
@@ -645,12 +616,6 @@ real \atan(real x) ;
 real \atan2(real y, real x) ;
 real \hypot(real x, real y) ;
 \end{listing-nonumber}
-
-
-%% \oldremark{All}{  syntaxe pour abs et power ? a priori non, on peut
-%%  fournir une library pour les reels avec abs(), power(), mais
-%%  proposer des syntaxes speciales parait difficile
-%%  mais: on pourrait permettre des definition d'operateurs infixes}
 
 \subsubsection{Exact computations}
 
@@ -993,7 +958,6 @@ constructs (shown in Figure~\ref{fig:gram:oldandresult}).
 the other clauses already refer to the pre-state. In addition,
 \result{} can not be used in the contract of a function which returns
 \void{}.
-% See Section~\ref{sec:at} for more details on scoping rules for labels.
 
 C function parameters\index{formal parameter} are obtained by
 value from actual parameters that mostly remain unaltered by the
@@ -1030,8 +994,6 @@ The semantics of such a contract is as follows:
   itself is interpreted in the pre-state.
 \end{itemize}
 
-%% TODO : donner une vision plus symétrique appelant/appelé d'un contrat
-
 Having multiple \lstinline|requires|, \lstinline|assigns|, or 
 \lstinline|ensures| clauses only improves 
 readability since the contract above is equivalent to the following
@@ -1049,9 +1011,6 @@ means that locations assigned by the function are not specified, so
 the caller has no information at all on this function's side
 effects. See Section~\ref{sec:multiplecontracts} for more details on
 default status of clauses.
-
-%% \oldremark{Colaco}{les assigns doivent etre exhaustifs, 
-%% et doivent etre prouve corrects selon le corps de la function.}
 
 \begin{example}
   The following function is given a simple contract for computation of
@@ -1259,59 +1218,9 @@ means that all behaviors given in the contract should be taken into account.
 Multiple \lstinline|complete| and \lstinline|disjoint| sets of behaviors can
 be given for the same contract.
 
-%% \oldremark{Abandonne}{
-%%  2) on veut faire des behaviors differents suivant le post-state
-%%     -> clause 'post assumes'
-%%  exemples : (voir aussi annexe (Error Handling without exception))
-%%  3) On pourrait avoir envie de specifier que les behavior sont
-%%     mutuellement exclusifs et/ou couvrent tous les cas SELON
-%%     LEURS CLAUSES "post assumes".
-%%     ON NE TRAITE PAS CE CAS S'IL N'Y A PAS DE BESOIN, et il est
-%%     alors interdit d'utiliser les clauses "complete behavior" et
-%%     "disjoint behavior" sur des behavior contenant des "post assumes"
-%%     la semantique serait:
-%%
-%%  La condition de d'exclusion mutuelle des cas de behaviors est
-%%    pour toute paire de behavior $B_1$ et $B_2$ la postcondition
-%%    supplementaire est :
-%%     not (     (\old(assumes_1) and postassume_1)
-%%           and (\old(assumes_2) and postassume_2))
-%%
-%%  La condition de couverture des cas de behaviors est :
-%%    la disjunction des $(\old(assumes_i) and postassume_i)$ est une 
-%%    postcondition supplementaire}
-
-
-%% \oldremark{SD+Patrick}{
-%%  Stephane confirme qu'AIRBUS utilise dans leur methodologie la notion
-%%  d'assumes, mais pas celle de post-assumes.
-%%
-%%  La possibilité d'ecrire des assumes permettra de reduire la taille
-%%  des postconditions actuelles et conduira a moins de repetitions des
-%%  conditions de behaviors.
-%%  Par contre, placer les actuelles preconditions dans des behaviors
-%%  devrait conduire a plus de repetitions dans les clauses requires.
-%%  Il est important pour AIRBUS de pouvoir eviter les repetitions de termes
-%%  dans les proprietes.
-%%
-%%  Ne serait-il pas possible de définir dans les contrats de fonctions
-%%  des prédicats ou termes parlant des operandes de la fonction, sans
-%%  passer par des fonctions logiques auxquelles on passerait en
-%%  argument les operandes de la fonctions ?
-%%
-%%  Ces predicats ou termes aurait une portee locale a la fonction.
-%%}
-
-
-% \subsubsection{Error cases}
-
-% See Section~\ref{sec:errorhandling} for a discussion about
-% behaviors related to error cases.
-
 \subsection{Memory locations and sets of terms}
 \label{sec:locations}\index{location}
 
-% PB: Modified since \separated operates on pointers and not on locations
 There are several places where one needs to describe a set of memory
 locations: in \lstinline|assigns| clauses of function contracts, or
 in \lstinline|loop assigns| clauses (see section~\ref{sec:loop_annot}).
@@ -1321,12 +1230,6 @@ an \assigns{} clause must be a set of modifiable l-values, as described in
 Section~\ref{sec:glossary}. 
 More generally, we introduce syntactic constructs to denote \emph{sets of
   terms} that are also useful for the \separated predicate (see Section~\ref{sec:separated})
-
-%% \oldremark{PB+VP}{
-%%  préciser le statut de \textbackslash{}result: est-ce une modifiable
-%%  l-value ou pas? D'un côté, ce n'en est pas vraiment une en C, mais
-%%  on aimerait peut-être pouvoir écrire des assigns un peu raffinés
-%%  comme \texttt{assigns \textbackslash{}result.a \textbackslash{}from i = i;}}
 
 \begin{figure}
   \begin{cadre}
@@ -1425,27 +1328,8 @@ mandatory. On the other hand, if that function has a body, giving no
 \lstinline|assigns| clause means in practice that it is left to tools to
 compute an over-approximation of the sets of assigned locations.
 
-
-%% \oldremark{Claude}{
-%%  Attention, cette semantique est dangereuse car si en pratique on
-%%  inclut une partie seulement du contrat, on peut oublier de verifier
-%%  un requires.
-%%
-%%  Autres solutions:
-%%  1) interdire les contrats multiples
-%%  2) proposer une syntaxe pour distinguer les contrats initiaux, et
-%%     les contrats complementaires (comme le also de JML)
-%% }
-
 \section{Statement annotations}
 \index{annotation}
-
-%% \oldremark{Claude}{
-%%  Il faut absolument ajouter des regles de portee, a plusieurs
-%%  endroits dans ce document
-%%
-%%  Note c'est maintenant fait pour les \at
-%%}
 
 Annotations on C statements are of three kinds:
 \begin{itemize}
@@ -1487,11 +1371,6 @@ as an extension of the grammar of C statements.
   must hold only for the considered behaviors.
 \end{itemize}
 
-%% \oldremark{Claude}{unifier les 2 derniers cas? car a-t-on besoin de
-%%  nommer un assert en dehors d'un behavior de la fonction? Surtout que
-%%  l'on peut deja ecrire assert (id : P)
-%% }
-
 \subsection{Loop annotations}
 \label{sec:loop_annot}
 
@@ -1505,11 +1384,9 @@ as an extension of the grammar of C statements.
 
 The syntax of loop annotations is given in Figure~\ref{fig:gram:loops},
 as an extension of the grammar of C statements.
-% [Patrick B.] START proposition:
 \textsl{Loop-allocation} clauses allow to specify which memory location 
 is dynamically allocated or deallocated by a loop from the \textsl{heap}; 
 they are defined later in Section~\ref{sec:allocation-clause}.
-% END proposition
 
 \subsubsection{Loop invariants and loop assigns}
 \label{sec:loop-invariants}
@@ -1658,8 +1535,6 @@ invariant must be inductive, \emph{i.e.} it must be preserved across a
 loop iteration. Several invariants are allowed at different places in
 a loop body. These extensions are useful when dealing with complex
 control flows.
-
-%% \oldremark{Claude}{TODO(citer une ref a propos des invariants inductifs) }
 
 \begin{example}
 Here is a program annotated with an invariant inside the loop body:
@@ -2315,11 +2190,6 @@ higher-order logic.
 \label{fig:gram:logictype}
 \end{figure}
 
-%% \oldremark{SD6+All}{
-%%  faire une analogie avec les types sommes (de Caml, des spec algebriques)
-%%  c'est plutot des types avec constructeurs dans les spec algebriques
-%% }
-
 Logic types may not only be declared but also be given a
 definition. Defined logic types can be either record
 types\index{type!record}, or sum
@@ -2328,14 +2198,6 @@ For record types, the field access notation $t.id$ can be used, and
 for sum types, a pattern-matching construction is available.
 Grammar rules for these additional constructions are given in
 Figure~\ref{fig:gram:logictype}
-
-%% \oldremark{All}{
-%%  TODO: ajouter les types tableaux logiques: tableaux fonctionnels.
-%%  sucre syntaxique: t[i] pour select(t,i),  
-%%  et dans le cas de code ghost, t[i] = e pour t = store(t,i,e)
-%%
-%%  Example: n-reines.
-%% }
 
 \begin{example}
   The declaration
@@ -2427,36 +2289,6 @@ memory locations that it depends on. From such information, one
 might deduce properties of the form $f\{L_1\}(args) = f\{L_2\}(args)$
 if it is known that between states $L_1$ and $L_2$, the memory changes are
 disjoint from the declared footprint.
-%is useful when a
-%function or a predicate is not easily definable, but can be more
-%easily axiomatized.
-
-% VP: exemple redondant avec le suivant.
-% \begin{example}
-%   The following annotations declare a function which returns the number of
-%   positive elements in an array of doubles between the given indexes
-%   and the related axioms.
-%   \input{num_of_pos.pp}
-%   It should be noted that without the reads
-%   clauses, this axiomatization would be inconsistent, since the
-%   function would not depend on the values stored in t, hence the two
-%   last axioms would say both that $a=b+1$ and $a=b$ for some $a$ and
-%   $b$.
-
-%%   \oldremark{Claude}{expliquer mieux
-%%
-%%     De plus, si l'on oublie la clause reads ça reste
-%%     correct, donc il faudrait prevoir un warning pour un predicat avec un
-%%     type pointeur en argument sans reads...
-%%   }
-%% \end{example}
-
-
-%% \begin{remark}{Claude}
-%%  on peut indiquer des conditions semantiques de validite des axiomes:
-%%  pour tout etat L1, L2 qui sont identiques sur le footprint, P{L1} =>
-%%  P{L2} ou P est la formule de l'axiome
-%% \end{remark}
 
 \begin{example}
   The following is the same as example~\ref{ex:nb_occ} augmented with
@@ -2468,24 +2300,6 @@ disjoint from the declared footprint.
   some index \lstinline|k| outside \lstinline|i..j|, then one can deduce that
   \lstinline|nb_occ{L_1}(t,i,j,e)==nb_occ{L_2}(t,i,j,e)|.
 \end{example}
-
-% \begin{example}
-%   This second example defines a predicate which indicates whether two
-%   arrays of the same size are a permutation of each other. It
-%   illustrates the use of more than a single label. Thus, the \lstinline|\at|
-%   operator is mandatory here. Indeed the two arrays
-%   may come from two distinct memory states. Typically, one of the post
-%   condition of a sorting function would be \lstinline+permut{Pre,Here}(t,t)+.
-%   \listinginput{1}{permut_reads.c}
-% \end{example}
-
-%% \oldremark{SD7+All}{
-%%   As shown above, hybrid predicates and functions declared with reads
-%%   clauses should be used with caution, since they do not depend only
-%%   on the values of their parameters but also in an implicit way on the
-%%   values stored in memory.
-%%   reutiliser l'exemple en question ? (en le faisant mieux)
-%% }
 
 \subsection{Specification Modules}
 \label{sec:specmodules}
@@ -3185,11 +2999,6 @@ to \texttt{weak}.
   \listinginput{1}{invariants.c}
 \end{example}
 
-%% \oldremark{SD8}{
-%%  montrer un example qui exprime des proprietes d'initialisation de
-%%  variables globales, i.e un tableau contient des valeurs distinctes 2
-%%  a 2.}
-
 \subsection{Semantics}
 
 The distinction between strong and weak invariants has to do with the
@@ -3212,8 +3021,6 @@ which they are supposed to hold.
   weak invariant at function exit. However, it says nothing about fields,
   array elements, memory locations, etc. of type $\tau$.
 
-%% \oldremark{Claude}{et les var locales d'une fonction appelante ?}
-
 \item A strong type invariant on type $\tau$ must hold at any step
   during execution, and applies to any global variable, local
   variable, or formal parameter\index{formal parameter}
@@ -3231,27 +3038,6 @@ which they are supposed to hold.
 
   \listinginput{1}{out_char.c}
 \end{example}
-
-%% \oldremark{PC}{remise en cause de la politique d'invariants:
-%% - Weak invariants do not hold in any state but can be temporarily violated.
-%% - Such invariants are allowed under some sound policy~\cite{barnett04jot}.
-%%}
-
-%% \oldremark{Claude}{
-%%  il faut decider comment sont lies les declarations d'invariants et
-%%  les type associe'.
-%%
-%% Example:
-%% typedef struct S {
-%%   int x;
-%% } S;
-%% void reset(S *p) {
-%%  p->x = 0;
-%% }
-%% //@ type invariant I(S *p) { p.x > 0 }
-%%
-%% -> reset ne respecte pas cet invariant
-%%}
 
 \begin{example}
   Here is a longer example, the famous Dijkstra's Dutch flag algorithm.\\
@@ -3381,11 +3167,6 @@ grammar are the following:
   As in normal annotations, \lstinline|@| characters at the beginning of a
   line and at the end of an annotation (before the final \lstinline|@/|) are
   considered as blank.
-%% \oldremark{Claude}{
-%%  faudrait supprimer ca. Je propose de maniere generale que le code
-%%  annote sans les "/*@ ..*/" doit etre parsable aussi, meme s'il
-%%  n'est pas parsable par un compilo.
-%% }
 \item \notimplemented{Logical types, such as \lstinline|integer| or
 \lstinline|real| are authorized in ghost code}.
 \item \notimplemented{A non-ghost function can take ghost
@@ -3461,14 +3242,6 @@ statically detected as ghost must be semantically ghost.
   The following example shows some invalid ghost statements:
   \listinginput{1}{ghostcfg.c}
 \end{example}
-
-%% \oldremark{Claude}{d'autres exemples, valides ou non valides, 
-%%   serait bienvenus 
-%% }
-
-%% \oldremark{All}{ On veut des tableaux ghost de taille infinie 
-%%  -> cf tableaux fonctionnels de la section sur les assigns from
-%% }
 
 \paragraph{Differences between model variables and ghost variables}
 

@@ -13,32 +13,6 @@ variables~\cite{giorgetti06fase}, or properties on evolution of data
 over the time, such as the history constraints of JML, or in the Lustre
 assertion language.
 
-%% \oldremark{DP}{
-%%  ouverture vers d'autres formalismes de specification: temporal logic, etc.
-%%  Donner des elements pour traduire vers ACSL. Utilisation des
-%%  variables/champ modeles.
-%%  et history contraints de JML ?
-%%  Referencer des travaux lies: Leino, Schulte ; Huisman et al.
-%% }
-
-%% \oldremark{Colaco}{
-%%   Et langage d'assertion a la Lustre ? operateur pre et des langages
-%%   synchrones
-%%   voir ca en terme de flots de valeurs d'une variable a un point donne'
-%%   la encore on peut pretendre que l'on peut encoder : 
-%%       //@ assert P(v->pre(x),x);
-%%   devient
-%%      //@ ghost static int xpre = v;
-%%      //@ assert P(xpre,x);
-%%      //@ ghost xpre = x;
-%%  
-%%  Un compilateur comme SCADE devrait engendrer lui meme ce genre d'annotation.
-%% }
-
-%% \oldremark{SD9}{
-%%  illustrer l'utilisation de ghost pour specifier des proprietes temporelles
-%%}
-
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-PDF-mode: t

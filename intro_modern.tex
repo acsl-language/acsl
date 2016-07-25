@@ -46,46 +46,6 @@ A detailed table of
 contents is given on page~\pageref{chap:contents}.
 A glossary is given in Appendix~\ref{sec:glossary}.
 
-\ifthenelse{\boolean{PrintImplementationRq}}{%
-Not all of the features mentioned in this document are currently
-implemented in the Frama-C kernel. Those who aren't yet are signaled
-as in the following line:
-\begin{quote}
-\notimplemented[Additional remarks on the feature may appear as footnote]%
-{This feature is not currently supported by Frama-C}
-\end{quote}
-
-As a summary, the features that are not currently implemented into
-Frama-C include in particular:
-\begin{itemize}
-\item some built-in predicates and logical functions;
-\item abrupt termination clauses in statement contracts
-  (section~\ref{sec:statement_contract});
-\item definition of logical types (section~\ref{sec:logicspec});
-\item specification modules (section~\ref{sec:specmodules});
-\item model variables and Model fields (section~\ref{ex:model});
-\item only basic support for ghost code is provided (section~\ref{sec:ghost});
-\item verification of non interference of ghost code
-  (p.~\pageref{sec:semantics-ghost-code});
-\item specification of volatile variables
-  (section~\ref{sec:volatile-variables});
-\end{itemize}
-}%
-{}
-
-%% \oldremark{Claude}{ce document doit etre illustré par des exemples. 
-%%  Toute construction qui ne serait pas illustrée par un
-%%  exemple sera non-retenue.
-%% }
-
-%% \oldremark{Patrick}{utiliser en priorité les constructions de JML,
-%%  ensuite les généraliser lorsque cela a un sens, et en dernier recours,
-%%  en créer de nouvelles. Il y a peut-être des constructions
-%%  du C++ ou C\# à utiliser ou à généraliser.
-%%  Idem avec les extensions de GCC.
-%% }
-
-
 \section{Generalities about Annotations}\label{sec:gener-about-annot}
 
 In this document, we consider that specifications are given as
@@ -103,21 +63,6 @@ logical specifications can be imported (see
 Section~\ref{sec:specmodules}) and a function contract can be attached
 to a copy of the function profile (see
 Section~\ref{sec:multiplecontracts}).
-
-
-%% \oldremark{All}{ Elaborer plus sur ce que peuvent faire les outils pour 
-%%  permettre des annotations dans des fichiers a part.
-%%  Mettre a part le cas simple des annotations globales (qui peuvent
-%%  etre dans un .h a part)
-%% }
-
-%% \oldremark{DP}{ discuter sur les facons d'annoter les statements sans
-%%  modifier le code source mais en les donnant a part.
-%%  idee :
-%%  . fichier patchs
-%%  . autres
-%%   a discuter en appendice de ce document. (?)
-%% }
 
 \subsection{Kinds of annotations}
 
@@ -148,17 +93,6 @@ Section~\ref{sec:multiplecontracts}).
   \item \emph{assertion}\,: these are allowed
     everywhere a C label is allowed, or just before a
     block closing brace. See section~\ref{sec:assertions}.
-%%  \oldremark{Claude}{About \assume{} clauses: current
-%%    discussion is that it is not considered as an element of
-%%    specification, so not present here. This should be part of proof
-%%    management done by tools.
-%%  }
-%%  \oldremark{Patrick}{En C, seules les
-%%    instructions peuvent être étiquettées. GCC étend cela aux
-%%    accolades fermantes des blocs, y compris celle fermant le corps
-%%    de fonction. On peut dire que l'on fait de même lorsque l'on
-%%    place des annotations juste avant la fermerture d'un bloc.
-%%  }
 
   \item \emph{loop annotation} (invariant, variant, assign clauses): is
     allowed immediately before a loop statement: \For, \While,
@@ -168,11 +102,6 @@ Section~\ref{sec:multiplecontracts}).
     placed before a statement or a block.  Semantic conditions must
     be checked (no goto going inside, no goto
     going outside).  See Section~\ref{sec:statement_contract}.
-%%  \oldremark{Patrick}{
-%%    as-t'on droit au \old dans le \ensures de
-%%    cette annotation~? Oui, pour refer a l'etat avant le statement
-%%    consider\'e
-%%  }
 
   \item \emph{ghost code}\,: regular C code, only visible from the
     specifications, that is only allowed to modify ghost
@@ -180,9 +109,6 @@ Section~\ref{sec:multiplecontracts}).
     for enclosing blocks.
 
   \end{itemize}
-
-%\item Attribute annotations: \experimental. See
-%  Section~\ref{sec:attribute_annot}.
 
 \end{itemize}
 
@@ -200,7 +126,6 @@ Additional keywords of the specification language start with a
 backslash, if they are used in the position of a term or a predicate
 (which are defined in the following).  Otherwise they do not start
 with a backslash (like \ensures{}) and they remain valid identifiers.
-%% \oldremark{Claude}{ cas particulier de 'integer' et 'real'  et 'boolean' }
 
 \section{Notations for grammars}
 

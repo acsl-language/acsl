@@ -14,7 +14,7 @@ version={4.0}]
 \usepackage{ifthen}
 
 \input{./macros_modern}
-\newcommand{\framacversion}{\input{../../VERSION}}
+\newcommand{\framacversion}{\input{VERSION}}
 
 %Do not touch the following line. It is used in a Makefile hack to
 %produce the ACSL document shipped with the Frama-C distribution.
@@ -191,10 +191,6 @@ Asma Tafat.
   an assignment. In essence, all lvalues are modifiable except
   variables declared as \texttt{const} or of some array type with
   explicit length.
-
-%% \oldremark{DP}{
-%% De'tailler (avec un exemple), meme si c'est dans la
-%% norme, la difference entre lvalue modifiable et non-modifiable}
 
 \item[pre-state and post-state]
     \index{pre-state}\index{post-state}
