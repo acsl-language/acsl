@@ -27,8 +27,6 @@ for semantics changes or feature wish:
 
 - Each feature should be supported by examples. Any construct that is not
 illustrated by an example won't be taken into account.
-
 - Whenever it makes sense, use constructs from JML or C-like languages
 (C++, C#, Rust, ...). In particular any divergence from JML should be justified
-by the differences between C and Java
-
+by the differences between C and Java.
