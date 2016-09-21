@@ -202,7 +202,7 @@ super-clean: clean
 	rm -f $(PDF_OUTPUTS)
 
 # The ACSL document annoted about what is not implemented into Frama-C
-acsl-implementation.pdf: $(DEPS) $(FRAMAC_MODERN) VERSION
+acsl-implementation.pdf: $(DEPS) VERSION
 
 acsl-implementation.tex: $(MAIN).tex Makefile
 	@rm -f $@
@@ -210,7 +210,7 @@ acsl-implementation.tex: $(MAIN).tex Makefile
 	@chmod a-w $@
 
 # The ACSL reference document 
-acsl.pdf: $(DEPS) $(FRAMAC_MODERN)
+acsl.pdf: $(DEPS)
 
 acsl.tex: $(MAIN).tex Makefile
 	@rm -f $@
