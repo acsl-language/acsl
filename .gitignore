@@ -23,7 +23,10 @@
 /pp
 /pp.ml
 /*.cm*
+/*.o
+/VERSION
 
 # PDFs
 /acsl-implementation.pdf
 /acsl.pdf
+/acsl-mini-tutorial.pdf
