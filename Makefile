@@ -86,13 +86,11 @@ transf: transf.cmo transfmain.cmo
 	ocamlc -c $<
 
 %.proved:%.c acsl-mini-tutorial.tex
-	$(FRAMAC) -jessie-atp simplify -jessie $<
+	$(FRAMAC) -wp $<
 	touch $@
-%.gproved:%.c acsl-mini-tutorial.tex
-	$(FRAMAC) -jessie $<
 
 %.check: %.c acsl-mini-tutorial.tex
-	$(FRAMAC) -pp-annot $<
+	$(FRAMAC) $<
 
 transfmain.cmo: transf.cmo
 
@@ -184,9 +182,6 @@ BUILTINS=real integer string character id \
 grammar-check: transf
 	./transf -check $(addprefix -builtin ,$(BUILTINS)) $(BNF_FILES)
 
-acsl-mini-tutorial.html: acsl-mini-tutorial.tex mini-biblio.bib
-	hevea -bib mini-biblio.bib acsl-mini-tutorial.tex
-
 .PHONY: clean
 
 clean:
@@ -209,7 +204,7 @@ acsl-implementation.tex: $(MAIN).tex Makefile
 	sed -e '/^% rubber:/s/main.cb/acsl-implementation.cb/g' $^ > $@
 	@chmod a-w $@
 
-# The ACSL reference document 
+# The ACSL reference document
 acsl.pdf: $(DEPS)
 
 acsl.tex: $(MAIN).tex Makefile
@@ -218,35 +213,36 @@ acsl.tex: $(MAIN).tex Makefile
 	    -e '/^%--.*{PrintImplementationRq}/s/%--//' $^ > $@
 	@chmod a-w $@
 
-tutorial-www: acsl-mini-tutorial.pdf acsl-mini-tutorial.html
-	rm -f ../www/src/acsl_tutorial_index.hevea
-	cp acsl-mini-tutorial.html ../www/src/acsl_tutorial_index.hevea
-	chmod a-w ../www/src/acsl_tutorial_index.hevea
-	cp acsl-mini-tutorial.pdf ../www/distrib/acsl-mini-tutorial.pdf
+# Internal to Frama-C
+FRAMAC=../../bin/frama-c
 
-# Internal to Frama-C 
+HAS_FRAMAC:=$(shell if test -x $(FRAMAC); then echo yes; else echo no; fi)
+
+ifeq ("$(HAS_FRAMAC)","yes")
 
 acsl: acsl-implementation.pdf acsl.pdf
 
-all: acsl install tutorial check
+all: acsl tutorial check
 
-tutorial: tutorial-check acsl-mini-tutorial.pdf acsl-mini-tutorial.html
+tutorial: tutorial-check acsl-mini-tutorial.pdf
 
 install: acsl-implementation.pdf acsl.pdf
 	rm -f  ../manuals/acsl-implementation.pdf  ../manuals/acsl.pdf
 	cp -f acsl-implementation.pdf acsl.pdf ../manuals/
 
-FRAMAC=../../bin/frama-c.byte
-
-HAS_JESSIE=`if $(FRAMAC) -jessie-help; then echo yes; else echo no; fi`
-
-ifeq ($(HAS_JESSIE),no)
-tutorial-valid:
-	@echo "you need a working jessie plugin (and alt-ergo) to verify that \
-               the examples of the tutorial are all proved"
-	@exit 2
-else
 tutorial-valid: $(TUTORIAL_EXAMPLES:.c=.proved)
+VERSION:
+	$(FRAMAC) -version > $@
+else
+acsl: acsl.pdf
+tutorial: acsl-mini-tutorial.pdf
+all: acsl tutorial
+install:
+	@echo "install target can only be made within Frama-C sources"
+	@exit 2
+VERSION:
+	@echo "VERSION can only be made within Frama-C sources"
+	@exit 2
 endif
 
 # Command to produce a diff'ed document. Must be refined to flatten automatically the files
