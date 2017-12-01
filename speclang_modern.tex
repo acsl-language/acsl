@@ -2528,7 +2528,8 @@ an unallocated memory block.
 \\
 For any pointer \lstinline|p| and label \lstinline|L|
 \begin{listing-nonumber}
-\allocable{L}(p) <==> (\allocation{L}(p)==\unallocated && p==\base_addr{L}(p)).
+\allocable{L}(p) <==> (\allocation{L}(p)==\unallocated
+                         && (void*)p==\base_addr{L}(p))
 \end{listing-nonumber}
   
 \item \lstinline|\freeable{L}(p)|\indexttbs{freeable}
@@ -2543,7 +2544,8 @@ being a valid argument to the C function \lstinline|free|.
 \\
 For any pointer \lstinline|p| and label \lstinline|L|
 \begin{listing-nonumber}
-\freeable{L}(p) <==> (\allocation{L}(p)==\dynamic && p==\base_addr{L}(p)).
+\freeable{L}(p) <==> (\allocation{L}(p)==\dynamic
+                        && (void*)p==\base_addr{L}(p))
 \end{listing-nonumber}
   
 \item \lstinline|\fresh{L$_0$,L$_1$}(p,n)|
@@ -2557,8 +2559,7 @@ For any pointer \lstinline|p| and label \lstinline|L|
 \\
 For any pointer \lstinline|p| and labels \lstinline|L$_0$| and \lstinline|L$_1$|
 \begin{listing-nonumber}
-\fresh{L$_0$,L$_1$}(p,n) <==> (\allocable{L$_0$}(p) && 
-                         \freeable{L$_1$}(p) && 
+\fresh{L$_0$,L$_1$}(p,n) <==> (\allocable{L$_0$}(p) && \freeable{L$_1$}(p) && 
                          \block_length{L$_1$}(p)==n &&
                          \valid{L$_1$}((char*)p+(0 .. (n-1)))
 \end{listing-nonumber}
