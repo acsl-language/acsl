@@ -2496,7 +2496,7 @@ This function is such that for any pointer \lstinline|p| and label \lstinline|L|
 \end{listing-nonumber}
 and
 \begin{listing-nonumber}
-\allocation{L}(p)==\unallocated ==> !\valid_read{L}(p)
+\allocation{L}(p)==\unallocated ==> !\valid_read{L}((char*)p)
 \end{listing-nonumber}
 
 \allocates \lstinline|Q$_1$,$\ldots$,Q$_n$| is equivalent to the postcondition
