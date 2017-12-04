@@ -2349,7 +2349,7 @@ produce a definite value according to the C standard~\cite{standardc99}. The
 following built-in predicates deal with this notion:
 \begin{itemize}
 \item \valid\indexttbs{valid} applies to a set of terms 
-(see Section~\ref{sec:locations}) of some pointer type. 
+(see Section~\ref{sec:locations}) of some pointer type (different to \lstinline|void*|). 
 \lstinline|\valid{L}(s)| holds if and only if
  dereferencing any $p\in \lstinline|s|$ is safe  at label \lstinline|L|, both for reading from 
 \lstinline|*p| and writing to it. In particular,
@@ -2357,8 +2357,8 @@ following built-in predicates deal with this notion:
 \\ \makebox[5mm]{} \lstinline|\valid{id} : set<$\alpha$ *> $\ra$ boolean|
 \item 
 \lstinline|\valid_read|\indexttbs{valid\_read}
-applies to a set of terms of some pointer type and holds if and only
-if it is safe to read from all the pointers in the set
+applies to a set of terms of some pointer type (different to \lstinline|void*|)
+and holds if and only if it is safe to read from all the pointers in the set
 \\ \makebox[5mm]{} \lstinline|\valid_read{id} : set<$\alpha$ *> $\ra$ boolean|
 \end{itemize}
 
@@ -2385,9 +2385,9 @@ Some shortcuts are provided:
   null pointer (\emph{i.e.} a shortcut for \lstinline|(void*)0|). 
   As in C itself (see \cite{standardc99}, 6.3.2.3\S3),
   the constant \lstinline|0| can have any pointer type. In addition, 
-  \lstinline|\valid{L}(\null)| is always false, for any
+  \lstinline|\valid{L}((char*)\null)| is always false, for any
   logic label \lstinline|L|.
-  Of course, \lstinline|\valid_read{L}(\null)| is always false too.
+  Of course, \lstinline|\valid_read{L}((char*)\null)| is always false too.
 % \footnote{or to \texttt{NULL}, if
 %    annotations are pre-processed are the appropriate inclusion of
 %    \texttt{stddef.h} is added}
@@ -2414,7 +2414,8 @@ ACSL provides a built-in function to deal with separation of locations:
 \begin{itemize}
 % [Patrick B.] START proposition:
 \item \lstinline|\separated|\indexttbs{separated}
-applies to sets of terms (see Section~\ref{sec:locations}) of some pointer type. 
+applies to sets of terms (see Section~\ref{sec:locations}) of some pointer type
+different to \lstinline|void*|. 
 \lstinline|\separated(s$_1$,s$_2$)|
 holds for any set of pointers \lstinline|s$_1$| and \lstinline|s$_2$| 
 if and only if for all \lstinline|p$\in$s$_1$| and \lstinline|q$\in$s$_2$|:
@@ -2454,8 +2455,8 @@ it is left for convenience like for \assigns clauses.
 \label{fig:gram:allocation}
 \end{figure}
 
-\subsubsection{Allocation clauses for function 
-and statement contracts}
+\subsubsection{Allocation clauses for function and statement contracts}
+\label{subsec:allocation-contract}
 
 Clauses \allocates and \frees are tied together. The simple contract  
 \begin{listing-nonumber}
@@ -2463,8 +2464,9 @@ Clauses \allocates and \frees are tied together. The simple contract
   @ allocates Q$_1$,Q$_2$,`\dots`;
   @*/
 \end{listing-nonumber}
-means that any memory address that does not belong to the union of sets of terms
-\lstinline|P$_i$| and \lstinline|Q$_j$| has the same {\sl allocation status} 
+means that any memory address, that does not belong to the union of sets of
+some pointer (having a type different to \lstinline|void*|)
+\lstinline|P$_i$| and \lstinline|Q$_j$|, has the same {\sl allocation status} 
 (see below) in the post-state as in the pre-state. The only difference
 between \lstinline|allocates| and \lstinline|frees| is that sets 
 \lstinline|P$_i$| are evaluated 
@@ -3288,7 +3290,8 @@ or only written to, the unused accessor function can be omitted from the
 \subsection{Initialization}
 \label{sec:initialized}
 \indexttbs{initialized}
-\lstinline|\initialized{L}(p)| is a predicate taking a set of some pointer to l-values as
+\lstinline|\initialized{L}(p)| is a predicate taking a set of some pointer
+(having a type different to \lstinline|void*|) to l-values as
 argument and means that each l-value in this set is initialized at label \lstinline|L|.
 \\ \makebox[5mm]{} \lstinline|\initialized{id} : set<$\alpha$*> $\ra$ bool|
 
@@ -3303,7 +3306,8 @@ argument and means that each l-value in this set is initialized at label \lstinl
 \label{sec:dangling_pointers}
 \indexttbs{dangling}
 \lstinline|\dangling{L}|
-is a predicate taking a set of some pointer to l-values as
+is a predicate taking a set of some pointer
+(having a type different to \lstinline|void*|) to l-values as
 argument and means that each l-value in this set has a \emph{dangling
   content} at label \lstinline|L|. That, its value is (or contains bits
 of) a dangling address: either the address of a local
