@@ -2531,7 +2531,7 @@ holds if and only if
 the pointer \lstinline|p| refers, at the label \lstinline|L|, 
 to an allocated memory block 
 that can be safely released using the C function \lstinline|free|.
-Note that \lstinline|\freeable{\null}| does not hold, despite \lstinline|NULL|
+Note that \lstinline|\freeable(\null)| does not hold, despite \lstinline|NULL|
 being a valid argument to the C function \lstinline|free|.
 %Note: free() is described in §7.20.3.2 of the ISO/IEC 9899/1999 (C99) standard
 \\ \makebox[5mm]{} \lstinline|\freeable{id} : void* $\ra$ boolean|
