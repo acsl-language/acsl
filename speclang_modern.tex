@@ -2531,7 +2531,7 @@ an unallocated memory block.
 For any pointer \lstinline|p| and label \lstinline|L|
 \begin{listing-nonumber}
 \allocable{L}(p) <==> (\allocation{L}(p)==\unallocated
-                         && (void*)p==\base_addr{L}(p))
+                         && (void*)p==(void*)\base_addr{L}(p))
 \end{listing-nonumber}
   
 \item \lstinline|\freeable{L}(p)|\indexttbs{freeable}
@@ -2547,7 +2547,7 @@ being a valid argument to the C function \lstinline|free|.
 For any pointer \lstinline|p| and label \lstinline|L|
 \begin{listing-nonumber}
 \freeable{L}(p) <==> (\allocation{L}(p)==\dynamic
-                        && (void*)p==\base_addr{L}(p))
+                        && (void*)p==(void*)\base_addr{L}(p))
 \end{listing-nonumber}
   
 \item \lstinline|\fresh{L$_0$,L$_1$}(p,n)|
