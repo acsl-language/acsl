@@ -18,17 +18,18 @@ Caduceus is itself inspired from the
 \emph{Java Modeling Language} (JML~\cite{leavens00jml}) which aims at
 similar goals for Java source code: indeed it aims both at
 \emph{runtime assertion checking} and \emph{static verification} using
-the \textsc{ESC/Java2} tool~\cite{ESCJava2}, where we aim at
+the \textsc{OpenJML} tool~\cite{OpenJML}, where we aim at
 \emph{static verification} and \emph{deductive verification} (see
 Appendix~\ref{sec:comp-jml} for a detailed comparison between ACSL and
 JML).
 
-Going back further in history, JML design was guided by the general
-\emph{design-by-contract} principle proposed by Bertrand Meyer, who
-took his own inspiration from the concepts of preconditions and
+Going back further in history, the JML design was guided by the general
+\emph{design-by-contract} principle proposed by Bertrand Meyer,
+originally implemented in
+the \textsc{Eiffel} language;
+he took his inspiration from the concepts of preconditions and
 postconditions on a routine, going back at least to Dijkstra, Floyd and
-Hoare in the late 60's and early 70's, and originally implemented in
-the \textsc{Eiffel} language.
+Hoare in the late 60's and early 70's.
 
 In this document, we assume that the reader has a good knowledge of
 the ISO C programming language~\cite{KR88,standardc99}.
@@ -54,8 +55,8 @@ source files remain compilable. Those comments must start by
 \verb|/*@| or \verb|//@| and end as usual in~C.
 
 In some contexts, it is not possible to modify the source code.
-It is strongly recommended that a tool which implements
-ACSL specifications provides technical means to store annotations
+It is strongly recommended that a tool that implements
+ACSL specifications provide technical means to store annotations
 separately from the source. It is not the purpose of this document
 to describe such means.  Nevertheless, some of the specifications,
 namely those at a global level, can be given in separate files:
@@ -76,7 +77,7 @@ Section~\ref{sec:multiplecontracts}).
   \item \emph{global invariant}\,: this is allowed at the level of
     global declarations. See section~\ref{sec:invariants}.
 
-  \item \emph{type invariant}\,: this allows to declare both structure
+  \item \emph{type invariant}\,: this allows declaring both structure
     or union invariants, and invariants on type names introduced by
     \typedef.  See section~\ref{sec:invariants}.
 
@@ -129,14 +130,14 @@ with a backslash (like \ensures{}) and they remain valid identifiers.
 
 \section{Notations for grammars}
 
-In this document, grammar rules are given in BNF form. In grammar
-rules, we use extra notations $e^*$ to denote repetition of zero, one
+In this document, grammar rules are given in BNF form. In the grammar
+rules, we use the extra notations $e^*$ to denote repetition of zero, one
 or more occurrences of $e$, $e^+$ for repetition of one or more
 occurrences of $e$, and $e^?$ for zero or one occurrence of $e$.  For
 the sake of simplicity, we only describe annotations in the usual
 \lstinline|/*@ ... */| style of comments. One-line annotations
-in \lstinline|//@| comments are alike.
-
+in \lstinline|//@| comments are similar.
+\marginpar{Somewhere it needs to be defined in what way ACSL specifications can be split across consecutive \lstinline|//@| comments, if they can be split at all. For example, JML requires each function contract clause to be completely within an annotation.}
 
 %%% Local Variables:
 %%% mode: latex
