@@ -136,8 +136,10 @@ or more occurrences of $e$, $e^+$ for repetition of one or more
 occurrences of $e$, and $e^?$ for zero or one occurrence of $e$.  For
 the sake of simplicity, we only describe annotations in the usual
 \lstinline|/*@ ... */| style of comments. One-line annotations
-in \lstinline|//@| comments are similar.
-\marginpar{Somewhere it needs to be defined in what way ACSL specifications can be split across consecutive \lstinline|//@| comments, if they can be split at all. For example, JML requires each function contract clause to be completely within an annotation.}
+in \lstinline|//@| comments are similar. Note however that two consecutive
+comments, regardless of their style, are considered as two independent
+annotations. In particular, it is not possible to split a multi-line
+annotation into several \lstinline|//@| comments.
 
 %%% Local Variables:
 %%% mode: latex
