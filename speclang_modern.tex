@@ -168,6 +168,8 @@ Section~\ref{sec:logicspec} for detail.
   $\{$\lstinline|<|, \lstinline|<=|, \lstinline|==|$\}$ or to
   $\{$\lstinline|>|,\lstinline|>=|,\lstinline|==|$\}$. Expressions such as
   \lstinline|x < y > z| or \lstinline|x != y != z| are not allowed.
+  Note that consecutive comparison operators are allowed only 
+  in predicate position.
 
   To enforce the same interpretation as in C expressions, one may need
   to add extra parentheses: \lstinline|a == b < c| is equivalent
@@ -368,7 +370,8 @@ interpreted as follows: the result is the unique value of the
 corresponding type that is congruent to the mathematical result modulo
 the cardinal of this type, that is $2^{8\times\sizeof(t)}$.
 \begin{example}
-  \lstinline|(unsigned char)1000| is $1000 \bmod 256$ i.e. $232$.
+  \lstinline|(unsigned char)1000| is $1000 \bmod 256$, i.e., $232$;
+  however, \lstinline|(signed char)1000| is $((1000+128) \bmod 256) - 128$, i.e., $-24$.
 \end{example}
 
 To express in the logic the value of a C
@@ -403,7 +406,7 @@ The size of C types is architecture-dependent. ACSL does
 not enforce these sizes either, hence the semantics of terms involving
 such types is also architecture-dependent. The
 \lstinline|sizeof|\indextt{sizeof} operator may be used in annotations and is
-consistent with its C counterpart. For instance, it should be
+consistent with its C counterpart (including that its return type is an integer constant). For instance, it should be
 possible to verify the following code:
 
 \listinginput{1}{sizeof.c}
@@ -469,11 +472,10 @@ digits and $dd$ is in decimal, denotes number $hh.hh\times
 2^{dd}$, e.g. \texttt{0x1.Fp-4} is $(1+15/16)\times 2^{-4}$.
 
 
-Usual operators for comparison are interpreted as real operators
-too. In particular, equality operation $\equiv$ of float (or double)
-expressions means equality of the real numbers they represent
-respectively. Or equivalently, $x \equiv y$ for $x,y$ two float
-variables means \lstinline|real_of_float(x) $\equiv$ real_of_float(y)|
+The usual operators for comparison are also interpreted as real operators. 
+In particular, equality operation $\equiv$ for float (or double)
+expressions means equality of the real numbers they represent. Or equivalently, $x \equiv y$ for two float
+variables $x,y$ means \lstinline|real_of_float(x) $\equiv$ real_of_float(y)|
 with the mathematical equality of real
 numbers.
 
@@ -509,7 +511,7 @@ Then rounding a real number can be done explicitly using functions
   logic double \round_double`\indexttbs{round\_double}`(rounding_mode m, real x);
 \end{listing-nonumber}
 Cast operators \lstinline|(float)| and \lstinline|(double)| applied to a
-mathematical integer or real number $x$ are equivalent to apply
+mathematical integer or real number $x$ are equivalent to applying the
 rounding functions above with the nearest-even rounding mode (which is
 the default rounding mode in C programs).
 %(see IEEE 754 norm), which is the closest to $x$ real number
@@ -536,7 +538,7 @@ in C is equal to the float number \lstinline|-0.0|, which is not
 \lstinline|\eq_float| to \lstinline|0.0|, which is the value of the logic
 expression \lstinline|(float)(-0.0 + -0.0)|.
 
-Finally, additional predicates are provided, that check that their argument
+Finally, additional predicates are provided that check that their argument
 is a finite number, an infinite one, or a NaN:
 \begin{listing}{1}
 predicate \is_finite`\indexttbs{is\_finite}`(double x); // is a finite double
@@ -550,6 +552,12 @@ predicate \is_NaN`\indexttbs{is\_NaN}`(double x); // is a NaN double
 exclusive predicates.
 All these predicates also exist for the \lstinline|float| type.
 
+Recall that under IEEE754 rules, any comparison between two NaN values returns a false value. 
+Consequently if a \lstinline|double| variable \lstinline|d| is a  
+NaN value, then the C expression \lstinline|d == d| will be 
+false, the logic expression \lstinline|\real_of_double(d)| will be undefined,
+but the logic expression 
+\lstinline|\real_of_double(d) == \real_of_double(d)| is true, as a specific instance of the axiom \lstinline|x $\equiv$ x|.
 \subsubsection{Sign}
 
 The sign of a non-NaN floating-point  can be extracted by
@@ -566,7 +574,7 @@ the function \lstinline|\sign|\indexttbs{sign}:
 
 \subsubsection{Quantification}
 
-Quantification over a variable of type \lstinline|real| is of course usual
+Quantification over a variable of type \lstinline|real| is of course the usual
 quantification over real numbers.
 
 Quantification over float (resp. double) types is allowed too, and is
@@ -578,7 +586,7 @@ doubles). In particular, this does not include NaN, +infinity and
 \subsubsection{Mathematical functions}
 
 Classical mathematical operations like exponential, sine, cosine, and
-such are available as built-in:
+such are built-in to ACSL:
 
 \begin{listing-nonumber}
 integer \min(integer x, integer y) ;
@@ -766,7 +774,7 @@ Functional update of a structure is done by
 \end{listing-nonumber}
 
 There is no particular syntax for functional update of a union.
-For an \lstinline|object| of an union type, the following equality is not true 
+For an \lstinline|object| of a union type, the following equality is not true 
 \begin{listing-nonumber}
 { { object \with .x = 3.0 }
            \with .y = 2.0 } == { { object \with .y = 2.0 }
@@ -830,7 +838,7 @@ Section~\ref{sec:address}).
 Conversely, an explicit cast from a pointer type to an array type
 acts as collecting the values it points to.
 
-Subtyping and cast recursively applies to fields.
+Subtyping and cast recursively apply to fields.
 
 \begin{example}
 ~
@@ -843,7 +851,7 @@ Subtyping and cast recursively applies to fields.
 \end{listing-nonumber}
 \end{example}
 
-Precisely, conversion of a pointer $p$ of type $\tau*$ to an logic array of type
+Precisely, conversion of a pointer $p$ of type $\tau*$ to a logic array of type
 $\tau[]$ returns a logic array $t$ such that
 \[
 \lstinline|length|(t) = (
@@ -853,7 +861,7 @@ $\tau[]$ returns a logic array $t$ such that
 (p))/\lstinline|sizeof|(\tau)
 \]
 
-More generaly, an explicit cast from a C aggregate of type $\tau$ to another C 
+More generally, an explicit cast from a C aggregate of type $\tau$ to another C 
 aggregate type is allowed for being able to specify such a value conversion into logical functions or function contracts without using the addressing operator \lstinline|&|.
 
 \begin{example}
@@ -894,8 +902,8 @@ Figure~\ref{fig:gram:contracts} shows a grammar for function
 contracts. \textsl{Location} denotes a memory location and is defined
 in Section~\ref{sec:locations}. 
 % [Patrick B.] START proposition:
-\textsl{Allocation-clauses} allow to specify which memory location 
-is dynamically allocated or deallocated by the function from the \textsl{heap}; 
+\textsl{Allocation-clauses} allow specifying which memory locations 
+are dynamically allocated or deallocated by the function from the \textsl{heap}; 
 they are defined later in Section~\ref{sec:allocation-clause}.
 % END proposition
 
@@ -918,7 +926,7 @@ Section~\ref{sec:abrupt-clause}.
   \texorpdfstring{\old}{\textbackslash{}old} %
  and \texorpdfstring{\result}{\textbackslash{}result}}
 
-Post-conditions usually require to refer to both the function result and
+Post-conditions usually require referring to both the function result and
 values in the pre-state. Thus terms are extended with the following new
 constructs (shown in Figure~\ref{fig:gram:oldandresult}).
 \begin{itemize}
@@ -928,7 +936,7 @@ constructs (shown in Figure~\ref{fig:gram:oldandresult}).
 \end{itemize}
 \lstinline|\old(e)| and \result{} can be used only in \ensures{} clauses, since
 the other clauses already refer to the pre-state. In addition,
-\result{} can not be used in the contract of a function which returns
+\result{} can not be used in the contract of a function that returns
 \void{}.
 
 C function parameters\index{formal parameter} are obtained by
@@ -936,7 +944,7 @@ value from actual parameters that mostly remain unaltered by the
 function calls. For that reason, formal parameters in function
 contracts are defined such that they always refer implicitly to their
 values interpreted in the pre-state.
-Thus, the \old construct is useless for formal parameters (in
+Thus, the \old construct is not needed (but permitted) for formal parameters (in
 function contracts only).
 
 \subsection{Simple function contracts}
@@ -976,8 +984,8 @@ simplified one:
   @ ensures E$_1$ && E$_2$ && `\dots`;
   @*/
 \end{listing}
-If no clause \requires\ is given, it defaults to
-\lstinline!\true!, and similarly for \ensures\ clause.
+If no \requires\ clause is given, it defaults to
+\lstinline!\true!, and similarly for an omitted \ensures\ clause.
 Giving no \assigns\ clause
 means that locations assigned by the function are not specified, so
 the caller has no information at all on this function's side
@@ -985,7 +993,7 @@ effects. See Section~\ref{sec:multiplecontracts} for more details on
 default status of clauses.
 
 \begin{example}
-  The following function is given a simple contract for computation of
+  The following function is given a simple contract for computing
   the integer square root.
 
   \listinginput{1}{isqrt.c}
@@ -1020,7 +1028,7 @@ default status of clauses.
 \subsection{Contracts with named behaviors}
 \label{subsec:behaviors}
 \index{function behavior}\indextt{behavior}
-The general form of a function contract contains several named
+The general form of a function contract may contain named
 behaviors (restricted to two behaviors, in the following, for
 readability).
 \lstset{firstnumber=auto}
@@ -1038,6 +1046,8 @@ readability).
   @   ensures  E$_2$;
   @*/
 \end{lstlisting}
+The names of behaviors must be distinct within the given function (or statement) contract.
+
 The semantics of such a contract is as follows:
 \begin{itemize}
 \item The caller of the function must guarantee that the call is
@@ -1052,6 +1062,7 @@ the properties \lstinline|\old(A$_i$) ==> E$_i$| hold for each~$i$.
 % In any case, locations of $L$ are unchanged.
 \end{itemize}
 
+\marginpar{Why is there an anomalous space before the requires at the beginning of the paragraph?}
 \requires{} clauses in the behaviors are proposed
 mainly to improve readability (to avoid some duplication of
 formulas), since the contract above is equivalent to the following
@@ -1076,7 +1087,7 @@ A simple contract such as
 is actually equivalent to a single named behavior as follows:
 \begin{listing}{1}
 /*@ requires P;
-  @ behavior <any name>:
+  @ behavior <unique name>:
   @   assumes \true;
   @   assigns L;
   @   ensures E;
@@ -1096,7 +1107,7 @@ single named behavior. More precisely, the following contract
 is equivalent to
 \begin{listing}{1}
 /*@ requires P;
-  @ behavior <any name>:
+  @ behavior <unique name>:
   @   assumes \true;
   @   assigns L;
   @   ensures E;
@@ -1201,7 +1212,7 @@ l-values\index{l-value}. Moreover, a location given as argument to
 an \assigns{} clause must be a set of modifiable l-values, as described in
 Section~\ref{sec:glossary}. 
 More generally, we introduce syntactic constructs to denote \emph{sets of
-  terms} that are also useful for the \separated predicate (see Section~\ref{sec:separated})
+  terms} that are also useful for the \separated predicate (see Section~\ref{sec:separated}).
 
 \begin{figure}
   \begin{cadre}
@@ -1343,7 +1354,7 @@ as an extension of the grammar of C statements.
   of them being a behavior identifier for the current function (or a
   behavior of an enclosing block as defined later in
   Section~\ref{sec:statement_contract}).  It means that this assertion
-  must hold only for the considered behaviors.
+  must hold only for the listed behaviors.
 \end{itemize}
 
 \subsection{Loop annotations}
@@ -1410,6 +1421,7 @@ the \Break statement.
 \item At any loop iteration, any location that was allocated before
   entering the loop, and is not member of \lstinline|L| (interpreted in the
   current state) has the same value as
+  \marginpar{by 'current state' do we mean Here or LoopCurrent or something else?}
   before entering the loop.
   In fact, the \Loop \assigns clause specifies an inductive
   invariant for the locations that are not members of \lstinline|L|.
@@ -1460,7 +1472,7 @@ where \lstinline|m| is a term of type \lstinline|integer|.
 
 The semantics is as follows: for each loop iteration that terminates
 normally or with \lstinline|continue|, the value of \lstinline|m| at end of the
-iteration must be smaller that its value at the beginning of the
+iteration must be smaller than its value at the beginning of the
 iteration. Moreover, its value at the beginning of the iteration
 must be nonnegative. Note that the value of \lstinline|m| at loop exit might be
 negative. It does not compromise termination of the
@@ -1556,7 +1568,7 @@ the state at \lstinline|id| and the current state). Namely, if
 \lstinline|t[0]| has changed since \lstinline|id|, we have
 \lstinline|\at(t,id)[0] != \at((int *)t,id)[0]|.
 
-The label \lstinline|id| can be either a regular C label, or a label added
+The label \lstinline|id| can be either a regular C label or a label added
 within a ghost statement as described in Section~\ref{sec:ghost}. This
 label must be declared in the same function as the occurrence of
 \lstinline|\at(e,id)|, but unlike \lstinline|goto|s, more restrictive
@@ -1586,7 +1598,7 @@ in fact syntactic sugar for \lstinline|\at(e,Old)|.
   all contracts, where it refers to the pre-state for the
   \lstinline|requires|, \lstinline|assumes|, \lstinline|assigns|,
   \lstinline|variant|,
-  \lstinline|terminates|,
+  \lstinline|terminates|
   clauses and the post-state for other clauses.
 It is also visible in data invariants, presented in Section~\ref{sec:invariants}.
 \item The label \lstinline|Old| is visible in \lstinline|assigns| and
@@ -1635,12 +1647,13 @@ except inside clauses \lstinline|loop frees|
 (see section~\ref{sec:allocation-clause}) 
 where \lstinline|Here| is equivalent to \lstinline|LoopEntry|.
 
-There is one particular case for \lstinline|assigns| and \lstinline|ensures|
+There is one particular case of \lstinline|assigns| and \lstinline|ensures|
 clauses of function contracts where formal parameters\index{formal parameter}
 of functions cannot refer to the label \lstinline|Post|.
 In such clauses formal parameters always refer implicitly to the label
 \lstinline|Pre|, and any \lstinline|\at| construct can modify the
 interpretation of formal parameters.
+\marginpar{Is \textit{and any \at construct can modify the interpretation of formal parameters} correct? I thought formal parameters were always in the Pre state despite any at construct.}
 
 No logic label is visible in global logic declarations
 such as lemmas, axioms, definition of predicate or logic
@@ -1660,7 +1673,7 @@ Section~\ref{sec:logicalstates}.
 \begin{example}
   The code below implements the famous extended Euclid's algorithm
   for computing the greatest common divisor of two integers $x$ and
-  $y$, while computing at the same time two \emph{B\'ezout coefficients} $p$
+  $y$, while computing at the same time the two \emph{B\'ezout coefficients} $p$
   and $q$ such that $p\times x+q\times y = \gcd(x,y)$.
   The loop invariant for the B\'ezout property needs to refer to the
   value of $x$ and $y$ in the pre-state of the function.
@@ -1710,7 +1723,8 @@ may refer to enclosing named behaviors, with the form
 Such contracts are only valid for the
 corresponding behaviors, in particular only under the
 corresponding \assumes{} clause.
-
+\marginpar{May behavior ids of statement contracts shadow the ids of the enclosing function constract? Or are identical names forbidden? The latter is the easier case.}
+\marginpar{Should forbid empty behavior-body-stmt}
 %% TODO: Add an example with a \For{}.
 
 % [Patrick B.] START proposition:
@@ -1723,10 +1737,11 @@ To specify such behaviors, \textsl{abrupt clauses} (described in
 Section~\ref{sec:abrupt-clause}) need to be used.
 
 On the other hand, it is different with \assigns\indextt{assigns} clauses.
-The locations having their value modified during the path execution, starting
+The locations having their values modified during the path execution, starting
 at the beginning of the annotated statement and leading
 to a \lstinline|goto| jumping out of it, should be part of its 
 \assigns clause.
+\marginpar{This behavior of assigns clauses for abrupt exits from statements is different than the corresponding behavior for loops. Should it be? }
 
 \begin{example} The clause \lstinline|assigns \nothing;| does not hold for that statement,
 even if the clause \lstinline|ensures x==\old(x);| holds: 
@@ -1744,8 +1759,8 @@ L: ...
 % END proposition
 
 % [Patrick B.] START proposition:
-\textsl{Allocation-clauses} allow to specify which memory location 
-is dynamically allocated or deallocated by the annotated statement from the \textsl{heap}; 
+\textsl{Allocation-clauses} allow specifying which memory locations 
+are dynamically allocated or deallocated by the annotated statement from the \textsl{heap}; 
 they are defined later in Section~\ref{sec:allocation-clause}.
 % END proposition
 
@@ -1957,7 +1972,7 @@ provide a proof for each lemma.
 \index{inductive predicates}
 
 A predicate may also be defined by an inductive definition. The
-grammar for those style of definitions is given on
+grammar for this style of definition is given in
 Figure~\ref{fig:gram:inductive}.
 \index{inductive definitions}
 \begin{figure}[t]
@@ -1994,7 +2009,7 @@ where \lstinline|P| occurs only positively in hypotheses \lstinline|h$_1,\ldots,
 \url{http://en.wikipedia.org/wiki/Horn_clause}).
 
 \begin{example}
-  The following introduces a predicate \lstinline|isgcd(x,y,d)| meaning
+  The following introduces a predicate \lstinline|isgcd(x,y,d)|, which means
   that \lstinline|d| is the greatest common divisor of \lstinline|x|
   and \lstinline|y|.
   \listinginput{1}{isgcd.c}
@@ -2008,9 +2023,9 @@ clauses, and is thus consistent.
 \subsection{Axiomatic definitions}
 
 Instead of an explicit definition, one may introduce an
-\emph{axiomatic} definitions for a set of types, predicates and logic
-functions, which amounts to declare the expected profiles and a set of
-axioms. The grammar for those constructions is given on
+\emph{axiomatic} definition for a set of types, predicates and logic
+functions, which amounts to declaring the expected profiles and a set of
+axioms. The grammar for those constructions is given in
 Figure~\ref{fig:gram:logicdecl}.
 
 \indextt{axiomatic}
@@ -2022,13 +2037,13 @@ Figure~\ref{fig:gram:logicdecl}.
 \end{figure}
 
 \begin{example}
-  The following axiomatization introduce a theory of finite lists of
+  The following axiomatization introduces a theory of finite lists of
   integers a la LISP.
   \listinginput{1}{intlists.c}
 \end{example}
 
 Unlike inductive definitions, there is no syntactic condition that
-would guarantee axiomatic definitions to be consistent. It is usually
+ guarantees that axiomatic definitions are consistent. It is usually
 up to the user to ensure that the introduction of axioms does not lead
 to a logical inconsistency.
 
@@ -2073,7 +2088,7 @@ possible too.
 \begin{example}
   The following logic declaration
   \listinginput{1}{max_index.c}
-  defines a logic function which returns the maximal index \lstinline|i| between
+  defines a logic function that returns the maximal index \lstinline|i| between
   \lstinline|0| and \lstinline|n-1| such that \lstinline|t[i]=0|.
 \end{example}
 
@@ -2192,7 +2207,7 @@ Logic functions and predicates may take arguments with
 either (pure) C type or logic
 type. Such a predicate (or function)
 can either be defined with the same syntax as before (or axiomatized).
-However, such definitions usually depends on one or
+However, such definitions usually depend on one or
 more program points, because it depends upon memory states, \emph{via}
 expressions such as:
 \begin{itemize}
@@ -2205,9 +2220,9 @@ expressions such as:
 To make such a definition safe, it is mandatory to add after the
 declared identifier a set of labels, between curly braces. We then speak
 of a \textit{hybrid} predicate (or function).
-The grammar for identifier is extended as shown on
+The grammar for \textit{ident} is extended as shown on
 Figure~\ref{fig:gram:logiclabels}. Expressions
-as above must then be enclosed into the \at{} construct to refer to a
+as above must then be enclosed in an \at{} construct to refer to a
 given label. However, to ease reading of such logic expressions, it
 is allowed to omit a label whenever there is only one label in the
 context.
@@ -2221,7 +2236,7 @@ context.
 \end{figure}
 
 \begin{example}\label{ex:nb_occ}
-  The following annotations declare a function which returns the
+  The following annotations declare a function that returns the
   number of occurrences of a given double in a memory block storing doubles
   between the given indexes, together with the related axioms.  It
   should be noted that without labels, this axiomatization would be
@@ -2256,9 +2271,9 @@ context.
 
 \experimental
 
-Logic declarations can be augmented with a \reads{} clause, with the
+Logic declarations may be augmented with a \reads{} clause, with the
 syntax given in Figure~\ref{fig:gram:logicreads}, which extends the
-one of Figure~\ref{fig:gram:logic}. This feature allows to specify the
+one of Figure~\ref{fig:gram:logic}. This feature allows specifying the
 \emph{footprint} of a hybrid predicate or function, that is, the set of
 memory locations that it depends on. From such information, one
 might deduce properties of the form $f\{L_1\}(args) = f\{L_2\}(args)$
@@ -2327,10 +2342,10 @@ abstract size) is possible.
 \label{subsec:memory}
 C memory is structured into allocated blocks that can come either from a 
 declarator or a call to one of the \lstinline|calloc|, \lstinline|malloc| or
-\lstinline|realloc| functions. Blocks are characterized by their base address, 
-{\it i.e.} the address of the declared object (the first declared object 
-in case of an array declarator), or the pointer returned by the allocating 
-function (when the allocation succeeds) and their length.
+\lstinline|realloc| functions. A block is characterized by its base address, 
+which is the address of the declared object (the first declared object 
+in case of an array declarator) or the pointer returned by the allocating 
+function (when the allocation succeeds), and its length.
 
 ACSL provides the following built-in functions to deal with allocated blocks.
 Each of them takes an optional label identifier as argument.
@@ -2347,6 +2362,7 @@ containing, at the label \lstinline|L|, the pointer \lstinline|p|
 \\ \makebox[5mm]{} \lstinline|\block_length{id} : void* $\ra$ size_t|
 
 \end{itemize}
+\marginpar{Define base\_addr and block\_length on null ?}
 
 In addition, dereferencing a pointer may lead to run-time errors. A pointer
 \lstinline|p| is said to be \emph{valid} if \lstinline|*p| is guaranteed to
@@ -2444,9 +2460,9 @@ $i\neq j$, \lstinline|\separated(s$_i$,s$_j$)|.
 
 \experimental
 
-\textsl{Allocation-clauses} allow to specify which memory location 
-is dynamically allocated or deallocated.
-The grammar for those constructions is given on Figure~\ref{fig:gram:allocation}.
+\textsl{Allocation-clauses} allow specifying which memory locations 
+are dynamically allocated or deallocated.
+The grammar for those constructions is given in Figure~\ref{fig:gram:allocation}.
 
 \lstinline|allocates \nothing| and \lstinline|frees \nothing| are respectively 
 equivalent to \lstinline|allocates \empty| and \lstinline|frees \empty|; 
@@ -2517,11 +2533,11 @@ and
       && \allocation{Here}(p)==\allocation{Pre}(p))
 \end{listing-nonumber}
 
-In fact, like the \assigns clause does not specify which memory location is
+In fact, just as the \assigns clause does not specify which memory location is
 assigned,
 the \textsl{allocation-clauses} do not specify which memory location 
 is dynamically allocated or deallocated.
-Pre-conditions and post-conditions should be added to complete specifications
+Pre-conditions and post-conditions should be added to complete the specifications
 about allocations and deallocations.
 The following shortcuts can be used for that:
 
@@ -2542,7 +2558,7 @@ For any pointer \lstinline|p| and label \lstinline|L|
 \item \lstinline|\freeable{L}(p)|\indexttbs{freeable}
 holds if and only if
 the pointer \lstinline|p| refers, at the label \lstinline|L|, 
-to an allocated memory block 
+to the base address of an allocated memory block 
 that can be safely released using the C function \lstinline|free|.
 Note that \lstinline|\freeable(\null)| does not hold, despite \lstinline|NULL|
 being a valid argument to the C function \lstinline|free|.
@@ -2556,12 +2572,12 @@ For any pointer \lstinline|p| and label \lstinline|L|
 \end{listing-nonumber}
   
 \item \lstinline|\fresh{L$_0$,L$_1$}(p,n)|
-\indexttbs{fresh},
-  indicates that \lstinline|p| refers to an allocated memory block at label 
+\indexttbs{fresh}
+  indicates that \lstinline|p| refers to the base address of an allocated memory block at label 
   \lstinline|L$_1$|, 
   but that it is not the case at label \lstinline|L$_0$|. 
   The predicate ensures also that, at label \lstinline|L$_1$|, the length
-  (in bytes) of the block allocated dynamically equals to \lstinline|n|.
+  (in bytes) of the block allocated dynamically equals  \lstinline|n|.
 \\ \makebox[5mm]{} \lstinline|\fresh{id,id} : void*, integer $\ra$ boolean|
 \\
 For any pointer \lstinline|p| and labels \lstinline|L$_0$| and \lstinline|L$_1$|
@@ -2585,15 +2601,15 @@ This means that the set value for the other clause of that behavior defaults to 
 Now, when neither of the two allocation clauses is given, the meaning is different
 for anonymous behaviors and named behaviors:
 \begin{itemize}
-\item a named behavior without allocation clause does not specify anything about
+\item a named behavior without allocation clauses does not specify anything about
       allocations and deallocations. 
       The allocated and deallocated memory blocks are in fact specified by the 
       anonymous behavior of the contract.
       There is no condition to verify for these named behaviors about allocations 
       and deallocations;
-\item for an anonymous behavior, no allocation clause means that there is no newly 
+\item for an anonymous behavior, the absence of allocation clauses means that there is no newly 
       allocated nor deallocated memory block. 
-      That is equivalent to stating \allocates \nothing.
+      That is equivalent to stating \allocates \nothing; (which is equivalent to  \allocates \nothing; \frees \nothing;).
 \end{itemize}
 These rules are such that contracts without any allocation clause
 should be considered 
@@ -2618,9 +2634,9 @@ each anonymous behavior.
 \subsubsection{Allocation clauses for loop annotations}
 \index{loop!allocation}\index{loop!deallocation}
 
-Loop annotations are complemented by similar clauses allowing to specify which 
-memory location 
-is dynamically allocated or deallocated by a loop.
+Loop annotations may contain similar clauses allowing one to specify which 
+memory locations 
+are dynamically allocated or deallocated by a loop.
 The grammar for those constructions is given on
  Figure~\ref{fig:gram:allocation}.
 
@@ -2633,7 +2649,7 @@ The simple loop annotation
 means that any memory address that does not belong to the union of sets of 
 terms
 \lstinline|P$_i$| and  \lstinline|Q$_i$|
-has the same allocation status in the current state than 
+has the same allocation status in the current state as 
 before entering the loop. 
 The only difference between these two clauses is that sets 
 \lstinline|P$_i$| are evaluated in the state before entering the loop
@@ -2641,14 +2657,14 @@ The only difference between these two clauses is that sets
 and \lstinline|Q$_i$| are evaluated in the current loop state 
 (label \lstinline|LoopCurrent|).
 
-Namely, as for \lstinline|loop assigns|, loop annotations
+Just as for \lstinline|loop assigns|, loop annotations
 \lstinline|loop frees| and \lstinline|loop allocates| define a loop invariant.
 
-More precisely, the following loop annotation:
+More precisely, this loop annotation
 \begin{listing-nonumber}
 //@ loop allocates Q$_1$,`\dots`,Q$_n$; */
 \end{listing-nonumber}
-is equivalent to the loop invariant:
+is equivalent to the loop invariant
 \begin{listing-nonumber}
 \forall char* p; 
 \separated(\union(Q$_1$,$\ldots$,Q$_n$),p) ==>
@@ -2736,6 +2752,7 @@ The built-in type \lstinline|\list<A>|\indexttbs{list} can be used for finite
 sequences of elements of the same type \lstinline|A|. 
 For constructing such homogeneous lists, built-in functions and notations are 
 available.
+\marginpar{Why are Nil and Cons capitalized but not the others?}
 
 The term \lstinline|\Nil|\indexttbs{Nil} denotes the empty sequence.
 \begin{listing-nonumber}
@@ -2788,12 +2805,12 @@ is the same as function \lstinline|\concat| (resp. \lstinline|\repeat|).
 \end{figure}
 
 \begin{example}
-  The following example illustrates the use of a such data structure and 
+  The following example illustrates using such a data structure and 
   notations in connexion with ghost code.
   \listinginput{1}{list-observer.c}
   The function \lstinline|track| adds a value to the tail of a ghost trace variable. 
-  Calls to that function inside ghost statements allow to modify that trace; 
-  and properties about the \lstinline|observed_trace| can be specified. 
+  Calls to that function inside ghost statements allow modifying that trace; 
+  also properties of the \lstinline|observed_trace| can be specified. 
   Notice that the assigned ghost variable is \lstinline|ghost_trace|.
 \end{example}
 
@@ -2893,7 +2910,7 @@ This is shown in example~\ref{ex:assigns-and-abrupt-termination} for a function 
 \experimental
 
 An extended syntax of \assigns clauses, described in
-Figure~\ref{fig:gram:dep} allows to specify data
+Figure~\ref{fig:gram:dep} allows specifying data
 dependencies\index{dependency} and
 \notimplemented{\emph{functional expressions}}\index{functional expression}.
 
@@ -2918,7 +2935,7 @@ dependencies. This expression is evaluated in the pre-state of the
 corresponding contract.
 
 \begin{example}
-  The following example is a variation over the \lstinline+array_sum+
+  The following example is a variation of the \lstinline+array_sum+
   function in example~\ref{ex:higherorder}, in which the values of
   the array are added to a global variable \lstinline+total+.
 
@@ -2928,7 +2945,7 @@ corresponding contract.
 
 
 \begin{example}
-  % This exemple is referenced in a previous section.
+  % This example is referenced in a previous section.
   The composite element modifier operators 
   can be useful for writing such functional expressions.
   \listinginput{1}{modifier.c}
@@ -2944,7 +2961,7 @@ between:
 \begin{itemize}
 \item \emph{global} invariants and \emph{type} invariants: the former
   only apply to specified global variables, whereas the latter are
-  associated to a static type, and apply to any variables of
+  associated with a static type, and apply to any variables of
   the corresponding type;
 \item \emph{strong} invariants and \emph{weak} invariants:
   \index{invariant!strong}\index{invariant!weak}
@@ -2972,7 +2989,7 @@ to \texttt{weak}.
 \begin{example}
   In the following example, we declare
   \begin{enumerate}
-  \item a weak global invariant \lstinline|a_is_positive| which specifies that
+  \item a weak global invariant \lstinline|a_is_positive|, which specifies that
     global variable \lstinline|a| should remain positive (weakly, so
     this property might be violated temporarily between functions
     calls);
@@ -2990,10 +3007,10 @@ between global and type invariants has to do with the set of values on
 which they are supposed to hold.
 
 \begin{itemize}
-\item Weak global invariants are properties which apply to global
+\item Weak global invariants are properties that apply to global
   data and hold at any function entrance and function exit.
 
-\item Strong global invariants are properties which apply to global
+\item Strong global invariants are properties that apply to global
   data and hold at any step during execution (starting after
   initialization of these data).
 
@@ -3003,6 +3020,7 @@ which they are supposed to hold.
   function is of type $\tau$, the result must also satisfy its
   weak invariant at function exit. However, it says nothing about fields,
   array elements, memory locations, etc. of type $\tau$.
+  \marginpar{Why does the invariant not apply to everything of the given type?}
 
 \item A strong type invariant on type $\tau$ must hold at any step
   during execution, and applies to any global variable, local
@@ -3017,7 +3035,7 @@ which they are supposed to hold.
 
 
 \begin{example}
-  \notimplemented{The following example illustrates the use of a data invariant on a local static variable.}
+  \notimplemented{The following example illustrates the use of a weak data invariant on a local static variable.}
 
   \listinginput{1}{out_char.c}
 \end{example}
@@ -3026,6 +3044,8 @@ which they are supposed to hold.
   Here is a longer example, the famous Dijkstra's Dutch flag algorithm.\\
   \listinginput{1}{flag.c}
 \end{example}
+\marginpar{Why is the invariant not strong in the Dutch flag example? Also, perhaps such an invariant should be automatically generated for an enum. }
+
 
 \subsection{Model variables and model fields}
 \label{sec:model}
@@ -3033,7 +3053,7 @@ which they are supposed to hold.
   introduced in the specification with the keyword
   \lstinline|model|}. Its type must be a logic type. Analogously,
 types may have \emph{model fields}.  These are
-used to provide abstract specifications to functions whose concrete
+used to provide abstract specifications for functions whose concrete
 implementation must remain private.
 
 \begin{figure}[b]
@@ -3049,13 +3069,13 @@ The precise syntax for declaring model variables and fields is given
 in Figure~\ref{fig:gram:model}. It is presented as additions to the
 regular C grammar for declarations
 
-Informal semantics of model variables is as follows.
+The informal semantics of model variables is as follows.
 \begin{itemize}
 \item Model variables can only appear in specifications. They are not
   lvalues, thus they cannot be assigned directly (unlike ghost variables,
   see below).
 \item Nevertheless, a function contract might state that a model variable
-  is assigned.
+  is assigned, meaning that the value of the model variable may be different between the pre and post states of the contract.
 \item When a function contract mentions model variables:
   \begin{itemize}
   \item the precondition is implicitly existentially quantified over
@@ -3072,7 +3092,7 @@ below.
 Model fields behave the same, but they are attached to any value whose static
 type is the one of the model declaration. A model field can be attached to any
 C type, not only to \texttt{struct}. When it is attached to a compound type,
-however, it must not have the same name as a C field of the corresponding type.
+however, it must not have the same name as a C field of that compound type.
 In addition, model fields are ``inherited'' by a \texttt{typedef} 
 in the sense that the newly defined type has also the model fields of its
 parents (and can acquire more, which will not be present for the parent).
@@ -3087,9 +3107,9 @@ typedef t1 t2;
 \end{lstlisting}
 
 \begin{example}\label{ex:model}
-  Here is an example of a specification for a function which generates
+  Here is an example of a specification for a function that generates
   fresh integers. The contract is given in term of a model variable
-  which is intended to represent the set of ``forbidden'' values,
+  that is intended to represent the set of ``forbidden'' values,
   e.g. the values that have already been generated.
   \listinginput{1}{gen_spec_with_model.c}
   The contract is expressed abstractly, telling that
@@ -3114,10 +3134,12 @@ typedef t1 t2;
 Although the syntax of model variables is close to JML model
 variables, they differ in the sense that the type of a model variable
 is a logic type, not a C type. Also, the semantics above is closer to
-the one of B machines~\cite{abrial96:_b_book}. It has to be noticed
+the one of B machines~\cite{abrial96:_b_book}. It should be noticed
 that program verification with model variables does not have a
 well-established theoretical background~\cite{marche07,leavens07}, so
 we deliberately do not provide a precise semantics in this document .
+
+
 
 \section{Ghost variables and statements}
 \label{sec:ghost}
@@ -3126,12 +3148,12 @@ Ghost variables and statements are like C variables and statements,
 but visible only in the specifications. They are introduced by the
 \lstinline|ghost| keyword at the beginning of the annotation
 (i.e. \lstinline|/*@ ghost ... */| or \lstinline|//@ ghost ...|
-for a one-line
+for one-line
 ghost code, as mentioned in section~\ref{sec:gener-about-annot}).
 The grammar is given in Figure~\ref{fig:gram:ghost}, in which only the
 first form of annotation is used. In this figure, the \textit{C-*}
 non-terminals refer to the corresponding grammar rules of the ISO standard,
-without any ACSL extension. Any non terminal of the form
+without any ACSL extension. Any non-terminal of the form
 \textit{ghost-non-term} for which no definition is given in the figure
 represents the corresponding \textit{C-non-term} entry, in which any
 \textit{entry} is substituted by \textit{ghost-entry}.
@@ -3139,9 +3161,9 @@ represents the corresponding \textit{C-non-term} entry, in which any
 The variations with respect to the C
 grammar are the following:
 \begin{itemize}
-\item Comments must be introduced by \lstinline|//| and extend until the
+\item Comments within ghost code must be introduced by \lstinline|//| and extend until the
   end of the line (the ghost code itself is placed inside a C
-  comment. \lstinline|/* ... */| would thus lead to incorrect C code).
+  comment, so an embedded comment of the form \lstinline|/* ... */| would be incorrect C code).
 \item It is however possible to write multi-line annotations inside ghost
   code. These annotations are enclosed between
   \notimplemented{\lstinline|/@| and \lstinline|@/|}
@@ -3149,7 +3171,7 @@ grammar are the following:
   to incorrect C code).
   As in normal annotations, \lstinline|@| characters at the beginning of a
   line and at the end of an annotation (before the final \lstinline|@/|) are
-  considered as blank.
+  considered as blank. \marginpar{Is this form of multi-line comments embedded in multi-line C (or ACSL) comments generally applicable?  If so, it should be introduced in section 1.2.}
 \item \notimplemented{Logical types, such as \lstinline|integer| or
 \lstinline|real| are authorized in ghost code}.
 \item \notimplemented{A non-ghost function can take ghost
@@ -3158,7 +3180,7 @@ grammar are the following:
   clause is present in the declarator, then the list of ghost
   parameters must be non-empty and fixed (no vararg ghost). The call
   to the function must then provide the appropriate number of ghost parameters.
-\item Any non-ghost \textit{if-statement} which does not have a non-ghost
+\item Any non-ghost \textit{if-statement} that does not have a non-ghost
   \lstinline|else| clause \notimplemented{can be augmented with a ghost
     one}. Similarly, a non-ghost
   \lstinline|switch| can have \notimplemented{a ghost \lstinline|default:|
@@ -3193,23 +3215,23 @@ program execution.} This implies several conditions, including e.g.:
 \item If a non-ghost C function is called in ghost code, it must not
   modify non-ghost variables or fields.
 \item If a structure has ghost fields, the \lstinline|sizeof| of the
-  structure is the same has the structure without ghost fields. Also,
+  structure is the same as the structure without ghost fields. Also,
   alignment of fields remains unchanged.
 \item The control-flow graph of a function must not be altered by
   ghost statements. In particular, no ghost \lstinline|return| can appear
   in the body of a non-ghost function. Similarly, ghost
-  \lstinline|goto|, \lstinline|break|, and continue
+  \lstinline|goto|, \lstinline|break|, and 
   \lstinline|continue| cannot jump
   outside of the innermost non-ghost enclosing block.
 \end{itemize}
 
-Semantics is specified as follows. First, the
+The semantics is specified as follows. First, the
 execution of a program with ghost code involves a \emph{ghost memory heap}
 and a \emph{ghost stack}, disjoint from the regular heap and stack.
 Ghost variables lie in the ghost heap, as do the ghost fields of
 structures. Thus, every memory side-effect can be classified as ghost
-or non-ghost. Then, the semantics is that memory side-effects of ghost
-code must always be in the ghost heap or the ghost stack.
+or non-ghost. Then, the semantics is that any memory side-effects of ghost
+code must be only in the ghost heap or the ghost stack.
 
 Notice that this semantics is not statically decidable.
 \notimplemented{It is left to tools to provide approximations},
@@ -3228,7 +3250,7 @@ statically detected as ghost must be semantically ghost.
 
 \paragraph{Differences between model variables and ghost variables}
 
-A ghost variable is an additional specification variable which is
+A ghost variable is an additional specification variable that is
 assigned in ghost code like any C variable. On the other hand, a model
 variable cannot be assigned, but one can state it is modified and can
 express properties about the new value, in a non-deterministic way,
@@ -3291,6 +3313,7 @@ or only written to, the unused accessor function can be omitted from the
 
 
 \section{Undefined values, dangling pointers}
+\marginpar{It seems silly to have a composite section title and then separate subsections for each of the pieces. Perhaps just make the two subsections sections themselves.}
 
 \subsection{Initialization}
 \label{sec:initialized}
@@ -3314,9 +3337,9 @@ argument and means that each l-value in this set is initialized at label \lstinl
 is a predicate taking a set of some pointer
 (having a type other than \lstinline|void*|) to l-values as
 argument and means that each l-value in this set has a \emph{dangling
-  content} at label \lstinline|L|. That, its value is (or contains bits
+  content} at label \lstinline|L|. That is, its value is (or contains bits
 of) a dangling address: either the address of a local
-variable referred to outside of its scope, or the address of a variable that
+variable referred to outside of its scope or the address of a variable that
 has been dynamically allocated, then deallocated.
 \\ \makebox[5mm]{} \lstinline|\dangling{id} : set<$\alpha$*> $\ra$ bool|
 
@@ -3349,7 +3372,7 @@ heterogeneous casts.
 
 The predicates of Figure~\ref{fig:gram:welltyped} are used to relate
 the type of a pointer to the effective type of the memory location or function
-that is being pointed.
+that is being pointed to.
 
 Currently, only the compatibility of a function pointer with the type of
 the function it points to is axiomatized, through the predicate
@@ -3357,7 +3380,7 @@ the function it points to is axiomatized, through the predicate
 \lstinline|set<$\alpha$*> $\ra$ bool|,
 and \lstinline|\valid_function(p)| holds if and only if
 \begin{itemize}
-\item \lstinline|p| is a pointer to a function type \lstinline|t|;
+\item \lstinline|p| is a pointer to a function type \lstinline|t|, and
 \item \lstinline|*p| is a function whose type is \emph{compatible}
   with \lstinline|t|, in the sense of \cite[\S6.2.7]{standardc99}
 \end{itemize}
