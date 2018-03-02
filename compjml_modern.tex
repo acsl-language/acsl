@@ -8,37 +8,37 @@ two crucial aspects:
 \begin{itemize}
 \item ACSL is a BISL for C, a low-level structured language, while JML
   is a BISL for Java, an object-oriented inheritance-based high-level
-  language. Not only the language features are not the same but the
-  programming styles and idioms are very different, which entails also
+  language. Not only are the language features not the same between Java and C, but the
+  programming styles and idioms are very different, which then entails
   different ways of specifying behaviors. In particular, C has no
-  inheritance nor exceptions, and no language support for the simplest
-  properties on memory (\emph{e.g}, the size of an allocated memory block).
-\item JML relies on runtime assertion checking (RAC) when typing,
+  inheritance or exceptions, and no language support for the simplest
+  properties on memory (\emph{e.g.}, the size of an allocated memory block).
+\item JML also supports runtime assertion checking (RAC) when typing,
   static analysis and automatic deductive verification fail. The
-  example of CCured~\cite{necula02ccured,condit03ccured}, that adds
-  strong typing to C by relying on RAC too, shows that it is not possible
+  example of CCured~\cite{necula02ccured,condit03ccured}, which also adds
+  strong typing to C by relying on RAC, shows that it is not possible
   to do it in a modular way. Indeed, it is necessary to modify the
   layout of C data structures for RAC, which is not modular. The
   follow-up project Deputy~\cite{condit07deputy} thus reduces the
-  checking power of annotations in order to preserve modularity.  On
-  the contrary, we choose not to restrain the power of annotations
+  checking power of annotations in order to preserve modularity.  In contrast, we choose not to restrain the power of annotations
   (\emph{e.g.}, all first order logic formulas are allowed). To that end, we
   rely on manual deductive verification using an interactive theorem
-  prover (\emph{e.g.}, Coq) when every other technique failed.
+  prover (\emph{e.g.}, Coq) when every other technique fails.
 \end{itemize}
 
 \noindent
 In the remainder of this chapter, we describe these differences in
-further details.
+further detail.
 
 \subsection{Low-level language vs. inheritance-based one}
 
 \subsubsection*{No inherited specifications}
 
-JML has a core notion of inheritance of specifications, that duplicates
-in specifications the inheritance feature of Java.  Inheritance
+JML has a core notion of specification inheritance, which
+enables support for behavioral subtyping, by applying
+ specifications of parent methods to overriding methods.  Inheritance
 combined with visibility and modularity account for a number of
-complex features in JML (\emph{e.g}, \verb|spec_public| modifier, data
+complex features in JML (\emph{e.g.}, \verb|spec_public| modifier, data
 groups, represents clauses, etc), that are necessary to express the
 desired inheritance-related specifications while respecting visibility
 and modularity. Since C has no inheritance, these intricacies are
@@ -51,8 +51,8 @@ The usual way of signaling errors in Java is through
 exceptions. Therefore, JML specifications are tailored to express
 exceptional postconditions, depending on the exception raised. Since C
 has no exceptions, ACSL does not use exceptional
-specifications. Instead, C programmers are used to signal errors by
-returning special values, like mandated in various ways in the C standard.
+specifications. Instead, C programmers typically signal errors by
+returning special values, as is mandated in various ways by the C standard.
 
 \begin{example}
 In \S 7.12.1 of the standard, it is said that functions in <math.h>
@@ -71,7 +71,7 @@ errors as follows:
 In \S 7.19.6.1 of the standard, it is said that function fprintf
 signals errors as follows:
 ``The fprintf function returns [...] a negative value if an output or
-encoding error occured.''
+encoding error occurred.''
 \end{example}
 
 \begin{example}
@@ -81,7 +81,7 @@ signal errors as follows:
 \end{example}
 
 As shown by these few examples, there is no unique way to signal
-errors in the C standard library, not mentioning user-defined
+errors in the C standard library, not to mention errors from user-defined
 functions. But since errors are signaled by returning special values, it
 is sufficient to write an appropriate postcondition:
 
@@ -147,23 +147,23 @@ where predicate \valid is the one defined in Section~\ref{subsec:memory}.
 (note that \lstinline|\valid(a + 0..(-1))| is the same as
 \lstinline|\valid(\empty)| and thus is true regardless of the validity of
 \lstinline|a| itself).
-When \lstinline|n| is null, \lstinline|a| does
+When \lstinline|n| is 0, \lstinline|a| does
 not need to be valid at all, and when \lstinline|n| is strictly
 positive, \lstinline|a| must point to an array of size at least
 \lstinline|n|. To make it more obvious, the C programmer adopted a
 defensive programming style, which returns immediately when \lstinline|n| is
-null. We can duplicate this in the specification:
+0. We can duplicate this in the specification:
 
 \begin{listing-nonumber}
 /*@ requires n == 0 || \valid(a + 0..(n-1)); */
 \end{listing-nonumber}
 
-Usually, many memory requirements are only necessary for some paths
+Many memory requirements are only necessary for some paths
 through the function, which correspond to some particular
 behaviors, selected according to some tests performed along the
 corresponding paths. Since C has no memory
 primitives, these tests involve other variables that the C programmer
-added to track additional information, like {\ttfamily n} in our example.
+adds to track additional information, such as {\ttfamily n} in our example.
 
 To make it easier, it is possible in ACSL to distinguish between the
 \lstinline|assumes| part of a behavior, that specifies the tests that need
@@ -183,12 +183,16 @@ translated into:
 
 This is equivalent to the previous requirement, except here behaviors
 can be completed with postconditions that belong to one behavior only.
-Contrary to JML, the set of behaviors for a function do not
+
+\subsubsection*{ACSL contracts vs. JML ones}
+
+In JML, the set of stated behaviors is assumed to cover all
+permitted uses of the function; any calling context in which none of the preconditions are true would be identified as an error.
+In ACSL, the set of behaviors for a function do not
 necessarily cover all cases of use for this function, as mentioned in
 Section~\ref{subsec:behaviors}. This allows for partial
-specifications, whereas JML behaviors cannot offer such
-flexibility. Here, Our two behaviors are clearly mutually exclusive,
-and, since \lstinline|n| is an \lstinline|unsigned int|, our
+specifications. In the example above, our two behaviors are clearly mutually exclusive,
+and, since \lstinline|n| is an \lstinline|unsigned int|, 
 they cover all the possible cases. We could have specified that as well, by
 adding the following lines in the contract (see
 Section~\ref{sec:compl-behav}).
@@ -199,28 +203,17 @@ Section~\ref{sec:compl-behav}).
   @*/
 \end{listing}
 
-\subsubsection*{ACSL contracts vs. JML ones}
-
 To fully understand the difference between specifications in ACSL and
-JML, we detail in below the requirement on the pre-state and
+JML, we detail below the requirement on the pre-state and
 the guarantee on the post-state given by behaviors in JML and ACSL.
 
 A JML contract is either \emph{lightweight} or \emph{heavyweight}.
 For the purpose of our comparison, it is sufficient to know that a
-lightweight contract has \lstinline|requires| and \lstinline|ensures| clauses
-all at the same level, while an heavyweight contract has multiple
-behaviors, each consisting of \lstinline|requires| and \lstinline|ensures|
-clauses. Although it is not possible in JML to mix both styles, we can
-define here what it would mean to have both, by conjoining the
-conditions on the pre- and the post-state.
-Here is an hypothetical JML contract mixing lightweight and
-heavyweight styles:
+lightweight contract is syntactic sugar for a single specific 
+heavyweight contract; a contract can have multiple heavyweight behaviors and these can be nested.
+Here is a hypothetical JML contract:
 \begin{listing}{1}
-/*@ requires $P_1$;
-  @ requires $P_2$;
-  @ ensures  $Q_1$;
-  @ ensures  $Q_2$;
-  @ behavior $x_1$:
+/*@ behavior $x_1$:
   @   requires $A_1$;
   @   requires $R_1$;
   @   ensures $E_1$;
@@ -230,18 +223,18 @@ heavyweight styles:
   @   ensures $E_2$;
   @*/
 \end{listing}
-It assumes from the pre-state the condition:
+It assumes that the pre-state satisfies the condition:
 \begin{listing-nonumber}
-$P_1$ && $P_2$ && (($A_1$ && $R_1$) || ($A_2$ && $R_2$))
+(($A_1$ && $R_1$) || ($A_2$ && $R_2$))
 \end{listing-nonumber}
 and guarantees that the following condition holds in post-state:
 \begin{listing-nonumber}
-$Q_1$ && $Q_2$ &&
   (\old($A_1$ && $R_1$) ==> $E_1$) && (\old($A_2$ && $R_2$) ==> $E_2$)
 \end{listing-nonumber}
+Note particularly that the pre-state is required to satisfy
+the precondition of at least one behavior.
 
-
-Here is now an ACSL specification:
+Here is now a syntactically similar ACSL specification:
 
 \begin{listing}{1}
 /*@ requires $P_1$;
@@ -261,45 +254,65 @@ Here is now an ACSL specification:
 
 \noindent
 Syntactically, the only difference with the JML specification is the
-addition of the \lstinline|assumes| clauses.
-Its translation to assume-guarantee is however quite different.
-It assumes from the pre-state the condition:
+addition of the \lstinline|assumes| clauses and allowing an 
+anonymous behavior at the beginning of the contract. Rewriting the anonymous behavior with a name gives
 
-\begin{listing-nonumber}
-  $P_1$ && $P_2$ && ($A_1$ ==> $R_1$) && ($A_2$ ==> $R_2$)
-\end{listing-nonumber}
+\begin{listing}{1}
+	/*@ 
+	@ behavior $x_0$:
+	@   assumes true;
+	@   requires $P_1$;
+	@   requires $P_2$;
+	@   ensures  $Q_1$;
+	@   ensures  $Q_2$;
+	@ behavior $x_1$:
+	@   assumes $A_1$;
+	@   requires $R_1$;
+	@   ensures $E_1$;
+	@ behavior $x_2$:
+	@   assumes $A_2$;
+	@   requires $R_2$;
+	@   ensures $E_2$;
+	@*/
+\end{listing}
 
 \noindent
-and guarantees that the following condition holds in the post-state:
+Its translation to assume-guarantee is however quite different than JML.
+It assumes the pre-state satisfies the condition
 
 \begin{listing-nonumber}
-$Q_1$ && $Q_2$ && (\old($A_1$) ==> $E_1$) && (\old($A_2$) ==> $E_2$)
+  (true ==> ($P_1$ && $P_2$)) && ($A_1$ ==> $R_1$) && ($A_2$ ==> $R_2$)
+\end{listing-nonumber}
+Here, it is acceptable that none of the behaviors are active (that is, that none of the \lstinline|assumes| clauses are true, even without the unnamed behavior). In that case there is no post-condition guarantee either.
+
+The contract guarantees that the following condition holds in the post-state:
+
+\begin{listing-nonumber}
+(true ==> ($Q_1$ && $Q_2$)) && (\old($A_1$) ==> $E_1$) && (\old($A_2$) ==> $E_2$)
 \end{listing-nonumber}
 
-Thus, ACSL allows to distinguish between the clauses that control
+Thus, ACSL allows distinguishing between the clauses that control
 which behavior is active (the \lstinline|assumes| clauses) and the
 clauses that are preconditions for a particular behavior (the internal
-\lstinline|requires| clauses). In addition, as mentioned above, there is
-by default no requirement in ACSL for the specification to be complete (The
-last part of the JML condition on the pre-state). If desired, this has
-to be precised explicitly with a \lstinline+complete behaviors+ clause as
-seen in Section~\ref{sec:compl-behav}.
+\lstinline|requires| clauses). 
+
+In addition, as mentioned above, there is
+by default no requirement in ACSL for the specification to be complete. In JML an incomplete specification may cause a warning in a calling context; partial behavior is specified by an explicitly underspecified postcondition. In ACSL, an incomplete specification specifies partial behavior; a warning for a particular behavior is produced by a \lstinline|requires false;| clause.
 
 \subsection{Deductive verification vs. RAC}
 
 \subsubsection*{Sugar-free behaviors}
 
-As explained in details in~\cite{raghavan00desugaring}, JML
-heavyweight behaviors can be viewed as syntactic sugar (however
-complex it is) that can be translated automatically into more basic
+As explained in detail in~\cite{raghavan00desugaring}, JML
+heavyweight behaviors can be viewed as syntactic sugar that can be translated automatically into more basic
 contracts consisting mostly of pre- and postconditions and frame
 conditions.  This allows complex nesting of behaviors from the user
 point of view, while tools only have to deal with basic contracts. In
-particular, the major tools on JML use this desugaring process, like
+particular, older tools on JML used this desugaring process, such as
 the Common JML tools to do assertion checking, unit testing,
 etc. (see~\cite{leavens00jml}) and the tool ESC/Java2 for
 automatic deductive verification of JML specifications
-(see~\cite{kiriny07implnotes}).
+(see~\cite{Kiniry-Cok05}).
 
 One issue with such a desugaring approach is the complexity of the
 transformations involved, as \emph{e.g.} for desugaring assignable clauses
@@ -310,33 +323,38 @@ behaviors, that could be analyzed separately in more detail.
 Instead, we favor the view that a function implements multiple
 behaviors, that can be analyzed separately if a tool feels like
 it. Therefore, we do not intend to provide a desugaring process.
+Indeed, the current JML tool, OpenJML ~\cite{Cok-2011-OpenJML,Cok-2014-OpenJML}, also does only a partial desugaring, which at minimum is able to give more informative error messages when proof attempts fail.
 
 \subsubsection*{Axiomatized functions in specifications}
 
-JML only allows pure Java methods to be called in
-specifications~\cite{leavens00preliminary}. This is certainly
-understandable when relying on RAC: methods called should be defined
+JML allows pure Java methods to be called in
+specifications~\cite{leavens00preliminary}. This avoids having
+to write essentially duplicate logical functions that mimic Java functions. It is also useful when relying on RAC: methods called should be defined
 so that the runtime can call them, and they should not have
 side-effects in order not to pollute the program they are supposed to
-annotate.
+annotate. 
+JML also permits model (logical) functions to be
+used in specifications; if the model function does not have
+a body, then RAC cannot be used. But for deductive verification, 
+the properties of a model function can be specified axiomatically.
 
-In our setting, it is desirable to allow calls to logical functions in
-specifications. These functions may be defined, like program ones, but
+ACSL focuses on deductive verification and currently only allows calls to logical functions in
+specifications. These functions may be defined, like program functions, but
 they may also be only declared (with a suitable declaration of \reads
-clause) and defined through an axiomatization.
+clause) and their behavior defined through an axiomatization.
 This makes for richer specifications that may be useful either in
 automatic or in manual deductive verification.
+\marginpar{Say something about the intent to allow pure C functions in specifications?}
 
 \subsection{Syntactic differences}
 
-The following table summarizes the difference between JML keywords and
-ACSL ones, when the intent is the same, although minor differences
+The following table summarizes the difference between JML and ACSL keywords, when the intent is the same, although minor differences
 might exist.
 \begin{center}
 \begin{tabular}{|l|l|}
 \hline
   JML                  & ACSL \\ \hline
-  modifiable,assignable           & assigns \\
+  modifiable, assignable           & assigns \\
   measured\_by         & decreases \\
   loop\_invariant      & loop invariant \\
   decreases            & loop variant \\
