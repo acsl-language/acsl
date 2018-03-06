@@ -16,6 +16,6 @@ avoid interaction of annotations with the code. For example, in code such as
      c=1;
 \end{listing}
 the statement \lstinline|c=1| must be understood as the
-branch of the \texttt{if}. This is ensured by the grammar below,
-saying that \lstinline|assert| annotations are not statements themselves,
+branch of the \texttt{if}. This is ensured by the ACSL grammar,
+which states that \lstinline|assert| annotations are not statements themselves,
 but attached to the statement that follows, like C labels.
