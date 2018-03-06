@@ -18,9 +18,9 @@ BNF_FILES=term.tex predicate.tex binders.tex fn_behavior.tex \
 
 BNF_DEPS=$(BNF_FILES:.tex=.bnf)
 
-DEPS=   speclang_modern.tex macros_modern.tex	\
-	intro_modern.tex libraries_modern.tex compjml_modern.tex	\
-	div_lemma.c assigns.c invariants.c example-lt-modern.tex	\
+DEPS= speclang_modern.tex macros_modern.tex intro_modern.tex		\
+	libraries_modern.tex compjml_modern.tex div_lemma.c assigns.c	\
+	invariants.c example-lt-modern.tex biblio.bib			\
 	malloc_free_fn.c malloc-free2-fn.c loop-frees.c isqrt.c		\
 	sizeof.c incrstar.c parsing_annot_modern.tex			\
 	integer-cast-modern.tex max.c max_index.c cond_assigns.c	\
