@@ -168,7 +168,7 @@ adds to track additional information, such as {\ttfamily n} in our example.
 To make it easier, it is possible in ACSL to distinguish between the
 \lstinline|assumes| part of a behavior, that specifies the tests that need
 to succeed for this behavior to apply, and the \lstinline|requires| part
-that specifies the additional preconditions that must be true when a
+that specifies the additional assumptions that must be true when a
 behavior applies. The specification for our example can then be
 translated into:
 
@@ -187,7 +187,7 @@ can be completed with postconditions that belong to one behavior only.
 \subsubsection*{ACSL contracts vs. JML ones}
 
 In JML, the set of stated behaviors is assumed to cover all
-permitted uses of the function; any calling context in which none of the preconditions are true would be identified as an error.
+permitted uses of the function; any calling context in which none of the requires preconditions are true would be identified as an error.
 In ACSL, the set of behaviors for a function do not
 necessarily cover all cases of use for this function, as mentioned in
 Section~\ref{subsec:behaviors}. This allows for partial
@@ -204,8 +204,8 @@ Section~\ref{sec:compl-behav}).
 \end{listing}
 
 To fully understand the difference between specifications in ACSL and
-JML, we detail below the requirement on the pre-state and
-the guarantee on the post-state given by behaviors in JML and ACSL.
+JML, we detail below the requirements on the pre-state and
+the guarantees in the post-state given by behaviors in JML and ACSL.
 
 A JML contract is either \emph{lightweight} or \emph{heavyweight}.
 For the purpose of our comparison, it is sufficient to know that a
@@ -260,7 +260,7 @@ anonymous behavior at the beginning of the contract. Rewriting the anonymous beh
 \begin{listing}{1}
 	/*@ 
 	@ behavior $x_0$:
-	@   assumes true;
+	@   assumes \true;
 	@   requires $P_1$;
 	@   requires $P_2$;
 	@   ensures  $Q_1$;
@@ -281,14 +281,14 @@ Its translation to assume-guarantee is however quite different than JML.
 It assumes the pre-state satisfies the condition
 
 \begin{listing-nonumber}
-  (true ==> ($P_1$ && $P_2$)) && ($A_1$ ==> $R_1$) && ($A_2$ ==> $R_2$)
+  (\true ==> ($P_1$ && $P_2$)) && ($A_1$ ==> $R_1$) && ($A_2$ ==> $R_2$)
 \end{listing-nonumber}
 Here, it is acceptable that none of the behaviors are active (that is, that none of the \lstinline|assumes| clauses are true, even without the unnamed behavior). In that case there is no post-condition guarantee either.
 
 The contract guarantees that the following condition holds in the post-state:
 
 \begin{listing-nonumber}
-(true ==> ($Q_1$ && $Q_2$)) && (\old($A_1$) ==> $E_1$) && (\old($A_2$) ==> $E_2$)
+(\true ==> ($Q_1$ && $Q_2$)) && (\old($A_1$) ==> $E_1$) && (\old($A_2$) ==> $E_2$)
 \end{listing-nonumber}
 
 Thus, ACSL allows distinguishing between the clauses that control
@@ -297,7 +297,7 @@ clauses that are preconditions for a particular behavior (the internal
 \lstinline|requires| clauses). 
 
 In addition, as mentioned above, there is
-by default no requirement in ACSL for the specification to be complete. In JML an incomplete specification may cause a warning in a calling context; partial behavior is specified by an explicitly underspecified postcondition. In ACSL, an incomplete specification specifies partial behavior; a warning for a particular behavior is produced by a \lstinline|requires false;| clause.
+by default no requirement in ACSL for the specification to be complete. In JML an incomplete specification may cause a warning in a calling context; partial behavior is specified by an explicitly underspecified postcondition. In ACSL, an incomplete specification specifies partial behavior; a warning for a particular behavior is produced by a \lstinline|requires \false;| clause.
 
 \subsection{Deductive verification vs. RAC}
 
@@ -344,7 +344,7 @@ they may also be only declared (with a suitable declaration of \reads
 clause) and their behavior defined through an axiomatization.
 This makes for richer specifications that may be useful either in
 automatic or in manual deductive verification.
-\marginpar{Say something about the intent to allow pure C functions in specifications?}
+
 
 \subsection{Syntactic differences}
 
