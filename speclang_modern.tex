@@ -406,7 +406,9 @@ The size of C types is architecture-dependent. ACSL does
 not enforce these sizes either, hence the semantics of terms involving
 such types is also architecture-dependent. The
 \lstinline|sizeof|\indextt{sizeof} operator may be used in annotations and is
-consistent with its C counterpart (including that its return type is an integer constant). For instance, it should be
+consistent with its C counterpart (including that its return type 
+is a value of type \lstinline|size_t|, and in most cases a constant). 
+For instance, it should be
 possible to verify the following code:
 
 \listinginput{1}{sizeof.c}
@@ -1062,7 +1064,7 @@ the properties \lstinline|\old(A$_i$) ==> E$_i$| hold for each~$i$.
 % In any case, locations of $L$ are unchanged.
 \end{itemize}
 
-\marginpar{Why is there an anomalous space before the requires at the beginning of the paragraph?}
+
 \requires{} clauses in the behaviors are proposed
 mainly to improve readability (to avoid some duplication of
 formulas), since the contract above is equivalent to the following
@@ -1420,9 +1422,8 @@ the \Break statement.
 
 \item At any loop iteration, any location that was allocated before
   entering the loop, and is not member of \lstinline|L| (interpreted in the
-  current state) has the same value as
-  \marginpar{by 'current state' do we mean Here or LoopCurrent or something else?}
-  before entering the loop.
+  current state, that is \lstinline|LoopCurrent|) has the same value as
+  before entering the loop (\lstinline|LoopEntry|).
   In fact, the \Loop \assigns clause specifies an inductive
   invariant for the locations that are not members of \lstinline|L|.
 \end{itemize}
@@ -1651,9 +1652,8 @@ There is one particular case of \lstinline|assigns| and \lstinline|ensures|
 clauses of function contracts where formal parameters\index{formal parameter}
 of functions cannot refer to the label \lstinline|Post|.
 In such clauses formal parameters always refer implicitly to the label
-\lstinline|Pre|, and any \lstinline|\at| construct can modify the
+\lstinline|Pre|, and no \lstinline|\at| construct modifies the
 interpretation of formal parameters.
-\marginpar{Is \textit{and any \at construct can modify the interpretation of formal parameters} correct? I thought formal parameters were always in the Pre state despite any at construct.}
 
 No logic label is visible in global logic declarations
 such as lemmas, axioms, definition of predicate or logic
@@ -1723,8 +1723,10 @@ may refer to enclosing named behaviors, with the form
 Such contracts are only valid for the
 corresponding behaviors, in particular only under the
 corresponding \assumes{} clause.
-\marginpar{May behavior ids of statement contracts shadow the ids of the enclosing function constract? Or are identical names forbidden? The latter is the easier case.}
-\marginpar{Should forbid empty behavior-body-stmt}
+Note that behaviors in statement contracts may have the name ids as enclosing function contract behaviors
+or enclosing statement contracts.
+In such cases, a use of the id (in a \lstinline|for| construct) refers to the innermost behavior id.
+
 %% TODO: Add an example with a \For{}.
 
 % [Patrick B.] START proposition:
@@ -2362,7 +2364,7 @@ containing, at the label \lstinline|L|, the pointer \lstinline|p|
 \\ \makebox[5mm]{} \lstinline|\block_length{id} : void* $\ra$ size_t|
 
 \end{itemize}
-\marginpar{Define base\_addr and block\_length on null ?}
+
 
 In addition, dereferencing a pointer may lead to run-time errors. A pointer
 \lstinline|p| is said to be \emph{valid} if \lstinline|*p| is guaranteed to
@@ -2752,7 +2754,6 @@ The built-in type \lstinline|\list<A>|\indexttbs{list} can be used for finite
 sequences of elements of the same type \lstinline|A|. 
 For constructing such homogeneous lists, built-in functions and notations are 
 available.
-\marginpar{Why are Nil and Cons capitalized but not the others?}
 
 The term \lstinline|\Nil|\indexttbs{Nil} denotes the empty sequence.
 \begin{listing-nonumber}
@@ -3015,12 +3016,10 @@ which they are supposed to hold.
   initialization of these data).
 
 \item A weak type invariant on type $\tau$ must hold at any function
-  entrance and exit, and applies to any global variable or formal
-  parameter with static type $\tau$. If the result of the
+  entrance and exit, and applies to any value (variable, field, array element, formal
+  parameter, etc.) with static type $\tau$. If the result of the
   function is of type $\tau$, the result must also satisfy its
-  weak invariant at function exit. However, it says nothing about fields,
-  array elements, memory locations, etc. of type $\tau$.
-  \marginpar{Why does the invariant not apply to everything of the given type?}
+  weak invariant at function exit. 
 
 \item A strong type invariant on type $\tau$ must hold at any step
   during execution, and applies to any global variable, local
@@ -3044,7 +3043,9 @@ which they are supposed to hold.
   Here is a longer example, the famous Dijkstra's Dutch flag algorithm.\\
   \listinginput{1}{flag.c}
 \end{example}
-\marginpar{Why is the invariant not strong in the Dutch flag example? Also, perhaps such an invariant should be automatically generated for an enum. }
+Note that in this example the invariant could be declared \lstinline|strong|. However, not all \lstinline|enum|s would 
+obey a corresponding invariant, because in C, \lstinline|enum| values are just \lstinline|int|s and can hold values other
+than those listed in the declaration of the \lstinline|enum| type.
 
 
 \subsection{Model variables and model fields}
@@ -3171,7 +3172,10 @@ grammar are the following:
   to incorrect C code).
   As in normal annotations, \lstinline|@| characters at the beginning of a
   line and at the end of an annotation (before the final \lstinline|@/|) are
-  considered as blank. \marginpar{Is this form of multi-line comments embedded in multi-line C (or ACSL) comments generally applicable?  If so, it should be introduced in section 1.2.}
+  considered as blank. 
+  This style of annotation is only needed and permitted within ghost code.
+  Also, ghost code may not be written within enclosing ghost code.
+  
 \item \notimplemented{Logical types, such as \lstinline|integer| or
 \lstinline|real| are authorized in ghost code}.
 \item \notimplemented{A non-ghost function can take ghost
@@ -3312,10 +3316,7 @@ or only written to, the unused accessor function can be omitted from the
 \end{example}
 
 
-\section{Undefined values, dangling pointers}
-\marginpar{It seems silly to have a composite section title and then separate subsections for each of the pieces. Perhaps just make the two subsections sections themselves.}
-
-\subsection{Initialization}
+\section{Initialization and undefined values}
 \label{sec:initialized}
 \indexttbs{initialized}
 \lstinline|\initialized{L}(p)| is a predicate taking a set of some pointer
@@ -3330,7 +3331,7 @@ argument and means that each l-value in this set is initialized at label \lstinl
   such that logic label \lstinline|{Here}| can be omitted.
 \end{example}
 
-\subsection{Dangling pointers}
+\section{Dangling pointers}
 \label{sec:dangling_pointers}
 \indexttbs{dangling}
 \lstinline|\dangling{L}|
