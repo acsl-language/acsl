@@ -9,6 +9,6 @@
   \
   named-behavior-stmt ::= "behavior" id ":" behavior-body-stmt
   \
-  behavior-body-stmt ::= assumes-clause* ;
+  behavior-body-stmt [empty behavior bodies are forbidden] ::= assumes-clause* ;
        requires-clause* simple-clause-stmt*
 \end{syntax}
