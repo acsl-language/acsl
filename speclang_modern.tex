@@ -475,7 +475,7 @@ digits and $dd$ is in decimal, denotes number $hh.hh\times
 
 
 The usual operators for comparison are also interpreted as real operators. 
-In particular, equality operation $\equiv$ for float (or double)
+In particular, the equality operation $\equiv$ for float (or double)
 expressions means equality of the real numbers they represent. Or equivalently, $x \equiv y$ for two float
 variables $x,y$ means \lstinline|real_of_float(x) $\equiv$ real_of_float(y)|
 with the mathematical equality of real
@@ -952,7 +952,7 @@ function contracts only).
 \subsection{Simple function contracts}
 \label{sec:simplecontracts}
 
-A simple function contract, having only simple clauses and no named behavior, takes the following
+A simple function contract, having only simple clauses and no named behaviors, takes the following
 form:\indextt{requires}\indextt{assigns}\indextt{ensures}
 \begin{listing}{1}
 /*@ requires P$_1$; requires P$_2$; `\dots`
@@ -1270,6 +1270,14 @@ elements \lstinline|t$_1$|, $\ldots$, \lstinline|t$_n$|.
 Note that \lstinline|assigns \nothing| is equivalent to
 \lstinline|assigns \empty|; it is left for convenience.
 
+Note that in some cases there is a small ambiguity. The
+use of an 
+individual variable, as in \lstinline|assigns x;|, invokes an implicit conversion to a singleton set, to 
+\lstinline|assigns {x};|, but only if the value of \lstinline|x| is not already a set of memory locations.
+Similarly, for example, if \lstinline|x| is a set of memory locations but \lstinline|y| is a simple variable (say of type \lstinline|int|), then \lstinline|assigns x,y;| means
+\lstinline|assigns \union(x,{y});|. If \lstinline|x| and \lstinline|y| are both simple variables, then \lstinline|assigns x,y;| means
+\lstinline|assigns \union({x},{y});|. 
+
 \begin{example}
   The following function sets to 0 each cell of an array.
 
@@ -1316,6 +1324,8 @@ mandatory. On the other hand, if that function has a body, giving no
 \lstinline|assigns| clause means in practice that it is left to tools to
 compute an over-approximation of the sets of assigned locations.
 
+\ifthenelse{\isCPP}{\input{cpp-default-values}}{}
+	
 \section{Statement annotations}
 \index{annotation}
 
@@ -1421,7 +1431,7 @@ the last state in which \lstinline|I| was supposed to hold and
 the \Break statement.
 
 \item At any loop iteration, any location that was allocated before
-  entering the loop, and is not member of \lstinline|L| (interpreted in the
+  entering the loop and is not a member of \lstinline|L| (interpreted in the
   current state, that is \lstinline|LoopCurrent|) has the same value as
   before entering the loop (\lstinline|LoopEntry|).
   In fact, the \Loop \assigns clause specifies an inductive
@@ -1723,7 +1733,7 @@ may refer to enclosing named behaviors, with the form
 Such contracts are only valid for the
 corresponding behaviors, in particular only under the
 corresponding \assumes{} clause.
-Note that behaviors in statement contracts may have the name ids as enclosing function contract behaviors
+Note that behaviors in statement contracts may have the same ids as enclosing function contract behaviors
 or enclosing statement contracts.
 In such cases, a use of the id (in a \lstinline|for| construct) refers to the innermost behavior id.
 
@@ -1766,6 +1776,7 @@ are dynamically allocated or deallocated by the annotated statement from the \te
 they are defined later in Section~\ref{sec:allocation-clause}.
 % END proposition
 
+\ifthenelse{\isCPP}{\input{cpp-class-contracts}}{}
 
 \section{Termination}
 \label{sec:termination}
@@ -2535,10 +2546,10 @@ and
       && \allocation{Here}(p)==\allocation{Pre}(p))
 \end{listing-nonumber}
 
-In fact, just as the \assigns clause does not specify which memory location is
-assigned,
-the \textsl{allocation-clauses} do not specify which memory location 
-is dynamically allocated or deallocated.
+In fact, just as the \assigns clause does not specify which memory locations are
+assigned (just which are permitted to be assigned),
+the \textsl{allocation-clauses} do not specify which memory locations 
+are dynamically allocated or deallocated.
 Pre-conditions and post-conditions should be added to complete the specifications
 about allocations and deallocations.
 The following shortcuts can be used for that:
@@ -2639,7 +2650,7 @@ each anonymous behavior.
 Loop annotations may contain similar clauses allowing one to specify which 
 memory locations 
 are dynamically allocated or deallocated by a loop.
-The grammar for those constructions is given on
+The grammar for those constructions is given in
  Figure~\ref{fig:gram:allocation}.
 
 The clauses \Loop \allocates and \Loop \frees are tied together.
@@ -2659,7 +2670,7 @@ The only difference between these two clauses is that sets
 and \lstinline|Q$_i$| are evaluated in the current loop state 
 (label \lstinline|LoopCurrent|).
 
-Just as for \lstinline|loop assigns|, loop annotations
+Just as for \lstinline|loop assigns|, the loop annotations
 \lstinline|loop frees| and \lstinline|loop allocates| define a loop invariant.
 
 More precisely, this loop annotation
@@ -2900,6 +2911,7 @@ even when the annotated function and statement terminates respectively abruptly.
 This is shown in example~\ref{ex:assigns-and-abrupt-termination} for a function contract.
 % END proposition:
 
+\input{cpp-exceptions}
 %% TODO:
 %%  Discuter de exit versus return pour la fonction main. Discuter
 %%    du atexit() : le post-state de la clause exit est-il avant ou
@@ -3391,7 +3403,7 @@ and \lstinline|\valid_function(p)| holds if and only if
   \listinginput{1}{welltyped.c}
 \end{example}
 
-
+\ifthenelse{\isCPP}{\marginpar{Other C++ topics to include: templates, namespaces, class-level specs, when do invariants hold, restrictions on invariant footprint, function parameters, lambda expressions, specs for overloaded operators, specs for implicit constructors and destructors, types}}{}
 
 %\section{Module constructions}
 %

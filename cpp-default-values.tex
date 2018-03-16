@@ -1,0 +1,22 @@
+\subsection{Default arguments}
+\label{sec:defargs}
+\index{default arguments}
+
+In \lang, functions can be declared to have parameters that can be omitted in a function call, with their values supplied by default values. 
+
+The arguments that have default values still have names, so the arguments can be referred to in function and statement contracts as usual. However it may also be useful to refer to the default value of the argument.This is done using the syntax \lstinline|\default_value(<name>)|. The type of this term is the same as the declared type of the formal parameter, which may be different than the natural type of the expression giving the default value, since that expression may be implicitly cast to the argument's type. 
+The additions to the grammar are given in Fig.~\ref{fig:gram:default-values}.
+
+\begin{figure}[t]
+	\begin{cadre}
+		\input{cpp-default-values-syntax.bnf}
+	\end{cadre}
+	\caption{Grammar of contracts about default values of formal parameters}
+	\label{fig:gram:default-values}
+\end{figure}
+
+As the \lstinline|\default_value| syntax applies only to formal parameters, any use of such a term within annotations in the body of a method refers to the nearest enclosing 
+formal parameter that has a default value declaration, no
+matter what other shadowing declarations may exist.
+
+An example is shown in the code below.\marginpar{Insert example}
