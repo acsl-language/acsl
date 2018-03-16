@@ -1338,6 +1338,14 @@ elements \lstinline|t$_1$|, $\ldots$, \lstinline|t$_n$|.
 Note that \lstinline|assigns \nothing| is equivalent to
 \lstinline|assigns \empty|; it is left for convenience.
 
+Note that in some cases there is a small ambiguity. The
+use of an 
+individual variable, as in \lstinline|assigns x;|, invokes an implicit conversion to a singleton set, to 
+\lstinline|assigns {x};|, but only if the value of \lstinline|x| is not already a set of memory locations.
+Similarly, for example, if \lstinline|x| is a set of memory locations but \lstinline|y| is a simple variable (say of type \lstinline|int|), then \lstinline|assigns x,y;| means
+\lstinline|assigns \union(x,{y});|. If \lstinline|x| and \lstinline|y| are both simple variables, then \lstinline|assigns x,y;| means
+\lstinline|assigns \union({x},{y});|. 
+
 \begin{example}
   The following function sets each cell of an array to 0.
 
@@ -1386,6 +1394,8 @@ compute an over-approximation of the sets of modified locations.
 
 \ifCPPinput{cpp-default-values}
 
+\ifthenelse{\isCPP}{\input{cpp-default-values}}{}
+	
 \section{Statement annotations}
 \index{annotation}
 
@@ -1843,13 +1853,7 @@ are dynamically allocated or deallocated by the annotated statement from the \te
 they are defined later in Section~\ref{sec:allocation-clause}.
 % END proposition
 
-\ifCPPinput{cpp-class-contracts}
-\ifCPPinput{cpp-enum}
-\ifCPPinput{cpp-templates}
-\ifCPPinput{cpp-types}
-\ifCPPinput{cpp-visibility}
-\ifCPPinput{cpp-auto}
-\ifCPPinput{cpp-namespaces}
+\ifthenelse{\isCPP}{\input{cpp-class-contracts}}{}
 
 \section{Termination}
 \label{sec:termination}
@@ -2659,10 +2663,10 @@ and
       && \allocation{Here}(p)==\allocation{Pre}(p))
 \end{listing-nonumber}
 
-In fact, just as the \assigns clause does not specify precisely which memory locations are
-modified (just which are permitted to be modified),
+In fact, just as the \assigns clause does not specify which memory locations are
+assigned (just which are permitted to be assigned),
 the \textsl{allocation-clauses} do not specify which memory locations 
-are dynamically allocated or deallocated (just those that might be allocated or deallocated).
+are dynamically allocated or deallocated.
 Pre-conditions and post-conditions should be added to complete the specifications
 about allocations and deallocations.
 The following shortcuts can be used for that:
@@ -3035,11 +3039,7 @@ even when the annotated function or statement terminates abruptly.
 This is shown in example~\ref{ex:assigns-and-abrupt-termination} for a function contract.
 % END proposition:
 
-\ifCPPinput{cpp-exceptions}
-\ifCPPinput{cpp-attributes}
-\ifCPPinput{cpp-functional}
-
-
+\input{cpp-exceptions}
 %% TODO:
 %%  Discuter de exit versus return pour la fonction main. Discuter
 %%    du atexit() : le post-state de la clause exit est-il avant ou
@@ -3545,7 +3545,7 @@ and \lstinline|\valid_function(p)| holds if and only if
   \listinginput{1}{welltyped.c}
 \end{example}
 
-
+\ifthenelse{\isCPP}{\marginpar{Other C++ topics to include: templates, namespaces, class-level specs, when do invariants hold, restrictions on invariant footprint, function parameters, lambda expressions, specs for overloaded operators, specs for implicit constructors and destructors, types}}{}
 
 %\section{Module constructions}
 %

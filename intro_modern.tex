@@ -3,44 +3,14 @@
 
 This document is a reference manual for
 \ifthenelse{\boolean{PrintImplementationRq}}%
-           {the ACSL implementation provided by the
-             \mbox{\textsc{Frama-C}} %no cesure
-            framework~\cite{frama-c}.}%
+{the \NAME{} implementation provided by the Frama-C
+  framework~\cite{frama-c}.}%
            {\NAME.}
-\NAME is an acronym for ``ANSI/ISO \lang
-Specification Language''. 
-This is a Behavioral Interface Specification Language (BISL)~\cite{hatcliff2012behavioral}
-\ifthenelse{\boolean{PrintImplementationRq}}%
-           {for}%
-           {implemented in the \textsc{Frama-C} framework. It aims at}
-specifying behavioral properties of \lang
-source code.
-
-\ifthenelse{\boolean{PrintImplementationRq}}{%
-Not all of the features mentioned in this document are currently
-implemented in the Frama-C kernel. Unimplemented features are signaled
-as in the following line:
-\begin{quote}
-\notimplemented[Additional remarks on the feature may appear in a footnote.]%
-{This feature is not currently supported by Frama-C}
-\end{quote}
-
-As a summary, the features that are not currently implemented in
-Frama-C include in particular:
-\begin{itemize}
-\item some built-in predicates and logical functions;
-\item definition of logical types (section~\ref{sec:logicspec});
-\item specification modules (section~\ref{sec:specmodules});
-\item model variables (section~\ref{ex:model});
-\item only basic support for ghost code is provided (section~\ref{sec:ghost});
-\item verification of non interference of ghost code
-  (p.~\pageref{sec:semantics-ghost-code});
-\item specification of volatile variables
-  (section~\ref{sec:volatile-variables});
-\end{itemize}
-}%
-
-The main inspiration for this language comes from the
+\NAME{} is an acronym for ``ANSI/ISO \lang{}
+Specification Language''. This is a Behavioral Interface Specification
+Language (BISL) implemented in the \textsc{Frama-C} framework.
+It aims at specifying behavioral properties of \lang{}
+source code. The main inspiration for this language comes from the
 specification language of the \textsc{Caduceus}
 tool~\cite{filliatre04icfem,filliatre07cav} for deductive verification
 of behavioral properties of C programs. The specification language of
@@ -50,7 +20,7 @@ similar goals for Java source code: indeed it aims both at
 \emph{runtime assertion checking} and \emph{static verification} using
 the \textsc{OpenJML} tool~\cite{Cok-2011-OpenJML,Cok-2014-OpenJML}, where we aim at
 \emph{static verification} and \emph{deductive verification} (see
-Appendix~\ref{sec:comp-jml} for a detailed comparison between ACSL and
+Appendix~\ref{sec:comp-jml} for a detailed comparison between \NAME~and
 JML).
 
 Going back further in history, the JML design was guided by the general
@@ -62,7 +32,8 @@ postconditions on a routine, going back at least to Dijkstra, Floyd and
 Hoare in the late 60's and early 70's.
 
 In this document, we assume that the reader has a good knowledge of
-the ISO C programming language~\cite{KR88,standardc99}.
+the ISO C programming language~\cite{KR88,standardc99} 
+\ifthenelse{\isCPP}{and the ISO C++ programming language~\cite{C++-2011}}{}.
 
 \section{Organization of this document}
 
@@ -71,8 +42,8 @@ vocabulary, and discuss generalities about this specification
 language.  Chapter~\ref{chap:base} presents the specification language
 itself.  Chapter~\ref{chap:lib} presents additional information about
 \emph{libraries} of specifications. The appendices provide
-formal rules for type-checking ACSL annotations, 
-the relation between ACSL and JML, and specification templates.
+specific formal type-checking rules for \NAME{} annotations, 
+the relation between \NAME{} and JML, and specification templates.\marginpar{specicfication templates?}
 A detailed table of
 contents is given on page~\pageref{chap:contents}.
 A glossary is given in Appendix~\ref{sec:glossary}.
@@ -80,13 +51,13 @@ A glossary is given in Appendix~\ref{sec:glossary}.
 \section{Generalities about Annotations}\label{sec:gener-about-annot}
 
 In this document, we consider that specifications are given as
-annotations in comments written directly in C source files, so that
+annotations in comments written directly in \lang{} source files, so that
 source files remain compilable. Those comments must start with
-\verb|/*@| or \verb|//@| and end as usual in~C.
+\verb|/*@| or \verb|//@| and end as usual in \lang.
 
 In some contexts, it is not possible to modify the source code.
 It is strongly recommended that a tool that implements
-ACSL specifications provide technical means to store annotations
+\lang{} specifications provide technical means to store annotations
 separately from the source. It is not the purpose of this document
 to describe such means.  Nevertheless, some of the specifications,
 namely those at a global level, can be given in separate files:
@@ -107,8 +78,10 @@ Section~\ref{sec:multiplecontracts}).
   \item \emph{global invariant}\,: this is allowed at the level of
     global declarations. See section~\ref{sec:invariants}.
 
-  \item \emph{type invariant}\,: this allows declaring both structure
-    or union invariants, and invariants on type names introduced by
+  \item \emph{type invariant}\,: this allows declaring  structure invariants,
+     union invariants, 
+     \ifthenelse{\isCPP}{class invariants,}{}
+     and invariants on type names introduced by
     \typedef.  See section~\ref{sec:invariants}.
 
   \item \emph{logic specifications}\,: definitions of logic functions
@@ -147,7 +120,7 @@ Section~\ref{sec:multiplecontracts}).
 
 \subsection{About preprocessing}
 
-This document considers C source \emph{after} preprocessing.
+This document considers \lang{} source \emph{after} preprocessing.
 Tools must decide how they handle preprocessing (what to do with
 annotations, whether macro substitution should be performed, etc.)
 
@@ -159,7 +132,7 @@ standard, \NAME does not define uses of digraphs and trigraphs. Any tool that wi
 
 Additional keywords of the specification language start with a
 backslash, if they are used in the position of a term or a predicate
-(which are defined in the following).  Otherwise they do not start
+(which are defined later in the document).  Otherwise they do not start
 with a backslash (like \ensures{}) and they remain valid identifiers.
 
 \section{Notations for grammars}

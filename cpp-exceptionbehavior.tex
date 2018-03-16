@@ -1,0 +1,13 @@
+\begin{syntax}
+  abrupt-clause ::= throws-clause
+  \
+  abrupt-clause-stmt ::= throws-clause
+  \
+  throws-clause ::= "throws" pred ";"
+  \
+  throws-clause ::= "throws" "{" "..." "}" pred ";"
+  \
+  throws-clause ::= "throws" "{" C-type-name ( "," C-type-name )* "}" pred ";"
+  \
+  term  ::= "\exception"
+\end{syntax}

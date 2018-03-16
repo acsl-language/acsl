@@ -1,0 +1,78 @@
+\section{Class contracts}
+\label{sec:class-contracts}
+
+C++ allows the declaration of functions and data fields within
+the scope of the declaration of an aggregate type (class, struct or union). Similarly \NAME{} specification annotations
+may be present at class (or struct or union) scope.
+
+\subsection{Global declarations}
+
+As described in Section ???, logical specifications (predicates, functions, lemmas, and constants) may be defined at global scope. They may also be defined in class (that is, aggregate) scope. The following considerations apply:
+\begin{itemize}
+	\item Just as for \lang{} identifiers, any names 
+	declared are part of the aggregate scope. The name may
+	be referred to outside of the aggregate using \lang's 
+	qualification syntax, as in \lstinline|A::m| for a 
+	logic predicate, for example, named \lstinline|m| and
+	declared in class \lstinline|A|.
+	\item As for any other specification constructs, those defined in aggregate scope are only within scope in other specification annotations.
+	\item Within aggregate scope, a predicate or function definition may be
+	declared \lstinline|static|, with the same meaning as 
+	\lstinline|static| has for \lang{} function 
+	declarations: non-static logic predicates and functions
+	may refer to \lstinline|\this| and are invoked with the
+	\lang{} arrow or dot syntax.
+	\item Logic lemmas, logic type definitions, axiomatic definitions, and logic constant definitions are always implicitly static. The effect of declaring them within an aggregate is just one of name scope.
+\end{itemize}
+
+\marginpar{Should give some signfiicant examples}
+
+
+\subsection{Function contracts within class scope}
+
+Function declarations or definitions that belong to an aggregate may have function
+contracts just as may functions declared or defined at global scope. If the function is not declared \lstinline|static|, then
+then keyword \lstinline|\this| may be used within the function
+contract and within any statement contract within the 
+function. The keyword \lstinline|\this| refers to the current
+object, just as \lstinline|this| does within \lang code.
+The type of \lstinline|\this| in contracts is the same as the type of \lstinline|this| in C++ code: \lstinline|T*| or \lstinline|const T*|, where \lstinline|T| is the type of the enclosing aggregate.\marginpar{Should the keyword be just \lstinline|this| or \lstinline|\this|?}
+
+\subsection{Ghost functions}
+Aggregates may also contain ghost functions, as described in secction????? \marginpar{Complete this subsection}
+
+
+\subsection{Inheritance of function contracts}
+
+A key aspect of object-oriented programming is 
+that one can derive classes from parent classes and in 
+the process inherit behaviors of the parent class, 
+while specializing the implementation to something appropriate to the derived class. 
+To use a standard example, 
+one might define an abstract base class \lstinline|Shape| to describe arbitrary 2D geometric shapes, 
+with an abstract method 
+\lstinline|area| that returns the area of the shape. 
+Derived classes \lstinline|Circle| and \lstinline|Square| would contain concrete data fields that defined the parameters of circle and square shapes respectively; 
+the derived classes would each have its own implementation of the area() method appropriate to its kind of shape. 
+However, the key idea is that methods of a \lstinline|Shape| object can be used without knowing which derived class the object is actually an instance of.
+
+The usual design intent is to obey Liskov and Wing's principle of \textit{behavioral subtyping}\cite{Liskov:1994:BNS:197320.197383}: 
+anything provable about a base type should be provable about a subtype.
+\NAME{} imposes that requirement on derived classes by 
+requiring that methods of derived classes obey the contract of any methods of parent classes that the derived class methods override. 
+If behavior subtyping does not hold between a base and derived class, then the behavior of methods
+invoked on a pointer or reference whose static type is the
+parent class (but whose dynamic class is any derived class) may depend on the actual dynamic class, 
+a complex situation for program understanding, debugging, or verification.
+
+Consider a derived class method \lstinline|D::m| that overrides a parent class method \lstinline|P::m|.
+Behavioral subtyping is obeyed if (a) the (composite) precondition of
+\lstinline|D::m| implies the (composite) precondition of 
+\lstinline|P::m| and (b) the (composite) postcondition of
+\lstinline|P::m| implies the (composite) postcondition of 
+\lstinline|D::m|. That is, preconditions may be more lenient in derived classes, and postconditions may be more strict. 
+
+This fairly straightforward requirement becomes complex in its interaction with function contracts that have multiple behaviors, 
+as described in section TBD\marginpar{Sec ref needed}.
+\footnote{JML was designed explicitly around behavioral subtyping and the implications of behavioral subtyping are much simpler. 
+	See the comparative discussion in Appendix TBD\marginpar{Sec ref needed}.}

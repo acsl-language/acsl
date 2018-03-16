@@ -3,69 +3,18 @@
 % rubber: watch main.cb2
 % rubber: depend ../../VERSION
 \documentclass[web]{frama-c-book}
-%\usepackage{hevea}
 
-\usepackage[
-type={CC},
-modifier={by},
-version={4.0}]
-{doclicense}
+\newcommand{\NAME}{ACSL}
+\newcommand{\lang}{C}
+\newcommand{\isCPP}{\boolean{false}}
 
-\usepackage{ifthen}
-
-\input{./macros_modern}
-\newcommand{\framacversion}{\input{VERSION}}
+\input{common}
 
 %Do not touch the following line. It is used in a Makefile hack to
 %produce the ACSL document shipped with the Frama-C distribution.
 %--\setboolean{PrintImplementationRq}{false}
 
 %\setboolean{ColorImplementationRq}{false}
-
-%Already set in frama-c-book
-%\usepackage[a4paper=true,pdftex,colorlinks=true,urlcolor=blue,pdfstartview=FitH]{hyperref}
-
-%already set in frama-c-book
-%\usepackage[T1]{fontenc}
-%\usepackage{times}
-\usepackage{amssymb}
-\usepackage{graphicx}
-%\usepackage{tikz}
-\usepackage{color}
-\usepackage{xspace}
-\usepackage{makeidx}
-\usepackage[normalem]{ulem}
-\usepackage[leftbars]{changebar}
-\usepackage{alltt}
-\makeindex
-
-%Already set in frama-c-book
-%\setlength{\textheight}{240mm}
-%\setlength{\topmargin}{-10mm}
-%\setlength{\textwidth}{160mm}
-%\setlength{\oddsidemargin}{0mm}
-%\setlength{\evensidemargin}{0mm}
-
-\newcommand{\version}{\input{ACSL_VERSION}}
-
-\renewcommand{\textfraction}{0.01}
-\renewcommand{\topfraction}{0.99}
-\renewcommand{\bottomfraction}{0.99}
-
-% already taken care of in frama-c-book
-% \usepackage{fancyhdr}
-% \pagestyle{fancyplain}
-% \renewcommand{\footrulewidth}{0.4pt}
-% \addtolength{\headheight}{2pt}
-% \addtolength{\headwidth}{1cm}
-% \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
-% \renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
-% \lhead[\fancyplain{}{\bfseries\thepage}]{\fancyplain{}{\bfseries\rightmark}}
-% \chead{}
-% \rhead[\fancyplain{}{\bfseries\leftmark}]{\fancyplain{}{\bfseries\thepage}}
-% \lfoot{\fancyplain{}{ANSI/ISO C Specification Language}}
-% \cfoot{}
-% \rfoot{\fancyplain{}{CAT RNTL project}}
 
 \begin{document}
 \sloppy
@@ -111,30 +60,6 @@ $^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405
 \phantomsection
 \label{chap:contents}
 \tableofcontents
-
-\chapter*{Foreword}
-
-% This is a preliminary design of the ACSL language, a deliverable of
-% the task 7.2 of the ANR RNTL project CAT
-% (\url{http://www.rntl.org/projet/resume2005/cat.htm}). In this
-% project, a reference implementation of ACSL is provided: the Frama-C
-% platform (\url{http://frama-c.cea.fr}).
-
-This document describes version \version{} of the ANSI/ISO C Specification Language (ACSL). 
-The language features may still evolve in the future. 
-In particular, some features in this document
-are considered \emph{experimental}, meaning that their syntax and
-semantics is not yet fixed.  
-These features are marked with
-\experimental.  
-They should also be considered advanced features,
-which not needed for a basic use of this
-specification language.
-
-\section*{Acknowledgements}
-
-We gratefully thank all the people who contributed to this document:
-\input{names.tex}
 
 \include{foreword}
 
@@ -189,7 +114,7 @@ We gratefully thank all the people who contributed to this document:
     program state at the beginning of the call, including the
     current values for the function parameters. The \emph{post-state}
     denotes the program state at the return of the call.
-    
+
     For a statement annotation, the \emph{pre-state} denotes the
     program state just prior to the annotation statement; the
     \emph{post-state}
