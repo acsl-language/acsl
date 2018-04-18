@@ -3,13 +3,19 @@
 
 This document is a reference manual for
 \ifthenelse{\boolean{PrintImplementationRq}}%
-{the ACSL implementation provided by the Frama-C
-  framework~\cite{frama-c}.}%
-{ACSL.}
+           {the ACSL implementation\footnote{In this reference manual of ACSL,
+               text in red color is related to features that have not yet been
+               implemented in \textsc{Frama-C} \framacversion{}.}
+            provided by the \mbox{\textsc{Frama-C}} %no cesure
+            framework~\cite{frama-c}.}%
+           {ACSL.}
 ACSL is an acronym for ``ANSI/ISO C
 Specification Language''. This is a Behavioral Interface Specification
-Language (BISL) implemented in the \textsc{Frama-C} framework.
-It aims at specifying behavioral properties of C
+Language (BISL)
+\ifthenelse{\boolean{PrintImplementationRq}}%
+           {for}%
+           {implemented in the \textsc{Frama-C} framework. It aims at}
+specifying behavioral properties of C
 source code. The main inspiration for this language comes from the
 specification language of the \textsc{Caduceus}
 tool~\cite{filliatre04icfem,filliatre07cav} for deductive verification
