@@ -214,7 +214,7 @@ acsl.tex: $(MAIN).tex Makefile
 	@chmod a-w $@
 
 # Internal to Frama-C
-FRAMAC=../../bin/frama-c
+FRAMAC ?= ../../bin/frama-c
 
 HAS_FRAMAC:=$(shell if test -x $(FRAMAC); then echo yes; else echo no; fi)
 
