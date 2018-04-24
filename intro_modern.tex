@@ -3,14 +3,44 @@
 
 This document is a reference manual for
 \ifthenelse{\boolean{PrintImplementationRq}}%
-{the ACSL implementation provided by the Frama-C
-  framework~\cite{frama-c}.}%
-{ACSL.}
+           {the ACSL implementation provided by the
+             \mbox{\textsc{Frama-C}} %no cesure
+            framework~\cite{frama-c}.}%
+           {ACSL.}
 ACSL is an acronym for ``ANSI/ISO C
 Specification Language''. This is a Behavioral Interface Specification
-Language (BISL) implemented in the \textsc{Frama-C} framework.
-It aims at specifying behavioral properties of C
-source code. The main inspiration for this language comes from the
+Language (BISL)
+\ifthenelse{\boolean{PrintImplementationRq}}%
+           {for}%
+           {implemented in the \textsc{Frama-C} framework. It aims at}
+specifying behavioral properties of C
+source code.
+
+\ifthenelse{\boolean{PrintImplementationRq}}{%
+Not all of the features mentioned in this document are currently
+implemented in the Frama-C kernel. Unimplemented features are signaled
+as in the following line:
+\begin{quote}
+\notimplemented[Additional remarks on the feature may appear in a footnote.]%
+{This feature is not currently supported by Frama-C}
+\end{quote}
+
+As a summary, the features that are not currently implemented in
+Frama-C include in particular:
+\begin{itemize}
+\item some built-in predicates and logical functions;
+\item definition of logical types (section~\ref{sec:logicspec});
+\item specification modules (section~\ref{sec:specmodules});
+\item model variables (section~\ref{ex:model});
+\item only basic support for ghost code is provided (section~\ref{sec:ghost});
+\item verification of non interference of ghost code
+  (p.~\pageref{sec:semantics-ghost-code});
+\item specification of volatile variables
+  (section~\ref{sec:volatile-variables});
+\end{itemize}
+}%
+
+The main inspiration for this language comes from the
 specification language of the \textsc{Caduceus}
 tool~\cite{filliatre04icfem,filliatre07cav} for deductive verification
 of behavioral properties of C programs. The specification language of
