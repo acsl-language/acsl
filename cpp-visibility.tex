@@ -1,0 +1,185 @@
+\section{Access control and abstraction}
+\label{sec:access}
+
+\TODO{Grammar additions needed}
+
+\subsection{Access control of \NAME{} constructs}
+
+\lang{} allows members of aggregate types to be declared as \lstinline|public|, \lstinline|protected|, or \lstinline|private|. This visibility modifier affects whether the member can be accessed in other contexts. 
+
+The same access rules apply to \NAME{} constructs declared at class scope. Any name that may be declared at class scope, such as logic functions, predicates, invariants and ghost code, has associated with it the access modifier that it would if it were a \lang{}
+construct, with the same access defaults being used for struct and class declarations. Typically, \lstinline|private| \NAME{}
+constructs would be used to aid in the proofs of the implementation of a class's members, whereas 
+\lstinline|public| \NAME{} constructs are used as class abstractions or to assist in proofs of functions that use the class's
+functionality.
+
+Recall that a \lang{} context A can declare as a \lstinline|friend| a name N from context B and thereby allow 
+the definition of B::N to use private elements of A. Similarly, within an \NAME{} annotation, context A can declare as
+\lstinline|friend| a \NAME{} name N from context B and thereby allow 
+the definition of B::N (within an ACSL annotation) to use private elements of A.
+
+ \TODO{Need an example of access and motivating examples of the rul about friends.}
+ 
+\subsection{Access, specifications and information hiding}
+
+If a particular \lang{} name is accessible and that name has an associated \NAME{} specification, then the specification is also accessible and all the names used within the specification must be
+accessible. For example, if a function definition is accessible in some context, then the function contract is also accessible, so all the 
+names used within that function contract must be accessible. This is a conceptual requirement: if a client of a class uses a function of the class, the client needs to be able to see the specification of that function, and thus it must have access to all the identifiers 
+within the expressions of that specification.
+
+However, this naturally expressed requirement causes problems in writing specifications that adhere to the information hiding expectations of classes. Consider a class that wraps an implementation of a simple array:
+
+\begin{listing-nonumber}
+class Array {
+	
+  private:
+	
+	int[] data;
+	int data_length;
+
+  public:
+	
+	/*@ 
+	requires 0 <= index < data\_length;
+	ensures \result == data[data\_length];
+	*/
+	int getValue(int index) {
+		return data[index];
+	}
+}
+\end{listing-nonumber}
+
+Here the representation of the Array object, its data values and length, are appropriately private, while the accessor function is public.
+However, expressing the specification of the accessor function requires using the private members, violating information hiding and
+the abstraction boundary, as well as the access rule stated above.
+
+The core problem is this: to express the valid values of \lstinline|index|, one needs the concept of the length of the array; that is, one needs an abstraction, namely length(). In this example the abstract \lstinline|length()| is represented by the data value \lstinline|data_length|, but the class could have chosen some other representation.
+
+One solution to this representation problem is to write the following:
+
+\begin{listing-nonumber}
+class Array {
+	
+  private:
+	
+	int[] data;
+	int data_length;
+	
+  public:
+	
+	/*@
+	   requires true;
+	   logic int length() = this.data_length; 
+	   
+	   requires 0 <= index < length();
+	   logic int value(int index) = this.data[index];
+	*/
+	
+	/*@ 
+	   requires 0 <= index < length();
+	   ensures \result == value(index);
+	*/
+	int getValue(int index) {
+		return data[index];
+	}
+}
+\end{listing-nonumber}
+
+This example demonstrates the general solution for abstraction that respects information hiding: write public logic functions, predicates or invariants that express the abstract properties of the class, express the specifications of the public members of the class in terms of those abstractions, and write the implementation of the abstractions in terms of the appropriate private aspects of the class.
+
+\subsection{Usability improvements}
+
+In the example above we abstracted the concept of array length by defining the public logic function \lstinline|length()|. 
+In this case, the sole purpose of \lstinline|length()| is to make accessible the value of \lstinline|data_length|. It may seem verbose and overkill to need to define and use \lstinline|length()|  solely to expose \lstinline|data_length|. An alternative is to declare
+that although \lstinline|data_length| is private for \lang{} implementation purposes, it is public for specification purposes.
+In this case we write
+
+\begin{listing-nonumber}
+class Array {
+	
+  private:
+	
+	int[] data;
+	
+  //@ spec_public:
+  
+	int data_length;
+	
+  public:
+	
+	/*@
+	   requires 0 <= index < this.data_length;
+	   logic int value(int index) = this.data[index]; 
+	*/
+	
+	/*@ 
+	   requires 0 <= index < data_length;
+	   ensures \result == this.value(index);
+	*/
+	int getValue(int index) {
+		return data[index];
+	}	
+}
+\end{listing-nonumber}
+
+Here the \lstinline|spec_public:| access specifier introduces a new section of the class declaration: all declarations are still 
+\lstinline|private| in \lang{}, since that is the most recent \lang{} access specifier, but until the next access specifier, the declarations have \lstinline|public| access within specifications. \TODO{Perhaps this should apply to just the immediate declaration?}
+
+The advantage of this syntax is more concise expression; there is no need to declare \lstinline|length()| just to replicate \lstinline|data_length|.
+The disadvantage is that we have lost a measure of information hiding. By using the abstraction \lstinline|length()| we could
+have altered the representation of length within the class without affecting the public specifications and what clients of the class see.
+By using \lstinline|spec_public|, that is no longer the case.
+Accordingly, \lstinline|spec_public| should only be used in temporary situations, during development, or where it is clear that the representation is not going to change.
+
+The access specifier \lstinline|spec_protected| may also be seud (within \NAME{} annotations) to give \lang{} \lstinline|protected| access to \lang{} constructs
+that would otherwise be \lstinline|private|.
+
+\subsection{Pure functions}
+A second verbose aspect of the listing above is that the logic representation function \lstinline|value()| is essentially a replica of
+the \lang{} function \lstinline|getValue()|. Why write and maintain both of these? Can we not use at least some \lang{} functions in 
+specifications?
+
+The syntax to do so is shown in the following listing, but there are restrictions on when this is allowed.
+
+\begin{listing-nonumber}
+class Array {
+	
+  private:
+	
+    int[] data;
+	
+  //@ spec_public:
+	
+    int data_length;
+	
+  public:
+	
+    /*@ 
+      requires 0 <= index < data_length;
+      ensures \result == data[index];
+    */
+    //@ pure
+    int getValue(int index) {
+		return data[index];
+    }	
+}
+\end{listing-nonumber}
+
+When designated \lstinline|pure|, a \lang{} function may also be used in a \NAME{} specification. The conditions under which a 
+\lang{} function may be declared \lstinline|pure| are discussed in the following subsections.
+
+\subsubsection{No side-effects}
+The principal restriction is that the function declared \lstinline|pure| must have no side-effects. It may compute a value and may have 
+temporary stack variables, but it may not assign to any locations in the heap that are allocated in the pre-state of the function.
+No assignments are permitted to a pre-state location even if the assignment does not change the value stored in the location.
+This is partly a static condition, but when assigning to fields of an object, it must be demonstrated that the object is a local temporary or
+has been allocated since the pre-state; this demonstration may require reasoning about anti-aliasing.
+
+\TODO{Should we insist on strong purity -- no changes to the heap at all? -- or weak purity -- no changes to the prestate and no allocations that are not deallocated by the post-state?}
+
+\subsubsection{... other  conditions...}
+
+\TODO{What other conditions, e.g. reading from the heap?}
+
+
+\TODO{Also need to state rules about state parameters for logic functions when it have a 'this' parameter}

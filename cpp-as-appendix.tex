@@ -1,0 +1,134 @@
+%% This is the main file for the ACSL++ language definition
+
+%; whizzy section -pdf -initex "pdflatex -ini"
+% rubber: watch cpp-main.cb
+% rubber: watch cpp-main.cb2
+% rubber: depend ../../VERSION
+\documentclass[web]{frama-c-book}
+
+\newcommand{\NAME}{ACSL++}
+\newcommand{\lang}{C++}
+\newcommand{\isCPP}{\boolean{true}}
+\newcommand{\TODO}[1]{\textit{<<#1>>}\marginpar{TODO}}
+
+\input{common}
+\renewcommand{\version}{DRAFT}
+
+%Do not touch the following line. It is used in a Makefile hack to
+%produce the ACSL document shipped with the Frama-C distribution.
+\setboolean{PrintImplementationRq}{false}
+
+%\setboolean{ColorImplementationRq}{false}
+
+
+\begin{document}
+\sloppy
+\hbadness=10000
+
+\ifthenelse{\boolean{PrintImplementationRq}}%
+  {\coverpage{\vbox{\mbox{\NAME{} Version \version}\newline
+\mbox{Implementation in \framacversion{}}}}}%
+  {\coverpage{\vbox{\mbox{\NAME: ANSI/ISO C++ Specification Language}\newline
+        \mbox{Version \version} \newline \mbox{C++ excerpts only} }}}
+
+\begin{titlepage}
+\includegraphics[height=16mm]{cealistlogo}
+\hfill
+\includegraphics[height=18mm]{inria}
+\vfill
+\title{\NAME: ANSI/ISO C++ Specification Language}%
+{Version \version{}\ifthenelse{\boolean{PrintImplementationRq}}%
+{~--~\framacversion}{}}
+%%\author{Patrick Baudin$^1$, Pascal Cuoq$^1$, Jean-Christophe Filli\^atre$^{4,3}$, Claude March\'e$^{3,4}$,\\ Benjamin Monate$^1$, Yannick Moy$^{2,4,3}$, Virgile Prevosto$^1$}
+\author{David R. Cok$^1$, ...}
+
+\begin{tabular}{l}
+$^1$ CEA LIST, Software Reliability Laboratory, Saclay, F-91191 \\
+$^2$ France T\'el\'ecom, Lannion, F-22307 \\
+$^3$ INRIA Saclay - \^Ile-de-France, ProVal, Orsay, F-91893 \\
+$^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405
+\end{tabular}
+\vfill
+\begin{flushleft}
+  \doclicenseImage[imagewidth=5em] \doclicenseText\\
+  Sources are available at \url{https://github.com/acsl/acsl}.
+
+  \textcopyright 2018 CEA LIST and INRIA
+
+  This work has been supported by TODO 
+
+\TODO{Identify support}
+\end{flushleft}
+\end{titlepage}
+
+%%Contents should open on right
+\cleardoublepage
+\phantomsection
+
+\include{cpp-foreword}
+
+\clearpage
+
+
+%\include{intro_modern}
+
+%\include{speclang_modern}
+\ifthenelse{\isCPP}{\input{cpp-default-values}}{}
+\clearpage
+\ifthenelse{\isCPP}{\input{cpp-class-contracts}}{}
+\clearpage
+\ifthenelse{\isCPP}{\input{cpp-namespaces}}{}
+\clearpage
+\ifthenelse{\isCPP}{\input{cpp-exceptions}}{}
+\clearpage
+\ifthenelse{\isCPP}{\input{cpp-attributes}}{}
+\clearpage
+\ifthenelse{\isCPP}{\input{cpp-pure-functions}}{}
+\clearpage
+\ifthenelse{\isCPP}{\input{cpp-enum}}{}
+\clearpage
+\ifthenelse{\isCPP}{\input{cpp-types}}{}
+\clearpage
+\ifthenelse{\isCPP}{\input{cpp-invariants}}{}
+\clearpage
+\ifthenelse{\isCPP}{\input{cpp-functional}}{}
+\clearpage
+\ifthenelse{\isCPP}{\input{cpp-visibility}}{}
+\clearpage
+%\ifthenelse{\isCPP}{\input{cpp-defensive}}{}
+%\clearpage
+\ifthenelse{\isCPP}{\input{cpp-templates}}{}
+\clearpage
+\ifthenelse{\isCPP}{\input{cpp-abstraction}}{}
+\clearpage
+\ifthenelse{\isCPP}{\input{cpp-types}}{}
+\clearpage
+\ifthenelse{\isCPP}{\input{cpp-functional-examples}}{}
+\clearpage
+
+\section{Other topics}
+
+\begin{itemize}
+\item inline functions - repeated specs
+\end{itemize}
+%\include{libraries_modern}
+
+%\include{concl_modern}
+
+%\appendix
+
+%\chapter{Appendices}
+%\label{chap:appendix}
+
+%\section{Quick reference card}
+
+%\todo{by Benjamin}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-PDF-mode: t
+%%% TeX-master: t
+%%% ispell-local-dictionary: "english"
+%%% End:

@@ -20,26 +20,28 @@ As described in Section ???, logical specifications (predicates, functions, lemm
 	declared \lstinline|static|, with the same meaning as 
 	\lstinline|static| has for \lang{} function 
 	declarations: non-static logic predicates and functions
-	may refer to \lstinline|\this| and are invoked with the
+	may refer to \lstinline|this| and are invoked with the
 	\lang{} arrow or dot syntax.
+
+	\TODO{Perhaps we should require that logic functions have an explicit first argument with name 'this' and not treat it implicitly like C++ methods}
 	\item Logic lemmas, logic type definitions, axiomatic definitions, and logic constant definitions are always implicitly static. The effect of declaring them within an aggregate is just one of name scope.
 \end{itemize}
 
-\marginpar{Should give some signfiicant examples}
+\TODO{Should give some significant examples}
 
 
 \subsection{Function contracts within class scope}
 
 Function declarations or definitions that belong to an aggregate may have function
-contracts just as may functions declared or defined at global scope. If the function is not declared \lstinline|static|, then
+contracts just as functions declared or defined at global scope. If the function is not declared \lstinline|static|, then
 then keyword \lstinline|\this| may be used within the function
 contract and within any statement contract within the 
 function. The keyword \lstinline|\this| refers to the current
 object, just as \lstinline|this| does within \lang code.
-The type of \lstinline|\this| in contracts is the same as the type of \lstinline|this| in C++ code: \lstinline|T*| or \lstinline|const T*|, where \lstinline|T| is the type of the enclosing aggregate.\marginpar{Should the keyword be just \lstinline|this| or \lstinline|\this|?}
+The type of \lstinline|\this| in contracts is the same as the type of \lstinline|this| in C++ code: \lstinline|T*| or \lstinline|const T*|, where \lstinline|T| is the type of the enclosing aggregate.
 
 \subsection{Ghost functions}
-Aggregates may also contain ghost functions, as described in secction????? \marginpar{Complete this subsection}
+Aggregates may also contain ghost functions, as described in secction????? \TODO{Complete this subsection}
 
 
 \subsection{Inheritance of function contracts}
@@ -73,6 +75,13 @@ Behavioral subtyping is obeyed if (a) the (composite) precondition of
 \lstinline|D::m|. That is, preconditions may be more lenient in derived classes, and postconditions may be more strict. 
 
 This fairly straightforward requirement becomes complex in its interaction with function contracts that have multiple behaviors, 
-as described in section TBD\marginpar{Sec ref needed}.
+as described in section TBD\TODO{Sec ref needed}.
 \footnote{JML was designed explicitly around behavioral subtyping and the implications of behavioral subtyping are much simpler. 
-	See the comparative discussion in Appendix TBD\marginpar{Sec ref needed}.}
+	See the comparative discussion in Appendix \ref{TBD}.}
+
+
+\subsection{Specifications of special member functions}
+
+\lang{} implicitly declares and provides a default implementation for some member functions under some circumstances. These member functions are a no-argument constructor, a copy constructor, a move constructor, a copy assignment constructor, a move assignment constructor, and a destructor. Because these member functions may not have a declaration, the usual syntax for providing them
+a specification does not apply.
+\TODO{So we need something different}
