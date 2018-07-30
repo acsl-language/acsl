@@ -38,7 +38,9 @@ DEPS= speclang_modern.tex macros_modern.tex intro_modern.tex		\
 	terminates_list.c glob_var_masked.c glob_var_masked_sol.c	\
 	intlists.c sign.c signdef.c oldat.c mean.c isgcd.c exit.c	\
 	mayexit.c loop_current.c welltyped.c list-observer.c            \
-        cpp-default-values.tex cpp-exceptions.tex
+
+DEPS_CPP= cpp-default-values.tex cpp-exceptions.tex \
+	cpp-namespaces.tex
 
 CPPDEPS= cpp-main.tex
 
@@ -236,6 +238,9 @@ acsl-implementation.tex: $(MAIN).tex Makefile
 acsl.pdf: $(DEPS)
 
 acslpp.pdf: $(DEPS) $(DEPSCPP)
+
+cpp-as-appendix.pdf: cpp-as-appendix.tex $(DEPS) $(DEPSCPP)
+	latexmk -f -silent -pdf $<
 
 acsl.tex: $(MAIN).tex Makefile
 	@rm -f $@

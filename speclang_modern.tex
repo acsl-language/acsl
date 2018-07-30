@@ -2,6 +2,7 @@
 
 \chapter{Specification language}
 \label{chap:base}
+\newcommand{\ifCPP}[1]{\ifthenelse{\isCPP}{\input{#1}}{}}
 \textsl{}
 \section{Lexical rules}
 
@@ -1394,7 +1395,7 @@ compute an over-approximation of the sets of modified locations.
 
 \ifCPPinput{cpp-default-values}
 
-\ifthenelse{\isCPP}{\input{cpp-default-values}}{}
+\ifCPP{cpp-default-values}
 	
 \section{Statement annotations}
 \index{annotation}
@@ -1853,7 +1854,13 @@ are dynamically allocated or deallocated by the annotated statement from the \te
 they are defined later in Section~\ref{sec:allocation-clause}.
 % END proposition
 
-\ifthenelse{\isCPP}{\input{cpp-class-contracts}}{}
+\ifCPP{cpp-class-contracts}
+\ifCPP{cpp-enum}
+\ifCPP{cpp-templates}
+\ifCPP{cpp-types}
+\ifCPP{cpp-visibility}
+\ifCPP{cpp-attributes}
+\ifCPP{cpp-namespaces}
 
 \section{Termination}
 \label{sec:termination}
@@ -2957,9 +2964,9 @@ is the same as function \lstinline|\concat| (resp. \lstinline|\repeat|).
 \end{figure}
 
 The \ensures\indextt{ensures} clause of function and statement contracts
-does not constrain the post-state when an annotated function or
-statement terminates abruptly. In such cases, an
-\textsl{abrupt clause} can be used as a \textsl{simple clause} or in a
+does not constrain the post-state when the annotated function or
+statement terminates abruptly. In such cases,
+\textsl{abrupt clauses} can be used within \textsl{simple clause} or
 \textsl{behavior body}. The allowed constructs are shown in
 Figure~\ref{fig:gram:abrupt-clauses}.
 
@@ -2971,7 +2978,7 @@ annotated statement terminates abruptly with the corresponding
 statement (\lstinline|break|, \Continue{} or \lstinline|return|).
 
 Inside these clauses, the construct \lstinline|\old(e)|\indexttbs{old}
-is allowed and denotes, like for statement contracts
+is allowed and denotes, as for statement contracts
 \lstinline|ensures|, \assigns and \lstinline|allocates|, the value of
 \lstinline|e| in the pre-state of the statement.
  More generally, the visibility in \textsl{abrupt clauses} of predefined 
@@ -3031,15 +3038,15 @@ can be used only in \exits{},
 %% Discuter de la sémantique du assign en présence d'une terminaison abrupte
 %% dans un contrat de fonction et de statement.
 % [Patrick B.] START proposition:
-In contrast to \ensures clauses, \assigns{},\indextt{assigns} 
-\allocates{}\indextt{allocates} 
-and \frees\indextt{frees} clauses of function 
+In contrast to \ensures clauses, \assigns\indextt{assigns}, 
+\allocates\indextt{allocates} and \frees\indextt{frees} clauses of function 
 and statement contracts constrain the post-state 
 even when the annotated function or statement terminates abruptly. 
 This is shown in example~\ref{ex:assigns-and-abrupt-termination} for a function contract.
 % END proposition:
 
-\input{cpp-exceptions}
+\ifCPP{cpp-exceptions}
+
 %% TODO:
 %%  Discuter de exit versus return pour la fonction main. Discuter
 %%    du atexit() : le post-state de la clause exit est-il avant ou
@@ -3166,9 +3173,7 @@ which they are supposed to hold.
   variable, or formal parameter\index{formal parameter}
   with static type $\tau$. If the
   result of the function has type $\tau$, the result must also
-  satisfy its strong invariant at function exit. Again, it says
-  nothing about fields, array elements, memory locations, etc. of type
-  $\tau$.
+  satisfy its strong invariant at function exit.
 
 \end{itemize}
 
@@ -3418,7 +3423,7 @@ Volatile variables can not be used in logic terms, since reading such
 a variable may have a side effect, in particular two successive reads
 may return different values.
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \begin{cadre}
       \input{volatile-gram.bnf}
     \end{cadre}
@@ -3547,21 +3552,21 @@ and \lstinline|\valid_function(p)| holds if and only if
 
 \ifthenelse{\isCPP}{\marginpar{Other C++ topics to include: templates, namespaces, class-level specs, when do invariants hold, restrictions on invariant footprint, function parameters, lambda expressions, specs for overloaded operators, specs for implicit constructors and destructors, types}}{}
 
-%\section{Module constructions}
-%
-%\experimental
-%
-%how to encapsulate several functions...
+\section{Module constructions}
 \section{Logic attribute annotations}
 \label{sec:attribute_annot}
 
+\experimental
 
-%\section{Attribute annotations}
-%\label{sec:attribute_annot}
-%
-%\experimental
-%
-%These are annotations allowing to add attributes on variables, like regular C attributes (const, volatile, restrict).
+how to encapsulate several functions...
+
+
+\section{Attribute annotations}
+\label{sec:attribute_annot}
+
+\experimental
+
+These are annotations allowing to add attributes on variables, like regular C attributes (const, volatile, restrict).
 
 \ifCPP{
 \section{Other items to include somewhere}

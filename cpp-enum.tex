@@ -1,0 +1,44 @@
+\section{Enums}
+\label{sec:enums}
+\index{enum}
+
+\TODO{Needs grammar additions}
+
+\lang{} introduced enum types that are more strongly checked than in C. \lang{} allows the declaration of \textit{unscoped} and \textit{scoped} \lstinline|enum| types. In either case, the underlying type of the enum is some integral type. Accordingly, \lang{} still allows some conversions between enum values and integral values. Unscoped enumerations have an implicit conversion to an int, as in,
+
+\begin{listing-nonumber}
+enum color { red, orange, yellow}; // Unscoped type, 
+                        // because there is no 'struct' or 'class' keyword
+color c1 = red;
+color c2 = 1; // Illegal in C++
+color c3 = (color)10; // Cast is permitted
+int j = color; // Allowed for unscoped enum types
+\end{listing-nonumber}
+
+However, scoped enumeration values are not implicitly cast to integral types:
+
+\begin{listing-nonumber}
+enum struct color { red, orange, yellow}; // Scoped type, 
+                        // because of the 'struct' or 'class' keyword
+color c1 = red;
+color c2 = 1; // Illegal in C++
+color c3 = (color)10; // Cast is permitted
+int j = color; // Forbidden for scoped enum types
+int k = (int)color; // Cast is permitted
+\end{listing-nonumber}
+
+Note that in C++ an integral value may be cast to an enum value even if the value does not correspond to one of the named
+enumerator values, as long as it falls within the implementation range of the enumeration.
+
+In some situations, however, the author would like an enum type to be strictly distinguished from integral types in one or both of two respects:
+\begin{itemize}
+\item To forbid any conversions to or from integral values, even with casts.
+\item To forbid creating any enumerator values that are not named in the enumeration declaration.
+\end{itemize}
+
+\NAME{} allows two modifiers on the enum definition: \lstinline|strong| and \lstinline|complete|. If these are present on any declaration or definition, they must be present on all declarations and definitions of the enumeration type.
+\begin{itemize}
+	\item \lstinline|strong| means the enum type is strongly typed, that is no conversions to or from integral values are permitted. These checks are syntactic.
+	\item \lstinline|complete| means that no integral values are permitted that do not correspond to a named enumerator. If the enum type is \lstinline|strong| then it is automatically also \lstinline|complete|, because there is no syntax to create a new enumerator other than direct assignment of a constant. If it is not also \lstinline|strong|, then a declaration of \lstinline|complete| means that any conversion from an integral value to an enum value 
+	creates a proof obligation that the integral value belongs to one of the declared enumerators.
+\end{itemize}
