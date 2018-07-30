@@ -56,6 +56,8 @@ must be noted.
       \hline
       \lstinline|boolean| & \ensuremath{\mathbb{B}} & 0x1D539 \\
       \hline
+      \lstinline|\pi| & \ensuremath{\pi} & 0x3C0 \\
+      \hline
     \end{tabular}
   \end{center}
 \item Comments can be put inside ACSL annotations. They use the C++
@@ -605,10 +607,12 @@ real \pow(real x, real y) ;
 integer \ceil(real x) ;
 integer \floor(real x) ;
 
+real \e ;
 real \exp(real x) ;
 real \log(real x) ;
 real \log10(real x) ;
 
+real \pi ;
 real \cos(real x) ;
 real \sin(real x) ;
 real \tan(real x) ;
@@ -624,6 +628,9 @@ real \atan(real x) ;
 real \atan2(real y, real x) ;
 real \hypot(real x, real y) ;
 \end{listing-nonumber}
+
+Notation \lstinline|\pi| refers to the real number $\pi$ and \lstinline|\e| to
+the base of the natural logarithm: \lstinline|\log(\e)==1| and \lstinline|\exp(1)==\e|.
 
 \subsubsection{Exact computations}
 
@@ -937,10 +944,19 @@ constructs (shown in Figure~\ref{fig:gram:oldandresult}).
   predicate or term \lstinline|e| in the pre-state of the function.
 \item \result\indexttbs{result} denotes the returned value of the function.
 \end{itemize}
-\lstinline|\old(e)| and \result{} can be used only in \ensures{} clauses, since
-the other clauses already refer to the pre-state. In addition,
-\result{} can not be used in the contract of a function that returns
+\lstinline|\old(e)| can be used only in \ensures{}, \assigns{},
+\allocates{} and \frees{} clauses, since
+the other clauses already refer to only one state, the pre-state.
+In addition, \result{} can not be used in the contract of a function that returns
 \void{}.
+
+%[Andre M.] START proposition:
+%\item in \assigns{} and \frees{} clauses, a \result{} not directly inside an
+%  \lstinline|\at(...,Post)| (either explicitly or implicitly) is forbidden.
+% Note: we must still be able to write assigns \result \from \nothing, so
+% the above must be refined.
+% END proposition
+
 
 C function parameters\index{formal parameter} are obtained by
 value from actual parameters that mostly remain unaltered by the
@@ -1609,9 +1625,12 @@ in fact syntactic sugar for \lstinline|\at(e,Old)|.
   where it refers to the state where the annotation appears; and in
   all contracts, where it refers to the pre-state for the
   \lstinline|requires|, \lstinline|assumes|, \lstinline|assigns|,
+  \lstinline|frees|,
   \lstinline|variant|,
   \lstinline|terminates|
-  clauses and the post-state for other clauses.
+  clauses and the post-state for other clauses
+  (\lstinline|ensures|, \lstinline|allocates|, and abrupt termination
+  clauses).
 It is also visible in data invariants, presented in Section~\ref{sec:invariants}.
 \item The label \lstinline|Old| is visible in \lstinline|assigns| and
   \lstinline|ensures| clauses of all contracts (both for functions and for
