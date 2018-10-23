@@ -6,15 +6,14 @@
        | "&" tset ;
        | tset "[" tset "]" ;
        | term? ".." term? ; range
-       | "\union" "(" tset ("," tset)* ")" ; union of locations
-       | "\inter" "(" tset ("," tset)* ")" ; intersection
+       | "\union" "(" tset ("," tset)* ")" ; union of location sets
+       | "\inter" "(" tset ("," tset)* ")" ; intersection of location sets
        | tset "+" tset ;
        | "(" tset ")" ;
-       | {[the given term cannot itself be a set]
-           "{" tset "|" binders (";" pred)? "}"} ; set comprehension
-       | {[the given terms cannot themselves be a set] 
+       | "{" tset "|" binders (";" pred)? "}" ; set comprehension
+       | {[the given terms cannot themselves be sets] 
           "{" (tset ("," tset)*)? "}" };
-       | term ; implicit singleton
+       | term [the given term cannot itself be a set] ; implicit singleton
        \
   pred ::= "\subset" "(" tset "," tset ")" ; set inclusion
        | term "\in" tset ; set membership

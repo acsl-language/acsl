@@ -3,18 +3,12 @@
 % rubber: watch main.cb2
 % rubber: depend ../../VERSION
 \documentclass[web]{frama-c-book}
-%\usepackage{hevea}
 
-\usepackage[
-type={CC},
-modifier={by},
-version={4.0}]
-{doclicense}
+\newcommand{\NAME}{ACSL}
+\newcommand{\lang}{C}
+\newcommand{\isCPP}{\boolean{false}}
 
-\usepackage{ifthen}
-
-\input{./macros_modern}
-\newcommand{\framacversion}{\input{VERSION}}
+\input{common}
 
 %Do not touch the following line. It is used in a Makefile hack to
 %produce the ACSL document shipped with the Frama-C distribution.
@@ -150,6 +144,8 @@ Pierre Rousseau,
 Julien Signoles,
 Jean Souyris,
 Asma Tafat.
+
+\include{foreword}
 
 \include{intro_modern}
 

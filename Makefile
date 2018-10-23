@@ -2,7 +2,7 @@ default: acsl.pdf
 
 MAIN=main
 
-PDF_OUTPUTS=acsl-implementation.pdf acsl.pdf
+PDF_OUTPUTS=acsl-implementation.pdf acsl.pdf acslpp.pdf
 
 ## Notes:
 ## no longer built target: acsl-mini-tutorial.pdf
@@ -14,7 +14,8 @@ BNF_FILES=term.tex predicate.tex binders.tex fn_behavior.tex \
           st_contracts.tex ghost.tex model.tex logic.tex inductive.tex \
           logicdecl.tex logictypedecl.tex higherorder.tex logiclabels.tex \
           logicreads.tex memory.tex data_invariants.tex volatile-gram.tex \
-          exitbehavior.tex dependencies.tex welltyped.tex list-gram.tex
+          exitbehavior.tex dependencies.tex welltyped.tex list-gram.tex \
+          cpp-exceptionbehavior.tex cpp-default-values-syntax.tex
 
 BNF_DEPS=$(BNF_FILES:.tex=.bnf)
 
@@ -36,7 +37,12 @@ DEPS= speclang_modern.tex macros_modern.tex intro_modern.tex		\
 	dangling.c sum2.c modifier.c gen_spec_with_ghost.c		\
 	terminates_list.c glob_var_masked.c glob_var_masked_sol.c	\
 	intlists.c sign.c signdef.c oldat.c mean.c isgcd.c exit.c	\
-	mayexit.c loop_current.c welltyped.c list-observer.c
+	mayexit.c loop_current.c welltyped.c list-observer.c            \
+
+DEPS_CPP= cpp-default-values.tex cpp-exceptions.tex \
+	cpp-namespaces.tex
+
+CPPDEPS= cpp-main.tex
 
 TUTORIAL_EXAMPLES=max_ptr-tut.c max_ptr2-tut.c max_ptr_bhv-tut.c \
                   max_seq_ghost-tut.c
@@ -207,10 +213,21 @@ acsl-implementation.tex: $(MAIN).tex Makefile
 # The ACSL reference document
 acsl.pdf: $(DEPS)
 
+acslpp.pdf: $(DEPS) $(DEPSCPP)
+
+cpp-as-appendix.pdf: cpp-as-appendix.tex $(DEPS) $(DEPSCPP)
+	latexmk -f -silent -pdf $<
+
 acsl.tex: $(MAIN).tex Makefile
 	@rm -f $@
 	sed -e '/^% rubber:/s/main.cb/acsl.cb/g' \
 	    -e '/^%--.*{PrintImplementationRq}/s/%--//' $^ > $@
+	@chmod a-w $@
+
+acslpp.tex: cpp-$(MAIN).tex Makefile
+	@rm -f $@
+	sed -e '/^% rubber:/s/cpp-main.cb/acslpp.cb/g' \
+	    -e '/^%--.*{PrintImplementationRq}/s/%--//' $< > $@
 	@chmod a-w $@
 
 # Internal to Frama-C
@@ -220,21 +237,21 @@ HAS_FRAMAC:=$(shell if test -x $(FRAMAC); then echo yes; else echo no; fi)
 
 ifeq ("$(HAS_FRAMAC)","yes")
 
-acsl: acsl-implementation.pdf acsl.pdf
+acsl: acsl-implementation.pdf acsl.pdf acslpp.pdf
 
 all: acsl tutorial check
 
 tutorial: tutorial-check acsl-mini-tutorial.pdf
 
-install: acsl-implementation.pdf acsl.pdf
-	rm -f  ../manuals/acsl-implementation.pdf  ../manuals/acsl.pdf
-	cp -f acsl-implementation.pdf acsl.pdf ../manuals/
+install: acsl-implementation.pdf acsl.pdf acslpp.pdf
+	rm -f  ../manuals/acsl-implementation.pdf  ../manuals/acsl.pdf ../manuals/acslpp.pdf
+	cp -f acsl-implementation.pdf acsl.pdf acslpp.pdf ../manuals/
 
 tutorial-valid: $(TUTORIAL_EXAMPLES:.c=.proved)
 VERSION:
 	$(FRAMAC) -version > $@
 else
-acsl: acsl.pdf
+acsl: acsl.pdf acslpp.pdf
 tutorial: acsl-mini-tutorial.pdf
 all: acsl tutorial
 install:

@@ -19,6 +19,7 @@ main.pdf
 /*.synctex.gz
 /acsl-implementation.tex
 /acsl.tex
+/acslpp.tex
 /framacversion.tex
 /acsl-mini-tutorial.tex
 /*-tut.c
@@ -27,10 +28,13 @@ main.pdf
 /*.cm*
 /*.o
 /VERSION
-*.mpx
 main.txss
+/cfg.mpx
+/cfg.mps
 
 # PDFs
 /acsl-implementation.pdf
 /acsl.pdf
+/acslpp.pdf
 /acsl-mini-tutorial.pdf
+/cpp-main.pdf

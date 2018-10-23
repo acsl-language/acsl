@@ -3,17 +3,17 @@
 
 This document is a reference manual for
 \ifthenelse{\boolean{PrintImplementationRq}}%
-           {the ACSL implementation provided by the
+           {the \NAME{} implementation provided by the
              \mbox{\textsc{Frama-C}} %no cesure
             framework~\cite{frama-c}.}%
            {ACSL.}
-ACSL is an acronym for ``ANSI/ISO C
-Specification Language''. This is a Behavioral Interface Specification
-Language (BISL)
+\NAME{} is an acronym for ``ANSI/ISO \lang{} 
+Specification Language''. 
+This is a Behavioral Interface Specification Language (BISL)
 \ifthenelse{\boolean{PrintImplementationRq}}%
            {for}%
            {implemented in the \textsc{Frama-C} framework. It aims at}
-specifying behavioral properties of C
+specifying behavioral properties of \lang{}
 source code.
 
 \ifthenelse{\boolean{PrintImplementationRq}}{%
@@ -50,7 +50,7 @@ similar goals for Java source code: indeed it aims both at
 \emph{runtime assertion checking} and \emph{static verification} using
 the \textsc{OpenJML} tool~\cite{Cok-2011-OpenJML,Cok-2014-OpenJML}, where we aim at
 \emph{static verification} and \emph{deductive verification} (see
-Appendix~\ref{sec:comp-jml} for a detailed comparison between ACSL and
+Appendix~\ref{sec:comp-jml} for a detailed comparison between \NAME~and
 JML).
 
 Going back further in history, the JML design was guided by the general
@@ -62,7 +62,8 @@ postconditions on a routine, going back at least to Dijkstra, Floyd and
 Hoare in the late 60's and early 70's.
 
 In this document, we assume that the reader has a good knowledge of
-the ISO C programming language~\cite{KR88,standardc99}.
+the ISO C programming language~\cite{KR88,standardc99} 
+\ifthenelse{\isCPP}{and the ISO C++ programming language~\cite{C++-2011}}{}.
 
 \section{Organization of this document}
 
@@ -70,9 +71,9 @@ In this preliminary chapter we introduce some definitions and
 vocabulary, and discuss generalities about this specification
 language.  Chapter~\ref{chap:base} presents the specification language
 itself.  Chapter~\ref{chap:lib} presents additional information about
-\emph{libraries} of specifications. Appendix~\ref{chap:appendix} provides
-specific hindsight over type-checking ACSL annotations, 
-the relation between ACSL and JML, and specification templates.
+\emph{libraries} of specifications. The appendices provide
+specific formal type-checking rules for \NAME{} annotations, 
+the relation between \NAME{} and JML, and specification templates.\marginpar{specicfication templates?}
 A detailed table of
 contents is given on page~\pageref{chap:contents}.
 A glossary is given in Appendix~\ref{sec:glossary}.
@@ -80,13 +81,13 @@ A glossary is given in Appendix~\ref{sec:glossary}.
 \section{Generalities about Annotations}\label{sec:gener-about-annot}
 
 In this document, we consider that specifications are given as
-annotations in comments written directly in C source files, so that
+annotations in comments written directly in \lang{} source files, so that
 source files remain compilable. Those comments must start with
-\verb|/*@| or \verb|//@| and end as usual in~C.
+\verb|/*@| or \verb|//@| and end as usual in \lang.
 
 In some contexts, it is not possible to modify the source code.
 It is strongly recommended that a tool that implements
-ACSL specifications provide technical means to store annotations
+\lang{} specifications provide technical means to store annotations
 separately from the source. It is not the purpose of this document
 to describe such means.  Nevertheless, some of the specifications,
 namely those at a global level, can be given in separate files:
@@ -107,8 +108,10 @@ Section~\ref{sec:multiplecontracts}).
   \item \emph{global invariant}\,: this is allowed at the level of
     global declarations. See section~\ref{sec:invariants}.
 
-  \item \emph{type invariant}\,: this allows declaring both structure
-    or union invariants, and invariants on type names introduced by
+  \item \emph{type invariant}\,: this allows declaring  structure invariants,
+     union invariants, 
+     \ifthenelse{\isCPP}{class invariants,}{}
+     and invariants on type names introduced by
     \typedef.  See section~\ref{sec:invariants}.
 
   \item \emph{logic specifications}\,: definitions of logic functions
@@ -147,7 +150,7 @@ Section~\ref{sec:multiplecontracts}).
 
 \subsection{About preprocessing}
 
-This document considers C source \emph{after} preprocessing.
+This document considers \lang{} source \emph{after} preprocessing.
 Tools must decide how they handle preprocessing (what to do with
 annotations, whether macro substitution should be performed, etc.)
 
@@ -155,7 +158,7 @@ annotations, whether macro substitution should be performed, etc.)
 
 Additional keywords of the specification language start with a
 backslash, if they are used in the position of a term or a predicate
-(which are defined in the following).  Otherwise they do not start
+(which are defined later in the document).  Otherwise they do not start
 with a backslash (like \ensures{}) and they remain valid identifiers.
 
 \section{Notations for grammars}

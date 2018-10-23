@@ -2,6 +2,7 @@
 
 \chapter{Specification language}
 \label{chap:base}
+\newcommand{\ifCPP}[1]{\ifthenelse{\isCPP}{\input{#1}}{}}
 
 \section{Lexical rules}
 
@@ -969,7 +970,7 @@ function contracts only).
 \subsection{Simple function contracts}
 \label{sec:simplecontracts}
 
-A simple function contract, having only simple clauses and no named behavior, takes the following
+A simple function contract, having only simple clauses and no named behaviors, takes the following
 form:\indextt{requires}\indextt{assigns}\indextt{ensures}
 \begin{listing}{1}
 /*@ requires P$_1$; requires P$_2$; `\dots`
@@ -1290,6 +1291,14 @@ elements \lstinline|t$_1$|, $\ldots$, \lstinline|t$_n$|.
 Note that \lstinline|assigns \nothing| is equivalent to
 \lstinline|assigns \empty|; it is left for convenience.
 
+Note that in some cases there is a small ambiguity. The
+use of an 
+individual variable, as in \lstinline|assigns x;|, invokes an implicit conversion to a singleton set, to 
+\lstinline|assigns {x};|, but only if the value of \lstinline|x| is not already a set of memory locations.
+Similarly, for example, if \lstinline|x| is a set of memory locations but \lstinline|y| is a simple variable (say of type \lstinline|int|), then \lstinline|assigns x,y;| means
+\lstinline|assigns \union(x,{y});|. If \lstinline|x| and \lstinline|y| are both simple variables, then \lstinline|assigns x,y;| means
+\lstinline|assigns \union({x},{y});|. 
+
 \begin{example}
   The following function sets each cell of an array to 0.
 
@@ -1336,6 +1345,8 @@ mandatory. On the other hand, if that function has a body, giving no
 \lstinline|assigns| clause means in practice that it is left to tools to
 compute an over-approximation of the sets of assigned locations.
 
+\ifCPP{cpp-default-values}
+	
 \section{Statement annotations}
 \index{annotation}
 
@@ -1441,7 +1452,7 @@ the last state in which \lstinline|I| was supposed to hold and
 the \Break statement.
 
 \item At any loop iteration, any location that was allocated before
-  entering the loop, and is not member of \lstinline|L| (interpreted in the
+  entering the loop and is not a member of \lstinline|L| (interpreted in the
   current state, that is \lstinline|LoopCurrent|) has the same value as
   before entering the loop (\lstinline|LoopEntry|).
   In fact, the \Loop \assigns clause specifies an inductive
@@ -1746,7 +1757,7 @@ may refer to enclosing named behaviors, with the form
 Such contracts are only valid for the
 corresponding behaviors, in particular only under the
 corresponding \assumes{} clause.
-Note that behaviors in statement contracts may have the name ids as enclosing function contract behaviors
+Note that behaviors in statement contracts may have the same ids as enclosing function contract behaviors
 or enclosing statement contracts.
 In such cases, a use of the id (in a \lstinline|for| construct) refers to the innermost behavior id.
 
@@ -1789,6 +1800,13 @@ are dynamically allocated or deallocated by the annotated statement from the \te
 they are defined later in Section~\ref{sec:allocation-clause}.
 % END proposition
 
+\ifCPP{cpp-class-contracts}
+\ifCPP{cpp-enum}
+\ifCPP{cpp-templates}
+\ifCPP{cpp-types}
+\ifCPP{cpp-visibility}
+\ifCPP{cpp-attributes}
+\ifCPP{cpp-namespaces}
 
 \section{Termination}
 \label{sec:termination}
@@ -2558,10 +2576,10 @@ and
       && \allocation{Here}(p)==\allocation{Pre}(p))
 \end{listing-nonumber}
 
-In fact, just as the \assigns clause does not specify which memory location is
-assigned,
-the \textsl{allocation-clauses} do not specify which memory location 
-is dynamically allocated or deallocated.
+In fact, just as the \assigns clause does not specify which memory locations are
+assigned (just which are permitted to be assigned),
+the \textsl{allocation-clauses} do not specify which memory locations 
+are dynamically allocated or deallocated.
 Pre-conditions and post-conditions should be added to complete the specifications
 about allocations and deallocations.
 The following shortcuts can be used for that:
@@ -2662,7 +2680,7 @@ each anonymous behavior.
 Loop annotations may contain similar clauses allowing one to specify which 
 memory locations 
 are dynamically allocated or deallocated by a loop.
-The grammar for those constructions is given on
+The grammar for those constructions is given in
  Figure~\ref{fig:gram:allocation}.
 
 The clauses \Loop \allocates and \Loop \frees are tied together.
@@ -2682,7 +2700,7 @@ The only difference between these two clauses is that sets
 and \lstinline|Q$_i$| are evaluated in the current loop state 
 (label \lstinline|LoopCurrent|).
 
-Just as for \lstinline|loop assigns|, loop annotations
+Just as for \lstinline|loop assigns|, the loop annotations
 \lstinline|loop frees| and \lstinline|loop allocates| define a loop invariant.
 
 More precisely, this loop annotation
@@ -2695,8 +2713,8 @@ is equivalent to the loop invariant
 \separated(\union(Q$_1$,$\ldots$,Q$_n$),p) ==>
    (\base_addr{Here}(p)==\base_addr{LoopEntry}(p)
     && \block_length{Here}(p)==\block_length{LoopEntry}(p)
-    && \valid{Here}(p)<==>\valid{LoopEntry}(p)
-    && \valid_read{Here}(p)<==>\valid_read{LoopEntry}(p)
+    && (\valid{Here}(p)<==>\valid{LoopEntry}(p))
+    && (\valid_read{Here}(p)<==>\valid_read{LoopEntry}(p))
     && \allocation{Here}(p)==\allocation{LoopEntry}(p))
 \end{listing-nonumber}
 
@@ -2852,21 +2870,21 @@ is the same as function \lstinline|\concat| (resp. \lstinline|\repeat|).
 \end{figure}
 
 The \ensures\indextt{ensures} clause of function and statement contracts
-does not constrain the post-state when the annotated function and
-statement terminates respectively abruptly. In such cases,
-\textsl{abrupt clauses} can be used inside \textsl{simple clause} or
+does not constrain the post-state when the annotated function or
+statement terminates abruptly. In such cases,
+\textsl{abrupt clauses} can be used within \textsl{simple clause} or
 \textsl{behavior body}. The allowed constructs are shown in
 Figure~\ref{fig:gram:abrupt-clauses}.
 
 The clauses \lstinline|breaks|\indextt{breaks}, \continues{}\indextt{continues} 
 and \returns{}\indextt{returns}
 can only be found in a statement contract and
-state properties on the program state which hold when the
+state properties on the program state that hold when the
 annotated statement terminates abruptly with the corresponding
 statement (\lstinline|break|, \Continue{} or \lstinline|return|).
 
 Inside these clauses, the construct \lstinline|\old(e)|\indexttbs{old}
-is allowed and denotes, like for statement contracts
+is allowed and denotes, as for statement contracts
 \lstinline|ensures|, \assigns and \lstinline|allocates|, the value of
 \lstinline|e| in the pre-state of the statement.
  More generally, the visibility in \textsl{abrupt clauses} of predefined 
@@ -2875,7 +2893,7 @@ logic labels\indextt{Pre}\indextt{Here}\indextt{Old}\indextt{Post}
 same as in \ensures{} clauses.
 
 For the \lstinline|returns| case, the \result\indexttbs{result}
-construct is allowed (if the function is not returning \void) and is bound
+construct is allowed (if the function does not return \void) and is bound
 to the returned value.
 
 \begin{example}
@@ -2896,12 +2914,12 @@ and \lstinline|\exit_status| is bound to the return code,
 \emph{e.g.} the value returned by \main{} or the argument passed to \exit{}.
 The  construct \lstinline|\exit_status|\indexttbs{exit\_status}
 can be used only in \exits{},
- \assigns{} and \allocates{} clauses. On the contrary,
+ \assigns{} and \allocates{} clauses;
 \result cannot be used in \exits{} clauses.
 
 \begin{example}
 \label{ex:assigns-and-abrupt-termination}
-  Here is a complete specification of the \exit{} function which
+  Here is a complete specification of the \exit{} function, which
   performs an unconditional exit of the \main{} function:
   \listinginput{1}{exit.c}
   Note that the specification of the \lstinline|may_exit|
@@ -2916,12 +2934,14 @@ can be used only in \exits{},
 %% Discuter de la sémantique du assign en présence d'une terminaison abrupte
 %% dans un contrat de fonction et de statement.
 % [Patrick B.] START proposition:
-Contrary to \ensures clauses, \assigns\indextt{assigns}, 
+In contrast to \ensures clauses, \assigns\indextt{assigns}, 
 \allocates\indextt{allocates} and \frees\indextt{frees} clauses of function 
 and statement contracts constrain the post-state 
-even when the annotated function and statement terminates respectively abruptly. 
+even when the annotated function or statement terminates  abruptly. 
 This is shown in example~\ref{ex:assigns-and-abrupt-termination} for a function contract.
 % END proposition:
+
+\ifCPP{cpp-exceptions}
 
 %% TODO:
 %%  Discuter de exit versus return pour la fonction main. Discuter
@@ -2934,7 +2954,7 @@ This is shown in example~\ref{ex:assigns-and-abrupt-termination} for a function 
 \experimental
 
 An extended syntax of \assigns clauses, described in
-Figure~\ref{fig:gram:dep} allows specifying data
+Figure~\ref{fig:gram:dep}, allows specifying data
 dependencies\index{dependency} and
 \notimplemented{\emph{functional expressions}}\index{functional expression}.
 
@@ -3049,9 +3069,7 @@ which they are supposed to hold.
   variable, or formal parameter\index{formal parameter}
   with static type $\tau$. If the
   result of the function has type $\tau$, the result must also
-  satisfy its strong invariant at function exit. Again, it says
-  nothing about fields, array elements, memory locations, etc. of type
-  $\tau$.
+  satisfy its strong invariant at function exit.
 
 \end{itemize}
 
@@ -3301,7 +3319,7 @@ Volatile variables can not be used in logic terms, since reading such
 a variable may have a side effect, in particular two successive reads
 may return different values.
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \begin{cadre}
       \input{volatile-gram.bnf}
     \end{cadre}
@@ -3414,21 +3432,21 @@ and \lstinline|\valid_function(p)| holds if and only if
   \listinginput{1}{welltyped.c}
 \end{example}
 
+\ifthenelse{\isCPP}{\marginpar{Other C++ topics to include: templates, namespaces, class-level specs, when do invariants hold, restrictions on invariant footprint, function parameters, lambda expressions, specs for overloaded operators, specs for implicit constructors and destructors, types}}{}
+
+\section{Module constructions}
+
+\experimental
+
+how to encapsulate several functions...
 
 
-%\section{Module constructions}
-%
-%\experimental
-%
-%how to encapsulate several functions...
+\section{Attribute annotations}
+\label{sec:attribute_annot}
 
+\experimental
 
-%\section{Attribute annotations}
-%\label{sec:attribute_annot}
-%
-%\experimental
-%
-%These are annotations allowing to add attributes on variables, like regular C attributes (const, volatile, restrict).
+These are annotations allowing to add attributes on variables, like regular C attributes (const, volatile, restrict).
 
 % The purpose of these are various:
 % \begin{itemize}

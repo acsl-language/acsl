@@ -1,0 +1,65 @@
+\section{Defensive programming}
+\label{sec:defensive}
+
+A function should only be called when its preconditions 
+hold. However, when programming defensively, it is sometimes deemed good practice to check that preconditions (e.g., parameter validation) 
+hold and to execute some error handling code if the checks fail. In a correct program, such error handling code is dead code; it would
+never be executed. However, in an incompletely correct program, the error catching and handling code can prevent more serious errors
+from happening, including compromising security. It is also known however, that such error handling code can be difficult to test (dynamically) and is often undertested, so that error handling code can be more likely to be buggy than other code.\cite{Weimer:2004:FPR:1028976.1029011}
+
+From a specification perspective, we want two conditions to prevail:
+\begin{itemize}
+	\item The specification checking should warn if a function is called when its preconditions for non-error behavior do not hold.
+	\item Specification checking should warn if the error handling behavior is faulty.
+\end{itemize}
+To accomplish these two conditions, the function must have a specification behavior for error-handling code that is satisfied by the function's implementation but is not a permitted behavior to callers.
+
+Consider the following example (in which, for convenience, the data members are public):
+
+\begin{listing-nonumber}
+class Array {
+  public:
+    int* data;
+    int data_length;
+    
+    /*@ behavior good:
+          assume 0 <= index < data_length;
+          ensures \result == data[index];
+          throws \false;
+        behavior bad:
+          assume !( 0 <= index < data_length );
+          ensures \false;
+          throws \true;
+    @*/
+    int getValue(int index) {
+    	if (index < 0) throw std::range_error( ... some message ...)
+    	if (index >= data_length) throw std::range_error( ... some message ...)
+    	
+    	return data[index];
+    }
+}
+\end{listing-nonumber}
+
+This specification is the desired specification for the implementation: it specifies the behavior for both the normal condition and the error situation.  But what do we want for the caller? With this specification the caller is permitted to cat \lstinline|getValue| with \lstinline|index| either in range or out of range; in the latter case the specification tells the caller to expect an exception to be thrown. But what if the error handling implementatino is purely defensive and we really want to state, and check, that the caller
+always calls \stinline|getValue| with a avlid value of \lstinline|index|? That would correspond to a specification such as this:
+
+\begin{listing-nonumber}
+    /*@ behavior good:
+		  assume 0 <= index < data_length;
+		  ensures \result == data[index];
+		  throws \false;
+        behavior bad:
+		  assume !( 0 <= index < data_length );
+		  requires \false;  // This behavior not allowed to be called
+		  ensures \false;
+		  throws \true;
+@*/
+int getValue(int index) {
+	if (index < 0) throw std::range_error( ... some message ...)
+	if (index >= data_length) throw std::range_error( ... some message ...)
+	
+	return data[index];
+}
+\end{listing-nonumber}
+
+\TODO{Should we intrudce a modifier for 'behavior' to clearly state that it is defensive, e.g. 'error behavior', instead of the requires \false clause? Or should we not worry about the case of defensive programming at all?}

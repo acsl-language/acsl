@@ -1,0 +1,126 @@
+ 
+\chapter{Examples}
+
+Consider the application of the transform operation to a unary operator with side effects.
+
+\begin{listing-nonumber}
+	
+	int sum = 0;
+	auto op = [](int i) mutable { sum += i; return -i; }
+	vector<int> a = ...
+	vector<int> b = ...
+	
+	transform(a.begin(), a.end(), b.begin(), op)
+	
+\end{listing-nonumber}
+
+Functors are applied using their \texttt{operator()} member function. 
+In general we do not statically know what functor is being used as the actual argument.
+So we need to be able to express some specification properties.
+\begin{itemize}
+\item \textbackslash pre(f,i) -- a predicate that is true when the precondition of f(i) is true
+\item \textbackslash post(f,r,i) -- a predicate that is true when the postcondition of f(i) with result value r is true
+\item \textbackslash assigns(f,i) -- \textbackslash locset that contains any memory location assigned when f(i) is called with argument i
+\end{itemize}
+So for the value \texttt{op} in the code above.
+\begin{itemize}
+	\item \lstinline|\pre(op,i) == \true|  (ignoring any overflow checks)
+	\item \lstinline|\post(op,r,i) == (r == -i && sum == \old(sum + i))|
+	\item \lstinline|assigns(op,i) == { sum }|
+\end{itemize}
+
+Now \lstinline|transform| applies \lstinline|op| repeatedly to the elements of \lstinline|vector|. 
+If \lstinline|op| were a simple function of its input only with no side effects, we could write a postcondition easily as something like
+\lstinline|(\textbackslash forall int i; 0 <= i <= a.size(); vector[i] == op(\old(vector[i]))|.
+
+However, <code>op</code> may easily be more complex than that. 
+It may have more complex inputs and it may have side-effects. 
+In general we cannot know the effect of repeated application of <code>op</code> without simulating the loop implicit in <code>transform</code> and reasoning about it with inductive invariants.
+
+The specification of <code>transform</code> could look like this:
+\begin{listing-nonumber}
+	/*@ behavior
+	requires \valid(first1,last1) && \valid(result + (0.. last1-first1));
+	{
+		InputIterator in = first1; 
+		OutputIterator out = result;
+		/*@ 
+		loop_invariant 0 <= \count <= last1-first1;; 
+		loop_invariant in == first1 + \count;
+		loop_invariant out = result + \count;
+		loop_modifies out[0 .. last1-first1-1];
+		loop_decreases (last1 - first1) - \count;
+		while (in != last1) {
+			... effect of op ...
+			++in;
+			++out;
+		}	
+	}
+	
+	@*/	
+	template <class InputIterator, class OutputIterator, class UnaryOperator>
+	OutputIterator transform (InputIterator first1, InputIterator last1,
+	OutputIterator result, UnaryOperator op);
+\end{listing-nonumber}
+
+Here the block within the specification, enclosed in curly braces, is a \textit{model program}. 
+A model program specifies the behavior of some method by
+writing abstracted code (pseudo-code, if you will) that summarizes the method's behavior. 
+For small programs, this might simply nearly replicate the actual implementation. 
+In that case, reasoning about uses of the method are tantamount to 
+inlining the implementation.
+
+The implicit (ghost) variable \lstinline|\count| denotes the number of completed iterations of the loop, beginning with 0. 
+For a simple loop index that counts up by 1 from 0, the loop index is equal to \lstinline|\count|. 
+For more complex loops and loops using iterators, 
+\lstinline|\count| is useful in writing specifications.
+
+Now we need to include the effects of \lstinline|op| in the above specification of \lstinline|transform| without knowing what \lstinline|op| actually is. We do so in terms of its own specification.
+
+A snippet of code like \lstinline|y = op(x);| can be summarized as
+\begin{listing-nonumber}
+	assert \pre(op,x);
+	havoc \assigns(op,x);
+	int temp_result;
+	assume \post(op,temp_result,x);
+	y = temp_result;
+\end{listing-nonumber}
+
+Putting that snippet together with the partial specification of 
+\lstinline|transform| gives us this:
+
+\begin{listing-nonumber}
+	/*@ behavior
+	requires \valid(first1,last1) && \valid(result,result + (0.. last1-first1-1));
+	{
+		InputIterator in = first1; 
+		OutputIterator out = result;
+		/*@ 
+		loop_invariant 0 <= \count <= last1-first1;; 
+		loop_invariant in == first1 + \count;
+		loop_invariant out = result + \count;
+		loop_modifies out[0 .. last1-first1-1], \union(int i = 0 .. \count-1; \assigns(op,in[i]));
+		loop_invariant 
+		loop_decreases (last1 - first1) - \count;
+		while (in != last1) {
+			int temp_arg = *in;
+	        assert \pre(op,temp_arg);
+            havoc \assigns(op,temp_arg);
+            int temp_result;
+            assume \post(op,temp_result,temp_arg);
+            *out = temp_result;
+			++in;
+			++out;
+		}	
+	}
+	
+	@*/	
+	template <class InputIterator, class OutputIterator, class UnaryOperator>
+	OutputIterator transform (InputIterator first1, InputIterator last1,
+	OutputIterator result, UnaryOperator op);
+\end{listing-nonumber}
+
+Although, not essential in this case, in general we separate subexpressions by evaluating each subexpression to a temporary intermediate result. That way any implicit conversions and questions of well-definedness can be made explicit with appropriate assertions.
+\section{Misc stuff}
+
+
