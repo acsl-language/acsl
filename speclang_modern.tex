@@ -5,7 +5,7 @@
 
 \section{Lexical rules}
 
-Lexical structure mostly follows that of ANSI/ISO C. A few differences
+ACSL text is contained in C comments. Within a comment, the lexical structure mostly follows that of ANSI/ISO C. A few differences
 must be noted.
 \begin{itemize}
 \item The at sign (\verb|@|) is a blank character, thus equivalent
@@ -151,10 +151,10 @@ With respect to C pure expressions, the additional constructs are as follows:
   \lstinline|id| that is equal to \lstinline|v|.
   The equivalent expression for an array is
   \lstinline|{ t \with [ i ] = v }|
-  which returns the same array as \lstinline|t|, except for the
+  which returns an array whose value is the same as \lstinline|t|, except for the
   \lstinline|i$^{th}$| element whose value
   is \lstinline|v|.
-  See section~\ref{sec:func-dep} for an example of use of these operators.
+  See section~\ref{sec:func-dep} for an example use of these operators.
 
 \item[Logic functions] Applications in terms and in propositions are not
 applications of C functions, but of logic functions or predicates; see
@@ -449,7 +449,7 @@ Bitwise operations apply to this representation.
 Floating-point constants and operations are interpreted as
 mathematical real numbers: a C variable of type float or double is
 implicitly promoted to a real. Integers are promoted to reals if
-necessary. Usual binary operations are interpreted as operators on
+necessary. The usual binary operations are interpreted as operators on
 real numbers, hence they never involve any rounding or overflow.
 
 \begin{example}
@@ -477,7 +477,7 @@ digits and $dd$ is in decimal, denotes number $hh.hh\times
 
 
 The usual operators for comparison are also interpreted as real operators. 
-In particular, equality operation $\equiv$ for float (or double)
+In particular, the equality operation $\equiv$ for float (or double)
 expressions means equality of the real numbers they represent. Or equivalently, $x \equiv y$ for two float
 variables $x,y$ means \lstinline|real_of_float(x) $\equiv$ real_of_float(y)|
 with the mathematical equality of real
@@ -520,7 +520,7 @@ rounding functions above with the nearest-even rounding mode (which is
 the default rounding mode in C programs).
 %(see IEEE 754 norm), which is the closest to $x$ real number
 %which is representable in the float (resp. double) type.
-If the source real number is too large, this may also result into one
+If the source real number is too large, this may also result in one
 of the special values +infinity and -infinity.
 \begin{example}
   We have
@@ -582,7 +582,7 @@ Quantification over a variable of type \lstinline|real| is of course the usual
 quantification over real numbers.
 
 Quantification over float (resp. double) types is allowed too, and is
-supposed to range over all real numbers representable as floats (resp
+supposed to range over all real numbers representable as floats (resp.
 doubles). In particular, this does not include NaN, +infinity and
 -infinity in the considered range.
 
@@ -642,7 +642,7 @@ To express such exact computations, two special
 constructs exist in annotations:
 \begin{itemize}
 \item $\verb|\exact|(x)$ denotes the value of the C variable $x$ (or
-  more generally any C left-value) as if the program was executed with
+  more generally any C left-value) as if the program were executed with
   ideal real numbers.
 \item $\verb|\round_error|(x)$ is a shortcut for $|x-\verb|\exact|(x)|$
 \end{itemize}
@@ -728,8 +728,9 @@ void h(int(*p)(int)) {
 \label{sec:aggregate}
 
 Aggregate C objects (i.e. structures, unions and arrays) are also
-possible values for terms in logic. They can be passed as parameters (and
-also returned) to logic functions, tested for equality, etc. like any
+possible values for terms in logic. 
+They can be passed as parameters to and
+ returned from logic functions, tested for equality, etc. like any
 other values.
 
 Aggregate types can be declared in logic, 
@@ -1225,12 +1226,14 @@ be given for the same contract.
 There are several places where one needs to describe a set of memory
 locations: in \lstinline|assigns| clauses of function contracts, or
 in \lstinline|loop assigns| clauses (see section~\ref{sec:loop_annot}).
-A \emph{memory location} is then any set of terms denoting a set of
-l-values\index{l-value}. Moreover, a location given as argument to
+A \emph{memory location} is an
+l-value\index{l-value} and a set of memory locations is a \emph{tset}. 
+Moreover, the argument of
 an \assigns{} clause must be a set of modifiable l-values, as described in
 Section~\ref{sec:glossary}. 
 More generally, we introduce syntactic constructs to denote \emph{sets of
-  terms} that are also useful for the \separated predicate (see Section~\ref{sec:separated}).
+  terms} (tsets) that are also useful for the \separated predicate (see Section~\ref{sec:separated}). The terms in a set may have any type, though the operations described below are only well-typed for certain types of tsets. For example, \lstinline|s$_1$[s$_2$]| as defined below is only well-typed if one of 
+\lstinline|s$_1$| and \lstinline|s$_2$| is a set of arrays and the other a set of integers.
 
 \begin{figure}
   \begin{cadre}
@@ -1278,16 +1281,17 @@ elements \lstinline|t$_1$|, $\ldots$, \lstinline|t$_n$|.
   value \lstinline|b| of binders
   satisfying predicate \lstinline|P|
   (binders \lstinline|b| are bound in both \lstinline|s| and \lstinline|P|).
-\item \lstinline|x \in s| holds if and only if is an element of s.
+\item \lstinline|x \in s| holds if and only if \lstinline|x| is an element of s.
 \item \lstinline|\subset(s$_1$,s$_2$)| holds if and only if each element
-  of \lstinline|s$_1$| is also an element of \lstinline|s$_2$|.
+  of \lstinline|s$_1$| is also an element of \lstinline|s$_2$| 
+  (that is,  \lstinline|s$_1$| is a subset of  \lstinline|s$_2$|).
 \end{itemize}
 
 Note that \lstinline|assigns \nothing| is equivalent to
 \lstinline|assigns \empty|; it is left for convenience.
 
 \begin{example}
-  The following function sets to 0 each cell of an array.
+  The following function sets each cell of an array to 0.
 
   \listinginput{1}{assigns_array.c}
 %
@@ -1337,15 +1341,15 @@ compute an over-approximation of the sets of assigned locations.
 
 Annotations on C statements are of three kinds:
 \begin{itemize}
-\item Assertions: \index{assertion}allowed before any C statement or
+\item \emph{Assert}\index{assertion} statements are allowed before any C statement or
   at end of blocks.
 \item\index{annotation!loop}\index{loop!annotation}
-  Loop annotations: \invariant, \assigns clause, \variant; allowed
+  \emph{Loop annotations} (the \invariant, \assigns, and \variant clauses) are allowed
   before any loop statement: \lstinline|while|, \lstinline|for|, and
   \lstinline|do ... while|.
 \item\index{statement contract}\index{contract}
-  Statement contracts: allowed before any C statement, specifying
-  their behavior in a similar manner to C function contracts.
+  \emph{Statement contracts} are allowed before any C statement (including a block), specifying
+  its behavior in a similar manner to function contracts.
 \end{itemize}
 
 \subsection{Assertions}
@@ -1383,13 +1387,13 @@ as an extension of the grammar of C statements.
     \input{loops.bnf}
   \end{cadre}
   \caption{Grammar for loop annotations}
-  \label{fig:gram:loops}
+  \label{fig:gram:loops}\textsl{}
 \end{figure}
 
 The syntax of loop annotations is given in Figure~\ref{fig:gram:loops},
 as an extension of the grammar of C statements.
-\textsl{Loop-allocation} clauses allow to specify which memory location 
-is dynamically allocated or deallocated by a loop from the \textsl{heap}; 
+\textsl{Loop-allocation} clauses allow specifying which memory locations 
+are dynamically allocated or deallocated by a loop from the \textsl{heap}; 
 they are defined later in Section~\ref{sec:allocation-clause}.
 
 \subsubsection{Loop invariants and loop assigns}
