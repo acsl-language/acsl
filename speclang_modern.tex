@@ -174,7 +174,7 @@ Section~\ref{sec:logicspec} for detail.
   \lstinline|x < y > z| or \lstinline|x != y != z| are not allowed.
   Note that consecutive comparison operators are allowed only 
   in predicate position.
-  
+
   A consecutive comparison as the conditional expression in a ternary operation could, according to the grammar, be either in term or 
   predicate position. In such a case, the conditional expression is
   considered a predicate. As a term a consecutive comparison 
@@ -751,10 +751,12 @@ void h(int(*p)(int)) {
 \label{sec:aggregate}
 
 Aggregate C objects (i.e. structures, unions and arrays) are also
-possible values for terms in logic. They can be passed as parameters to and returned from logic functions, tested for equality, etc. like any
+possible values for terms in logic. 
+They can be passed as parameters to and
+ returned from logic functions, tested for equality, etc. like any
 other values.
 
-Aggregate types can be declared in logic,
+Aggregate types can be declared in logic, 
 \notimplemented{and their contents may be
 any logic types themselves}. Constructing such values in logic can be
 performed using a syntax similar to C designated initializers.
@@ -1259,12 +1261,13 @@ be given for the same contract.
 There are several places where one needs to describe a set of memory
 locations: for example, in \lstinline|assigns| clauses of function contracts and
 in \lstinline|loop assigns| clauses (see section~\ref{sec:loop_annot}).
-A \emph{memory location} is an l-value; a \emph{tset} is a set of
-values and is primarily used for sets of l-values. Moreover, the l-values contained in the argument to
-an \assigns{} clause (a tset) must be modifiable, as described in
+A \emph{memory location} is an
+l-value\index{l-value} and a set of memory locations is a \emph{tset}. 
+Moreover, the argument of
+an \assigns{} clause must be a set of modifiable l-values, as described in
 Section~\ref{sec:glossary}. 
 More generally, we introduce syntactic constructs to denote \emph{sets of
-  values} (tsets) that are also useful for the \separated predicate (see Section~\ref{sec:separated}). The terms in a tset may have any type, though the operations described below are only well-typed for certain types of tsets. For example, \lstinline|s$_1$[s$_2$]| as defined below is only well-typed if one of 
+  terms} (tsets) that are also useful for the \separated predicate (see Section~\ref{sec:separated}). The terms in a set may have any type, though the operations described below are only well-typed for certain types of tsets. For example, \lstinline|s$_1$[s$_2$]| as defined below is only well-typed if one of 
 \lstinline|s$_1$| and \lstinline|s$_2$| is a set of arrays and the other a set of integers.
 
 \begin{figure}
@@ -1382,21 +1385,21 @@ mandatory. On the other hand, if that function has a body, giving no
 compute an over-approximation of the sets of modified locations.
 
 \ifCPPinput{cpp-default-values}
-	
+
 \section{Statement annotations}
 \index{annotation}
 
 Annotations on C statements are of three kinds:
 \begin{itemize}
-\item Assertions: \index{assertion}allowed before any C statement or
+\item \emph{Assert}\index{assertion} statements are allowed before any C statement or
   at end of blocks.
 \item\index{annotation!loop}\index{loop!annotation}
-  Loop annotations: \invariant, \assigns clause, \variant; allowed
+  \emph{Loop annotations} (the \invariant, \assigns, and \variant clauses) are allowed
   before any loop statement: \lstinline|while|, \lstinline|for|, and
   \lstinline|do ... while|.
 \item\index{statement contract}\index{contract}
-  Statement contracts: allowed before any C statement, specifying
-  their behavior in a similar manner to C function contracts.
+  \emph{Statement contracts} are allowed before any C statement (including a block), specifying
+  its behavior in a similar manner to function contracts.
 \end{itemize}
 
 \subsection{Assertions}
@@ -1437,13 +1440,13 @@ as an extension of the grammar of C statements.
     \input{loops.bnf}
   \end{cadre}
   \caption{Grammar for loop annotations}
-  \label{fig:gram:loops}
+  \label{fig:gram:loops}\textsl{}
 \end{figure}
 
 The syntax of loop annotations is given in Figure~\ref{fig:gram:loops},
 as an extension of the grammar of C statements.
 \textsl{Loop-allocation} clauses allow specifying which memory locations 
-are dynamically allocated or deallocated by a loop; 
+are dynamically allocated or deallocated by a loop from the \textsl{heap}; 
 they are defined later in Section~\ref{sec:allocation-clause}.
 
 \subsubsection{Loop invariants and loop assigns}
