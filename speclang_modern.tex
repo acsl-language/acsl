@@ -661,6 +661,15 @@ float cosine(float x) {
 \end{listing-nonumber}
 \end{example}
 
+Note that the semantics of these constructs implies that in concept two different executions of the
+program take place in parallel: one using the numeric precision as given in the program and one using mathematical real arithmetic. $\verb|\exact|(x)$ then gives the difference between the two for a specific expression and program state. If the argument to $\verb|\exact|(x)$ is just a constant or
+an expression dependent on just some local computations, then the scope of the two computations is
+correspondingly constrained. But if the argument depends on program variables whose data dependencies extend back into the program, then the effect of a single $\verb|\exact|(x)$
+construct is considerable. This has obvious performance implications for runtime assertion checking
+of ACSL specifications. However, even for deductive verification, if the data dependence of the argument of
+$\verb|\exact|(x)$ extends to multiple functions, the reasoning required becomes non-modular or
+requires specifications about the differences between exact and non-exact computations.
+
 \subsection{C arrays and pointers}
 
 \subsubsection{Address operator, array access, pointer arithmetic and dereferencing}
