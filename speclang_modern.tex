@@ -741,8 +741,8 @@ void h(int(*p)(int)) {
 Aggregate C objects (i.e. structures, unions and arrays) are also
 possible values for terms in logic. They can be passed as parameters to and returned from logic functions, tested for equality, etc. like any
 other values.
-location
-Aggregate types can be declared in logic, 
+
+Aggregate types can be declared in logic,
 \notimplemented{and their contents may be
 any logic types themselves}. Constructing such values in logic can be
 performed using a syntax similar to C designated initializers.
@@ -1287,9 +1287,10 @@ elements \lstinline|t$_1$|, $\ldots$, \lstinline|t$_n$|.
   value \lstinline|b| of binders
   satisfying predicate \lstinline|P|
   (binders \lstinline|b| are bound in both \lstinline|s| and \lstinline|P|).
-\item \lstinline|x \in s| holds if and only if \lstinline|x| is an element of \lstinline|s| (that is, \lstinline|s$_1$| is a subset of \lstinline|s$_2$|);
+\item \lstinline|x \in s| holds if and only if \lstinline|x| is an element of \lstinline|s|.
 \item \lstinline|\subset(s$_1$,s$_2$)| holds if and only if each element
-  of \lstinline|s$_1$| is also an element of \lstinline|s$_2$|.
+  of \lstinline|s$_1$| is also an element of \lstinline|s$_2$|
+  (that is, \lstinline|s$_1$| is a subset of \lstinline|s$_2$|).
 \end{itemize}
 
 Note that \lstinline|assigns \nothing| is equivalent to
