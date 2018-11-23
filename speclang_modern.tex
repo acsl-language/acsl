@@ -664,15 +664,6 @@ float cosine(float x) {
 \end{listing-nonumber}
 \end{example}
 
-Note that the semantics of these constructs implies that in concept two different executions of the 
-program take place in parallel: one using the numeric precision as given in the program and one using mathematical real arithmetic. $\verb|\exact|(x)$ then gives the difference between the two for a specific expression and program state. If the argument to $\verb|\exact|(x)$ is just a constant or 
-an expression dependent on just some local computations, then the scope of the two computations is
-correspondingly constrained. But if the argument depends on program variables whose data dependencies extend back into the program, then the effect of a single $\verb|\exact|(x)$
-construct is considerable. This has obvious performance implications for runtime assertion checking 
-of ACSL specifications. However, even for deductive verification, if the data dependence of the argument of 
-$\verb|\exact|(x)$ extends to multiple functions, the reasoning required becomes non-modular or 
-requires specifications about the differences between exact and non-exact computations.
-
 \subsection{C arrays and pointers}
 
 \subsubsection{Address operator, array access, pointer arithmetic and dereferencing}
@@ -1238,10 +1229,9 @@ be given for the same contract.
 There are several places where one needs to describe a set of memory
 locations: for example, in \lstinline|assigns| clauses of function contracts and
 in \lstinline|loop assigns| clauses (see section~\ref{sec:loop_annot}).
-A \emph{memory location} is an
-l-value\index{l-value} and a set of memory locations is a \emph{tset}. 
-Moreover, the argument of
-an \assigns{} clause must be a tset containing modifiable l-values, as described in
+A \emph{memory location} is an l-value; a \emph{tset} is a set of
+memory locations. Moreover, the l-values contained in the argument to
+an \assigns{} clause (a tset) must be modifiable, as described in
 Section~\ref{sec:glossary}. 
 More generally, we introduce syntactic constructs to denote \emph{sets of
   terms} (tsets) that are also useful for the \separated predicate (see Section~\ref{sec:separated}). The terms in a set may have any type, though the operations described below are only well-typed for certain types of tsets. For example, \lstinline|s$_1$[s$_2$]| as defined below is only well-typed if one of 
@@ -1251,7 +1241,7 @@ More generally, we introduce syntactic constructs to denote \emph{sets of
   \begin{cadre}
       \input{loc.bnf}
     \end{cadre}
-  \caption{Grammar for sets of terms}
+  \caption{Grammar for sets of memory locations}
 \label{fig:gram:locations}
 \end{figure}
 
@@ -2374,7 +2364,7 @@ definitions, like the \lstinline|List| module above.
 The grammar for terms and predicates is
 extended with new constructs given in Figure~\ref{fig:gram:memory}. 
 \textsl{Location-address} denotes the address of a memory location. 
-It is a set of values of some pointer type as defined in Section~\ref{sec:locations}. As indicated below where necessary,
+It is a set of values of some common pointer type as defined in Section~\ref{sec:locations}. As indicated below where necessary,
 many built-in functions and predicates dealing with
 pointers depend on the size of the referenced type. Thus, they cannot be given
 a pointer to \lstinline|void| as an argument. On the
@@ -2424,7 +2414,7 @@ produce a definite value according to the C standard~\cite{standardc99}. The
 following built-in predicates deal with this notion:
 \begin{itemize}
 \item \valid\indexttbs{valid} applies to a tset  
-(see Section~\ref{sec:locations}) each of whose elements has some pointer type (other than \lstinline|void*|). 
+(see Section~\ref{sec:locations}) each of whose elements has some common pointer type (other than \lstinline|void*|). 
 \lstinline|\valid{L}(s)| holds if and only if
  dereferencing any $p\in \lstinline|s|$ is safe  at label \lstinline|L|, both for reading from 
 \lstinline|*p| and writing to it. In particular,
@@ -2489,7 +2479,7 @@ ACSL provides a built-in function to deal with separation of locations:
 \begin{itemize}
 % [Patrick B.] START proposition:
 \item \lstinline|\separated|\indexttbs{separated}
-applies to tsets (see Section~\ref{sec:locations}) of some pointer type
+applies to tsets (see Section~\ref{sec:locations}) of some common pointer type
 other than \lstinline|void*|. 
 \lstinline|\separated(s$_1$,s$_2$)|
 holds for any set of pointers \lstinline|s$_1$| and \lstinline|s$_2$| 
