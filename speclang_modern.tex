@@ -5,8 +5,9 @@
 
 \section{Lexical rules}
 
-Lexical structure mostly follows that of ANSI/ISO C. A few differences
-must be noted.
+Specification language text is placed inside of special C comments; 
+its lexical structure mostly follows that of ANSI/ISO C. A few differences
+should be noted.
 \begin{itemize}
 \item The at sign (\verb|@|) is a blank character, thus equivalent
   to a space character.
@@ -80,9 +81,10 @@ that we will introduce progressively.
   \begin{cadre}
     \input{term.bnf}
   \end{cadre}
-  \caption{Grammar of terms}
+  \caption{Grammar of terms. The terminals \emph{id}, \emph{C-type-name}, and various literals are
+  	the same as the corresponding C lexical tokens.}
 \label{fig:gram:term}
-\end{figure}
+\end{figure}\textsl{}
 
 \begin{figure}[hb]
   \begin{cadre}
@@ -147,14 +149,14 @@ With respect to C pure expressions, the additional constructs are as follows:
   The composite element modifier is an additional
   operator related to C structure field and array accessors.
   The expression \lstinline|{ s \with .id = v }|
-  denotes the same structure as \lstinline|s|, except for the field
-  \lstinline|id| that is equal to \lstinline|v|.
+  denotes a structure value that is the same as \lstinline|s|, except for the field
+  \lstinline|id|, which is equal to \lstinline|v|.
   The equivalent expression for an array is
-  \lstinline|{ t \with [ i ] = v }|
-  which returns the same array as \lstinline|t|, except for the
+  \lstinline|{ t \with [ i ] = v }|,
+  which returns an array with the same value as \lstinline|t|, except for the
   \lstinline|i$^{th}$| element whose value
   is \lstinline|v|.
-  See section~\ref{sec:func-dep} for an example of use of these operators.
+  See section~\ref{sec:func-dep} for an example use of these operators.
 
 \item[Logic functions] Applications in terms and in propositions are not
 applications of C functions, but of logic functions or predicates; see
@@ -449,7 +451,7 @@ Bitwise operations apply to this representation.
 Floating-point constants and operations are interpreted as
 mathematical real numbers: a C variable of type float or double is
 implicitly promoted to a real. Integers are promoted to reals if
-necessary. Usual binary operations are interpreted as operators on
+necessary. The usual binary operations are interpreted as operators on
 real numbers, hence they never involve any rounding or overflow.
 
 \begin{example}
@@ -477,7 +479,7 @@ digits and $dd$ is in decimal, denotes number $hh.hh\times
 
 
 The usual operators for comparison are also interpreted as real operators. 
-In particular, equality operation $\equiv$ for float (or double)
+In particular, the equality operation $\equiv$ for float (or double)
 expressions means equality of the real numbers they represent. Or equivalently, $x \equiv y$ for two float
 variables $x,y$ means \lstinline|real_of_float(x) $\equiv$ real_of_float(y)|
 with the mathematical equality of real
@@ -520,7 +522,7 @@ rounding functions above with the nearest-even rounding mode (which is
 the default rounding mode in C programs).
 %(see IEEE 754 norm), which is the closest to $x$ real number
 %which is representable in the float (resp. double) type.
-If the source real number is too large, this may also result into one
+If the source real number is too large, this may also result in one
 of the special values +infinity and -infinity.
 \begin{example}
   We have
@@ -582,7 +584,7 @@ Quantification over a variable of type \lstinline|real| is of course the usual
 quantification over real numbers.
 
 Quantification over float (resp. double) types is allowed too, and is
-supposed to range over all real numbers representable as floats (resp
+supposed to range over all real numbers representable as floats (resp.
 doubles). In particular, this does not include NaN, +infinity and
 -infinity in the considered range.
 
@@ -642,7 +644,7 @@ To express such exact computations, two special
 constructs exist in annotations:
 \begin{itemize}
 \item $\verb|\exact|(x)$ denotes the value of the C variable $x$ (or
-  more generally any C left-value) as if the program was executed with
+  more generally any C left-value) as if the program were executed with
   ideal real numbers.
 \item $\verb|\round_error|(x)$ is a shortcut for $|x-\verb|\exact|(x)|$
 \end{itemize}
@@ -728,11 +730,10 @@ void h(int(*p)(int)) {
 \label{sec:aggregate}
 
 Aggregate C objects (i.e. structures, unions and arrays) are also
-possible values for terms in logic. They can be passed as parameters (and
-also returned) to logic functions, tested for equality, etc. like any
+possible values for terms in logic. They can be passed as parameters to and returned from logic functions, tested for equality, etc. like any
 other values.
 
-Aggregate types can be declared in logic, 
+Aggregate types can be declared in logic,
 \notimplemented{and their contents may be
 any logic types themselves}. Constructing such values in logic can be
 performed using a syntax similar to C designated initializers.
@@ -926,7 +927,7 @@ The \lstinline|decreases| and
 \lstinline|terminates| clauses are presented later in
 Section~\ref{sec:termination}.
 \textsl{Abrupt-clauses}
-allow to specify what happens when the function does not return
+allow specifying what happens when the function does not return
 normally but \lstinline|exit|s abruptly; they are defined in
 Section~\ref{sec:abrupt-clause}.
 
@@ -968,7 +969,7 @@ function contracts only).
 \subsection{Simple function contracts}
 \label{sec:simplecontracts}
 
-A simple function contract, having only simple clauses and no named behavior, takes the following
+A simple function contract, having only simple clauses and no named behaviors, takes the following
 form:\indextt{requires}\indextt{assigns}\indextt{ensures}
 \begin{listing}{1}
 /*@ requires P$_1$; requires P$_2$; `\dots`
@@ -1122,7 +1123,7 @@ single named behavior. More precisely, the following contract
   @ `\dots`
   @*/
 \end{listing}
-is equivalent to
+is equivalent to (if b$_1$ and b$_2$ do not have requires clauses)
 \begin{listing}{1}
 /*@ requires P;
   @ behavior <unique name>:
@@ -1223,24 +1224,23 @@ be given for the same contract.
 \label{sec:locations}\index{location}
 
 There are several places where one needs to describe a set of memory
-locations: in \lstinline|assigns| clauses of function contracts, or
+locations: for example, in \lstinline|assigns| clauses of function contracts and
 in \lstinline|loop assigns| clauses (see section~\ref{sec:loop_annot}).
-A \emph{memory location} is then any set of terms denoting a set of
-l-values\index{l-value}. Moreover, a location given as argument to
-an \assigns{} clause must be a set of modifiable l-values, as described in
+A \emph{memory location} is an l-value; a \emph{tset} is a set of
+memory locations. Moreover, the l-values contained in the argument to
+an \assigns{} clause (a tset) must be modifiable, as described in
 Section~\ref{sec:glossary}. 
-More generally, we introduce syntactic constructs to denote \emph{sets of
-  terms} that are also useful for the \separated predicate (see Section~\ref{sec:separated}).
+The syntactic constructs denoting tsets are also useful for the \separated predicate (see Section~\ref{sec:separated}).
 
 \begin{figure}
   \begin{cadre}
       \input{loc.bnf}
     \end{cadre}
-  \caption{Grammar for sets of terms}
+  \caption{Grammar for sets of memory locations}
 \label{fig:gram:locations}
 \end{figure}
 
-The grammar for sets of terms is given in
+The grammar for tsets is given in
 Figure~\ref{fig:gram:locations}. The semantics is given below,
 where $s$ denotes any \textsl{tset}.
 \begin{itemize}
@@ -1258,8 +1258,8 @@ where $s$ denotes any \textsl{tset}.
 \lstinline|x$_1$[x$_2$]| for each \lstinline|x$_1$ $\in$ s$_1$|
   and \lstinline|x$_2$ $\in$ s$_2$|.
 \item \lstinline|t$_1$ .. t$_2$| denotes the set of integers between 
-\lstinline|t$_1$| and \lstinline|t$_2$|, included. 
-If \lstinline|t$_1$ $>$ t$_2$|, this the same as \lstinline+\empty+
+\lstinline|t$_1$| and \lstinline|t$_2$|, inclusive. 
+If \lstinline|t$_1$ $>$ t$_2$|, this is the same as \lstinline+\empty+
 \item \lstinline|\union(s$_1$,$\ldots$,s$_n$)|\indexttbs{union}
 denotes the union 
 of \lstinline|s$_1, $s$_2,\ldots $| and \lstinline|s$_n$|;
@@ -1278,16 +1278,17 @@ elements \lstinline|t$_1$|, $\ldots$, \lstinline|t$_n$|.
   value \lstinline|b| of binders
   satisfying predicate \lstinline|P|
   (binders \lstinline|b| are bound in both \lstinline|s| and \lstinline|P|).
-\item \lstinline|x \in s| holds if and only if is an element of s.
+\item \lstinline|x \in s| holds if and only if \lstinline|x| is an element of \lstinline|s|.
 \item \lstinline|\subset(s$_1$,s$_2$)| holds if and only if each element
-  of \lstinline|s$_1$| is also an element of \lstinline|s$_2$|.
+  of \lstinline|s$_1$| is also an element of \lstinline|s$_2$|
+  (that is, \lstinline|s$_1$| is a subset of \lstinline|s$_2$|).
 \end{itemize}
 
 Note that \lstinline|assigns \nothing| is equivalent to
 \lstinline|assigns \empty|; it is left for convenience.
 
 \begin{example}
-  The following function sets to 0 each cell of an array.
+  The following function sets each cell of an array to 0.
 
   \listinginput{1}{assigns_array.c}
 %
@@ -1372,7 +1373,7 @@ as an extension of the grammar of C statements.
   of them being a behavior identifier for the current function (or a
   behavior of an enclosing block as defined later in
   Section~\ref{sec:statement_contract}).  It means that this assertion
-  must hold only for the listed behaviors.
+  is only required to hold for the listed behaviors.
 \end{itemize}
 
 \subsection{Loop annotations}
@@ -1388,8 +1389,8 @@ as an extension of the grammar of C statements.
 
 The syntax of loop annotations is given in Figure~\ref{fig:gram:loops},
 as an extension of the grammar of C statements.
-\textsl{Loop-allocation} clauses allow to specify which memory location 
-is dynamically allocated or deallocated by a loop from the \textsl{heap}; 
+\textsl{Loop-allocation} clauses allow specifying which memory locations 
+are dynamically allocated or deallocated by a loop; 
 they are defined later in Section~\ref{sec:allocation-clause}.
 
 \subsubsection{Loop invariants and loop assigns}
@@ -1437,7 +1438,7 @@ the last state in which \lstinline|I| was supposed to hold and
 the \Break statement.
 
 \item At any loop iteration, any location that was allocated before
-  entering the loop, and is not member of \lstinline|L| (interpreted in the
+  entering the loop and is not a member of \lstinline|L| (interpreted in the
   current state, that is \lstinline|LoopCurrent|) has the same value as
   before entering the loop (\lstinline|LoopEntry|).
   In fact, the \Loop \assigns clause specifies an inductive
@@ -1742,7 +1743,7 @@ may refer to enclosing named behaviors, with the form
 Such contracts are only valid for the
 corresponding behaviors, in particular only under the
 corresponding \assumes{} clause.
-Note that behaviors in statement contracts may have the name ids as enclosing function contract behaviors
+Note that behaviors in statement contracts may have the same ids as enclosing function contract behaviors
 or enclosing statement contracts.
 In such cases, a use of the id (in a \lstinline|for| construct) refers to the innermost behavior id.
 
@@ -1795,13 +1796,13 @@ calls.
 %  variant}\index{loop variant} clause, and functions can be annotated
 %with a \decreases{} clause.
 Termination is guaranteed by attaching a measure function to each loop
-(aspect already addressed in Section~\ref{sec:loop-variant}) 
+(an aspect already addressed in Section~\ref{sec:loop-variant}) 
 and each recursive function.
 By default, a measure is an
 integer expression, and measures are compared using the usual ordering
 over integers (Section~\ref{sec:integermeasures}). It is also possible
 to define
-measures into other domains and/or using a different ordering relation
+measures using other domains and/or using a different ordering relation
 (Section~\ref{sec:generalmeasures}).
 
 \subsection{Integer measures}
@@ -1872,7 +1873,7 @@ termination, it must be proved that \lstinline|R| is a well-founded relation.
 
 The precise semantics of measures on recursive calls, especially in
 the general case of mutually recursive functions, is given as follows.
-We call \emph{cluster} a set of mutually recursive functions which
+We call \emph{cluster} a set of mutually recursive functions that
 is a strongly connected component of the call graph.
 Within each cluster, each function must be annotated with a \decreases\
 clause with the same relation \lstinline|R| (syntactically). Then, in the body
@@ -1914,10 +1915,10 @@ applies when \lstinline|g| is \lstinline|f| itself.
 
 There are cases where a function is not supposed to terminate. For
 instance, the \lstinline|main| function of a reactive program might be a
-\lstinline|while(1)| which indefinitely waits for an event to process. More
+\lstinline|while(1)| that indefinitely waits for an event to process. More
 generally, a function can be expected to terminate only if some
 preconditions are met. In those cases, a \lstinline|terminates| clause can
-be added to the contract of the function, under the following form:
+be added to the contract of the function, using the following form:
 
 \begin{listing-nonumber}
 //@ terminates p;
@@ -1969,20 +1970,20 @@ The grammar for these declarations is given in Figure~\ref{fig:gram:logic}.
 New functions and predicates can be \emph{defined} by explicit
 expressions, given after an equal sign.
 \begin{example}
-  The following definitions \listinginput{1}{signdef.c} illustrates the
+  The following code \listinginput{1}{signdef.c} illustrates the
   definition of a new predicate \lstinline{is_positive} with an integer
-  parameter, and a new logic function \lstinline{sign} with a real
+  parameter and a new logic function \lstinline{sign} with a real
   parameter returning an integer.
 \end{example}
 
 \subsection{Lemmas}
 Lemmas are user-given propositions, a facility that might help theorem
-provers to establish validity of ACSL specifications.
+provers establish validity of ACSL specifications.
 
 \begin{example}
   The following lemma
   \listinginput{1}{mean.c}
-  is a useful hint for program like binary search.
+  is a useful hint for a program like binary search.
 \end{example}
 
 Of course, a complete verification of an ACSL specification has to
@@ -2121,8 +2122,8 @@ There is no syntactic condition on such recursive
 definitions, such as limitation to primitive recursion. In essence, a
 recursive definition of the form \lstinline+f(args) = e;+ where
 \lstinline+f+ occurs in expression \lstinline+e+ is just a shortcut
-for an axiomatic declaration of \lstinline+f+ with an axiom
-\lstinline+\forall args; f(args) = e+.  In other words, recursive
+for an axiomatic declaration of \lstinline+f+ with an 
+axiom~\lstinline+\forall args; f(args) = e+.  In other words, recursive
 definitions are not guaranteed to be consistent, in the same way that
 axiomatics may introduce inconsistency. Of course, tools might provide
 a way to check consistency.
@@ -2341,10 +2342,10 @@ definitions, like the \lstinline|List| module above.
 The grammar for terms and predicates is
 extended with new constructs given in Figure~\ref{fig:gram:memory}. 
 \textsl{Location-address} denotes the address of a memory location. 
-It is a set of terms of some pointer type as defined in Section~\ref{sec:locations}. As indicated below where necessary,
+It is a set of values of some common pointer type as defined in Section~\ref{sec:locations}. As indicated below where necessary,
 many built-in functions and predicates dealing with
 pointers depend on the size of the referenced type. Thus, they cannot be given
-as argument a pointer to \lstinline|void|. On the
+a pointer to \lstinline|void| as an argument. On the
 other hand, a pointer referencing an incomplete type (hence having an
 abstract size) is possible.
 
@@ -2390,8 +2391,8 @@ In addition, dereferencing a pointer may lead to run-time errors. A pointer
 produce a definite value according to the C standard~\cite{standardc99}. The
 following built-in predicates deal with this notion:
 \begin{itemize}
-\item \valid\indexttbs{valid} applies to a set of terms 
-(see Section~\ref{sec:locations}) of some pointer type (other than \lstinline|void*|). 
+\item \valid\indexttbs{valid} applies to a tset  
+(see Section~\ref{sec:locations}) each of whose elements has some common pointer type (other than \lstinline|void*|). 
 \lstinline|\valid{L}(s)| holds if and only if
  dereferencing any $p\in \lstinline|s|$ is safe  at label \lstinline|L|, both for reading from 
 \lstinline|*p| and writing to it. In particular,
@@ -2399,7 +2400,7 @@ following built-in predicates deal with this notion:
 \\ \makebox[5mm]{} \lstinline|\valid{id} : set<$\alpha$ *> $\ra$ boolean|
 \item 
 \lstinline|\valid_read|\indexttbs{valid\_read}
-applies to a set of terms of some pointer type (other than \lstinline|void*|)
+applies to a tset of some pointer type (other than \lstinline|void*|)
 and holds if and only if it is safe to read from all the pointers in the set
 \\ \makebox[5mm]{} \lstinline|\valid_read{id} : set<$\alpha$ *> $\ra$ boolean|
 \end{itemize}
@@ -2426,10 +2427,10 @@ Some shortcuts are provided:
   extra notation for the
   null pointer (\emph{i.e.} a shortcut for \lstinline|(void*)0|). 
   As in C itself (see \cite{standardc99}, 6.3.2.3\S3),
-  the constant \lstinline|0| can have any pointer type. In addition, 
-  \lstinline|\valid{L}((char*)\null)| is always false, for any
+  the constant \lstinline|0| can have any pointer type. Note that 
+  \lstinline|\valid{L}((char*)\null)| and \lstinline|\valid_read{L}((char*)\null)|
+  are always false, for any
   logic label \lstinline|L|.
-  Of course, \lstinline|\valid_read{L}((char*)\null)| is always false too.
 % \footnote{or to \texttt{NULL}, if
 %    annotations are pre-processed are the appropriate inclusion of
 %    \texttt{stddef.h} is added}
@@ -2456,7 +2457,7 @@ ACSL provides a built-in function to deal with separation of locations:
 \begin{itemize}
 % [Patrick B.] START proposition:
 \item \lstinline|\separated|\indexttbs{separated}
-applies to sets of terms (see Section~\ref{sec:locations}) of some pointer type
+applies to tsets (see Section~\ref{sec:locations}) of some common pointer type
 other than \lstinline|void*|. 
 \lstinline|\separated(s$_1$,s$_2$)|
 holds for any set of pointers \lstinline|s$_1$| and \lstinline|s$_2$| 
@@ -2554,10 +2555,10 @@ and
       && \allocation{Here}(p)==\allocation{Pre}(p))
 \end{listing-nonumber}
 
-In fact, just as the \assigns clause does not specify which memory location is
-assigned,
+In fact, just as the \assigns clause does not specify which memory locations are
+assigned (just which are permitted to be assigned),
 the \textsl{allocation-clauses} do not specify which memory location 
-is dynamically allocated or deallocated.
+is dynamically allocated or deallocated (just those that might be allocated or deallocated).
 Pre-conditions and post-conditions should be added to complete the specifications
 about allocations and deallocations.
 The following shortcuts can be used for that:
@@ -2613,7 +2614,7 @@ For any pointer \lstinline|p| and labels \lstinline|L$_0$| and \lstinline|L$_1$|
   \lstinline|malloc| and \lstinline|free| functions can be specified as follows.
   \listinginput{1}{malloc_free_fn.c}
   Default labels for constructs dedicated to memory are 
-  such that logic label \lstinline|Here| can be omitted.
+  such that the logic label \lstinline|Here| can be omitted.
 \end{example}
 
 When a behavior contains only one of the two allocation clauses,
@@ -2658,7 +2659,7 @@ each anonymous behavior.
 Loop annotations may contain similar clauses allowing one to specify which 
 memory locations 
 are dynamically allocated or deallocated by a loop.
-The grammar for those constructions is given on
+The grammar for those constructions is given in
  Figure~\ref{fig:gram:allocation}.
 
 The clauses \Loop \allocates and \Loop \frees are tied together.
@@ -2678,7 +2679,7 @@ The only difference between these two clauses is that sets
 and \lstinline|Q$_i$| are evaluated in the current loop state 
 (label \lstinline|LoopCurrent|).
 
-Just as for \lstinline|loop assigns|, loop annotations
+Just as for \lstinline|loop assigns|, the loop annotations
 \lstinline|loop frees| and \lstinline|loop allocates| define a loop invariant.
 
 More precisely, this loop annotation
@@ -2691,8 +2692,8 @@ is equivalent to the loop invariant
 \separated(\union(Q$_1$,$\ldots$,Q$_n$),p) ==>
    (\base_addr{Here}(p)==\base_addr{LoopEntry}(p)
     && \block_length{Here}(p)==\block_length{LoopEntry}(p)
-    && \valid{Here}(p)<==>\valid{LoopEntry}(p)
-    && \valid_read{Here}(p)<==>\valid_read{LoopEntry}(p)
+    && (\valid{Here}(p)<==>\valid{LoopEntry}(p))
+    && (\valid_read{Here}(p)<==>\valid_read{LoopEntry}(p))
     && \allocation{Here}(p)==\allocation{LoopEntry}(p))
 \end{listing-nonumber}
 
@@ -2721,7 +2722,7 @@ of the {\sl loop-clauses}
 
 \subsection{Finite sets}\label{sec:sets}
 \index{location}
-Sets of terms, as defined in Section~\ref{sec:locations},
+Sets of memory locations (tsets), as defined in Section~\ref{sec:locations},
 can be used as first-class values in
 annotations. All the elements of such a set must share the same type
 (modulo the usual implicit conversions).
@@ -2746,7 +2747,7 @@ each of its elements \lstinline|e| is converted to
   the result is a \lstinline|set<char*>| (according to typing of union). In
   other words, the two definitions above are equivalent.
 
-  This logic function can be used as argument of \separated or
+  This logic function can be used as an argument of \separated or of an
   \assigns clause.
 \end{example}
 
@@ -2848,16 +2849,16 @@ is the same as function \lstinline|\concat| (resp. \lstinline|\repeat|).
 \end{figure}
 
 The \ensures\indextt{ensures} clause of function and statement contracts
-does not constrain the post-state when the annotated function and
-statement terminates respectively abruptly. In such cases,
-\textsl{abrupt clauses} can be used inside \textsl{simple clause} or
+does not constrain the post-state when an annotated function or
+statement terminates abruptly. In such cases, an
+\textsl{abrupt clause} can be used as a \textsl{simple clause} or in a
 \textsl{behavior body}. The allowed constructs are shown in
 Figure~\ref{fig:gram:abrupt-clauses}.
 
 The clauses \lstinline|breaks|\indextt{breaks}, \continues{}\indextt{continues} 
 and \returns{}\indextt{returns}
 can only be found in a statement contract and
-state properties on the program state which hold when the
+state properties on the program state that hold when the
 annotated statement terminates abruptly with the corresponding
 statement (\lstinline|break|, \Continue{} or \lstinline|return|).
 
@@ -2871,7 +2872,7 @@ logic labels\indextt{Pre}\indextt{Here}\indextt{Old}\indextt{Post}
 same as in \ensures{} clauses.
 
 For the \lstinline|returns| case, the \result\indexttbs{result}
-construct is allowed (if the function is not returning \void) and is bound
+construct is allowed (if the function does not return \void) and is bound
 to the returned value.
 
 \begin{example}
@@ -2892,12 +2893,12 @@ and \lstinline|\exit_status| is bound to the return code,
 \emph{e.g.} the value returned by \main{} or the argument passed to \exit{}.
 The  construct \lstinline|\exit_status|\indexttbs{exit\_status}
 can be used only in \exits{},
- \assigns{} and \allocates{} clauses. On the contrary,
+ \assigns{} and \allocates{} clauses;
 \result cannot be used in \exits{} clauses.
 
 \begin{example}
 \label{ex:assigns-and-abrupt-termination}
-  Here is a complete specification of the \exit{} function which
+  Here is a complete specification of the \exit{} function, which
   performs an unconditional exit of the \main{} function:
   \listinginput{1}{exit.c}
   Note that the specification of the \lstinline|may_exit|
@@ -2912,10 +2913,11 @@ can be used only in \exits{},
 %% Discuter de la sémantique du assign en présence d'une terminaison abrupte
 %% dans un contrat de fonction et de statement.
 % [Patrick B.] START proposition:
-Contrary to \ensures clauses, \assigns\indextt{assigns}, 
-\allocates\indextt{allocates} and \frees\indextt{frees} clauses of function 
+In contrast to \ensures clauses, \assigns{},\indextt{assigns} 
+\allocates{}\indextt{allocates} 
+and \frees\indextt{frees} clauses of function 
 and statement contracts constrain the post-state 
-even when the annotated function and statement terminates respectively abruptly. 
+even when the annotated function and statement terminates  abruptly. 
 This is shown in example~\ref{ex:assigns-and-abrupt-termination} for a function contract.
 % END proposition:
 
@@ -2930,7 +2932,7 @@ This is shown in example~\ref{ex:assigns-and-abrupt-termination} for a function 
 \experimental
 
 An extended syntax of \assigns clauses, described in
-Figure~\ref{fig:gram:dep} allows specifying data
+Figure~\ref{fig:gram:dep}, allows specifying data
 dependencies\index{dependency} and
 \notimplemented{\emph{functional expressions}}\index{functional expression}.
 
@@ -3011,7 +3013,7 @@ to \texttt{weak}.
   \begin{enumerate}
   \item a weak global invariant \lstinline|a_is_positive|, which specifies that
     global variable \lstinline|a| should remain positive (weakly, so
-    this property might be violated temporarily between functions
+    this property might be violated temporarily between function
     calls);
   \item a strong type invariant for variables of type \lstinline|temperature|;
   \item a weak type invariant for variables of type \lstinline|struct S|.
@@ -3128,7 +3130,7 @@ typedef t1 t2;
 
 \begin{example}\label{ex:model}
   Here is an example of a specification for a function that generates
-  fresh integers. The contract is given in term of a model variable
+  fresh integers. The contract is given in terms of a model variable
   that is intended to represent the set of ``forbidden'' values,
   e.g. the values that have already been generated.
   \listinginput{1}{gen_spec_with_model.c}
@@ -3189,9 +3191,9 @@ grammar are the following:
   \notimplemented{\lstinline|/@| and \lstinline|@/|}
   (since as indicated above, \lstinline|/*@ ... */| would lead
   to incorrect C code).
-  As in normal annotations, \lstinline|@| characters at the beginning of a
-  line and at the end of an annotation (before the final \lstinline|@/|) are
-  considered as blank. 
+  As in normal annotations, \lstinline|@| characters (most commonly at the beginning of a
+  line and at the end of an annotation, before the final \lstinline|@/|) are
+  considered to be white space. 
   This style of annotation is only needed and permitted within ghost code.
   Also, ghost code may not be written within enclosing ghost code.
   
@@ -3376,6 +3378,11 @@ The signature \lstinline|set<$\alpha$*> $\ra$ bool| is useful to handle
 pointer values that have been written inside scalar variables through
 heterogeneous casts.
 
+Note that \lstinline|\dangling| takes a set of memory locations as its argument.
+The predicate is true if \emph{all} of the memory locations contained in the argument are dangling. That
+semantics implies that \lstinline|!\dangling(s)| is true precisely when at least one
+of the locations in $s$ is not dangling. \lstinline|!\dangling(s)| does \emph{not} mean that 
+\emph{all} of the indicated memory locations are \emph{not dangling}, only that \emph{some} are.
 
 \section{Well-typed pointers}
 \label{sec:welltyped}
@@ -3400,7 +3407,7 @@ the function it points to is axiomatized, through the predicate
 \lstinline|set<$\alpha$*> $\ra$ bool|,
 and \lstinline|\valid_function(p)| holds if and only if
 \begin{itemize}
-\item \lstinline|p| is a pointer to a function type \lstinline|t|, and
+\item \lstinline|p| is a pointer to a function of type \lstinline|t|, and
 \item \lstinline|*p| is a function whose type is \emph{compatible}
   with \lstinline|t|, in the sense of \cite[\S6.2.7]{standardc99}
 \end{itemize}

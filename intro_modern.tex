@@ -45,7 +45,7 @@ specification language of the \textsc{Caduceus}
 tool~\cite{filliatre04icfem,filliatre07cav} for deductive verification
 of behavioral properties of C programs. The specification language of
 Caduceus is itself inspired from the
-\emph{Java Modeling Language} (JML~\cite{leavens00jml}) which aims at
+\emph{Java Modeling Language} (JML~\cite{leavens00jml}), which aims at
 similar goals for Java source code: indeed it aims both at
 \emph{runtime assertion checking} and \emph{static verification} using
 the \textsc{OpenJML} tool~\cite{Cok-2011-OpenJML,Cok-2014-OpenJML}, where we aim at
@@ -70,8 +70,8 @@ In this preliminary chapter we introduce some definitions and
 vocabulary, and discuss generalities about this specification
 language.  Chapter~\ref{chap:base} presents the specification language
 itself.  Chapter~\ref{chap:lib} presents additional information about
-\emph{libraries} of specifications. Appendix~\ref{chap:appendix} provides
-specific hindsight over type-checking ACSL annotations, 
+\emph{libraries} of specifications. The appendices provide
+formal rules for type-checking ACSL annotations, 
 the relation between ACSL and JML, and specification templates.
 A detailed table of
 contents is given on page~\pageref{chap:contents}.
@@ -131,7 +131,7 @@ Section~\ref{sec:multiplecontracts}).
 
   \item \emph{statement contract}\,: very similar to a function contract, and
     placed before a statement or a block.  Semantic conditions must
-    be checked (no goto going inside, no goto
+    be checked (e.g., no goto going inside, no goto
     going outside).  See Section~\ref{sec:statement_contract}.
 
   \item \emph{ghost code}\,: regular C code, only visible from the

@@ -1,9 +1,9 @@
 \begin{syntax}
   literal ::= "\true" | "\false" ; boolean constants
-       | integer ; integer constants
-       | real ; real constants
-       | string ; string constants
-       | character ; character constants
+       | integer ; integer constants (lexical token)
+       | real ; real constants (lexical token)
+       | string ; string constants (lexical token)
+       | character ; character constants (lexical token)
        \ 
   bin-op ::= "+" | "-" | "*" | "/" | "%" | "<<" | ">>";
        | "==" | "!=" | "<=" | ">=" | ">" | "<" ;
@@ -36,7 +36,9 @@
        | id ":" term ; syntactic naming
        | string ":" term ; syntactic naming
        \
-  poly-id ::= ident ; normal identifier
+  poly-id ::= ident ; 
+       \
+  ident ::= id ;  lexical identifier token 
 \end{syntax}
 
 %%% Local Variables:

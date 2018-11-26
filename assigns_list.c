@@ -11,7 +11,7 @@ struct list {
   @ }
 */
 
-// The requires clause forbids to give a circular list
+// The requires clause forbids giving a circular list
 /*@ requires reachable(p,\null);
   @ assigns { q->hd | struct list *q ; reachable(p,q) } ;
   @*/
