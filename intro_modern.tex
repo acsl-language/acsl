@@ -6,7 +6,7 @@ This document is a reference manual for
            {the \NAME{} implementation provided by the
              \mbox{\textsc{Frama-C}} %no cesure
             framework~\cite{frama-c}.}%
-           {ACSL.}
+           {\NAME{}.}
 \NAME{} is an acronym for ``ANSI/ISO \lang{} 
 Specification Language''. 
 This is a Behavioral Interface Specification Language (BISL)
@@ -87,7 +87,7 @@ source files remain compilable. Those comments must start with
 
 In some contexts, it is not possible to modify the source code.
 It is strongly recommended that a tool that implements
-\lang{} specifications provide technical means to store annotations
+\NAME{} specifications provide technical means to store annotations
 separately from the source. It is not the purpose of this document
 to describe such means.  Nevertheless, some of the specifications,
 namely those at a global level, can be given in separate files:
@@ -150,7 +150,10 @@ Section~\ref{sec:multiplecontracts}).
 
 \subsection{About preprocessing}
 
-This document considers \lang{} source \emph{after} preprocessing.
+This document considers \lang{} source \emph{after} preprocessing, except that, whereas normal preprocessing replaces all comments by white space, 
+for the purpose of 
+\NAME{}, comments specific to \NAME{} (cf. \ref{sec:lexicalrules}) are retained.
+
 Tools must decide how they handle preprocessing (what to do with
 annotations, whether macro substitution should be performed, etc.)
 
@@ -160,7 +163,7 @@ Additional keywords of the specification language start with a
 backslash, if they are used in the position of a term or a predicate
 (which are defined later in the document).  Otherwise they do not start
 with a backslash (like \ensures{}) and they remain valid identifiers.
-
+igma
 \section{Notations for grammars}
 
 In this document, grammar rules are given in BNF form. In the grammar

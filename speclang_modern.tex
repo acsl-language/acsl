@@ -5,6 +5,7 @@
 \newcommand{\ifCPP}[1]{\ifthenelse{\isCPP}{\input{#1}}{}}
 
 \section{Lexical rules}
+\label{sec:lexicalrules}
 
 Specification language text is placed inside of special C comments; 
 its lexical structure mostly follows that of ANSI/ISO C. A few differences
@@ -61,9 +62,11 @@ should be noted.
       \hline
     \end{tabular}
   \end{center}
-\item Comments can be put inside ACSL annotations. They use the C++
+\item Comments may be put inside ACSL annotations. They use the C++
   format, {\it i.e.} begin with \texttt{//} and extend to the end of
-  current line.
+  current line. Comments beginning with \texttt{/*} may not be nested within ACSL comments. Nested annotations beginning
+  with \texttt{//@} are parsed as if the \texttt{//@} is 
+  replaced by white space.
 \end{itemize}
 
 %A bit complicated with listings
