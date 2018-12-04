@@ -3,14 +3,44 @@
 
 This document is a reference manual for
 \ifthenelse{\boolean{PrintImplementationRq}}%
-{the \NAME{} implementation provided by the Frama-C
-  framework~\cite{frama-c}.}%
-           {\NAME.}
-\NAME{} is an acronym for ``ANSI/ISO \lang{}
-Specification Language''. This is a Behavioral Interface Specification
-Language (BISL) implemented in the \textsc{Frama-C} framework.
-It aims at specifying behavioral properties of \lang{}
-source code. The main inspiration for this language comes from the
+           {the \NAME{} implementation provided by the
+             \mbox{\textsc{Frama-C}} %no cesure
+            framework~\cite{frama-c}.}%
+           {\NAME{}.}
+\NAME{} is an acronym for ``ANSI/ISO \lang{} 
+Specification Language''. 
+This is a Behavioral Interface Specification Language (BISL)
+\ifthenelse{\boolean{PrintImplementationRq}}%
+           {for}%
+           {implemented in the \textsc{Frama-C} framework. It aims at}
+specifying behavioral properties of \lang{}
+source code.
+
+\ifthenelse{\boolean{PrintImplementationRq}}{%
+Not all of the features mentioned in this document are currently
+implemented in the Frama-C kernel. Unimplemented features are signaled
+as in the following line:
+\begin{quote}
+\notimplemented[Additional remarks on the feature may appear in a footnote.]%
+{This feature is not currently supported by Frama-C}
+\end{quote}
+
+As a summary, the features that are not currently implemented in
+Frama-C include in particular:
+\begin{itemize}
+\item some built-in predicates and logical functions;
+\item definition of logical types (section~\ref{sec:logicspec});
+\item specification modules (section~\ref{sec:specmodules});
+\item model variables (section~\ref{ex:model});
+\item only basic support for ghost code is provided (section~\ref{sec:ghost});
+\item verification of non interference of ghost code
+  (p.~\pageref{sec:semantics-ghost-code});
+\item specification of volatile variables
+  (section~\ref{sec:volatile-variables});
+\end{itemize}
+}%
+
+The main inspiration for this language comes from the
 specification language of the \textsc{Caduceus}
 tool~\cite{filliatre04icfem,filliatre07cav} for deductive verification
 of behavioral properties of C programs. The specification language of
@@ -57,7 +87,7 @@ source files remain compilable. Those comments must start with
 
 In some contexts, it is not possible to modify the source code.
 It is strongly recommended that a tool that implements
-\lang{} specifications provide technical means to store annotations
+\NAME{} specifications provide technical means to store annotations
 separately from the source. It is not the purpose of this document
 to describe such means.  Nevertheless, some of the specifications,
 namely those at a global level, can be given in separate files:
@@ -120,7 +150,10 @@ Section~\ref{sec:multiplecontracts}).
 
 \subsection{About preprocessing}
 
-This document considers \lang{} source \emph{after} preprocessing.
+This document considers \lang{} source \emph{after} preprocessing, except that, whereas normal preprocessing replaces all comments by white space, 
+for the purpose of 
+\NAME{}, comments specific to \NAME{} (cf. \ref{sec:lexicalrules}) are retained.
+
 Tools must decide how they handle preprocessing (what to do with
 annotations, whether macro substitution should be performed, etc.)
 
@@ -134,7 +167,7 @@ Additional keywords of the specification language start with a
 backslash, if they are used in the position of a term or a predicate
 (which are defined later in the document).  Otherwise they do not start
 with a backslash (like \ensures{}) and they remain valid identifiers.
-
+igma
 \section{Notations for grammars}
 
 In this document, grammar rules are given in BNF form. In the grammar
