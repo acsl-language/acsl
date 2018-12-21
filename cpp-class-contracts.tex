@@ -1,4 +1,4 @@
-\section{Class contracts}
+\section{Class contracts [C++]}
 \label{sec:class-contracts}
 
 C++ allows the declaration of functions and data fields within
@@ -7,15 +7,15 @@ may be present at class (or struct or union) scope.
 
 \subsection{Global declarations}
 
-As described in Section ???, logical specifications (predicates, functions, lemmas, and constants) may be defined at global scope. They may also be defined in class (that is, aggregate) scope. The following considerations apply:
+As described in Section \ref{TBD}, logical specifications (predicates, functions, lemmas, and constants) may be defined at global scope. They may also be defined in class (that is, aggregate) scope. The following considerations apply:
 \begin{itemize}
 	\item Just as for \lang{} identifiers, any names 
 	declared are part of the aggregate scope. The name may
 	be referred to outside of the aggregate using \lang's 
-	qualification syntax, as in \lstinline|A::m| for a 
-	logic predicate, for example, named \lstinline|m| and
-	declared in class \lstinline|A|.
-	\item As for any other specification constructs, those defined in aggregate scope are only within scope in other specification annotations.
+	qualification syntax; for example, \lstinline|A::m| names a 
+	logic predicate declared as \lstinline|m| in class
+	or namespace \lstinline|A|.
+	\item As for any other specification constructs, those defined in aggregate scope are only within scope in  specification annotations.
 	\item Within aggregate scope, a predicate or function definition may be
 	declared \lstinline|static|, with the same meaning as 
 	\lstinline|static| has for \lang{} function 
@@ -23,7 +23,6 @@ As described in Section ???, logical specifications (predicates, functions, lemm
 	may refer to \lstinline|this| and are invoked with the
 	\lang{} arrow or dot syntax.
 
-	\TODO{Perhaps we should require that logic functions have an explicit first argument with name 'this' and not treat it implicitly like C++ methods}
 	\item Logic lemmas, logic type definitions, axiomatic definitions, and logic constant definitions are always implicitly static. The effect of declaring them within an aggregate is just one of name scope.
 \end{itemize}
 
@@ -38,10 +37,10 @@ then keyword \lstinline|\this| may be used within the function
 contract and within any statement contract within the 
 function. The keyword \lstinline|\this| refers to the current
 object, just as \lstinline|this| does within \lang code.
-The type of \lstinline|\this| in contracts is the same as the type of \lstinline|this| in C++ code: \lstinline|T*| or \lstinline|const T*|, where \lstinline|T| is the type of the enclosing aggregate.
+The type of \lstinline|\this| in contracts is the same as the type of \lstinline|\this| in C++ code: \lstinline|T*| or \lstinline|const T*|, where \lstinline|T| is the type of the enclosing aggregate.
 
 \subsection{Ghost functions}
-Aggregates may also contain ghost functions, as described in secction????? \TODO{Complete this subsection}
+Aggregates may also contain declarations of ghost functions, as described in section TBD \TODO{Complete this subsection}
 
 
 \subsection{Inheritance of function contracts}
@@ -82,6 +81,7 @@ as described in section TBD\TODO{Sec ref needed}.
 
 \subsection{Specifications of special member functions}
 
-\lang{} implicitly declares and provides a default implementation for some member functions under some circumstances. These member functions are a no-argument constructor, a copy constructor, a move constructor, a copy assignment constructor, a move assignment constructor, and a destructor. Because these member functions may not have a declaration, the usual syntax for providing them
+\lang{} implicitly declares and provides a default implementation for some member functions under some circumstances. These member functions are a no-argument constructor, a copy constructor, a move constructor, a copy assignment constructor, a move assignment constructor, and a destructor. Because these member functions are created even if
+there is no explicit source-code declaration, the usual syntax for providing them
 a specification does not apply.
 \TODO{So we need something different}

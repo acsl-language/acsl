@@ -1,4 +1,4 @@
-\section{Enums}
+\section{Enums C++]}
 \label{sec:enums}
 \index{enum}
 
@@ -36,9 +36,14 @@ In some situations, however, the author would like an enum type to be strictly d
 \item To forbid creating any enumerator values that are not named in the enumeration declaration.
 \end{itemize}
 
-\NAME{} allows two modifiers on the enum definition: \lstinline|strong| and \lstinline|complete|. If these are present on any declaration or definition, they must be present on all declarations and definitions of the enumeration type.
+\NAME{} allows two modifiers on the enum definition: \lstinline|strong| and \lstinline|complete|. If these are present on any declaration or definition of an enum, they must be present on all declarations and definitions of the enumeration type.
 \begin{itemize}
-	\item \lstinline|strong| means the enum type is strongly typed, that is no conversions to or from integral values are permitted. These checks are syntactic.
-	\item \lstinline|complete| means that no integral values are permitted that do not correspond to a named enumerator. If the enum type is \lstinline|strong| then it is automatically also \lstinline|complete|, because there is no syntax to create a new enumerator other than direct assignment of a constant. If it is not also \lstinline|strong|, then a declaration of \lstinline|complete| means that any conversion from an integral value to an enum value 
+	\item \lstinline|complete| means that no integral values are permitted that do not correspond to a named enumerator. A declaration of \lstinline|complete| means that any conversion from an integral value to an enum value 
 	creates a proof obligation that the integral value belongs to one of the declared enumerators.
+	\item \lstinline|strong| means that the enum is strongly
+	typed, that is, that no conversions to or from integral
+	values are permitted. This check can be performed during
+	type checking and does not create any proof obligations.
+	A strong enum forbids any conversion from an integral value
+	so it is also necessarily complete.
 \end{itemize}
