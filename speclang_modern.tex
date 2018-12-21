@@ -446,6 +446,8 @@ provided in a library.
 
 \subsubsection{Enum types}
 
+\ifCPP{Enum types for \lang are discussed in \S\ref{TBD}.}
+
 Enum types are also interpreted as mathematical integers. Casting\index{cast}
 an integer into an enum in the logic gives the same result as
 if the cast was performed in the C code.
@@ -760,7 +762,7 @@ They can be passed as parameters to and
  returned from logic functions, tested for equality, etc. like any
 other values.
 
-Aggregate types can be declared in logic, 
+Aggregate types can be declared in logic,
 \notimplemented{and their contents may be
 any logic types themselves}. Constructing such values in logic can be
 performed using a syntax similar to C designated initializers.
@@ -1271,7 +1273,7 @@ Moreover, the argument of
 an \assigns{} clause must be a set of modifiable l-values, as described in
 Section~\ref{sec:glossary}. 
 More generally, we introduce syntactic constructs to denote \emph{sets of
-  terms} (tsets) that are also useful for the \separated predicate (see Section~\ref{sec:separated}). The terms in a set may have any type, though the operations described below are only well-typed for certain types of tsets. For example, \lstinline|s$_1$[s$_2$]| as defined below is only well-typed if one of 
+  values} (tsets) that are also useful for the \separated predicate (see Section~\ref{sec:separated}). The terms in a tset may have any type, though the operations described below are only well-typed for certain types of tsets. For example, \lstinline|s$_1$[s$_2$]| as defined below is only well-typed if one of 
 \lstinline|s$_1$| and \lstinline|s$_2$| is a set of arrays and the other a set of integers.
 
 \begin{figure}
@@ -1398,7 +1400,7 @@ compute an over-approximation of the sets of modified locations.
 
 \ifCPPinput{cpp-default-values}
 
-\ifCPP{cpp-default-values}
+\ifCPPinput{cpp-default-values}
 	
 \section{Statement annotations}
 \index{annotation}
@@ -1857,13 +1859,13 @@ are dynamically allocated or deallocated by the annotated statement from the \te
 they are defined later in Section~\ref{sec:allocation-clause}.
 % END proposition
 
-\ifCPP{cpp-class-contracts}
-\ifCPP{cpp-enum}
-\ifCPP{cpp-templates}
-\ifCPP{cpp-types}
-\ifCPP{cpp-visibility}
-\ifCPP{cpp-attributes}
-\ifCPP{cpp-namespaces}
+\ifCPPinput{cpp-class-contracts}
+\ifCPPinput{cpp-enum}
+\ifCPPinput{cpp-templates}
+\ifCPPinput{cpp-types}
+\ifCPPinput{cpp-visibility}
+\ifCPPinput{cpp-attributes}
+\ifCPPinput{cpp-namespaces}
 
 \section{Termination}
 \label{sec:termination}
@@ -3048,7 +3050,7 @@ even when the annotated function or statement terminates abruptly.
 This is shown in example~\ref{ex:assigns-and-abrupt-termination} for a function contract.
 % END proposition:
 
-\ifCPP{cpp-exceptions}
+\ifCPPinput{cpp-exceptions}
 
 %% TODO:
 %%  Discuter de exit versus return pour la fonction main. Discuter
