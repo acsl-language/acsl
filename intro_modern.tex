@@ -13,8 +13,8 @@ Language (BISL)
 \ifthenelse{\boolean{PrintImplementationRq}}%
            {for}%
            {implemented in the \textsc{Frama-C} framework. It aims at}
-specifying behavioral properties of C
-source code.
+specifying behavioral properties of \lang{}
+source code.\cite{hatcliff2012behavioral}
 
 \ifthenelse{\boolean{PrintImplementationRq}}{%
 Not all of the features mentioned in this document are currently
@@ -98,7 +98,7 @@ Section~\ref{sec:multiplecontracts}).
 \subsection{Kinds of annotations}
 
 \begin{itemize}
-\item Global annotations:
+\item Global annotations:\isCPP{\footnote{In C++, global annotations may also be at namespace or class scope.}}
   \begin{itemize}
   \item \emph{function contract}\,: such an annotation is inserted just before
     the declaration or the definition of a function.
@@ -168,7 +168,7 @@ the sake of simplicity, we only describe annotations in the usual
 \lstinline|/*@ ... */| style of comments. One-line annotations
 in \lstinline|//@| comments are similar. Note however that two consecutive
 comments, regardless of their style, are considered as two independent
-annotations. In particular, it is not possible to split a multi-line
+annotations. In particular, it is not possible in general to split a multi-line
 annotation into several \lstinline|//@| comments.
 
 %%% Local Variables:
