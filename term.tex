@@ -1,9 +1,9 @@
 \begin{syntax}
   literal ::= "\true" | "\false" ; boolean constants
-       | integer ; integer constants (lexical token)
-       | real ; real constants (lexical token)
-       | string ; string constants (lexical token)
-       | character ; character constants (lexical token)
+       | integer ; (lexical) integer constants
+       | real ; (lexical) real constants
+       | string ; (lexical) string constants
+       | character ; (lexical) character constants
        \ 
   bin-op ::= "+" | "-" | "*" | "/" | "%" | "<<" | ">>";
        | "==" | "!=" | "<=" | ">=" | ">" | "<" ;
@@ -18,7 +18,7 @@
        | "&" ; address-of operator
        \
   term ::= literal ; literal constants
-       | poly-id ; variables
+       | poly-id ; variables, function names
        | unary-op term ;
        | term bin-op term ;
        | term "[" term "]" ; array access
