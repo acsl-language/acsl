@@ -5,7 +5,7 @@
 
 \subsection{Access control of \NAME{} constructs}
 
-\lang{} allows members of aggregate types to be declared as \lstinline|public|, \lstinline|protected|, or \lstinline|private|. This visibility modifier affects whether the member can be accessed in other contexts. 
+\lang{} allows members of aggregate types to be declared as \lstinline|public|, \lstinline|protected|, or \lstinline|private|. This visibility modifier affects whether the member can be accessed within other contexts. 
 
 The same access rules apply to \NAME{} constructs declared at class scope. Any name that may be declared at class scope, such as logic functions, predicates, invariants and ghost code, has associated with it the access modifier that it would if it were a \lang{}
 construct, with the same access defaults being used for struct and class declarations. Typically, \lstinline|private| \NAME{}
@@ -101,7 +101,7 @@ class Array {
 	
 	int[] data;
 	
-  //@ spec_public:
+  //@ spec_public
   
 	int data_length;
 	
@@ -122,7 +122,7 @@ class Array {
 }
 \end{listing-nonumber}
 
-Here the \lstinline|spec_public:| access specifier introduces a new section of the class declaration: all declarations are still 
+The \lstinline|spec_public| access specifier applies only to the next declaration within the class declaration: all declarations are still 
 \lstinline|private| in \lang{}, since that is the most recent \lang{} access specifier, but until the next access specifier, the declarations have \lstinline|public| access within specifications. \TODO{Perhaps this should apply to just the immediate declaration?}
 
 The advantage of this syntax is more concise expression; there is no need to declare \lstinline|length()| just to replicate \lstinline|data_length|.
@@ -148,7 +148,7 @@ class Array {
 	
     int[] data;
 	
-  //@ spec_public:
+  //@ spec_public
 	
     int data_length;
 	
