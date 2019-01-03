@@ -1,6 +1,6 @@
 int* f (int x);
 
-void main() {
+int main() {
   int* (*p)(int) = &f;
   //@ assert \valid_function((int* (*)(int)) p); // true
   //@ assert \valid_function((int* (*)()) p); // true (see C99 6.7.5.3:15)
@@ -10,4 +10,5 @@ void main() {
 
   //@ assert !\valid_function((volatile int* (*)(int)) p);
     // not compatible: qualifiers cannot be dropped (see C99 6.7.3:9)
+  return 0;
 }
