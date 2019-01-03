@@ -2885,6 +2885,16 @@ The \exits{} clause can be used in both function and statement
 contracts to give behavioral properties to the \main{} function
 or to any function that may exit the program,
 \emph{e.g.} by calling the \exit{} function.
+The simple contract
+\begin{listing-nonumber}
+/*@ exits E;
+  @*/
+\end{listing-nonumber}
+means that, if the program terminates while executing the corresponding
+function (or statement), then it exits in a post-state where the property
+E holds.
+In any other termination kind, the \exits{} clause does not constrain
+the post-state.
 
 In such clauses, \lstinline|\old(e)|\indexttbs{old}
 is allowed and denotes the value of \lstinline|e| in the pre-state of
