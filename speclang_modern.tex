@@ -981,7 +981,8 @@ The semantics of such a contract is as follows:
 \begin{itemize}
 \item The caller of the function must guarantee that it is called in a
   state where the property \lstinline|P$_1$ && P$_2$ && ...| holds.
-\item The called function returns a state where the property
+\item The called function returns\footnote{An \ensures{} clause does not
+  imply that the function will necessarily return.} a state where the property
   \lstinline|E$_1$ && E$_2$ && ...| holds.
 \item All memory locations that are allocated in both the pre-state and 
   the post-state\footnote{Functions that allocate or free memory can be 
