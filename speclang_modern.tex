@@ -1763,7 +1763,8 @@ The locations having their values modified during the path execution, starting
 at the beginning of the annotated statement and leading
 to a \lstinline|goto| jumping out of it, should be part of its 
 \assigns clause.
-\marginpar{This behavior of assigns clauses for abrupt exits from statements is different than the corresponding behavior for loops. Should it be? }
+%% TODO: Needs of clarification
+%% \marginpar{This behavior of assigns clauses for abrupt exits from statements is different than the corresponding behavior for loops. Should it be? }
 
 \begin{example} The clause \lstinline|assigns \nothing;| does not hold for that statement,
 even if the clause \lstinline|ensures x==\old(x);| holds: 
