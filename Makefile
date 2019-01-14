@@ -94,8 +94,25 @@ transf: transf.cmo transfmain.cmo
 
 transfmain.cmo: transf.cmo
 
-.PHONY: check tutorial-check grammar-check
+# Internal to Frama-C
+FRAMAC ?= ../../bin/frama-c
 
+HAS_FRAMAC:=$(shell if test -x $(FRAMAC); then echo yes; else echo no; fi)
+
+.PHONY: full-check check tutorial-check grammar-check
+full-check: check tutorial-check grammar-check
+
+ifneq ("$(HAS_FRAMAC)","yes")
+
+.PHONY: cannot-check
+cannot-check:
+	@echo "check targets can only be made within Frama-C sources"
+	@exit 2
+
+tutorial-check: cannot-check
+check: cannot-check
+
+else
 GOOD=abrupt_termination.c advancedloopinvariants.c assert-tut.c		\
 assigns_array.c assigns.c assigns_list.c bsearch.c bsearch2.c		\
 cond_assigns.c div_lemma.c dowhile.c euclide.c exit.c extremum-tut.c	\
@@ -179,6 +196,8 @@ BUILTINS=real integer string character id \
          assertion loop-annotation statement-contract \
          ghost-code
 
+endif
+
 grammar-check: transf
 	./transf -check $(addprefix -builtin ,$(BUILTINS)) $(BNF_FILES)
 
@@ -213,16 +232,11 @@ acsl.tex: $(MAIN).tex Makefile
 	    -e '/^%--.*{PrintImplementationRq}/s/%--//' $^ > $@
 	@chmod a-w $@
 
-# Internal to Frama-C
-FRAMAC ?= ../../bin/frama-c
-
-HAS_FRAMAC:=$(shell if test -x $(FRAMAC); then echo yes; else echo no; fi)
-
 ifeq ("$(HAS_FRAMAC)","yes")
 
 acsl: acsl-implementation.pdf acsl.pdf
 
-all: acsl tutorial check
+all: acsl tutorial full-check
 
 tutorial: tutorial-check acsl-mini-tutorial.pdf
 
@@ -233,10 +247,12 @@ install: acsl-implementation.pdf acsl.pdf
 tutorial-valid: $(TUTORIAL_EXAMPLES:.c=.proved)
 VERSION:
 	$(FRAMAC) -version > $@
+
 else
 acsl: acsl.pdf
 tutorial: acsl-mini-tutorial.pdf
 all: acsl tutorial
+
 install:
 	@echo "install target can only be made within Frama-C sources"
 	@exit 2
