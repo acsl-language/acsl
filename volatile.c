@@ -1,9 +1,11 @@
 volatile int x;
 
-/*@ ghost //@ requires p == &x;
+//@ ghost int injector_x[3] = { 1, 2, 3 };
+//@ ghost int injector_count = 0;
+
+/*@ ghost /@ requires p == &x;
+  @          assigns injector_count; @/
   @ int reads_x(volatile int *p) { 
-  @   static int injector_x[] = { 1, 2, 3 };
-  @   static int injector_count = 0;
   @   if (p == &x) 
   @     return injector_x[injector_count++];
   @   else
@@ -14,7 +16,8 @@ volatile int x;
 //@ ghost int collector_x[3];
 //@ ghost int collector_count = 0;
   
-/*@ ghost //@ requires p == &x;
+/*@ ghost /@ requires p == &x;
+  @          assigns collector_count; @/
   @ int writes_x(volatile int *p, int v) { 
   @   if (p == &x) 
   @     return collector_x[collector_count++] = v;
