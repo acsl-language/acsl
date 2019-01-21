@@ -19,6 +19,7 @@ version={4.0}]
 %\usepackage{times}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{enumitem}
 %\usepackage{tikz}
 \usepackage{color}
 \usepackage{xspace}
@@ -26,6 +27,11 @@ version={4.0}]
 \usepackage[normalem]{ulem}
 \usepackage[leftbars]{changebar}
 \usepackage{alltt}
+
+\lstset{
+numbers=left,
+deletekeywords={assert}
+}
 \makeindex
 
 %Already set in frama-c-book
@@ -56,5 +62,5 @@ version={4.0}]
 % \cfoot{}
 % \rfoot{\fancyplain{}{CAT RNTL project}}
 
-\newcommand{\ifCPP}[1]{\ifthenelse{\isCPP}{#1}}
+\newcommand{\ifCPP}[1]{\ifthenelse{\isCPP}{#1}{}}
 \newcommand{\ifCPPinput}[1]{\ifthenelse{\isCPP}{\input{#1}}{}}
