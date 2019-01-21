@@ -10,7 +10,7 @@ its lexical structure mostly follows that of ANSI/ISO C\ifCPP{/C++}. A few diffe
 should be noted.
 \begin{itemize}
 \item The at sign (\verb|@|) is equivalent
-  to a space character, except where it indicates the beginning of a ACSL\ifCPP{ACSL++} annotation.
+  to a space character, except where it indicates the beginning of an ACSL\ifCPP{/ACSL++} annotation.
 \item Identifiers may start with the backslash character (\verb|\|).
 \item Some UTF8 characters may be used in place of some constructs, as
   shown in the following table:
@@ -174,6 +174,13 @@ Section~\ref{sec:logicspec} for detail.
   \lstinline|x < y > z| or \lstinline|x != y != z| are not allowed.
   Note that consecutive comparison operators are allowed only 
   in predicate position.
+  
+  A consecutive comparison as the conditional expression in a ternary operation could, according to the grammar, be either in term or 
+  predicate position. In such a case, the conditional expression is
+  considered a predicate. As a term a consecutive comparison 
+  \lstinline|x < y < z| would
+  be parsed as \lstinline|(x < y) < z| which is incorrectly typed, 
+  because in logic expressions, comparisons result in boolean values.
 
   To enforce the same interpretation as in C expressions, one may need
   to add extra parentheses: \lstinline|a == b < c| is equivalent
@@ -424,11 +431,11 @@ provided in a library.
 
 \subsubsection{Enum types}
 
-\ifCPP{Enum types for \lang are discussed in \S\ref{TBD}.}
-
 Enum types are also interpreted as mathematical integers. Casting\index{cast}
 an integer into an enum in the logic gives the same result as
 if the cast was performed in the C code.
+\ifCPP{Enum types for \lang{} are discussed in \S\ref{TBD}.}
+
 
 \subsubsection{Bitwise operations}
 
@@ -1582,6 +1589,8 @@ node ``inv'' to itself.
 \input{inductiveloopinvariants_modern}
 \end{example}
 
+\ifCPP{\input{cpp-forrange.tex}}
+
 \subsection{Built-in construct \texorpdfstring{\at}{\textbackslash{}at}}
 \label{sec:at}
 \indexttbs{at} Statement annotations usually need another additional
@@ -1682,7 +1691,7 @@ where \lstinline|Here| is equivalent to \lstinline|LoopEntry|.
 There is one special case regarding formal parameters.
 Despite any surrounding \lstinline|\at| construct or the 
 type of clause, formal
-parameters in a function contract are always interpreted|
+parameters in a function contract are always interpreted
 in the pre-state.
 
 No logic label is visible in global logic declarations
@@ -1801,7 +1810,7 @@ they are defined later in Section~\ref{sec:allocation-clause}.
 \ifCPPinput{cpp-templates}
 \ifCPPinput{cpp-types}
 \ifCPPinput{cpp-visibility}
-\ifCPPinput{cpp-attributes}
+\ifCPPinput{cpp-auto}
 \ifCPPinput{cpp-namespaces}
 
 \section{Termination}
@@ -2319,7 +2328,7 @@ memory locations that it depends on. From such information, one
 might deduce properties of the form $f\{L_1\}(args) = f\{L_2\}(args)$
 if it is known that between states $L_1$ and $L_2$, the memory changes are
 disjoint from the declared footprint.
-Only mutable locations need be listed in reads footprint: 
+Only mutable locations need be listed in a \lstinline|reads| footprint: 
 locations that hold constants that do not change in the course of a program may be omitted.
 
 \begin{example}
@@ -2338,6 +2347,8 @@ locations that hold constants that do not change in the course of a program may 
 \index{module}
 
 \experimental
+
+\ifCPP{Use namespaces instead?}
 
 \notimplemented{Specification modules can be provided} to encapsulate
 several logic definitions, for example
@@ -2949,11 +2960,14 @@ In contrast to \ensures clauses, \assigns{},\indextt{assigns}
 \allocates{}\indextt{allocates} 
 and \frees\indextt{frees} clauses of function 
 and statement contracts constrain the post-state 
-even when the annotated function and statement terminates  abruptly. 
+even when the annotated function or statement terminates abruptly. 
 This is shown in example~\ref{ex:assigns-and-abrupt-termination} for a function contract.
 % END proposition:
 
 \ifCPPinput{cpp-exceptions}
+\ifCPPinput{cpp-attributes}
+\ifCPPinput{cpp-functional}
+
 
 %% TODO:
 %%  Discuter de exit versus return pour la fonction main. Discuter
@@ -3458,6 +3472,8 @@ and \lstinline|\valid_function(p)| holds if and only if
 %\experimental
 %
 %how to encapsulate several functions...
+\section{Logic attribute annotations}
+\label{sec:attribute_annot}
 
 
 %\section{Attribute annotations}
@@ -3466,6 +3482,20 @@ and \lstinline|\valid_function(p)| holds if and only if
 %\experimental
 %
 %These are annotations allowing to add attributes on variables, like regular C attributes (const, volatile, restrict).
+
+\ifCPP{
+\section{Other items to include somewhere}
+\begin{itemize}
+	\item name resolution for ACSL++ names
+	\item unsequenced behavior, e.g. i = v[i++]
+	\item which are reserved words
+	\item C++ friends
+	\item initialization (C++ ref 3.6.2)
+	\item range for statement -- need count, values?
+
+\textsl{}%	
+\end{itemize}
+}
 
 % The purpose of these are various:
 % \begin{itemize}
