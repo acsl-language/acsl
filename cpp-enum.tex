@@ -1,4 +1,4 @@
-\section{Enums C++]}
+\section{Enums [C++]}
 \label{sec:enums}
 \index{enum}
 
@@ -36,7 +36,7 @@ In some situations, however, the author would like an enum type to be strictly d
 \item To forbid creating any enumerator values that are not named in the enumeration declaration.
 \end{itemize}
 
-\NAME{} allows two modifiers on the enum definition: \lstinline|strong| and \lstinline|complete|. If these are present on any declaration or definition of an enum, they must be present on all declarations and definitions of the enumeration type.
+\NAME{} allows two modifiers on an enum declaration: \lstinline|strong| and \lstinline|complete|. If these are present on any declaration or definition of an enum, they must be present on all declarations and definitions of the enumeration type.
 \begin{itemize}
 	\item \lstinline|complete| means that no integral values are permitted that do not correspond to a named enumerator. A declaration of \lstinline|complete| means that any conversion from an integral value to an enum value 
 	creates a proof obligation that the integral value belongs to one of the declared enumerators.

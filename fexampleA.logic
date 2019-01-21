@@ -1,0 +1,15 @@
+\flit FLIT_inc;
+assume forall int x; \requires{L}(FLIT_inc,x) == \true;
+assume forall int x; \assigns{L}(FLIT_inc,x) == \empty;
+assume forall int r,x; \ensures{LPre,LPost}(FLIT_inc,r,x) == (r == x+1);
+\flit fp;
+assume fp == FLIT_inc;
+Lab_1:
+assert \requires{Lab_1}(fp,4);
+havoc \assigns{Lab_1}(fp,4);
+Lab_2:
+int result_fp;
+assume \ensures{Lab_1,Lab_2}(fp,result_fp,4);
+int y;
+assume y == result_fp;
+assert y >= 4;

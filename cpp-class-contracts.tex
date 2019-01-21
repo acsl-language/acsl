@@ -81,7 +81,62 @@ as described in section TBD\TODO{Sec ref needed}.
 
 \subsection{Specifications of special member functions}
 
-\lang{} implicitly declares and provides a default implementation for some member functions under some circumstances. These member functions are a no-argument constructor, a copy constructor, a move constructor, a copy assignment constructor, a move assignment constructor, and a destructor. Because these member functions are created even if
-there is no explicit source-code declaration, the usual syntax for providing them
-a specification does not apply.
-\TODO{So we need something different}
+\lang{} implicitly declares and provides a default implementation for some member functions under some circumstances. 
+Thus they also have an implicit specification. Each of these is described in subsections below. However, the user may also wish to provide an explicit specification for such implicit functions, but there is no
+explicit declaration in the \lang{} code to which to attach such a 
+specification.
+
+In such a case, a corresponding declaration may be written as a \NAME{} 
+declaration, with an attached specification. 
+In the following example, class \lstinline|C| has an implicitly defined
+copy constructor. The \NAME{} comment gives an explicit specification.
+No body is given for the declaration of the \lang{} copy constructor.
+Such declarations are only valid if the rules of \lang{} state that such
+a member function is implicitly defined.
+\begin{lstlisting}
+class C {
+  public:
+  //@ logic integer value;
+  
+  /*@
+    @    requires \true;
+    @    assigns \nothing;
+    @    ensures this.value == that.value;
+    @ C(const C& that);
+}
+\end{lstlisting}
+
+The member functions for which implicit default functions are provided by the compiler are the following. In eqach case the default action (and corresponding implicit specification) is to apply the corresponding operation on each base class and data member of the object at hand.
+\begin{itemize}
+	\item default constructor \lstinline|C()|: 
+	\item default copy constructor \lstinline|C(C&)| or \lstinline|C(const C&)|
+	\item default move constructor \lstinline|C(C&&)| or \lstinline|C(const C&&)|
+	\item default copy assignment operator \lstinline|C::operator=(C&)| or \lstinline|C::operator=(const C&)|
+	\item default move assignment operator \lstinline|C::operator=(C&&)| 
+	\item default destructor \lstinline|C::~C()|
+\end{itemize}
+
+The \lstinline|operator new(,,,)| and 
+\lstinline|operator delete(...)| functions have the appearnace of being implicitly defined. However, they are defined in the standard library
+(include file \lstinline|new|). Their specifications are given there as
+part of the specifications of the standard library.
+
+\subsection{Deleted and defaulted definitions}
+
+ \lang{} functions can be defined to be either deleted or defaulted, as in this code:
+ \begin{lstlisting}
+ C::C(const& C) = delete; 
+  C::C(const& C) = default; 
+ \end{lstlisting}
+ A definition that is \lstinline|=delete| results in a program for which any use of the given method results in a compile-time error,
+ as if the function is not at all defined.It can be used to preclude the
+ generation of otherwise implicitly generated functions.
+ 
+ A definition that is \lstinline|=default| results in the corresponding
+ function defined to have the body it would have as an implicit default
+ member, even if the \lang{} rules would otherwise preclude the 
+ function from being implicitly generated. That is, it forces 
+ generation of the member function where it would not otherwise be implicitly generated.
+ 
+Both of these features are handled by \lang{} and do not require 
+extra features in \NAME{}. Only, if a method is implicitly generated, whether by using \lstinline|=default| or not, an implicit specification must be correspondingly generated.

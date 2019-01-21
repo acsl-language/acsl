@@ -40,8 +40,8 @@ class Array {
   public:
 	
 	/*@ 
-	requires 0 <= index < data\_length;
-	ensures \result == data[data\_length];
+	requires 0 <= index < data_length;
+	ensures \result == data[data_length];
 	*/
 	int getValue(int index) {
 		return data[index];
@@ -85,7 +85,7 @@ class Array {
 }
 \end{listing-nonumber}
 
-This example demonstrates the general solution for abstraction that respects information hiding: write public logic functions, predicates or invariants that express the abstract properties of the class, express the specifications of the public members of the class in terms of those abstractions, and write the implementation of the abstractions in terms of the appropriate private aspects of the class.
+This example demonstrates the general solution for abstraction that respects information hiding: write public logic functions, predicates or invariants that express the abstract properties of the class, express the specifications of the public members of the class in terms of those (public) abstractions, and write the implementation of the abstractions in terms of the appropriate private aspects of the class.
 
 \subsection{Usability improvements}
 
@@ -99,10 +99,10 @@ class Array {
 	
   private:
 	
-	int[] data;
+    //@ spec_public
+  	int[] data;
 	
-  //@ spec_public
-  
+    //@ spec_public
 	int data_length;
 	
   public:
@@ -122,8 +122,9 @@ class Array {
 }
 \end{listing-nonumber}
 
-The \lstinline|spec_public| access specifier applies only to the next declaration within the class declaration: all declarations are still 
-\lstinline|private| in \lang{}, since that is the most recent \lang{} access specifier, but until the next access specifier, the declarations have \lstinline|public| access within specifications. \TODO{Perhaps this should apply to just the immediate declaration?}
+The \lstinline|spec_public| access specifier applies only to the next declaration within the class declaration: in the example above both
+\lstinline|data| and \lstinline|data_length| are still 
+\lstinline|private| in \lang{}, since that is the most recent \lang{} access specifier, but the declarations have \lstinline|public| access within specifications. 
 
 The advantage of this syntax is more concise expression; there is no need to declare \lstinline|length()| just to replicate \lstinline|data_length|.
 The disadvantage is that we have lost a measure of information hiding. By using the abstraction \lstinline|length()| we could
@@ -131,10 +132,11 @@ have altered the representation of length within the class without affecting the
 By using \lstinline|spec_public|, that is no longer the case.
 Accordingly, \lstinline|spec_public| should only be used in temporary situations, during development, or where it is clear that the representation is not going to change.
 
-The access specifier \lstinline|spec_protected| may also be seud (within \NAME{} annotations) to give \lang{} \lstinline|protected| access to \lang{} constructs
+The access specifier \lstinline|spec_protected| may be used (within \NAME{} annotations) to give \lang{} \lstinline|protected| access to \lang{} constructs
 that would otherwise be \lstinline|private|.
 
 \subsection{Pure functions}
+\label{sec:pure}
 A second verbose aspect of the listing above is that the logic representation function \lstinline|value()| is essentially a replica of
 the \lang{} function \lstinline|getValue()|. Why write and maintain both of these? Can we not use at least some \lang{} functions in 
 specifications?
