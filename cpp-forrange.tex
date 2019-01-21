@@ -1,0 +1,75 @@
+\subsection{for with range statement [C++]}
+\lang{} introduced a new kind of iteration statement: the range-based for statement, illustrated in the code below:
+\begin{lstlisting}
+void m() {
+  int k = 0;
+  for (int i: {1,2,3,6,7,8}) {
+      k += i;
+  }
+  
+  k = 0;
+  std::list<int> data = ...
+  for (auto value: data) {
+     k += value;
+  }
+}
+\end{lstlisting}
+
+In each case the values of \lstinline|i| or \lstinline|value| is progresssively the respective array or list elements. The  
+index for the array or iterator for the list that would be used in other forms of \lstinline|for| statements is implicit here, simplifying and
+clarifying the code.
+
+However this form poses a difficulty for reasoning about the loop. Typically an iteration over the array would be specified as follows:
+\begin{lstlisting}
+void m() {
+  int k = 0;
+  int array[6] = {1,2,3,6,7,8};
+  /*@
+    loop invariant 0 <= j <= 6;
+    loop invariant k == \sum(0,j-1,array[j]);
+    loop variant 6 -j;
+  @*/
+  for (int j = 0; j < 6; j++) {
+    i = array[j];
+    k += i;
+  }
+}
+\end{lstlisting}
+
+Note that the loop index, here \lstinline|j|, is needed in the loop invariant to help state the inductive loop invariant. However, in the
+for-rangge syntax, where is no explicit loop index. So we define one, named \lstinline|\count| for specification purposes.
+\lstinline|\count| is the number of completed loop iterations so far; 
+at the beginning of the initial iteration its value is 0; it 
+increments by 1 each time the loop body is started again (including by a
+\lstinline|coninue| statement).
+We also define \lstinline|\data| to refer to the value of the array or list over which the for-loop ranges.
+
+With these constructs, we can specify our two example sues of for-range as follows:
+\begin{lstlisting}
+void m() {
+  int k = 0;
+  /*@
+    loop invariant 0 <= \count <= 6;
+    loop invariant k == \sum(0,\count-1,\lambda integer j; \data[j]);
+    loop variant 6 -\count;
+  @*/
+  for (int i: {1,2,3,6,7,8}) {
+    k += i;
+  }
+
+  k = 0;
+  std::list<int> data = ...
+  /*@
+    loop invariant 0 <= \count <= 6;
+    loop invariant k == \sum(0,\count-1,
+                \lambda integer j; *(\data.begin()+j));
+    loop variant 6 -j;
+  @*/
+  for (auto value: data) {
+    k += value;
+  }
+}
+\end{lstlisting}
+
+\emph{TODO: The above may need to be revised when the capabilities for working with iterators are settled.}
+

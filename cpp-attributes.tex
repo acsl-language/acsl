@@ -1,4 +1,4 @@
-\section{Attributes}
+\section{Attributes [C++]\textsl{}}
 \label{sec:attributes}
 
 \lang{} allows decorating declarations with \textit{attributes}. 
@@ -14,11 +14,28 @@ is \lstinline|ensures \false;|.
 
 Thus
 \begin{itemize}
-\item It is a syntactic error if a function has both a \lstinline|[[noexcept]]|
+\item It is a syntactic error if a function has both a \lstinline|[[noreturn]]|
 attribute and an \lstinline|ensures| clause whose predicate is not the 
 boolean literal \lstinline|\false|.
 \item If a function with an \lstinline|[[noreturn]]| attribute has a behavior
 that contains no \lstinline|ensures| clause, the default \lstinline|ensures|
 clause is \lstinline|ensures \false;| (rather than the usual \lstinline|ensures \true;|).
+\end{itemize}
+
+\subsection{[[noexcept]]}
+\label{sec:nexcept}
+
+The \lstinline|[[noexcept]]| attribute on a C++ function declaration means
+that the function never throws an exception: if it terminates at all, it always terminates normally. Consequently, the only appropriate \lstinline|throws| clause
+is \lstinline|throws \false;|.
+
+Thus
+\begin{itemize}
+	\item It is a syntactic error if a function has both a \lstinline|[[noexcept]]|
+	attribute and a \lstinline|throws| clause whose predicate is not the 
+	boolean literal \lstinline|\false|.
+	\item If a function with a \lstinline|[[noexcept]]| attribute has a behavior
+	that contains no \lstinline|throws| clause, the default \lstinline|throws|
+	clause is \lstinline|throws \false;| (rather than the usual \lstinline|throws \true;|).
 \end{itemize}
 
