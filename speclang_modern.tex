@@ -178,7 +178,7 @@ Section~\ref{sec:logicspec} for detail.
   \lstinline|x < y > z| or \lstinline|x != y != z| are not allowed.
   Note that consecutive comparison operators are allowed only 
   in predicate position.
-
+  
   A consecutive comparison as the conditional expression in a ternary operation could, according to the grammar, be either in term or 
   predicate position. In such a case, the conditional expression is
   considered a predicate. As a term a consecutive comparison 
@@ -1398,8 +1398,6 @@ compute an over-approximation of the sets of modified locations.
 
 \ifCPPinput{cpp-default-values}
 
-\ifCPPinput{cpp-default-values}
-	
 \section{Statement annotations}
 \index{annotation}
 
@@ -2673,10 +2671,10 @@ and
       && \allocation{Here}(p)==\allocation{Pre}(p))
 \end{listing-nonumber}
 
-In fact, just as the \assigns clause does not specify which memory locations are
-assigned (just which are permitted to be assigned),
+In fact, just as the \assigns clause does not specify precisely which memory locations are
+modified (just which are permitted to be modified),
 the \textsl{allocation-clauses} do not specify which memory locations 
-are dynamically allocated or deallocated.
+are dynamically allocated or deallocated (just those that might be allocated or deallocated).
 Pre-conditions and post-conditions should be added to complete the specifications
 about allocations and deallocations.
 The following shortcuts can be used for that:
