@@ -1055,6 +1055,17 @@ default status of clauses.
   the value \lstinline!*p! is incremented by one.
 \end{example}
 
+\subsection{Semantics of frame conditions}
+It is worth pointing out that there are different treatments of
+frame conditions (assigns statements) in various specification languages.
+The frame condition can follow either \emph{writes} semantics or \emph{modifies} semantics.
+\begin{itemize}
+	\item Under \lstinline|writes| (or assigns) semantics, only those memory locations listed in a frame condition may be \emph{written to}, that is, may be the target of an assignment statement. This is true whether or not the value of the memory location changes.
+	\item Under \lstinline|modifies| semantics, a memory location may be written to, as long as the value is restored (that is, not modified) by the end of the scope of the function contract. Under this semantics, a frame condition is a requirement on the relationship between two states --- that a memory location has the same value in a pre-state and a post-state.
+\end{itemize}
+Confusion can arise because the words \emph{assigns} and \emph{modifies} are sometimes used interchangeably. In particular, \textbf{ACSL uses
+	modifies semantics, even though the frame condition is introduced by the \emph{assigns} keyword.}\footnote{For comparison, JML and the OpenJML tool define frame conditions to have write semantics but use the keywords assigns and modifies interchangeably; however, the KeY tool for JML implements modifies semantics. Ada/SPARK's data flow contracts effectively encode write semantics.}
+
 \subsection{Contracts with named behaviors}
 \label{subsec:behaviors}
 \index{function behavior}\indextt{behavior}
@@ -1174,7 +1185,7 @@ See~\ref{sec:loop_annot} for a continuation of this example.
 
   \listinginput{1}{cond_assigns.c}
 %
-  Its contract means that it assigns values pointed to by
+  Its contract means that it may modify values pointed to by
   \lstinline|p| or by \lstinline|q|,
   conditionally on the sign of~\lstinline|n|.
 \end{example}
@@ -1308,7 +1319,7 @@ Note that \lstinline|assigns \nothing| is equivalent to
   It is annotated with three equivalent \assigns{} clauses, each one
   specifying that only the set of cells
   \lstinline|{t[0],$\ldots$,t[n-1]}|
-  is modified.
+  is potentially modified.
 \end{example}
 
 \begin{example}
@@ -1318,7 +1329,7 @@ Note that \lstinline|assigns \nothing| is equivalent to
 
   \listinginput{1}{assigns_list.c}
 %
-  The \assigns{} clause specifies that the set of modified memory
+  The \assigns{} clause specifies that the set of possibly modified memory
   locations is the set of fields \lstinline|q->hd| for each pointer
   \lstinline|q|
   reachable from \lstinline|p| following \lstinline|next| fields. See
@@ -1344,7 +1355,7 @@ it will be impossible to verify anything about programs calling that
 function; in other words giving it a contract is in practice
 mandatory. On the other hand, if that function has a body, giving no
 \lstinline|assigns| clause means in practice that it is left to tools to
-compute an over-approximation of the sets of assigned locations.
+compute an over-approximation of the sets of modified locations.
 
 \ifCPPinput{cpp-default-values}
 	
@@ -2588,10 +2599,10 @@ and
       && \allocation{Here}(p)==\allocation{Pre}(p))
 \end{listing-nonumber}
 
-In fact, just as the \assigns clause does not specify which memory locations are
-assigned (just which are permitted to be assigned),
-the \textsl{allocation-clauses} do not specify which memory location 
-is dynamically allocated or deallocated (just those that might be allocated or deallocated).
+In fact, just as the \assigns clause does not specify precisely which memory locations are
+modified (just which are permitted to be modified),
+the \textsl{allocation-clauses} do not specify which memory locations 
+are dynamically allocated or deallocated (just those that might be allocated or deallocated).
 Pre-conditions and post-conditions should be added to complete the specifications
 about allocations and deallocations.
 The following shortcuts can be used for that:
