@@ -2,8 +2,8 @@
 \label{sec:auto}
 \index{auto}
 
-\lang, from C++11\footnote{Prior to C++11, \lstinline|auto| had a different meaning|, permits designating the type of a variable as
-\lstinline|auto|.}.
+Beginning with C++11\footnote{Prior to C++11, \lstinline|auto| had a different meaning}, \lang{} permits designating the type of a variable as
+\lstinline|auto|.
  \lstinline|auto| may also be used as part of a type, as in \lstinline|auto*| or \lstinline|const auto[]|. In these cases the compiler performs type inference, producing a compile-time type and
 saving the user from having to write out the type.
 
@@ -27,3 +27,5 @@ program is still strongly typed, the actual types are harder for the reader to d
 //@ logic auto f(integer i) = i + 1;
 \end{lstlisting}
 the result type can be inferred to be \lstinline|integer|.
+
+\emph{Needs grammar additions}

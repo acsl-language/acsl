@@ -34,19 +34,27 @@
 \includegraphics[height=16mm]{cealistlogo}
 \hfill
 \includegraphics[height=18mm]{inria}
-\vfill
+
 \title{\NAME: ANSI/ISO C++ Specification Language}%
 {Version \version{}\ifthenelse{\boolean{PrintImplementationRq}}%
 {~--~\framacversion}{}}
-%%\author{Patrick Baudin$^1$, Pascal Cuoq$^1$, Jean-Christophe Filli\^atre$^{4,3}$, Claude March\'e$^{3,4}$,\\ Benjamin Monate$^1$, Yannick Moy$^{2,4,3}$, Virgile Prevosto$^1$}
+
+\today
+
 \author{David R. Cok$^1$, ...}
 
+\vfill
+\centerline{Authors of the ACSL document:}
+\vspace{-4em}
+\author{Patrick Baudin$^1$, Pascal Cuoq$^1$, Jean-Christophe Filli\^atre$^{4,3}$, Claude March\'e$^{3,4}$,\\ Benjamin Monate$^1$, Yannick Moy$^{2,4,3}$, Virgile Prevosto$^1$}
+
 \begin{tabular}{l}
-$^1$ CEA LIST, Software Reliability Laboratory, Saclay, F-91191 \\
-$^2$ France T\'el\'ecom, Lannion, F-22307 \\
-$^3$ INRIA Saclay - \^Ile-de-France, ProVal, Orsay, F-91893 \\
-$^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405
+	$^1$ CEA LIST, Software Reliability Laboratory, Saclay, F-91191 \\
+	$^2$ France T\'el\'ecom, Lannion, F-22307 \\
+	$^3$ INRIA Saclay - \^Ile-de-France, ProVal, Orsay, F-91893 \\
+	$^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405
 \end{tabular}
+
 \vfill
 \begin{flushleft}
   \doclicenseImage[imagewidth=5em] \doclicenseText\\
@@ -55,7 +63,7 @@ $^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405
   \textcopyright 2018 CEA LIST and INRIA
 
   This work is done in the context of project VESSEDIA,
-  which as received funding from the European Union's 2020
+  which received funding from the European Union's 2020
   Research and Innovation Program under grant agreement
   No. 731453.
 \end{flushleft}
@@ -119,7 +127,9 @@ $^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405
     For a given function call, the \emph{pre-state} denotes the
     program state at the beginning of the call, including the
     current values for the function parameters. The \emph{post-state}
-    denotes the program state at the return of the call.
+    denotes the program state just after the return of the call.
+    For a statement contract, the pre-state and post-state denote the
+    states just before and just after executing the given statement.
 
 \item[function behavior] \index{function behavior} \indextt{behavior}
 
@@ -142,6 +152,8 @@ $^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405
 \input{typingrules_modern}
 
 \input{template_modern}
+
+\ifCPPinput{cpp-functional-design}
 
 \section{Illustrative example}
 \label{sec:illustrative-example}

@@ -7,7 +7,7 @@ may be present at class (or struct or union) scope.
 
 \subsection{Global declarations}
 
-As described in Section \ref{TBD}, logical specifications (predicates, functions, lemmas, and constants) may be defined at global scope. They may also be defined in class (that is, aggregate) scope. The following considerations apply:
+As described in Section \ref{sec:logicspec}, logical specifications (predicates, functions, lemmas, and constants) may be defined at global scope. They may also be defined in class (that is, aggregate) scope. The following considerations apply:
 \begin{itemize}
 	\item Just as for \lang{} identifiers, any names 
 	declared are part of the aggregate scope. The name may
@@ -15,7 +15,7 @@ As described in Section \ref{TBD}, logical specifications (predicates, functions
 	qualification syntax; for example, \lstinline|A::m| names a 
 	logic predicate declared as \lstinline|m| in class
 	or namespace \lstinline|A|.
-	\item As for any other specification constructs, those defined in aggregate scope are only within scope in  specification annotations.
+	\item As for any other specification constructs, those defined in aggregate scope are only visible in specification annotations.
 	\item Within aggregate scope, a predicate or function definition may be
 	declared \lstinline|static|, with the same meaning as 
 	\lstinline|static| has for \lang{} function 
@@ -32,12 +32,14 @@ As described in Section \ref{TBD}, logical specifications (predicates, functions
 \subsection{Function contracts within class scope}
 
 Function declarations or definitions that belong to an aggregate may have function
-contracts just as functions declared or defined at global scope. If the function is not declared \lstinline|static|, then
-then keyword \lstinline|\this| may be used within the function
+contracts just like functions declared or defined at global scope. If the function is not declared \lstinline|static|, then
+the keyword \lstinline|this| may be used within the function
 contract and within any statement contract within the 
-function. The keyword \lstinline|\this| refers to the current
-object, just as \lstinline|this| does within \lang code.
-The type of \lstinline|\this| in contracts is the same as the type of \lstinline|\this| in C++ code: \lstinline|T*| or \lstinline|const T*|, where \lstinline|T| is the type of the enclosing aggregate.
+function. The keyword \lstinline|this| refers to the current
+object, just as \lstinline|this| does within \lang{} code.
+The type of \lstinline|this| in contracts is the same as the type of \lstinline|this| in C++ code: \lstinline|T*| or \lstinline|const T*|, where \lstinline|T| is the type of the enclosing aggregate.
+
+\emph{TODO: Is this allowed to be used in constructor preconditions?}
 
 \subsection{Ghost functions}
 Aggregates may also contain declarations of ghost functions, as described in section TBD \TODO{Complete this subsection}
@@ -76,13 +78,13 @@ Behavioral subtyping is obeyed if (a) the (composite) precondition of
 This fairly straightforward requirement becomes complex in its interaction with function contracts that have multiple behaviors, 
 as described in section TBD\TODO{Sec ref needed}.
 \footnote{JML was designed explicitly around behavioral subtyping and the implications of behavioral subtyping are much simpler. 
-	See the comparative discussion in Appendix \ref{TBD}.}
+	See the comparative discussion in Appendix \ref{sec:comp-jml}.}
 
 
 \subsection{Specifications of special member functions}
 
 \lang{} implicitly declares and provides a default implementation for some member functions under some circumstances. 
-Thus they also have an implicit specification. Each of these is described in subsections below. However, the user may also wish to provide an explicit specification for such implicit functions, but there is no
+Thus they also have an implicit specification. However, the user may also wish to provide an explicit specification for such implicit functions, but there is no
 explicit declaration in the \lang{} code to which to attach such a 
 specification.
 
@@ -103,20 +105,23 @@ class C {
     @    assigns \nothing;
     @    ensures this.value == that.value;
     @ C(const C& that);
+    @*/
 }
 \end{lstlisting}
 
-The member functions for which implicit default functions are provided by the compiler are the following. In eqach case the default action (and corresponding implicit specification) is to apply the corresponding operation on each base class and data member of the object at hand.
+\emph{Grammar additions are needed}
+
+The member functions for which implicit default functions are provided by the compiler are the following. In each case the default action (and corresponding implicit specification) is to apply the corresponding operation on each base class and data member of the object at hand.
 \begin{itemize}
 	\item default constructor \lstinline|C()|: 
 	\item default copy constructor \lstinline|C(C&)| or \lstinline|C(const C&)|
-	\item default move constructor \lstinline|C(C&&)| or \lstinline|C(const C&&)|
+	\item default move constructor \lstinline|C(C&&)|
 	\item default copy assignment operator \lstinline|C::operator=(C&)| or \lstinline|C::operator=(const C&)|
 	\item default move assignment operator \lstinline|C::operator=(C&&)| 
 	\item default destructor \lstinline|C::~C()|
 \end{itemize}
 
-The \lstinline|operator new(,,,)| and 
+The \lstinline|operator new(...)| and 
 \lstinline|operator delete(...)| functions have the appearnace of being implicitly defined. However, they are defined in the standard library
 (include file \lstinline|new|). Their specifications are given there as
 part of the specifications of the standard library.
@@ -124,12 +129,12 @@ part of the specifications of the standard library.
 \subsection{Deleted and defaulted definitions}
 
  \lang{} functions can be defined to be either deleted or defaulted, as in this code:
- \begin{lstlisting}
+ \begin{lstlisting}[deletekeywords={default}]
  C::C(const& C) = delete; 
-  C::C(const& C) = default; 
+ C::C(const& C) = default; 
  \end{lstlisting}
  A definition that is \lstinline|=delete| results in a program for which any use of the given method results in a compile-time error,
- as if the function is not at all defined.It can be used to preclude the
+ as if the function is not at all defined. It can be used to preclude the
  generation of otherwise implicitly generated functions.
  
  A definition that is \lstinline|=default| results in the corresponding
