@@ -37,6 +37,7 @@ Frama-C include in particular:
   (p.~\pageref{sec:semantics-ghost-code});
 \item specification of volatile variables
   (section~\ref{sec:volatile-variables});
+\ifCPP{\item the implementation of \NAME{} is being built on clang rather than the compiler that is part of Frama-C; this tool, frama-clang, is in early stages of development.}
 \end{itemize}
 }%
 
@@ -138,7 +139,7 @@ Section~\ref{sec:multiplecontracts}).
     going outside).  See Section~\ref{sec:statement_contract}.
 
   \item \emph{ghost code}\,: regular C code, only visible from the
-    specifications, that is only allowed to modify ghost
+    specifications and only allowed to modify ghost
     variables. See section~\ref{sec:ghost}. This includes ghost braces
     for enclosing blocks.
 
