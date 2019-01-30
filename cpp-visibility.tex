@@ -175,13 +175,39 @@ The principal restriction is that the function declared \lstinline|pure| must ha
 temporary stack variables, but it may not assign to any locations in the heap that are allocated in the pre-state of the function.
 No assignments are permitted to a pre-state location even if the assignment does not change the value stored in the location.
 This is partly a static condition, but when assigning to fields of an object, it must be demonstrated that the object is a local temporary or
-has been allocated since the pre-state; this demonstration may require reasoning about anti-aliasing.
+has been allocated since the pre-state; this demonstration may require reasoning about aliasing.
 
-\TODO{Should we insist on strong purity -- no changes to the heap at all? -- or weak purity -- no changes to the prestate and no allocations that are not deallocated by the post-state?}
+\subsubsection{No heap changes}
+The rule prohibiting side-effects applies to the heap as well:
+no allocations or deallocations of memory are allowed in pure functions.
+Stack operations are allowed. Thus, for example,
+ implicit copy constructors that 
+only create and destroy stack temporaries are permitted.
 
-\subsubsection{... other  conditions...}
+\subsubsection*{Reading the heap}
+Since the pure function is indeed a C++ function, it may include read operations on the heap. When the pure function is used as a logic function,
+it must be invoked with respect to a given heap state. 
+That is, the pure function has a single implicit state label.
+An example showing this use is given below:
+\begin{lstlisting}
+class C {
+private:
+  //@ spec_public
+  int count;
 
-\TODO{What other conditions, e.g. reading from the heap?}
+public:
+   /*@ ensures \result == count;
+       pure
+     @*/   
+  int getCount() { return count; }
+  
+  
+  void test() {
+      x:
+      count++;
+      //assert getCount{Here}() == 1 + getCount{x}();
+  }
 
+\end{lstlisting}
 
-\TODO{Also need to state rules about state parameters for logic functions when it have a 'this' parameter}
+	\emph{Is the rule concerning strong purity too draconian?}

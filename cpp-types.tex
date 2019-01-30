@@ -19,15 +19,17 @@ Consistent with other rules that maintain a separation between logic entities an
 	\item ghost classes may not appear in non-ghost code
 	\item a non-ghost class may not inherit from a ghost class
 	\item the fields of ghost classes may only use logic types
-	\item any implementations given for methods of ghost classes may only use logic types, methods and fields
+	\item any implementations given for methods of ghost classes may only use logic types and may only write to ghost memory locations
 	\item ghost classes may contain \NAME{} annotations in the same way that C classes do, with the syntax adjusted for being written within ghost code
 \end{itemize}
 
-As with C classes, ghost classes may inherit fields and methods from their base classes and method calls are subject to dynamic dispatch.
+As with \lang{} classes, ghost classes may inherit fields and methods from their base classes and method calls are subject to dynamic dispatch.
 
 This concept is still experimental because use cases are still be explored that would require this feature.
 
 \subsection{Static type information}
+
+\emph{Need grammar additions and examples}
 
 \lang{} includes the \lstinline|type_traits| template to determine information about types.
 For example, for a type name \lstinline|T|, one can write
@@ -43,6 +45,9 @@ In addition, the \lstinline|value| field of each of these templates is a named \
 No new features are needed in \NAME{} to support static type information. 
 
 \subsection{Casting}
+
+\emph{Need grammar additions and examples}
+
 \lang{} added to C a number of casting operations. Most of these may be 
 used in logic expressions.
 
@@ -54,27 +59,28 @@ used in logic expressions.
 	pointers and references in logic expressions is 
 	deprecated (in \NAME{}) in favor of the \lang{}-style casts.
 	
-	\item \textbf{dynamic\_cast<T>(e)} -- A dynamic cast is used to convert a value of pointer or reference type to the corresponding value of another pointer or reference type, typically within the first type's inheritance hierarchy. For pointer types, if the given expression \lstinline|e| is not a pointer to a complete instance of the desired type \lstinline|T|, then the result is \lstinline|null|. For reference types, Static type informationif the desired conversion is not allowed, a \lstinline|bad_cast| exception is thrown. Thus this cast operator can be used to test type relationships.
+	\item \textbf{dynamic\_cast<T>(e)} -- A dynamic cast is used to convert a value of pointer or reference type to the corresponding value of another pointer or reference type, typically within the first type's inheritance hierarchy. For pointer types, if the given expression \lstinline|e| is not a pointer to a complete instance of the desired type \lstinline|T|, then the result is \lstinline|null|. For reference types, if the desired conversion is not allowed, a \lstinline|bad_cast| exception is thrown. Thus this cast operator can be used to test type relationships.
 	
 	When used in a logic expression, the semantics of a \lstinline|dynamic_cast| operation applied to a pointer value is the same as in C, producing either a valid new pointer or a null value. When applied to a reference value however, if the operation would produce an exception, it instead produces an undefined value.\footnote{This is a case where the operation could be considered to be partial and ill-defined for a bad conversion. However, since the  functions of \NAME{}'s logic are in general total, the semantics of \lstinline|dynamic_cast| is defined to be total as well.}  
 	
-	\item \textbf{static\_cast<T>(e)} -- A static cast also operates on pointer or reference values, but simply returns the value of the given expression with the given static type. If the conversion is valid, the result is Static type informationthe same as dynamic casting. If the result is invalid, the result is undefined and may result in runtime errors later in program execution. \NAME{} tools may check whether a static cast produces a valid value.
+	\item \textbf{static\_cast<T>(e)} -- A static cast also operates on pointer or reference values, but simply returns the value of the given expression with the given static type. If the conversion is valid, the result is the same as dynamic casting. If the result is invalid, the result is undefined and may result in runtime errors later in program execution. \NAME{} tools may check whether a static cast produces a valid value.
 	
-	The semantics of \lstinline|static_cast| in a logic expression is that it produces the expected value for valid conversions and arbitrary values for invalid conversions.
+	The semantics of \lstinline|static_cast| in a logic expression is that it produces the expected value for valid conversions and is undefined for invalid conversions.
 	
-	\item \textbf{reinterpret\_cast<T>(e)} -- A reinterpret cast simply interprets maintains the same underlying bits as the given type. 
+	\item \textbf{reinterpret\_cast<T>(e)} -- A reinterpret cast simply  maintains the same underlying bits, but interprets them as the given type. 
 	Whether this produces valid results and what the results are is likely to be platform-dependent. 
 	Accordingly, \lstinline|reinterpret_cast|s are not permitted in logic expressions.
 	
 	\item \textbf{const\_cast<T>(e)} -- A const cast simply restates the type of the expression without const qualification. 
-	It may be used in a lo\subsection{Comparing types}
-	gic expression when needed for type matching. 
+	It may be used in a logic expression when needed for type matching. 
 	However, since logic expressions do not have side effects, no functions that actually modify non-const values can be used.\footnote{Even in \lang{}, using a const cast to enable modifying another const value produces undefined results.}
 	
 	
 
 \end{itemize}
 \subsection{Dynamic type information}
+
+\emph{Grammar additions and examples, more about hash\_code and type\_index or omit them.}
 
 \lang{} also has means to obtain information about the dynamic
 type of an expression using the \lstinline|typeid| operator. It can be applied to either a type name or an expression; it can be used (through \lstinline|hash_code| or \lstinline|type_index|) to check equality of types.
