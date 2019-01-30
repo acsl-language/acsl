@@ -2,7 +2,7 @@
 
 \chapter{Specification language}
 \label{chap:base}
-\textsl{}
+
 \section{Lexical rules}
 \label{sec:lexicalrules}
 
@@ -87,7 +87,7 @@ that we will introduce progressively.
   \caption{Grammar of terms. The terminals \emph{id}, \emph{C-type-name}, and various literals are
   	the same as the corresponding C lexical tokens.}
 \label{fig:gram:term}
-\end{figure}\textsl{}
+\end{figure}
 
 \begin{figure}[hb]
   \begin{cadre}
@@ -152,7 +152,7 @@ With respect to C pure expressions, the additional constructs are as follows:
   The composite element modifier is an additional
   operator related to C structure field and array accessors.
   The expression \lstinline|{ s \with .id = v }|
-  denotes a structure value that is the same as \lstinline|s|, except for the field
+  denotes a structure value that is the same as the value of \lstinline|s|, except for the field
   \lstinline|id|, which is equal to \lstinline|v|.
   The equivalent expression for an array is
   \lstinline|{ t \with [ i ] = v }|,
@@ -437,7 +437,7 @@ provided in a library.
 Enum types are also interpreted as mathematical integers. Casting\index{cast}
 an integer into an enum in the logic gives the same result as
 if the cast was performed in the C code.
-\ifCPP{Enum types for \lang{} are discussed in \S\ref{TBD}.}
+\ifCPP{Enum types for \lang{} are discussed in \S\ref{sec:enums}.}
 
 
 \subsubsection{Bitwise operations}
@@ -516,7 +516,7 @@ operators of float (resp. double) numbers as in C:
 Casting\index{cast} from a C integer type or a float type to a float
 or a double is as in C: the same conversion operations apply.
 
-Conversion of real numbers to float or double values indeed depends on
+Conversion of real numbers to float or double values depends on
 various possible rounding modes defined by the IEEE~754
 standard~\cite{float-std,wikipedia-float}. These modes are defined by
 a logic type (see section~\ref{sec:concrete-logic-types}):
@@ -596,8 +596,8 @@ the function \lstinline|\sign|\indexttbs{sign}:
 Quantification over a variable of type \lstinline|real| is of course the usual
 quantification over real numbers.
 
-Quantification over float (resp. double) types is allowed too, and is
-supposed to range over all real numbers representable as floats (resp.
+Quantification over float (resp. double) types is allowed as well, and is
+supposed to range over all finite real numbers representable as floats (resp.
 doubles). In particular, this does not include NaN, +infinity and
 -infinity in the considered range.
 
@@ -642,6 +642,7 @@ real \atan(real x) ;
 real \atan2(real y, real x) ;
 real \hypot(real x, real y) ;
 \end{listing-nonumber}
+\marginpar{Check this list}
 
 Notation \lstinline|\pi| refers to the real number $\pi$ and \lstinline|\e| to
 the base of the natural logarithm: \lstinline|\log(\e)==1| and \lstinline|\exp(1)==\e|.
@@ -755,8 +756,8 @@ performed using a syntax similar to C designated initializers.
 
 \begin{example}
 Array types in logic may be declared either with or without an
-explicit non-negative length. Access to the length of a logic array
-can be done with \lstinline|\length|.
+explicit non-negative length. The term \lstinline|\length|
+denotes the length of a logic array.
 
 \begin{listing-nonumber}
 //@ type point = struct { real x; real y; };
@@ -943,7 +944,7 @@ The \lstinline|decreases| and
 Section~\ref{sec:termination}.
 \textsl{Abrupt-clauses}
 allow specifying what happens when the function does not return
-normally but \lstinline|exit|s abruptly; they are defined in
+normally but exits abruptly; they are defined in
 Section~\ref{sec:abrupt-clause}.
 
 
@@ -1061,15 +1062,16 @@ default status of clauses.
 \end{example}
 
 \subsection{Semantics of frame conditions}
+\label{sec:writesSemantics}
 It is worth pointing out that there are different treatments of
 frame conditions (assigns statements) in various specification languages.
 The frame condition can follow either \emph{writes} semantics or \emph{modifies} semantics.
 \begin{itemize}
-	\item Under \lstinline|writes| (or assigns) semantics, only those memory locations listed in a frame condition may be \emph{written to}, that is, may be the target of an assignment statement. This is true whether or not the value of the memory location changes.
-	\item Under \lstinline|modifies| semantics, a memory location may be written to, as long as the value is restored (that is, not modified) by the end of the scope of the function contract. Under this semantics, a frame condition is a requirement on the relationship between two states --- that a memory location has the same value in a pre-state and a post-state.
+	\item Under \lstinline|writes| (or assigns) semantics, only those memory locations listed in a frame condition may be \emph{written to}, that is, only those locations may be the target of an assignment statement. This is true whether or not the value of the memory location changes.
+	\item Under \lstinline|modifies| semantics, a memory location may be written to, as long as the value is restored (that is, not modified) by the end of the scope of the function contract. Under this semantics, a frame condition is a requirement on the relationship between two states --- any memory location not a member of the frame condition must have the same value in its pre-state and its post-state.
 \end{itemize}
-Confusion can arise because the words \emph{assigns} and \emph{modifies} are sometimes used interchangeably. In particular, \textbf{ACSL uses
-	modifies semantics, even though the frame condition is introduced by the \emph{assigns} keyword.}\footnote{For comparison, JML and the OpenJML tool define frame conditions to have write semantics but use the keywords assigns and modifies interchangeably; however, the KeY tool for JML implements modifies semantics. Ada/SPARK's data flow contracts effectively encode write semantics.}
+Confusion can arise because the words \emph{assigns} and \emph{modifies} are sometimes used interchangeably. In particular, \textbf{\NAME{} uses
+	\emph{modifies} semantics, even though the frame condition is introduced by the \emph{assigns} keyword}.\footnote{For comparison, JML and the OpenJML tool define frame conditions to have write semantics but use the keywords assigns and modifies interchangeably; however, the KeY tool for JML implements modifies semantics. Ada/SPARK's data flow contracts effectively encode write semantics.}
 
 \subsection{Contracts with named behaviors}
 \label{subsec:behaviors}
@@ -1092,7 +1094,9 @@ readability).
   @   ensures  E$_2$;
   @*/
 \end{lstlisting}
-The names of behaviors must be distinct within the given function (or statement) contract.
+The names of behaviors must be distinct within the given function (or statement) contract. A behavior name may be the same as a behavior name 
+of an enclosing contract; in this case references to the behavior name 
+refer to the behavior in the innermost contract of those contracts in scope.
 
 The semantics of such a contract is as follows:
 \begin{itemize}
@@ -1247,7 +1251,7 @@ means that all behaviors given in the contract should be taken into account.
 Multiple \lstinline|complete| and \lstinline|disjoint| sets of behaviors can
 be given for the same contract.
 
-\subsection{Memory locations and sets of terms}
+\subsection{Memory locations and sets of values}
 \label{sec:locations}\index{location}
 
 There are several places where one needs to describe a set of memory
@@ -1423,7 +1427,7 @@ as an extension of the grammar of C statements.
     \input{loops.bnf}
   \end{cadre}
   \caption{Grammar for loop annotations}
-  \label{fig:gram:loops}\textsl{}
+  \label{fig:gram:loops}
 \end{figure}
 
 The syntax of loop annotations is given in Figure~\ref{fig:gram:loops},
@@ -1619,7 +1623,7 @@ construct \lstinline|\at(e,id)| referring to the value of the
 expression \lstinline|e| in the state at label \lstinline|id|. 
 In particular, for a C array of \lstinline|int|, 
 \lstinline|t|, \lstinline|\at(t,id)| is a logical
-array whose content is the same as the one of \lstinline|t| in state at label
+array whose content is the same as that of \lstinline|t| in state at label
 \lstinline|id|. It is thus very different from 
 \lstinline|\at((int *)t,id)|, which
 is a pointer to the first element of \lstinline|t| (and stays the same between 
@@ -1636,7 +1640,7 @@ scoping rules must be respected:
 \item the label \lstinline|id| must occur before the occurrence of
 \lstinline|\at(e,id)|
   in the source;
-\item the label \lstinline|id| must not be inside an inner block.
+\item the label \lstinline|id| must not be inside an inner block that syntactically ends before the use of the label.
 \end{itemize}
 These rules are exactly the same rules as for the visibility of local
 variables within C statements (see~\cite{KR88}, Section A11.1).
@@ -1713,7 +1717,9 @@ There is one special case regarding formal parameters.
 Despite any surrounding \lstinline|\at| construct or the 
 type of clause, formal
 parameters in a function contract are always interpreted
-in the pre-state.
+in the pre-state (that is in the \lstinline|Old| state).
+Note that formal parameters are not special in this regard in 
+statement contracts.
 
 No logic label is visible in global logic declarations
 such as lemmas, axioms, definition of predicate or logic
@@ -1748,12 +1754,12 @@ Section~\ref{sec:logicalstates}.
 
   The two \lstinline|ensures| clauses are equivalent. The simpler clause
   \lstinline|t[i] == \old(t[i]) + 1| would be wrong because in
-  \lstinline|\old(t[i])|, \lstinline|i| denotes the value of $i$ n the
+  \lstinline|\old(t[i])|, \lstinline|i| denotes the value of \texttt{i} in the
   pre-state.
 
   Also, the \lstinline|assigns| clause \lstinline|i,t[i]| would be
-  wrong too because again in \lstinline|t[i]|, the value of $i$ in the
-  pre-state is considered.
+  wrong also because again in \lstinline|t[i]|, the value of \texttt{i} is
+  its value in the pre-state.
 
 \end{example}
 
@@ -1825,14 +1831,6 @@ L: ...
 are dynamically allocated or deallocated by the annotated statement from the \textsl{heap}; 
 they are defined later in Section~\ref{sec:allocation-clause}.
 % END proposition
-
-\ifCPPinput{cpp-class-contracts}
-\ifCPPinput{cpp-enum}
-\ifCPPinput{cpp-templates}
-\ifCPPinput{cpp-types}
-\ifCPPinput{cpp-visibility}
-\ifCPPinput{cpp-auto}
-\ifCPPinput{cpp-namespaces}
 
 \section{Termination}
 \label{sec:termination}
@@ -1976,7 +1974,7 @@ The semantics of such a clause is as follows: if \lstinline|p| holds, then the
 function is guaranteed to terminate (more precisely, its
 termination must be proved). If such a clause is not present (and in
 particular if there is no function contract at all), it
-defaults to \lstinline|terminates \true;| that is the function is supposed
+defaults to \lstinline|terminates \true;| that is, the function is supposed
 to always terminate, which is the expected behavior of most
 functions.
 
@@ -2387,6 +2385,14 @@ section~\ref{chap:lib}), and imported using a construct like
 \end{notimplementedenv}
 where the file \lstinline|List.acsl| contains logic
 definitions, like the \lstinline|List| module above.
+
+\ifCPPinput{cpp-class-contracts}
+\ifCPPinput{cpp-enum}
+\ifCPPinput{cpp-templates}
+\ifCPPinput{cpp-types}
+\ifCPPinput{cpp-visibility}
+\ifCPPinput{cpp-auto}
+\ifCPPinput{cpp-namespaces}
 
 
 
@@ -3484,7 +3490,6 @@ and \lstinline|\valid_function(p)| holds if and only if
   \listinginput{1}{welltyped.c}
 \end{example}
 
-\ifthenelse{\isCPP}{\marginpar{Other C++ topics to include: templates, namespaces, class-level specs, when do invariants hold, restrictions on invariant footprint, function parameters, lambda expressions, specs for overloaded operators, specs for implicit constructors and destructors, types}}{}
 
 \section{Module constructions}
 
@@ -3506,12 +3511,11 @@ These are annotations allowing to add attributes on variables, like regular C at
 	\item name resolution for ACSL++ names
 	\item unsequenced behavior, e.g. i = v[i++]
 	\item which are reserved words
-	\item C++ friends
 	\item initialization (C++ ref 3.6.2)
-	\item range for statement -- need count, values?
-
-\textsl{}%	
+	\item restrictions on invariant footprint
+	\item examples of reasoning about types
 \end{itemize}
+
 }
 
 % The purpose of these are various:

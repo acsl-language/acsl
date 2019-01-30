@@ -1,7 +1,11 @@
 \section{Comparison with JML}
 \label{sec:comp-jml}
 
-Although we took our inspiration from the Java Modeling Language (aka
+\ifCPP{This section was written in conjunction with the definition of ACSL. Most of the points are also accurate for \NAME{}. However, 
+since \lang{} is an object-oriented language with inheritance and exceptions, some
+aspects of \NAME{}, more so than ACSL, are similar (and were inspired by) JML.}
+
+Although ACSL took inspiration from the Java Modeling Language (aka
 JML~\cite{jmlhomepage}), ACSL is notably different from JML in
 two crucial aspects:
 
@@ -121,8 +125,8 @@ public static void Java_nullify(char[] a) {
 }
 \end{listing}
 
-On the contrary, the precondition of the same function in C, whose
-definition follows, is more involved. First, remark that the
+On the other hand, the precondition of the same function in C, whose
+definition follows, is more involved. First, note that the
 C programmer has to add an extra argument for the size of the array,
 or rather a lower bound on this array size.
 
@@ -298,6 +302,11 @@ clauses that are preconditions for a particular behavior (the internal
 
 In addition, as mentioned above, there is
 by default no requirement in ACSL for the specification to be complete. In JML an incomplete specification may cause a warning in a calling context; partial behavior is specified by an explicitly underspecified postcondition. In ACSL, an incomplete specification specifies partial behavior; a warning for a particular behavior is produced by a \lstinline|requires \false;| clause.
+
+\subsubsection*{Modifies vs. writes semantics}
+
+
+As described in \S\ref{sec:writesSemantics}, ACSL interprets frame conditions with \emph{modifies} semantics, whereas JML defines frame conditions with \emph{writes} semantics.
 
 \subsection{Deductive verification vs. RAC}
 
