@@ -1113,10 +1113,11 @@ refer to the behavior in the innermost contract of those contracts in scope.
 The semantics of such a contract is as follows:
 \begin{itemize}
 \item The caller of the function must guarantee that the call is
-  performed in a state where the property
-  \lstinline|P && (A$_1$ ==> R$_1$) && (A$_2$ ==> R$_2$)| holds.
+  performed in a state where the \emph{effective precondition}, namely the property
+  \lstinline|P && (A$_1$ ==> R$_1$) && (A$_2$ ==> R$_2$)|, holds.
 \item The called function returns a state where
 the properties \lstinline|\old(A$_i$) ==> E$_i$| hold for each~$i$.
+The conjunction of these properties is the \emph{effective postcondition} of the contract.
 \item For each $i$, if the function is called in a pre-state where
   \lstinline|A$_i$| holds, then each memory location of that pre-state 
   that does not belong to the set \lstinline|L$_i$| is left unchanged in 
