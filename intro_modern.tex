@@ -74,7 +74,7 @@ language.  Chapter~\ref{chap:base} presents the specification language
 itself.  Chapter~\ref{chap:lib} presents additional information about
 \emph{libraries} of specifications. The appendices provide
 specific formal type-checking rules for \NAME{} annotations, 
-the relation between \NAME{} and JML, and specification templates.\marginpar{specification templates?}
+the relation between \NAME{} and JML, and specification templates.
 A detailed table of
 contents is given on page~\pageref{chap:contents}.
 A glossary is given in Appendix~\ref{sec:glossary}.
@@ -161,6 +161,10 @@ annotations, whether macro substitution should be performed, etc.)
 Preprocessing includes interpreting class C/C++ digraphs and trigraphs.
 As these are generally deprecated and en route to removal from the C++
 standard, \NAME{} does not define uses of digraphs and trigraphs. Any tool that wishes to support such alternate syntax can preprocess the tokens into conventional tokens before passing the text to \NAME{} tools.
+
+\ifthenelse{\boolean{PrintImplementationRq}}{
+	The implementation of preprocessing in the \fclang tool for \NAME{} is described in Appendix \ref{sec:ppimpl}.
+}{}
 
 \subsection{About keywords}
 
