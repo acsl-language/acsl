@@ -12,7 +12,7 @@ enum color { red, orange, yellow}; // Unscoped type,
 color c1 = red;
 color c2 = 1; // Illegal in C++
 color c3 = (color)10; // Cast is permitted
-int j = color; // Allowed for unscoped enum types
+int j = red; // Allowed for unscoped enum types
 \end{listing-nonumber}
 
 However, scoped enumeration values are not implicitly cast to integral types:
@@ -23,8 +23,8 @@ enum struct color { red, orange, yellow}; // Scoped type,
 color c1 = red;
 color c2 = 1; // Illegal in C++
 color c3 = (color)10; // Cast is permitted
-int j = color; // Forbidden for scoped enum types
-int k = (int)color; // Cast is permitted
+int j = color::red; // Forbidden for scoped enum types
+int k = (int)color::red; // Cast is permitted
 \end{listing-nonumber}
 
 Note that in C++ an integral value may be cast to an enum value even if the value does not correspond to one of the named

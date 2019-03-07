@@ -17,7 +17,7 @@ auto f(int x) {
 }
 \end{lstlisting}
 Here the return type depends on the type of \lstinline|x| but is not hard-coded into the body of \lstinline|f|. If one changes the declared type of
-\lstinline|x| to say \lstinline|double|, all the inferred type change without needing further editing.
+\lstinline|x| to say \lstinline|double|, all the inferred types change without needing further editing.
 
 The disadvantage of \lstinline|auto| is of course, that although the 
 program is still strongly typed, the actual types are harder for the reader to discern.
@@ -28,4 +28,13 @@ program is still strongly typed, the actual types are harder for the reader to d
 \end{lstlisting}
 the result type can be inferred to be \lstinline|integer|.
 
+Within \NAME{} specification text, the \lstinline|auto| keyword can be used in these locations:
+\begin{itemize}
+	\item As the result type in a logic function declaration
+	\item as the variable type in a ghost declaration
+	\item \emph{More?}
+\end{itemize}
+
 \emph{Needs grammar additions}
+
+
