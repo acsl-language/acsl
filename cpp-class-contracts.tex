@@ -70,10 +70,12 @@ a complex situation for program understanding, debugging, or verification.
 
 Consider a derived class method \lstinline|D::m| that overrides a parent class method \lstinline|P::m|.
 Behavioral subtyping is obeyed if (a) the (composite) precondition of
-\lstinline|D::m| implies the (composite) precondition of 
-\lstinline|P::m| and (b) the (composite) postcondition of
-\lstinline|P::m| implies the (composite) postcondition of 
-\lstinline|D::m|. That is, preconditions may be more lenient in derived classes, and postconditions may be more strict. 
+\lstinline|P::m| implies the (composite) precondition of 
+\lstinline|D::m| and (b) the (composite) postcondition of
+\lstinline|D::m| implies the (composite) postcondition of 
+\lstinline|P::m|. That is, a derived class method satisfies the precondition stated in the parent class, but may be more lenient; 
+postconditions in derived classes may be more strict than the parent class postcondition, but will always 
+satisfy the parent postcondition. 
 
 This fairly straightforward requirement becomes complex in its interaction with function contracts that have multiple behaviors, 
 as described in section TBD\TODO{Sec ref needed}.
@@ -103,7 +105,7 @@ class C {
   /*@
     @    requires \true;
     @    assigns \nothing;
-    @    ensures this.value == that.value;
+    @    ensures this->value == that->value;
     @ C(const C& that);
     @*/
 }
