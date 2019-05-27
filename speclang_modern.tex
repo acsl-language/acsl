@@ -2,7 +2,7 @@
 
 \chapter{Specification language}
 \label{chap:base}
-
+\textsl{}
 \section{Lexical rules}
 \label{sec:lexicalrules}
 
@@ -1836,6 +1836,14 @@ are dynamically allocated or deallocated by the annotated statement from the \te
 they are defined later in Section~\ref{sec:allocation-clause}.
 % END proposition
 
+%\ifCPPinput{cpp-class-contracts}
+%\ifCPPinput{cpp-enum}
+%\ifCPPinput{cpp-templates}
+%\ifCPPinput{cpp-types}
+%\ifCPPinput{cpp-visibility}
+%\ifCPPinput{cpp-auto}
+%\ifCPPinput{cpp-namespaces}
+
 \section{Termination}
 \label{sec:termination}
 \index{termination}
@@ -3498,6 +3506,11 @@ and \lstinline|\valid_function(p)| holds if and only if
 \section{Module constructions}
 
 \experimental
+%\section{Module constructions}
+%
+%\experimental
+%
+%how to encapsulate several functions...
 
 how to encapsulate several functions...
 
@@ -3520,6 +3533,20 @@ These are annotations allowing to add attributes on variables, like regular C at
 	\item examples of reasoning about types
 \end{itemize}
 
+}
+
+\ifCPP{
+\section{Other items to include somewhere}
+\begin{itemize}
+	\item name resolution for ACSL++ names
+	\item unsequenced behavior, e.g. i = v[i++]
+	\item which are reserved words
+	\item C++ friends
+	\item initialization (C++ ref 3.6.2)
+	\item range for statement -- need count, values?
+
+\textsl{}%	
+\end{itemize}
 }
 
 % The purpose of these are various:
