@@ -128,7 +128,7 @@
 
 \lstdefinelanguage{ACSL}{%
   morekeywords={allocates,assert,assigns,assumes,axiom,axiomatic,behavior,behaviors,
-    boolean,breaks,complete,continues,data,decreases,disjoint,ensures,
+    boolean,breaks,check,complete,continues,data,decreases,disjoint,ensures,
     exit_behavior,frees,ghost,global,inductive,integer,invariant,lemma,logic,loop,
     model,predicate,reads,real,requires,returns,sizeof,strong,struct,terminates,type,
     union,variant},

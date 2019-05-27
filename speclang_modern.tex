@@ -1418,6 +1418,9 @@ as an extension of the grammar of C statements.
   behavior of an enclosing block as defined later in
   Section~\ref{sec:statement_contract}).  It means that this assertion
   is only required to hold for the listed behaviors.
+\item Introducing the assertion with the \lstinline|check| keyword rather than \lstinline|assert| indicates a
+  \emph{non-blocking} semantics. In other words, even if the property to be \lstinline|check|ed is found invalid,
+  the execution of the program should continue unhindered.
 \end{itemize}
 
 \subsection{Loop annotations}

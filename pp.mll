@@ -33,7 +33,7 @@
         "auto"; "assert"; "break"; "case"; "continue"; "new";
 	"default"; "do"; "else"; "for"; "goto"; "if";
 	"return"; "switch"; "while";
-	"class" ; "interface" ; "ensures";
+	"class" ; "interface" ; "ensures"; "check" ;
 	"public" ; "private" ; "static" ; "struct" ;
 	"typedef"; "union";
 	"throws" ; "extends" ; "implements" ; "reads" ;
