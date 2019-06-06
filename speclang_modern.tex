@@ -3352,12 +3352,21 @@ or only written to, the unused accessor function can be omitted from the
 \end{example}
 
 
+
+\begin{figure}[t]
+  \begin{cadre}
+      \input{initialized.bnf}
+    \end{cadre}
+  \caption{Grammar extensions regarding initialized and dangling memory}
+\label{fig:gram:initialized}
+\end{figure}
+
 \section{Initialization and undefined values}
 \label{sec:initialized}
 \indexttbs{initialized}
 \lstinline|\initialized{L}(p)| is a predicate taking a set of some pointer
 (having a type other than \lstinline|void*|) to l-values as
-argument and means that each l-value in this set is initialized at label \lstinline|L|.
+argument (cf. Fig.~\ref{fig:gram:initialized}) and means that each l-value in this set is initialized at label \lstinline|L|.
 \\ \makebox[5mm]{} \lstinline|\initialized{id} : set<$\alpha$*> $\ra$ bool|
 
 \begin{example}
@@ -3370,10 +3379,10 @@ argument and means that each l-value in this set is initialized at label \lstinl
 \section{Dangling pointers}
 \label{sec:dangling_pointers}
 \indexttbs{dangling}
-\lstinline|\dangling{L}|
+\lstinline|\dangling{L}(p)|
 is a predicate taking a set of some pointer
 (having a type other than \lstinline|void*|) to l-values as
-argument and means that each l-value in this set has a \emph{dangling
+argument (cf. Fig.~\ref{fig:gram:initialized}) and means that each l-value in this set has a \emph{dangling
   content} at label \lstinline|L|. That is, its value is (or contains bits
 of) a dangling address: either the address of a local
 variable referred to outside of its scope or the address of a variable that
