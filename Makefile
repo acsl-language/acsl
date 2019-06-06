@@ -13,7 +13,7 @@ BNF_FILES=term.tex predicate.tex binders.tex fn_behavior.tex \
           assertions.tex loops.tex allocation.tex generalinvariants.tex \
           st_contracts.tex ghost.tex model.tex logic.tex inductive.tex \
           logicdecl.tex logictypedecl.tex higherorder.tex logiclabels.tex \
-          logicreads.tex memory.tex data_invariants.tex volatile-gram.tex \
+          logicreads.tex memory.tex initialized.tex data_invariants.tex volatile-gram.tex \
           exitbehavior.tex dependencies.tex welltyped.tex list-gram.tex
 
 BNF_DEPS=$(BNF_FILES:.tex=.bnf)
