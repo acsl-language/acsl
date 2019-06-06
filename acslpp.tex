@@ -8,6 +8,10 @@
 
 \newcommand{\NAME}{ACSL++}
 \newcommand{\lang}{C++}
+\newcommand{\fclang}{\textsc{Frama-Clang}\xspace}
+\newcommand{\framac}{\textsc{Frama-C}\xspace}
+\newcommand{\acsl}{\textsc{ACSL}\xspace}
+\newcommand{\acslb}{\acsl/\NAME\xspace}
 \newcommand{\isCPP}{\boolean{true}}
 \newcommand{\TODO}[1]{\textit{<<#1>>}\marginpar{TODO}}
 \input{common}
@@ -39,8 +43,10 @@
 {Version \version{}\ifthenelse{\boolean{PrintImplementationRq}}%
 {~--~\framacversion}{}}
 
+\vspace{-4em}
 \today
 
+\vspace{-4em}
 \author{David R. Cok$^1$, ...}
 
 \vfill
@@ -55,8 +61,9 @@
 	$^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405
 \end{tabular}
 
-\vfill
+
 \begin{flushleft}
+:q
   \doclicenseImage[imagewidth=5em] \doclicenseText\\
   Sources are available at \url{https://github.com/acsl/acsl}.
 
@@ -152,6 +159,10 @@
 \input{typingrules_modern}
 
 \input{template_modern}
+
+\ifthenelse{\boolean{PrintImplementationRq}}{
+\ifCPPinput{cpp-preprocessing}
+}{}
 
 \ifCPPinput{cpp-functional-design}
 
