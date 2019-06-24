@@ -5,7 +5,8 @@
        | "*" tset ;
        | "&" tset ;
        | tset "[" tset "]" ;
-       | term? ".." term? ; range
+       | tset "[" range "]" ;
+       | "(" range ")" ; a range as a set of integers
        | "\union" "(" tset ("," tset)* ")" ; union of locations
        | "\inter" "(" tset ("," tset)* ")" ; intersection
        | tset "+" tset ;
