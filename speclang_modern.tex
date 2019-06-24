@@ -3175,15 +3175,15 @@ which they are supposed to hold.
 
 \item A weak type invariant on type $\tau$ must hold at any function
   entrance and exit, and applies to any value (variable, field, array element, formal
-  parameter, etc.) with static type $\tau$. If the result of the
-  function is of type $\tau$, the result must also satisfy its
+  parameter, etc.) with static type $\tau$. If the result of a
+  function is of type $\tau$, that result must also satisfy its
   weak invariant at function exit. 
 
 \item A strong type invariant on type $\tau$ must hold at any step
   during execution, and applies to any global variable, local
   variable, or formal parameter\index{formal parameter}
   with static type $\tau$. If the
-  result of the function has type $\tau$, the result must also
+  result of a function has type $\tau$, that result must also
   satisfy its strong invariant at function exit.
 
 \end{itemize}
@@ -3296,7 +3296,7 @@ that program verification with model variables does not have a
 well-established theoretical background~\cite{marche07,leavens07}, so
 we deliberately do not provide a precise semantics in this document .
 
-
+\ifCPP{\input{cpp-class-invariants}}
 
 \section{Ghost variables and statements}
 \label{sec:ghost}
