@@ -28,7 +28,6 @@ As described in Section \ref{sec:logicspec}, logical specifications (predicates,
 
 \TODO{Should give some significant examples}
 
-
 \subsection{Function contracts within class scope}
 
 Function declarations or definitions that belong to an aggregate may have function
@@ -40,6 +39,41 @@ object, just as \lstinline|this| does within \lang{} code.
 The type of \lstinline|this| in contracts is the same as the type of \lstinline|this| in C++ code: \lstinline|T*| or \lstinline|const T*|, where \lstinline|T| is the type of the enclosing aggregate.
 
 \emph{TODO: Is this allowed to be used in constructor preconditions?}
+
+\subsection{\textbf{this} and \textbf{\this}}
+
+
+\begin{figure}
+\begin{cadre}
+\input{cpp-this.bnf}
+\end{cadre}
+\caption{Grammar for \textit{this}}
+\label{fig:gram:this}
+\end{figure}
+
+Within C++ class methods, the identifier \lstinline|this| represents a
+pointer to the object instance on which a method is acting. \NAME{}
+allows both \lstinline|this| and this new construct \lstinline|\this| 
+to be used as follows.
+\begin{itemize}
+\item \lstinline|this| designates, as in C++, a pointer to the object
+instance a method is acting on. It has type either \lstinline|T*|
+or \lstinline|const T*| per C++ rules (where \lstinline|T| is the type
+of the class owning the method). \lstinline|this| may be used
+within function contracts or statement contracts of non-static methods.
+\lstinline|this| is a C++ entity permitted to be used in a logic context
+and subject to interpretation according to the appropriate state labels.
+
+\item \lstinline|\this| designates a \textit{reference} to the object
+instance on which a method is acting. It has type either \lstinline|T&| or
+\lstinline|const T&|. 
+\lstinline|\this| may be used in logic definitions
+such as predicates, functions, and class invariants. Axioms and lemmas
+do not have an implicit receiver. [TODO - anything else?]
+
+\end{itemize}
+
+
 
 \subsection{Ghost functions}
 Aggregates may also contain declarations of ghost functions, as described in section TBD \TODO{Complete this subsection}

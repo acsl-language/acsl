@@ -15,7 +15,8 @@ BNF_FILES=term.tex predicate.tex binders.tex fn_behavior.tex \
           logicdecl.tex logictypedecl.tex higherorder.tex logiclabels.tex \
           logicreads.tex memory.tex data_invariants.tex volatile-gram.tex \
           exitbehavior.tex dependencies.tex welltyped.tex list-gram.tex \
-          cpp-exceptionbehavior.tex cpp-default-values-syntax.tex
+          cpp-exceptionbehavior.tex cpp-default-values-syntax.tex \
+          cpp-class-invariants-fig.tex cpp-this.tex
 
 BNF_DEPS=$(BNF_FILES:.tex=.bnf)
 
