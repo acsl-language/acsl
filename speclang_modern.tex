@@ -245,6 +245,7 @@ of same priority are presented on the same line.
 \label{fig:precedence}
 \end{figure}
 
+\paragraph{Conditional expressions and labels}
 There is a remaining ambiguity between the connective
 \lstinline|$\cdots$?$\cdots$:$\cdots$| and the labelling operator
 \lstinline|:|. Consider for instance the
@@ -253,6 +254,28 @@ whether this should be understood as \lstinline|x?(y:z):t| or
 \lstinline|x?y:(z:t)|.
 Such a case must be considered as a syntax error, and should be fixed
 by explicitly adding parentheses.
+
+\paragraph{Labels and parsing}
+Note also that the use of labels can subtlely change the parsing of an
+expression, because labeled expressions have the least binding precedence.
+That is, once a label is seen, the parser finds the longest valid term or
+predicate following the label to consider as the labeled expression.
+For example, \lstinline|a && b ==> c && d| parses as 
+\lstinline|(a && b) ==> (c && d)|, but
+\lstinline|a && nm: b ==> c && d| parses as
+\lstinline|a && (nm: ( b ==> (c && d)))|.
+
+\paragraph{Ranges}
+The \lstinline|..| syntax for ranges of integers has the appearance of a
+binary operator but is not a binary operator with conventional precedence,
+because either or both operand is optional.  
+A missing operand designates an
+open range, that is the range includes all integers in the negative (if the left operand is missing) or positive direction (if the right operand is missing).
+This range syntax is used only within parentheses to designate a set of 
+integers (cf. Fig. \ref{fig:gram:locations} later) or within square brackets to designate a 
+range of array indices, as shown in Figs.  \ref{fig:gram:term} and 
+\ref{fig:gram:locations}.
+
 
 \subsection{Semantics}
 \label{sec:twovaluedlogic}
@@ -1313,6 +1336,7 @@ elements \lstinline|t$_1$|, $\ldots$, \lstinline|t$_n$|.
   satisfying predicate \lstinline|P|
   (binders \lstinline|b| are bound in both \lstinline|s| and \lstinline|P|).
 \item \lstinline|x \in s| holds if and only if \lstinline|x| is an element of \lstinline|s|.
+  The operator has the same precedence as relational predicates (e.g., \lstinline|<|).
 \item \lstinline|\subset(s$_1$,s$_2$)| holds if and only if each element
   of \lstinline|s$_1$| is also an element of \lstinline|s$_2$|
   (that is, \lstinline|s$_1$| is a subset of \lstinline|s$_2$|).
@@ -1665,11 +1689,11 @@ in fact syntactic sugar for \lstinline|\at(e,Old)|.
   all contracts, where it refers to the pre-state for the
   \lstinline|requires|, \lstinline|assumes|, \lstinline|assigns|,
   \lstinline|frees|,
-  \lstinline|variant|,
+  \lstinline|decreases|,
   \lstinline|terminates|
-  clauses and the post-state for other clauses
-  (\lstinline|ensures|, \lstinline|allocates|, and abrupt termination
-  clauses).
+  clauses and the post-state for 
+  \lstinline|ensures|, \lstinline|allocates|, and abrupt termination
+  clauses.
 It is also visible in data invariants, presented in Section~\ref{sec:invariants}.
 \item The label \lstinline|Old| is visible in \lstinline|assigns| and
   \lstinline|ensures| clauses of all contracts (both for functions and for
