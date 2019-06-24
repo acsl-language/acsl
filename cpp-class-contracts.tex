@@ -40,7 +40,7 @@ The type of \lstinline|this| in contracts is the same as the type of \lstinline|
 
 \emph{TODO: Is this allowed to be used in constructor preconditions?}
 
-\subsection{\textbf{this} and \textbf{\this}}
+\subsection{\textbf{this} and \textbf{\textbackslash this}}
 
 
 \begin{figure}
@@ -53,7 +53,7 @@ The type of \lstinline|this| in contracts is the same as the type of \lstinline|
 
 Within C++ class methods, the identifier \lstinline|this| represents a
 pointer to the object instance on which a method is acting. \NAME{}
-allows both \lstinline|this| and this new construct \lstinline|\this| 
+allows both \lstinline|this| and this new construct \lstinline|\textbackslash this| 
 to be used as follows.
 \begin{itemize}
 \item \lstinline|this| designates, as in C++, a pointer to the object
@@ -64,10 +64,10 @@ within function contracts or statement contracts of non-static methods.
 \lstinline|this| is a C++ entity permitted to be used in a logic context
 and subject to interpretation according to the appropriate state labels.
 
-\item \lstinline|\this| designates a \textit{reference} to the object
+\item \lstinline|\textbackslash this| designates a \textit{reference} to the object
 instance on which a method is acting. It has type either \lstinline|T&| or
 \lstinline|const T&|. 
-\lstinline|\this| may be used in logic definitions
+\lstinline|\textbackslash this| may be used in logic definitions
 such as predicates, functions, and class invariants. Axioms and lemmas
 do not have an implicit receiver. [TODO - anything else?]
 
