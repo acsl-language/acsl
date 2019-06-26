@@ -10,13 +10,11 @@
        | "\inter" "(" tset ("," tset)* ")" ; intersection
        | tset "+" tset ;
        | "(" tset ")" ;
-       | {[the given term cannot itself be a set]
-           "{" tset "|" binders (";" pred)? "}"} ; set comprehension
-       | {[the given terms cannot themselves be a set] 
-          "{" (tset ("," tset)*)? "}" };
-       | term ; implicit singleton
+       | "{" tset "|" binders (";" pred)? "}" ; set comprehension
+       | "{" ( term ("," term )*)? "}" ; explicit set
+       | term [The given term may not itself be a set]; implicit singleton
        \
-  pred ::= "\subset" "(" tset "," tset ")" ; set inclusion
+  pred ::= "\subset" "(" tset"," tset ")" ; set inclusion
        | term "\in" tset ; set membership
 \end{syntax}
 
