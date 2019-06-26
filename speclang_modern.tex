@@ -176,15 +176,29 @@ Section~\ref{sec:logicspec} for detail.
   $\{$\lstinline|<|, \lstinline|<=|, \lstinline|==|$\}$ or to
   $\{$\lstinline|>|,\lstinline|>=|,\lstinline|==|$\}$. Expressions such as
   \lstinline|x < y > z| or \lstinline|x != y != z| are not allowed.
+  Furthermore the tdypes of each of the terms being compared must be non-boolean.
   Note that consecutive comparison operators are allowed only 
   in predicate position.
+  
+  \end{description}
 
   A consecutive comparison as the conditional expression in a ternary operation could, according to the grammar, be either in term or 
   predicate position. In such a case, the conditional expression is
-  considered a predicate. As a term a consecutive comparison 
+  considered a predicate. As a term a consecutive comparison that includes less-than or greater-than operations
   \lstinline|x < y < z| would
   be parsed as \lstinline|(x < y) < z| which is incorrectly typed, 
   because in logic expressions, comparisons result in boolean values.
+  However, when equalities are involved there could be some ambiguity.
+  Consider \lstinline|a < b == c|. As a standard expression, this would be parsed as
+  \lstinline|(a < b) == c|, which would require that \lstinline|c| be a boolean value.
+  As a consecutive comparison, this would be interpreted as 
+  \lstinline|(a < b) && (b == c)|; this form is only type-valid if \lstinline|b| and
+  \lstinline|c| have the types that can be compared. However, as integer values are
+  implicitly converted to boolean values this parsing is also valid if a and b are integral and c is boolean.
+  To avoid this ambiguity and to avoid a situation where the grammar depends on the types of terms,
+  ACSL adopts the rule that expressions of the form \lstinline|a < b == c| with logic expressions
+  are always interpreted as consecutive comparisons, even if they then fail a type-checking test.
+  The conventional parsing can always be obtained by using appropriate parentheses.
 
   To enforce the same interpretation as in C expressions, one may need
   to add extra parentheses: \lstinline|a == b < c| is equivalent
@@ -193,11 +207,10 @@ Section~\ref{sec:logicspec} for detail.
   equivalent to \lstinline|\let x = b < c; a == x|.
   This situation raises some issues, as in the example below.
 
-\end{description}
 
-There is a subtlety regarding comparison operators: they are
+Comparison operators themselves are
 predicates when used in predicate position, and boolean functions when
-used in term position.
+used in term position, resulting in further subtleties.
 \begin{example}
 \input{example-lt-modern.tex}
 \end{example}
@@ -1300,7 +1313,13 @@ range of array indices, as shown in Figs.  \ref{fig:gram:term} and
 
 \paragraph{Tsets}
 The grammar for tsets is given in
-Figure~\ref{fig:gram:locations}. The semantics is given below,
+Figure~\ref{fig:gram:locations}. 
+Note though that tsets are actually simply terms whose type is a set. Thus, for example, the + operator is overloaded for various numeric and string types and also for sets.
+The constructs in Figure~\ref{fig:gram:locations} are syntactically valid whatever the types of terms are, but are only type-valid when used on values that are tsets as described.
+\footnote{Resolving the restrictions on tsets during type-checking rather than parsing greatly reduces the size and complexity of the overall grammar and avoids needing to
+propagate meta-information along with parsing innformation.}
+
+The semantics of tset operations is given below,
 where $s$ denotes any \textsl{tset}.
 \begin{itemize}
 \item \lstinline|\empty|\indexttbs{empty} denotes the empty set.
@@ -1402,7 +1421,7 @@ mandatory. On the other hand, if that function has a body, giving no
 compute an over-approximation of the sets of modified locations.
 
 \ifCPPinput{cpp-default-values}
-
+	
 \section{Statement annotations}
 \index{annotation}
 
