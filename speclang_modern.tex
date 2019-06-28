@@ -65,7 +65,8 @@ should be noted.
   format, {\it i.e.} begin with \texttt{//} and extend to the end of
   current line. Comments beginning with \texttt{/*} may not be nested within ACSL comments. Nested annotations beginning
   with \texttt{//@} are parsed as if the \texttt{//@} is 
-  replaced by white space.
+  replaced by white space. An ACSL annotation that contains only white space (after
+  pre-processing) is ignored.
 \end{itemize}
 
 %A bit complicated with listings
@@ -269,7 +270,7 @@ Such a case must be considered as a syntax error, and should be fixed
 by explicitly adding parentheses.
 
 \paragraph{Labels and parsing}
-Note also that the use of labels can subtlely change the parsing of an
+Note also that the use of labels can subtly change the parsing of an
 expression, because labeled expressions have the least binding precedence.
 That is, once a label is seen, the parser finds the longest valid term or
 predicate following the label to consider as the labeled expression.
@@ -277,6 +278,7 @@ For example, \lstinline|a && b ==> c && d| parses as
 \lstinline|(a && b) ==> (c && d)|, but
 \lstinline|a && nm: b ==> c && d| parses as
 \lstinline|a && (nm: ( b ==> (c && d)))|.
+Use parentheses liberally to avoid confusing yourself or code readers.
 
 \paragraph{Ranges}
 The \lstinline|..| syntax for ranges of integers has the appearance of a
@@ -370,6 +372,16 @@ Notes:
 
 Formal typing rules for terms are given in appendix~\ref{sec:typingrules}.
 
+\ifCPP{
+\paragraph{\lang{}} typing of \lstinline|bool| and \lstinline|boolean|}
+\lang{} defines the type \lstinline|bool|. \lstinline|bool| is the programming
+language counterpart to the specification language \lstinline|boolean|. 
+As there are no difference in range, \lstinline|bool| and 
+\lstinline|boolean| may be implicitly converted to each other.
+
+Unlike C, \lang{} does distinguish \lstinline|bool| and integral types, but 
+like C, does permit implicit conversions from numeric and pointer types to \lstinline|bool|
+	
 \subsection{Integer arithmetic and machine integers}
 
 The following integer arithmetic operations apply to
@@ -714,6 +726,7 @@ float cosine(float x) {
 \end{example}
 
 \subsection{C arrays and pointers}
+\label{sec:pointer}
 
 \subsubsection{Address operator, array access, pointer arithmetic and dereferencing}
 \label{sec:address}
@@ -939,6 +952,8 @@ Unlike in C, conversion of an aggregate of C type \lstinline|struct| $\tau$  to 
   }
 \end{listing-nonumber}
 \end{example}
+
+\ifCPPinput{cpp-literals}
 
 \section{Function contracts}
 \label{sec:fn-behavior}
@@ -1262,7 +1277,9 @@ The simplified version of that clause
   @ complete behaviors;
   @*/
 \end{listing-nonumber}
-means that all behaviors given in the contract should be taken into account.
+means that all named behaviors given in the contract should be taken into account.\footnote{If there is a default (unnamed) behavior, it has an 
+	\lstinline|assumes| clause of true; including it makes the 
+	completeness assertion trivially true.}
 
 Similarly, it is not required that two distinct behaviors are disjoint.
 If desired, this can be specified with the following clause:
@@ -1284,7 +1301,8 @@ The simplified version of that clause
   @ disjoint behaviors;
   @*/
 \end{listing-nonumber}
-means that all behaviors given in the contract should be taken into account.
+means that all named behaviors given in the contract should be taken into account.\footnote{If there is a default (unnamed) behavior, it has an 
+\lstinline|assumes| clause of true and is thus not disjoint with other clauses.}
 Multiple \lstinline|complete| and \lstinline|disjoint| sets of behaviors can
 be given for the same contract.
 
@@ -1315,7 +1333,7 @@ Figure~\ref{fig:gram:locations}.
 Note though that tsets are actually simply terms whose type is a set. Thus, for example, the + operator is overloaded for various numeric and string types and also for sets.
 The constructs in Figure~\ref{fig:gram:locations} are syntactically valid whatever the types of terms are, but are only type-valid when used on values that are tsets as described.
 \footnote{Resolving the restrictions on tsets during type-checking rather than parsing greatly reduces the size and complexity of the overall grammar and avoids needing to
-propagate meta-information along with parsing innformation.}
+propagate meta-information along with parsing information.}
 
 The semantics of tset operations is given below,
 where $s$ denotes any \textsl{tset}.
@@ -1705,8 +1723,8 @@ in fact syntactic sugar for \lstinline|\at(e,Old)|.
 
 \item The label \lstinline|Here| is visible in all statement annotations,
   where it refers to the state where the annotation appears; and in
-  all contracts, where it refers to the pre-state for the
-  \lstinline|requires|, \lstinline|assumes|, \lstinline|assigns|,
+  all contracts, where it refers to the pre-state for
+  the~\lstinline|requires|, \lstinline|assumes|, \lstinline|assigns|,
   \lstinline|frees|,
   \lstinline|decreases|,
   \lstinline|terminates|
@@ -1838,7 +1856,7 @@ corresponding behaviors, in particular only under the
 corresponding \assumes{} clause.
 Note that behaviors in statement contracts may have the same ids as enclosing function contract behaviors
 or enclosing statement contracts.
-In such cases, a use of the id (in a \lstinline|for| construct) refers to the innermost behavior id.
+In such cases, a use of an id (in a \lstinline|for| construct) refers to the innermost behavior id.
 
 %% TODO: Add an example with a \For{}.
 
@@ -2177,6 +2195,11 @@ to a logical inconsistency.
   it implies \lstinline|sign(0.0) == 1| and \lstinline|sign(0.0) == -1|,
   hence \lstinline|-1 == 1|
 \end{example}
+
+The axiomatic construct is solely a grouping construct. Currently the grammar 
+requires logic function and predicate declarations and axioms to be written inside an axiomatic; only full definitions may be written outside an axiomatic.
+
+\ifCPP{An axiomatic construct does not introduce a \lang{} nested scope, as do namespaces and classes.\footnote{This point is under discussion. It would be more convenient and consistent to have axiomatics be a nested scope, but this would not be backward compatible.}}
 
 \subsection{Polymorphic logic types}\label{sec:polym-logic-types}
 \index{type!polymorphic}

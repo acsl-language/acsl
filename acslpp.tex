@@ -1,4 +1,8 @@
 %% This is the main file for the ACSL++ language definition
+%% Note that acslpp.tex is produced from cpp-main.tex
+%% acslpp.tex is the main file for the language reference (make acslpp.pdf)
+%% cpp-main.tex is the main file for the implementation guide (make cpp-main.pdf)
+
 
 %; whizzy section -pdf -initex "pdflatex -ini"
 % rubber: watch acslpp.cb
@@ -39,7 +43,8 @@
 \hfill
 \includegraphics[height=18mm]{inria}
 
-\title{\NAME: ANSI/ISO C++ Specification Language}%
+\title{\NAME: ANSI/ISO C++ Specification Language %
+\ifCPP{(Implementation Guide)}}%
 {Version \version{}\ifthenelse{\boolean{PrintImplementationRq}}%
 {~--~\framacversion}{}}
 
@@ -63,16 +68,23 @@
 
 
 \begin{flushleft}
-:q
-  \doclicenseImage[imagewidth=5em] \doclicenseText\\
-  Sources are available at \url{https://github.com/acsl/acsl}.
 
-  \textcopyright 2018 CEA LIST and INRIA
+  \doclicenseImage[imagewidth=5em] \doclicenseText\\
+  Sources are available at \url{https://github.com/acsl-language/acsl}.
+
+  \textcopyright 2009-2019 CEA LIST and INRIA
 
   This work is done in the context of project VESSEDIA,
   which received funding from the European Union's 2020
   Research and Innovation Program under grant agreement
   No. 731453.
+  
+  TBD - STANCE
+  
+  It builds on prior work supported by the ANR project CAT
+  (ANR-05-RNTL-0030x), by the ANR CIFRE contract 2005/973,
+  by the ANR projecct U3CAT (08-SEGI-0210xx), and the ANR PICF
+  project DEVICE-Soft (2009-CARN-006-01).
 \end{flushleft}
 \end{titlepage}
 

@@ -1,3 +1,11 @@
 \begin{syntax}
-  term ::= this | \this ;
+term ::= "this" ;
+  | "\\this" ;
+  | term ( "." | "->" ) id "(" ( term ( "," term )* )? ")" ;
+\
+poly-id ::= ( qualifier "::" )+ ident ;
+\
+qualifier ::= id ( "<" type-expr ( "," type-expr )* ">" )? ;
+\
+literal ::= "nullptr" | "true" | "false" ;
 \end{syntax}

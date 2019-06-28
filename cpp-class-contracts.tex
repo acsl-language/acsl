@@ -30,7 +30,7 @@ As described in Section \ref{sec:logicspec}, logical specifications (predicates,
 
 \subsection{Function contracts within class scope}
 
-Function declarations or definitions that belong to an aggregate may have function
+Function declarations or definitions that belong to an aggregate (i.e., member functions) may have function
 contracts just like functions declared or defined at global scope. If the function is not declared \lstinline|static|, then
 the keyword \lstinline|this| may be used within the function
 contract and within any statement contract within the 
@@ -47,13 +47,13 @@ The type of \lstinline|this| in contracts is the same as the type of \lstinline|
 \begin{cadre}
 \input{cpp-this.bnf}
 \end{cadre}
-\caption{Grammar for \textit{this}}
+\caption{\NAME{} grammar enhancements from \lang{}}
 \label{fig:gram:this}
 \end{figure}
 
 Within C++ class methods, the identifier \lstinline|this| represents a
 pointer to the object instance on which a method is acting. \NAME{}
-allows both \lstinline|this| and this new construct \lstinline|\textbackslash this| 
+allows both \lstinline|this| and this new construct \lstinline|\this| 
 to be used as follows.
 \begin{itemize}
 \item \lstinline|this| designates, as in C++, a pointer to the object
@@ -64,16 +64,57 @@ within function contracts or statement contracts of non-static methods.
 \lstinline|this| is a C++ entity permitted to be used in a logic context
 and subject to interpretation according to the appropriate state labels.
 
-\item \lstinline|\textbackslash this| designates a \textit{reference} to the object
+\item \lstinline|\this| designates a \textit{reference} to the object
 instance on which a method is acting. It has type either \lstinline|T&| or
 \lstinline|const T&|. 
-\lstinline|\textbackslash this| may be used in logic definitions
+\lstinline|\this| may be used in logic definitions
 such as predicates, functions, and class invariants. Axioms and lemmas
 do not have an implicit receiver. [TODO - anything else?]
 
 \end{itemize}
 
+In C++, the fields and member functions of class objects are designated using 
+either dot or arrow notation. Within \NAME{} annotations, member functions are not
+permitted. However, \NAME{} allows logic functions, predicates, and class invariants to be defined
+within class scope and then called using conventional \lang{} dot and arrow notation.
+Axioms, lemmas, and type definitions are not considered class members with implicit receivers,
+but may be designated by appropriate \lstinline|::| qualifiers.
 
+TODO - TBD - data definitions?
+
+\subsection{Scoping}
+
+\lang{} permits user control of identifier scopes and name conflicts by two mechanisms: class/structs and namespaces. 
+Names declared within a namespace or class/struct are available outside the scope only when qualified by the
+\lstinline|::| double-colon syntax. This standard \lang{} syntax is available within \NAME{} annotations as well.
+The following code example shows some uses. Such syntax is typically needed only for \textit{static} entities.
+Entities that are members of their enclosing class have a receiver and are designated with dot or arrow syntax;
+the names are then found in the (static) class of the receiver term. In addition if a containing class is a template
+instance, the qualifier will have type arguments. The corresponding grammar enhancements are shown in 
+\begin{lstlisting}
+namespace A {
+   int f; // A::f
+   class B {
+      static int f; // A::B::f
+      
+      //@ predicate pos1() = f > 0;  // A::B::f
+      //@ predicate pos2() = A::B::f > 0;  // A::B::f
+      //@ predicate pos3() = A::f > 0;  // A::f
+      //@ predicate pos4() = B::f > 0;  // A::B::f   
+   }
+   template <typename T> class C {
+      class D {}
+   }
+}
+
+predicate pos5() = f > 0;  // not legal
+predicate pos6() = A::f > 0;  // A::f
+predicate pos7() = A::B::f > 0;  // A::B::f
+
+A::B::C<int>::D x;
+\end{lstlisting}|
+
+\NAME{} axiomatics do not create a nested scope.
 
 \subsection{Ghost functions}
 Aggregates may also contain declarations of ghost functions, as described in section TBD \TODO{Complete this subsection}
@@ -117,6 +158,30 @@ as described in section TBD\TODO{Sec ref needed}.
 	See the comparative discussion in Appendix \ref{sec:comp-jml}.}
 
 
+\subsection{Specifications of operator overloads}
+Declarations of operator overloading as treated in \NAME{} just like other
+methods. In particular they can have function contracts as in this example:
+\begin{lstlisting}
+class MyType {
+private:
+    int myint;
+public:
+    MyType(int i): myint(i) {}
+
+    //@ ensures \result.myint == this->myint + other.myint;
+    MyType operator+(MyType& const other) {
+        return MyType(myint + other.myint);
+    }
+}
+
+/*@
+@    requires \true;
+@    assigns \nothing;
+@    ensures this->value == that->value;
+@ C(const C& that);
+@*/
+}
+\end{lstlisting}
 \subsection{Specifications of special member functions}
 
 \lang{} implicitly declares and provides a default implementation for some member functions under some circumstances. 

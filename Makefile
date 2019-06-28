@@ -40,8 +40,14 @@ DEPS= speclang_modern.tex macros_modern.tex intro_modern.tex		\
 	intlists.c sign.c signdef.c oldat.c mean.c isgcd.c exit.c	\
 	mayexit.c loop_current.c welltyped.c list-observer.c            \
 
-DEPS_CPP= cpp-default-values.tex cpp-exceptions.tex \
-	cpp-namespaces.tex
+DEPS_CPP= cpp-abstraction.tex app-as-appendix.tex cpp-attributes.tex \
+    cpp-auto.tex cpp-class-contracts.tex cpp-class-invariants.tex \
+    cpp-default-values.tex cpp-defensive.tex cpp-enum.tex \
+    cpp-exceptions.tex cpp-foreword.tex cpp-forrange.tex \
+    cpp-functional-design.tex cpp-functional-examples.tex \
+    cpp-functional.tex cpp-invariants.tex cpp-main.tex \
+	cpp-namespaces.tex cpp-preprocessing.tex cpp-pure-functions.tex \
+    cpp-templates.tex cpp-types.tex cpp-type.tex cpp-visibility.tex
 
 CPPDEPS= cpp-main.tex
 
