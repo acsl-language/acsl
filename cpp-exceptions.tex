@@ -19,7 +19,7 @@ Figure~\ref{fig:gram:throws-clause}. Note the following points:
 \item A throws clause may be part of either a function contract or a statement contract.
 \item A throws clause may include a list of type names; these are the names of exception types for which the
 clause applies.
-\item The list of types may optionally be simply \ldots, meaning, as in C++ that the clause applies for any type.
+\item The list of types may optionally be simply \ldots, meaning, as in C++, that the clause applies for any type.
 \item A throws clause with \ldots for the list of type names is equivalent to the form with no type names at all.
 \item The new term \lstinline|\exception| may be used within the clause's predicate to refer to the exception object being thrown. 
 \item \lstinline|\exception| may be used only in the form of \textsl{throws-clause} that gives one or more type names. The type of \lstinline|\exception| is \lstinline|T&|, where \lstinline|T| is the stated type.

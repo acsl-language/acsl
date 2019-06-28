@@ -1,0 +1,58 @@
+\subsection{Boolean and pointer literals [C++]}
+
+\lang{} defines the boolean literals
+\lstinline|true| and \lstinline|false| (of type \lstinline|bool|) and the pointer literal \lstinline|nullptr| (of type \lstinline|std::nullptr_t|). 
+These may be used in logic expressions and are analogous to the logic values \lstinline|\true|, 
+\lstinline|\false|, and \lstinline|\null|, respectively. 
+These literals may be considered
+to be either predicates or terms.
+
+As discussed in section \ref{sec:pointers}, pointers are useful primarily in
+the context of C memory. Thus \lstinline|\null| and \lstinline|nullptr|
+are interchangeable.
+
+In addition, just as for numeric types, terms of type \lstinline|bool| are
+implicitly converted to the logic type \lstinline|boolean|.
+However, \lstinline|boolean| values must be explicitly cast to be
+converted to \lstinline|bool| values.
+
+For example, the following code parses and proves successfully:
+\begin{lstlisting}
+//@ logic bool negate(bool b) = !b;
+//@ logic boolean lnegate(boolean b) = !b;
+//@ predicate P(bool b) = b;
+//@ predicate LP(boolean b) = b;
+
+void m() {
+
+  //@ assert \true == true;
+  //@ assert \false == false;
+  //@ assert \null == nullptr;
+
+  //@ assert LP(true);
+  //@ assert LP(\true);
+  //@ assert P(true);
+  //@ assert P((bool)\true);
+
+  //@ assert lnegate(false);
+  //@ assert lnegate(\false);
+  //@ assert negate(false);
+  //@ assert negate((bool)\false);
+}
+\end{lstlisting}
+
+But these examples provoke errors complaining that the implicit conversion
+is not performed.
+\begin{lstlisting}
+//@ logic bool negate(bool b) = !b;
+//@ predicate P(bool b) = b;
+
+void m() {
+
+  // No implicit conversion in these cases
+  //@ assert P(\true);
+  //@ assert !P(\false);
+  //@ assert negate(\true);
+  //@ assert !negate(\false);
+}
+\end{lstlisting}
