@@ -17,6 +17,7 @@ C-type-specifier ::= "void" ;
                    | "signed" ;
                    | "unsigned" ;
                    | ( "struct" | "union" | "enum" ) ident [ACSL does not permit declaring a new type within the type-specifier] ;
+                   | <enum-specifier> ;
                    | ident
 \
 C-abstract-declarator ::= C-pointer ;
