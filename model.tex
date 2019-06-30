@@ -1,8 +1,8 @@
 \begin{syntax}
-  declaration ::= C-declaration ;
-  | {"/*@" "model" parameter ";" "*/"} ; model variable
-  | "/*@" "model" C-type-name "{" parameter ";"? "}" ";" ; model field 
-    "*/" ;
+  acsl-annot ::= model-declaration ; To be used in place of a C declaration
+  \
+  model-declaration ::= { "model" parameter ";" } ; model variable
+  | "model" C-type-name "{" parameter ";"? "}" ";" ; model field 
 \end{syntax}
 
 %%% Local Variables:
