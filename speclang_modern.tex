@@ -1,4 +1,4 @@
-%; whizzy-master "main.tex"
+/%; whizzy-master "main.tex"
 
 \chapter{Specification language}
 \label{chap:base}
@@ -2098,7 +2098,8 @@ void f() { while(1); }
 \label{sec:logicspec}
 \index{logic specification}\index{specification}
 \begin{figure}[t]
-  \begin{cadre}\vfill \input{logic.bnf}
+  \begin{cadre}
+  \vfill \input{logic.bnf}
     \vfill\end{cadre}
   \caption{Grammar for global logic definitions}
 \label{fig:gram:logic}
@@ -2141,7 +2142,8 @@ grammar for this style of definition is given in
 Figure~\ref{fig:gram:inductive}.
 \index{inductive definitions}
 \begin{figure}[t]
-  \begin{cadre} \input{inductive.bnf}
+  \begin{cadre}
+      \input{inductive.bnf}
     \end{cadre}
   \caption{Grammar for inductive definitions}
 \label{fig:gram:inductive}
@@ -2195,7 +2197,8 @@ Figure~\ref{fig:gram:logicdecl}.
 
 \indextt{axiomatic}
 \begin{figure}[t]
-  \begin{cadre} \input{logicdecl.bnf}
+  \begin{cadre} 
+    \input{logicdecl.bnf}
     \end{cadre}
   \caption{Grammar for axiomatic declarations}
 \label{fig:gram:logicdecl}
