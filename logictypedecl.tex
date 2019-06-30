@@ -1,5 +1,5 @@
 \begin{syntax}
-  logic-def ::= logic-type-def ;
+  logic-def ::= logic-type-def
   \
   logic-type-def ::= "type" logic-type = ;
                 logic-type-lit ";"
@@ -10,13 +10,13 @@
   | function-type ;
   | type-expr ; type abbreviation
   \
-  record-type ::= {"{" type-expr id} ;
-                  {( ";" type-expr id)* ";"? "}"}
+  {record-type} ::= { "{" type-expr id } ;
+                  { ( ";" type-expr id)* ";"? "}" }
   \
   function-type ::= "("( logic-expr ("," logic-expr )*)?")";
-                    "->" logic-expr ;
+                    "->" logic-expr 
   \
-  sum-type ::= "|"? constructor;
+  sum-type ::= "|"? constructor ;
                ( "|" constructor)*
   \
   constructor ::= {id} ; constant constructor
@@ -24,8 +24,8 @@
     "(" type-expr;
     ("," type-expr)* ")" ; non-constant constructor
   \
-  product-type ::= {"(" type-expr};
-                {("," type-expr)+ ")"} ; product type
+  product-type ::= "(" type-expr;
+                ("," type-expr)+ ")" ; product type
   \
   term ::= {term "." id} ; record field access
   | {"\match" term};

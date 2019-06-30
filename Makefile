@@ -21,7 +21,7 @@ BNF_FILES=term.tex predicate.tex binders.tex fn_behavior.tex \
 
 BNF_DEPS=$(BNF_FILES:.tex=.bnf)
 
-DEPS= speclang_modern.tex macros_modern.tex intro_modern.tex		\
+DEPS= main.tex speclang_modern.tex macros_modern.tex intro_modern.tex		\
 	libraries_modern.tex compjml_modern.tex div_lemma.c assigns.c	\
 	invariants.c example-lt-modern.tex biblio.bib			\
 	malloc_free_fn.c malloc-free2-fn.c loop-frees.c isqrt.c		\
@@ -41,7 +41,7 @@ DEPS= speclang_modern.tex macros_modern.tex intro_modern.tex		\
 	intlists.c sign.c signdef.c oldat.c mean.c isgcd.c exit.c	\
 	mayexit.c loop_current.c welltyped.c list-observer.c            \
 
-DEPS_CPP= acslpp.tex cpp-abstraction.tex cpp-attributes.tex \
+DEPS_CPP= acslpp.tex acslpp-implementation.tex cpp-abstraction.tex cpp-attributes.tex \
     cpp-auto.tex cpp-class-contracts.tex cpp-class-invariants.tex \
     cpp-default-values.tex cpp-defensive.tex cpp-enum.tex \
     cpp-exceptions.tex cpp-foreword.tex cpp-forrange.tex \
@@ -221,7 +221,8 @@ clean:
 		*.haux  *.hbbl *.htoc \
                 *.cb? *.cm? *.bbl *.blg *.idx *.ind *.ilg *.fls *.fdb_latexmk \
 		transf trans.ml pp.ml pp acsl.tex acsl-implementation.tex \
-		acslpp.tex acslpp-implementation.tex
+		acslpp.tex acslpp-implementation.tex acsl.pdf \
+		acsl-implementation.pdf acslpp.pdf acslpp-implementation.pdf
 
 .PHONY: super-clean
 super-clean: clean
@@ -240,7 +241,6 @@ acsl-implementation.tex: $(MAIN).tex Makefile
 acsl.pdf: $(DEPS) $(BNF_DEPS)
 
 acslpp.pdf: $(DEPS) $(DEPS_CPP) $(BNF_DEPS)
-	latexmk -f -silent -pdf cpp-main.tex
 
 acsl.tex: $(MAIN).tex Makefile
 	@rm -f $@
