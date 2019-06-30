@@ -33,7 +33,7 @@
        | term "?" term ":" term ; ternary condition
        | "\let" id "=" term ";" term ; local binding
        | "sizeof" "(" term ")" ;
-       | "sizeof" "(" C-type-name ")" ;
+       | "sizeof" "(" C-type-expr ")" ;
        | id ":" term ; syntactic naming
        | string ":" term ; syntactic naming
        \

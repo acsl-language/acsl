@@ -24,8 +24,6 @@
     "(" type-expr;
     ("," type-expr)* ")" ; non-constant constructor
   \
-  type-expr ::= product-type ; 
-  \
   product-type ::= {"(" type-expr};
                 {("," type-expr)+ ")"} ; product type
   \
