@@ -1,5 +1,9 @@
 \begin{syntax}
-  ident ::= id label-binders ; normal identifier with labels
+  ident ::= ident label-binders ;[An ident can have label-binders and actual type arguments, in eiteher order but only at most one of each.] normal identifier with labels
+  \
+  poly-id ::= id label-binders ;
+  | id type-arguments label-binders ;
+  | id label-binders type-arguments ;
   \
   label-binders ::= "{" label-id (, label-id)* "}" ; label-id defined in Fig. \ref{fig:gram:at}
 \end{syntax}

@@ -2,7 +2,7 @@ default: acsl.pdf
 
 MAIN=main
 
-PDF_OUTPUTS=acsl-implementation.pdf acsl.pdf acslpp.pdf
+PDF_OUTPUTS=acsl-implementation.pdf acsl.pdf acslpp-implementation.pdf acslpp.pdf
 
 ## Notes:
 ## no longer built target: acsl-mini-tutorial.pdf
@@ -40,7 +40,7 @@ DEPS= speclang_modern.tex macros_modern.tex intro_modern.tex		\
 	intlists.c sign.c signdef.c oldat.c mean.c isgcd.c exit.c	\
 	mayexit.c loop_current.c welltyped.c list-observer.c            \
 
-DEPS_CPP= cpp-abstraction.tex app-as-appendix.tex cpp-attributes.tex \
+DEPS_CPP= acslpp.tex cpp-abstraction.tex cpp-attributes.tex \
     cpp-auto.tex cpp-class-contracts.tex cpp-class-invariants.tex \
     cpp-default-values.tex cpp-defensive.tex cpp-enum.tex \
     cpp-exceptions.tex cpp-foreword.tex cpp-forrange.tex \
@@ -48,8 +48,6 @@ DEPS_CPP= cpp-abstraction.tex app-as-appendix.tex cpp-attributes.tex \
     cpp-functional.tex cpp-invariants.tex cpp-main.tex \
 	cpp-namespaces.tex cpp-preprocessing.tex cpp-pure-functions.tex \
     cpp-templates.tex cpp-types.tex cpp-type.tex cpp-visibility.tex
-
-CPPDEPS= cpp-main.tex
 
 TUTORIAL_EXAMPLES=max_ptr-tut.c max_ptr2-tut.c max_ptr_bhv-tut.c \
                   max_seq_ghost-tut.c
@@ -234,7 +232,7 @@ super-clean: clean
 	rm -f $(PDF_OUTPUTS)
 
 # The ACSL document annoted about what is not implemented into Frama-C
-acsl-implementation.pdf: $(DEPS) VERSION
+acsl-implementation.pdf: acsl-implementation.tex $(DEPS) $(BNF_DEPS) VERSION
 
 acsl-implementation.tex: $(MAIN).tex Makefile
 	@rm -f $@
@@ -242,12 +240,10 @@ acsl-implementation.tex: $(MAIN).tex Makefile
 	@chmod a-w $@
 
 # The ACSL reference document
-acsl.pdf: $(DEPS)
+acsl.pdf: $(DEPS) $(BNF_DEPS)
 
-acslpp.pdf: $(DEPS) $(DEPSCPP)
-
-cpp-as-appendix.pdf: cpp-as-appendix.tex $(DEPS) $(DEPSCPP)
-	latexmk -f -silent -pdf $<
+acslpp.pdf: $(DEPS) $(DEPS_CPP) $(BNF_DEPS)
+	latexmk -f -silent -pdf cpp-main.tex
 
 acsl.tex: $(MAIN).tex Makefile
 	@rm -f $@
@@ -258,8 +254,16 @@ acsl.tex: $(MAIN).tex Makefile
 acslpp.tex: cpp-$(MAIN).tex Makefile
 	@rm -f $@
 	sed -e '/^% rubber:/s/cpp-main.cb/acslpp.cb/g' \
-	    -e '/^%--.*{PrintImplementationRq}/s/%--//' $< > $@
+	    -e '/^%--.*{PrintImplementationRq}/s/%--//' $^ > $@
 	@chmod a-w $@
+
+acslpp-implementation.tex: cpp-$(MAIN).tex Makefile
+	@rm -f $@
+	sed -e '/^% rubber:/s/cpp-main.cb/acslpp-implementation.cb/g' $^ > $@
+	@chmod a-w $@
+
+cpp-as-appendix.pdf: cpp-as-appendix.tex $(DEPS) $(DEPS_CPP) $(BNF_DEPS)
+	latexmk -f -silent -pdf $<
 
 ifeq ("$(HAS_FRAMAC)","yes")
 
