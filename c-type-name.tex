@@ -1,0 +1,50 @@
+\begin{syntax}
+C-type-expr ::= specifier-qualifier+ abstract-declarator?
+\
+C-type-name ::= declaration-specifier+
+\
+specifier-qualifier ::= type-specifier | type-qualifier
+\
+type-qualifier ::= "const" | "volatile"
+\
+type-specifier ::= "void" ;
+                   | "char" ;
+                   | "short" ;
+                   | "int" ;
+                   | "long" ;
+                   | "float" ;
+                   | "double" ;
+                   | "signed" ;
+                   | "unsigned" ;
+                   | ( "struct" | "union" | "enum" ) ident [ACSL does not permit declaring a new type within the type-specifier] ;
+                   | <enum-specifier> ;
+                   | ident
+\
+abstract-declarator ::= pointer ;
+| pointer direct-abstract-declarator ;
+| direct-abstract-declarator
+\
+pointer ::= ( "*" type-qualifier* )+
+\
+direct-abstract-declarator ::= "(" abstract-declarator ")" ; 
+| direct-abstract-declarator? "[" constant-expression "]" ;
+| direct-abstract-declarator? "(" parameter-type-list? ")"
+\
+parameter-type-list ::= parameter-declaration ("," parameter-declaration )+
+\
+parameter-declaration ::= declaration-specifier+ declarator ;
+                          | declaration-specifier+ abstract-declarator ;
+                          | declaration-specifier+ ;
+\
+declaration-specifier ::= type-specifier | type-qualifier
+\
+declarator ::= pointer? direct-declarator
+\
+direct-declarator ::= ident ;
+                      | "(" declarator ")" ;
+                      | direct-declarator "[" constant-expression? "]" ;
+                      | direct-declarator "(" parameter-type-list ")" ;
+                      | direct-declarator "(" ident* ")"
+\
+constant-expression ::=  ... [An expression formed from constant literals]
+\end{syntax}

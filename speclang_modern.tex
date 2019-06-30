@@ -108,13 +108,27 @@ that we will introduce progressively.
 \label{fig:gram:pred}
 \end{figure}
 
+\begin{figure}[t]
+  \begin{cadre}
+    \input{c-type-name.bnf}
+  \end{cadre}
+  \caption{The grammar of C type expressions, from the C standard}
+\label{fig:gram:ctype}
+\end{figure}
+
 Figures~\ref{fig:gram:term}~and~\ref{fig:gram:pred} present the
 grammar for the basic constructs of logic expressions. In that
 grammar, we distinguish between \emph{predicates}\index{predicate} and
 \emph{terms}\index{term}, following the usual distinction between
 propositions and terms in classical first-order logic. The grammar
 for binders and type expressions is given separately in
-Figure~\ref{fig:gram:binders}.
+Figure~\ref{fig:gram:binders}. 
+Although a \textit{type-name} in the C grammar is actually an abstract type expression, possibly including qualifiers and pointer and array decorators,
+here we need to distinguish between raw type names (\lstinline|C-type-name|) and type expressions (\lstinline|C-type-expr|); Fig. \ref{fig:gram:ctype} is adapted from the C grammar to show this distinction.
+A \lstinline|type-expr| as used in Fig. \ref{fig:gram:binders} and other grammar productions can be
+either a logic type name or a C-type expression. 
+Note that declarations can differ slightly between C and ACSL logic. For example, C might declare \lstinline|arr| as
+\lstinline|int arr[]|, whereas in many places (e.g. Fig. \ref{fig:gram:logic}), ACSL would write \lstinline|int[] arr|.
 
 To understand the grammar, keep in mind the following distinctions:
 \begin{itemize}

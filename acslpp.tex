@@ -1,3 +1,227 @@
+%% This is the main file for the ACSL++ language definition
+%% Note that acslpp.tex is produced from cpp-main.tex
+%% acslpp.tex is the main file for the language reference (make acslpp.pdf)
+%% cpp-main.tex is the main file for the implementation guide (make cpp-main.pdf)
+
+
+%; whizzy section -pdf -initex "pdflatex -ini"
+% rubber: watch acslpp.cb
+% rubber: watch acslpp.cb2
+% rubber: depend ../../VERSION
+\documentclass[web]{frama-c-book}
+
+\newcommand{\NAME}{ACSL++}
+\newcommand{\lang}{C++}
+\newcommand{\fclang}{\textsc{Frama-Clang}\xspace}
+\newcommand{\framac}{\textsc{Frama-C}\xspace}
+\newcommand{\acsl}{\textsc{ACSL}\xspace}
+\newcommand{\acslb}{\acsl/\NAME\xspace}
+\newcommand{\isCPP}{\boolean{true}}
+\newcommand{\TODO}[1]{\textit{<<#1>>}\marginpar{TODO}}
+\input{common}
+\renewcommand{\version}{DRAFT}
+
+%Do not touch the following line. It is used in a Makefile hack to
+%produce the ACSL document shipped with the Frama-C distribution.
+\setboolean{PrintImplementationRq}{false}
+
+%\setboolean{ColorImplementationRq}{false}
+
+
+\begin{document}
+\sloppy
+\hbadness=10000
+
+\ifthenelse{\boolean{PrintImplementationRq}}%
+  {\coverpage{\vbox{\mbox{\NAME{} Version \version}\newline
+\mbox{Implementation in \framacversion{}}}}}%
+  {\coverpage{\vbox{\mbox{\NAME: ANSI/ISO C++ Specification Language}\newline
+        \mbox{Version \version}}}}
+
+\begin{titlepage}
+\includegraphics[height=16mm]{cealistlogo}
+\hfill
+\includegraphics[height=18mm]{inria}
+
+\title{\NAME: ANSI/ISO C++ Specification Language %
+\ifCPP{(Implementation Guide)}}%
+{Version \version{}\ifthenelse{\boolean{PrintImplementationRq}}%
+{~--~\framacversion}{}}
+
+\vspace{-4em}
+\today
+
+\vspace{-4em}
+\author{David R. Cok$^1$, ...}
+
+\vfill
+\centerline{Authors of the ACSL document:}
+\vspace{-4em}
+\author{Patrick Baudin$^1$, Pascal Cuoq$^1$, Jean-Christophe Filli\^atre$^{4,3}$, Claude March\'e$^{3,4}$,\\ Benjamin Monate$^1$, Yannick Moy$^{2,4,3}$, Virgile Prevosto$^1$}
+
+\begin{tabular}{l}
+	$^1$ CEA LIST, Software Reliability Laboratory, Saclay, F-91191 \\
+	$^2$ France T\'el\'ecom, Lannion, F-22307 \\
+	$^3$ INRIA Saclay - \^Ile-de-France, ProVal, Orsay, F-91893 \\
+	$^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405
+\end{tabular}
+
+
+\begin{flushleft}
+
+  \doclicenseImage[imagewidth=5em] \doclicenseText\\
+  Sources are available at \url{https://github.com/acsl-language/acsl}.
+
+  \textcopyright 2009-2019 CEA LIST and INRIA
+
+  This work is done in the context of project VESSEDIA,
+  which received funding from the European Union's 2020
+  Research and Innovation Program under grant agreement
+  No. 731453.
+  
+  TBD - STANCE
+  
+  It builds on prior work supported by the ANR project CAT
+  (ANR-05-RNTL-0030x), by the ANR CIFRE contract 2005/973,
+  by the ANR projecct U3CAT (08-SEGI-0210xx), and the ANR PICF
+  project DEVICE-Soft (2009-CARN-006-01).
+\end{flushleft}
+\end{titlepage}
+
+%%Contents should open on right
+\cleardoublepage
+\phantomsection
+\label{chap:contents}
+\tableofcontents
+
+\include{cpp-foreword}
+
+\include{intro_modern}
+
+\include{speclang_modern}
+
+\include{libraries_modern}
+
+\include{concl_modern}
+
+\appendix
+
+\chapter{Appendices}
+\label{chap:appendix}
+
+%\section{Quick reference card}
+
+%\todo{by Benjamin}
+
+\section{Glossary}
+\label{sec:glossary}
+
+\begin{description}
+\item[pure expressions] \index{pure expression} In ACSL setting, a
+  \emph{pure} expression is a C expression which contains no assignments, no
+  incrementation operator \lstinline|++| or \lstinline|--|, no function call,
+  and no access to a volatile object. The set of pure expressions is a
+  subset of the set of C expressions without side effect (C
+  standard~\cite{KR88,standardc99}, \S 5.1.2.3, alinea 2).
+
+\item[left-values] \index{left-value}\index{lvalue}
+
+  A \emph{left-value} (\emph{lvalue} for short) is an expression which
+  denotes some place in the memory during program execution, either on
+  the stack, on the heap, or in the static data segment. It can be
+  either a variable identifier or an expression of the form \lstinline|*e|,
+  \lstinline|e[e]|, \lstinline|e.id| or \lstinline|e->id|, where
+  \lstinline |e| is any expression and \lstinline|id| a field name.
+  See C standard, \S 6.3.2.1 for a more
+  detailed description of lvalues.
+
+  A \emph{modifiable lvalue} is an lvalue allowed in the left part of
+  an assignment. In essence, all lvalues are modifiable except
+  variables declared as \texttt{const} or of some array type with
+  explicit length.
+
+\item[pre-state and post-state]
+    \index{pre-state}\index{post-state}
+
+    For a given function call, the \emph{pre-state} denotes the
+    program state at the beginning of the call, including the
+    current values for the function parameters. The \emph{post-state}
+    denotes the program state just after the return of the call.
+    For a statement contract, the pre-state and post-state denote the
+    states just before and just after executing the given statement.
+
+\item[function behavior] \index{function behavior} \indextt{behavior}
+
+  A \emph{function behavior} (\emph{behavior} for short) is a set of
+  properties relating the pre-state and the post-state for a
+  possibly restricted set of pre-states (behavior \emph{assumptions}).
+
+\item[function contract] \index{function contract} \index{contract}
+
+  A \emph{function contract} (\emph{contract} for short) forms a
+  specification of a function, consisting of the combination of a
+  precondition (a requirement on the pre-state for any caller to that
+  function), a collection of behaviors, and possibly a measure in case
+  of a recursive function.
+
+\end{description}
+
+\input{compjml_modern}
+
+\input{typingrules_modern}
+
+\input{template_modern}
+
+\ifthenelse{\boolean{PrintImplementationRq}}{
+\ifCPPinput{cpp-preprocessing}
+}{}
+
+\ifCPPinput{cpp-functional-design}
+
+\section{Illustrative example}
+\label{sec:illustrative-example}
+This is an attempt to define an example for ACSL, much as the Purse
+example in JML description papers.  It is a memory allocator, whose
+main functions are \lstinline|memory_alloc| and \lstinline|memory_free|, to
+respectively allocate and deallocate memory.  The goal is to exercise
+as much as possible of ACSL.
+
+%\input{acsl_allocator.pp}
+\listinginput{1}{acsl_allocator.c}
+
+\section{Changes}
+
+This is the first public release of this document.
+
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{\bibname}
+\bibliographystyle{plain}
+%\IfFileExists{biblio-demons.tex}{%
+%\input{biblio-demons.tex}
+%}{
+\bibliography{./biblio}
+%}
+
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{\listfigurename}
+\listoffigures
+
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{\indexname}
+\printindex
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-PDF-mode: t
+%%% TeX-master: t
+%%% ispell-local-dictionary: "english"
+%%% End:
 default: acsl.pdf
 
 MAIN=main
@@ -14,7 +238,7 @@ BNF_FILES=term.tex predicate.tex binders.tex fn_behavior.tex \
           st_contracts.tex ghost.tex model.tex logic.tex inductive.tex \
           logicdecl.tex logictypedecl.tex higherorder.tex logiclabels.tex \
           logicreads.tex memory.tex initialized.tex data_invariants.tex volatile-gram.tex \
-          exitbehavior.tex dependencies.tex welltyped.tex list-gram.tex c-type-name.tex\
+          exitbehavior.tex dependencies.tex welltyped.tex list-gram.tex \
           cpp-exceptionbehavior.tex cpp-default-values-syntax.tex \
           cpp-class-invariants-fig.tex cpp-this.tex
 
@@ -107,10 +331,8 @@ transfmain.cmo: transf.cmo
 
 # Internal to Frama-C
 FRAMAC ?= ../../bin/frama-c
-FRAMAC_MANUALS = $(dir $(FRAMAC))/../doc/manuals
 
 HAS_FRAMAC:=$(shell if test -x $(FRAMAC); then echo yes; else echo no; fi)
-HAS_FRAMAC_MANUALS:=$(shell if test -d $(FRAMAC_MANUALS); then echo yes; else echo no; fi)
 
 .PHONY: full-check check tutorial-check grammar-check
 full-check: check tutorial-check grammar-check
@@ -119,7 +341,7 @@ ifneq ("$(HAS_FRAMAC)","yes")
 
 .PHONY: cannot-check
 cannot-check:
-	@echo "check targets can only be made within Frama-C binary"
+	@echo "check targets can only be made within Frama-C sources"
 	@exit 2
 
 tutorial-check: cannot-check
@@ -145,7 +367,7 @@ sort.c specified.c sqsum-tut.c sqsum2-tut.c strcpyspec.c sum.c          \
 swap-tut.c terminates_list.c type_invariant-tut.c volatile.c dangling.c \
 welltyped.c list-observer.c
 
-BAD=acsl_allocator.c arrayslice.c gen_code.c gen_spec_with_ghost.c	\
+BAD=acsl_allocator.c gen_code.c gen_spec_with_ghost.c			\
 gen_spec_with_model.c ghostcfg.c import.c invariants.c			\
 lexico.c listlengthdef.c listmodule.c                                   \
 modifier.c out_char.c sum2.c
@@ -216,11 +438,7 @@ grammar-check: transf
 
 .PHONY: clean
 
-clean-tools:
-	@echo "Cleaning generated tools..."
-	rm -f transf transf.ml pp.ml pp *.cm?
-
-clean: clean-tools
+clean:
 	@echo "Cleaning..."
 	rm -rf *~ *.aux *.log *.nav *.out *.snm *.toc *.lof *.pp *.bnf \
 		*.haux  *.hbbl *.htoc \
@@ -267,6 +485,11 @@ acslpp-implementation.tex: cpp-$(MAIN).tex Makefile
 cpp-as-appendix.pdf: cpp-as-appendix.tex $(DEPS) $(DEPS_CPP) $(BNF_DEPS)
 	latexmk -f -silent -pdf $<
 
+# Internal to Frama-C
+FRAMAC ?= ../../bin/frama-c
+
+HAS_FRAMAC:=$(shell if test -x $(FRAMAC); then echo yes; else echo no; fi)
+
 ifeq ("$(HAS_FRAMAC)","yes")
 
 acsl: acsl-implementation.pdf acsl.pdf acslpp.pdf
@@ -288,18 +511,11 @@ acsl: acsl.pdf acslpp.pdf
 tutorial: acsl-mini-tutorial.pdf
 all: acsl tutorial
 
-VERSION:
-	@echo "VERSION can only be made within Frama-C binary"
-	@exit 2
-endif
-
-ifeq ("$(HAS_FRAMAC_MANUALS)","yes")
-install: acsl-implementation.pdf acsl.pdf
-	rm -f  $(FRAMAC_MANUALS)/acsl-implementation.pdf  $(FRAMAC_MANUALS)/acsl.pdf
-	cp -f acsl-implementation.pdf acsl.pdf $(FRAMAC_MANUALS)/
-else
 install:
-	@echo "install target can only be made within directory Frama-C manuals"
+	@echo "install target can only be made within Frama-C sources"
+	@exit 2
+VERSION:
+	@echo "VERSION can only be made within Frama-C sources"
 	@exit 2
 endif
 
