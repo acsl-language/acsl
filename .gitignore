@@ -18,6 +18,8 @@ main.pdf
 /*.synctex.gz
 /acsl-implementation.tex
 /acsl.tex
+/acslpp-implementation.tex
+/acslpp.tex
 /framacversion.tex
 /acsl-mini-tutorial.tex
 /*-tut.c
