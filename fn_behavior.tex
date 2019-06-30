@@ -14,9 +14,11 @@
   \
   assigns-clause ::= "assigns" locations ";"
   \
-  locations ::= location ("," location) * | "\nothing"
+  locations ::= location-list | "\nothing"
   \
-  location ::= tset
+  locations-list = location ("," location) *
+  \
+  location ::= tset  ; Can be a set of many memory locations
   \
   ensures-clause ::= "ensures" pred ";"
   \

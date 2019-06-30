@@ -208,7 +208,8 @@ clean:
 	rm -rf *~ *.aux *.log *.nav *.out *.snm *.toc *.lof *.pp *.bnf \
 		*.haux  *.hbbl *.htoc \
                 *.cb? *.cm? *.bbl *.blg *.idx *.ind *.ilg *.fls *.fdb_latexmk \
-		transf trans.ml pp.ml pp
+		transf trans.ml pp.ml pp acsl.tex acsl-implementation.tex \
+		acslpp.tex acslpp-implementation.tex
 
 .PHONY: super-clean
 super-clean: clean
