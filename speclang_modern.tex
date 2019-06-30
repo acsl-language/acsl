@@ -1,4 +1,4 @@
-/%; whizzy-master "main.tex"
+%; whizzy-master "main.tex"
 
 \chapter{Specification language}
 \label{chap:base}
@@ -120,7 +120,10 @@ Figures~\ref{fig:gram:term}~and~\ref{fig:gram:pred} present the
 grammar for the basic constructs of logic expressions. In that
 grammar, we distinguish between \emph{predicates}\index{predicate} and
 \emph{terms}\index{term}, following the usual distinction between
-propositions and terms in classical first-order logic. The grammar
+propositions and terms in classical first-order logic.
+\ifCPP{\footnote{Although this distinction is traditional in mathematical logic, it is now less-common in specification languages, because the grammars for terms and predicates are so similar. Predicates can be seen simply as logic functions with boolean return values, particularly in languages with a built-in boolean type, such as \lang{} and \NAME{}. Although it would simplify the grammar and parsing tools considerably to unify predicates and terms, the Frama-C implementation has separate AST structures for the two and so such a collapsing of the grammar would be a very significant refactoring.}}
+
+ The grammar
 for binders and type expressions is given separately in
 Figure~\ref{fig:gram:binders}. 
 Although a \textit{type-name} in the C grammar is actually an abstract type expression, possibly including qualifiers and pointer and array decorators,
