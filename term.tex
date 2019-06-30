@@ -18,7 +18,7 @@
        | "&" ; address-of operator
        \
   term ::= literal ; literal constants
-       | poly-id ; variables, function names
+       | ident ; variables, function names
        | unary-op term ;
        | term bin-op term ;
        | term "[" term "]" ; array access
@@ -28,7 +28,7 @@
        | "{" term "\with" "."id "=" term "}" ; field functional modifier
        | term "->" id ;
        | "(" type-expr ")" term  ; cast
-       | poly-id "(" term ("," term)* ")" ; function application
+       | ident "(" term ("," term)* ")" ; function application
        | "(" term ")" ; parentheses
        | term "?" term ":" term ; ternary condition
        | "\let" id "=" term ";" term ; local binding
@@ -39,7 +39,7 @@
        \
   range ::= term? ".." term? ;
        \
-  poly-id ::= ident ; 
+  poly-id ::= id ; 
        \
   ident ::= id ;  lexical identifier token 
 \end{syntax}

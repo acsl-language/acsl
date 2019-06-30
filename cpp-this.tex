@@ -3,7 +3,9 @@ term ::= "this" ;
   | "\\this" ;
   | term ( "." | "->" ) id "(" ( term ( "," term )* )? ")" ;
 \
-poly-id ::= ( qualifier "::" )+ ident ;
+ident ::= ( qualifier "::" )* qualifier ;
+\
+poly-id ::= ( qualifier "::" )+ poly-id ;
 \
 qualifier ::= id ( "<" type-expr ( "," type-expr )* ">" )? ;
 \

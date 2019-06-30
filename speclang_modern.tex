@@ -67,6 +67,15 @@ should be noted.
   with \texttt{//@} are parsed as if the \texttt{//@} is 
   replaced by white space. An ACSL annotation that contains only white space (after
   pre-processing) is ignored.
+  \item Some grammar elements are incorporated from C \ifCPP{or CPP}.
+  \begin{itemize}
+  \item An \textit{integer literal} is a digit sequence with optional radix and bit-size indicators. TBD
+  \item A \textit{real literal} has the form TBD
+  \item A \textit{character literal} is a single character or a backslash followed by a single character enclosed in single quotes, optionally 
+  preceded by the \lstinline|L| character to denote a wide character: TBD
+  \item A \textit{string literal} is a sequence of printable characters or escape sequences enclosed in double quotes: TBD
+  \item  An \textit{id} is a sequence of alphanumeric characters and underscores beginning with a non-digit:  \lstinline| [a-zA-Z_][a-zA-Z_0-9]*|.
+\end{itemize}
 \end{itemize}
 
 %A bit complicated with listings
@@ -105,6 +114,13 @@ grammar, we distinguish between \emph{predicates}\index{predicate} and
 propositions and terms in classical first-order logic. The grammar
 for binders and type expressions is given separately in
 Figure~\ref{fig:gram:binders}.
+
+To understand the grammar, keep in mind the following distinctions:
+\begin{itemize}
+\item An \lstinline|id| is a basic alphanumeric identifier, used to denote all manner of language constructs.
+\item A \lstinline|poly-id| is an \lstinline|id|, possibly with formal type or label arguments 
+\item An \lstinline|ident| is a reference to a previously declared programming or specification language item; syntactically it is an \lstinline|id| possibly decorated with type arguments and memory state labels.
+\end{itemize}
 
 With respect to C pure expressions, the additional constructs are as follows:
 \begin{description}
