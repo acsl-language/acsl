@@ -1974,7 +1974,7 @@ Note that nothing is specified for the case where \lstinline|p| does not hold:
 the function may terminate or not. In particular,
 \lstinline|terminates \false;| does not imply that the function loops
 forever. A possible specification for a function that never terminates
-is the following (in \lang, this specification would also include \lstinline|throws \false;|):
+is the following:\ifCPP{\footnote{in \lang, this specification would also include \lstinline|throws \false;|}}
 \begin{listing}{1}
 /*@ ensures \false;
     terminates \false;
