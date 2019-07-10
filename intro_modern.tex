@@ -6,14 +6,14 @@ This document is a reference manual for
            {the ACSL implementation provided by the
              \mbox{\textsc{Frama-C}} %no cesure
             framework~\cite{frama-c}.}%
-           {\NAME{}.}
-\NAME{} is an acronym for ``ANSI/ISO \lang{} 
+           {\NAME.}
+\NAME is an acronym for ``ANSI/ISO \lang
 Specification Language''. 
 This is a Behavioral Interface Specification Language (BISL)~\cite{hatcliff2012behavioral}
 \ifthenelse{\boolean{PrintImplementationRq}}%
            {for}%
            {implemented in the \textsc{Frama-C} framework. It aims at}
-specifying behavioral properties of \lang{}
+specifying behavioral properties of \lang
 source code.
 
 \ifthenelse{\boolean{PrintImplementationRq}}{%
@@ -151,9 +151,9 @@ This document considers C source \emph{after} preprocessing.
 Tools must decide how they handle preprocessing (what to do with
 annotations, whether macro substitution should be performed, etc.)
 
-Preprocessing includes interpreting class C/C++ digraphs and trigraphs.
-As these are generally deprecated and en route to removal from the C++
-standard, \NAME{} does not define uses of digraphs and trigraphs. Any tool that wishes to support such alternate syntax can preprocess the tokens into conventional tokens before passing the text to \NAME{} tools.
+Preprocessing includes interpreting \lang digraphs and trigraphs.
+As these are generally deprecated and en route to removal from the \lang
+standard, \NAME does not define uses of digraphs and trigraphs. Any tool that wishes to support such alternate syntax can preprocess the tokens into conventional tokens before passing the text to \NAME tools.
 
 \subsection{About keywords}
 

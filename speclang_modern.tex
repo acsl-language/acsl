@@ -314,7 +314,7 @@ Notes:
   expression \lstinline|x<y| in term position is a boolean, and the
   same expression
   is also allowed in predicate position.
-  \ifCPP{In \NAME{}, the programming language type \textbf{boolean} and the logic type \lstinline|boolean| are the same type.}
+  \ifCPP{In \NAME, the programming language type \textbf{boolean} and the logic type \lstinline|boolean| are the same type.}
 \item Unlike in C, there is a distinction between booleans and
   integers. There is an implicit promotion from integers to booleans,
   thus one may write \lstinline|x && y| instead of \lstinline|x != 0 && y != 0|.
@@ -434,7 +434,7 @@ provided in a library.
 Enum types are also interpreted as mathematical integers. Casting\index{cast}
 an integer into an enum in the logic gives the same result as
 if the cast was performed in the C code.
-\ifCPP{Enum types for \lang{} are discussed in \S\ref{TBD}.}
+\ifCPP{Enum types for \lang are discussed in \S\ref{TBD}.}
 
 
 \subsubsection{Bitwise operations}
@@ -1974,7 +1974,7 @@ Note that nothing is specified for the case where \lstinline|p| does not hold:
 the function may terminate or not. In particular,
 \lstinline|terminates \false;| does not imply that the function loops
 forever. A possible specification for a function that never terminates
-is the following (in \lang{}, this specification would also include \lstinline|throws \false;|):
+is the following (in \lang, this specification would also include \lstinline|throws \false;|):
 \begin{listing}{1}
 /*@ ensures \false;
     terminates \false;
@@ -2367,7 +2367,7 @@ several logic definitions, for example
 Module components are then accessible using a qualified notation like
 \begin{notimplementedenv}\lstinline|List::length|\end{notimplementedenv}.
 
-\ifCPP{In \NAME{}, \lang{} namespaces can be used for this purpose.}
+\ifCPP{In \NAME, \lang namespaces can be used for this purpose.}
 
 Predefined algebraic specifications can be provided as
 libraries\index{library} (see
