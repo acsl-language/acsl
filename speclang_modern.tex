@@ -3408,7 +3408,7 @@ or only written to, the unused accessor function can be omitted from the
 \section{Initialization and undefined values}
 \label{sec:initialized}
 \indexttbs{initialized}
-\lstinline|\initialized{L}(p)| is a predicate taking a set of some pointer
+\lstinline|\initialized{L}(p)| is a predicate taking a set of pointers
 (having a type other than \lstinline|void*|) to l-values as
 argument (cf. Fig.~\ref{fig:gram:initialized}) and means that each l-value in this set is initialized at label \lstinline|L|.
 \\ \makebox[5mm]{} \lstinline|\initialized{id} : set<$\alpha$*> $\ra$ bool|
@@ -3424,7 +3424,7 @@ argument (cf. Fig.~\ref{fig:gram:initialized}) and means that each l-value in th
 \label{sec:dangling_pointers}
 \indexttbs{dangling}
 \lstinline|\dangling{L}(p)|
-is a predicate taking a set of some pointer
+is a predicate taking a set of pointers
 (having a type other than \lstinline|void*|) to l-values as
 argument (cf. Fig.~\ref{fig:gram:initialized}) and means that each l-value in this set has a \emph{dangling
   content} at label \lstinline|L|. That is, its value is (or contains bits
