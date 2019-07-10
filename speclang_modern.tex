@@ -2,15 +2,15 @@
 
 \chapter{Specification language}
 \label{chap:base}
-
+\textsl{}
 \section{Lexical rules}
 
-Specification language text is placed inside of special C comments; 
-its lexical structure mostly follows that of ANSI/ISO C. A few differences
+Specification language text is placed inside special C\ifCPP{/C++} comments; 
+its lexical structure mostly follows that of ANSI/ISO C\ifCPP{/C++}. A few differences
 should be noted.
 \begin{itemize}
-\item The at sign (\verb|@|) is a blank character, thus equivalent
-  to a space character.
+\item The at sign (\verb|@|) is equivalent
+  to a space character, except where it indicates the beginning of an ACSL\ifCPP{/ACSL++} annotation.
 \item Identifiers may start with the backslash character (\verb|\|).
 \item Some UTF8 characters may be used in place of some constructs, as
   shown in the following table:
@@ -174,6 +174,13 @@ Section~\ref{sec:logicspec} for detail.
   \lstinline|x < y > z| or \lstinline|x != y != z| are not allowed.
   Note that consecutive comparison operators are allowed only 
   in predicate position.
+  
+  A consecutive comparison as the conditional expression in a ternary operation could, according to the grammar, be either in term or 
+  predicate position. In such a case, the conditional expression is
+  considered a predicate. As a term a consecutive comparison 
+  \lstinline|x < y < z| would
+  be parsed as \lstinline|(x < y) < z| which is incorrectly typed, 
+  because in logic expressions, comparisons result in boolean values.
 
   To enforce the same interpretation as in C expressions, one may need
   to add extra parentheses: \lstinline|a == b < c| is equivalent
@@ -307,6 +314,7 @@ Notes:
   expression \lstinline|x<y| in term position is a boolean, and the
   same expression
   is also allowed in predicate position.
+  \ifCPP{In \NAME, the programming language type \textbf{boolean} and the logic type \lstinline|boolean| are the same type.}
 \item Unlike in C, there is a distinction between booleans and
   integers. There is an implicit promotion from integers to booleans,
   thus one may write \lstinline|x && y| instead of \lstinline|x != 0 && y != 0|.
@@ -426,6 +434,8 @@ provided in a library.
 Enum types are also interpreted as mathematical integers. Casting\index{cast}
 an integer into an enum in the logic gives the same result as
 if the cast was performed in the C code.
+\ifCPP{Enum types for \lang are discussed in \S\ref{TBD}.}
+
 
 \subsubsection{Bitwise operations}
 
@@ -459,7 +469,7 @@ real numbers, hence they never involve any rounding or overflow.
   \lstinline|1e+600|, even if that last number exceeds the largest
   representable number in double precision: there is no "overflow".
 
-  $2 * 0.1$ is equal to the real number $0.2$, and not to any of its
+  $2 * 0.1$ is equal to the real number $0.2$, and not to any 
   floating-point approximation: there is no "rounding".
 \end{example}
 Unlike the promotion of C integer types to mathematical integers,
@@ -560,7 +570,7 @@ All these predicates also exist for the \lstinline|float| type.
 
 Recall that under IEEE754 rules, any comparison between two NaN values returns a false value. 
 Consequently if a \lstinline|double| variable \lstinline|d| is a  
-NaN value, then the C expression \lstinline|d == d| will be 
+NaN value, then the C expression \lstinline|d == d| and the logic expression \lstinline|\eq_double(d,d)| will both be 
 false, the logic expression \lstinline|\real_of_double(d)| will be undefined,
 but the logic expression 
 \lstinline|\real_of_double(d) == \real_of_double(d)| is true, as a specific instance of the axiom \lstinline|x $\equiv$ x|.
@@ -872,7 +882,7 @@ $\tau[]$ returns a logic array $t$ such that
 \]
 
 More generally, an explicit cast from a C aggregate of type $\tau$ to another C 
-aggregate type is allowed for being able to specify such a value conversion into logical functions or function contracts without using the addressing operator \lstinline|&|.
+aggregate type is allowed in order to specify such a value conversion into logical functions or function contracts without using the addressing operator \lstinline|&|.
 
 \begin{example}
 Unlike in C, conversion of an aggregate of C type \lstinline|struct| $\tau$  to another structure type is allowed.
@@ -1045,6 +1055,17 @@ default status of clauses.
   the value \lstinline!*p! is incremented by one.
 \end{example}
 
+\subsection{Semantics of frame conditions}
+It is worth pointing out that there are different treatments of
+frame conditions (assigns statements) in various specification languages.
+The frame condition can follow either \emph{writes} semantics or \emph{modifies} semantics.
+\begin{itemize}
+	\item Under \lstinline|writes| (or assigns) semantics, only those memory locations listed in a frame condition may be \emph{written to}, that is, may be the target of an assignment statement. This is true whether or not the value of the memory location changes.
+	\item Under \lstinline|modifies| semantics, a memory location may be written to, as long as the value is restored (that is, not modified) by the end of the scope of the function contract. Under this semantics, a frame condition is a requirement on the relationship between two states --- that a memory location has the same value in a pre-state and a post-state.
+\end{itemize}
+Confusion can arise because the words \emph{assigns} and \emph{modifies} are sometimes used interchangeably. In particular, \textbf{ACSL uses
+	modifies semantics, even though the frame condition is introduced by the \emph{assigns} keyword.}\footnote{For comparison, JML and the OpenJML tool define frame conditions to have write semantics but use the keywords assigns and modifies interchangeably; however, the KeY tool for JML implements modifies semantics. Ada/SPARK's data flow contracts effectively encode write semantics.}
+
 \subsection{Contracts with named behaviors}
 \label{subsec:behaviors}
 \index{function behavior}\indextt{behavior}
@@ -1164,7 +1185,7 @@ See~\ref{sec:loop_annot} for a continuation of this example.
 
   \listinginput{1}{cond_assigns.c}
 %
-  Its contract means that it assigns values pointed to by
+  Its contract means that it may modify values pointed to by
   \lstinline|p| or by \lstinline|q|,
   conditionally on the sign of~\lstinline|n|.
 \end{example}
@@ -1228,10 +1249,12 @@ There are several places where one needs to describe a set of memory
 locations: for example, in \lstinline|assigns| clauses of function contracts and
 in \lstinline|loop assigns| clauses (see section~\ref{sec:loop_annot}).
 A \emph{memory location} is an l-value; a \emph{tset} is a set of
-memory locations. Moreover, the l-values contained in the argument to
+values and is primarily used for sets of l-values. Moreover, the l-values contained in the argument to
 an \assigns{} clause (a tset) must be modifiable, as described in
 Section~\ref{sec:glossary}. 
-The syntactic constructs denoting tsets are also useful for the \separated predicate (see Section~\ref{sec:separated}).
+More generally, we introduce syntactic constructs to denote \emph{sets of
+  values} (tsets) that are also useful for the \separated predicate (see Section~\ref{sec:separated}). The terms in a tset may have any type, though the operations described below are only well-typed for certain types of tsets. For example, \lstinline|s$_1$[s$_2$]| as defined below is only well-typed if one of 
+\lstinline|s$_1$| and \lstinline|s$_2$| is a set of arrays and the other a set of integers.
 
 \begin{figure}
   \begin{cadre}
@@ -1296,7 +1319,7 @@ Note that \lstinline|assigns \nothing| is equivalent to
   It is annotated with three equivalent \assigns{} clauses, each one
   specifying that only the set of cells
   \lstinline|{t[0],$\ldots$,t[n-1]}|
-  is modified.
+  is potentially modified.
 \end{example}
 
 \begin{example}
@@ -1306,7 +1329,7 @@ Note that \lstinline|assigns \nothing| is equivalent to
 
   \listinginput{1}{assigns_list.c}
 %
-  The \assigns{} clause specifies that the set of modified memory
+  The \assigns{} clause specifies that the set of possibly modified memory
   locations is the set of fields \lstinline|q->hd| for each pointer
   \lstinline|q|
   reachable from \lstinline|p| following \lstinline|next| fields. See
@@ -1332,8 +1355,10 @@ it will be impossible to verify anything about programs calling that
 function; in other words giving it a contract is in practice
 mandatory. On the other hand, if that function has a body, giving no
 \lstinline|assigns| clause means in practice that it is left to tools to
-compute an over-approximation of the sets of assigned locations.
+compute an over-approximation of the sets of modified locations.
 
+\ifCPPinput{cpp-default-values}
+	
 \section{Statement annotations}
 \index{annotation}
 
@@ -1575,6 +1600,8 @@ node ``inv'' to itself.
 \input{inductiveloopinvariants_modern}
 \end{example}
 
+\ifCPP{\input{cpp-forrange.tex}}
+
 \subsection{Built-in construct \texorpdfstring{\at}{\textbackslash{}at}}
 \label{sec:at}
 \indexttbs{at} Statement annotations usually need another additional
@@ -1672,12 +1699,11 @@ except inside clauses \lstinline|loop frees|
 (see section~\ref{sec:allocation-clause}) 
 where \lstinline|Here| is equivalent to \lstinline|LoopEntry|.
 
-There is one particular case of \lstinline|assigns| and \lstinline|ensures|
-clauses of function contracts where formal parameters\index{formal parameter}
-of functions cannot refer to the label \lstinline|Post|.
-In such clauses formal parameters always refer implicitly to the label
-\lstinline|Pre|, and no \lstinline|\at| construct modifies the
-interpretation of formal parameters.
+There is one special case regarding formal parameters.
+Despite any surrounding \lstinline|\at| construct or the 
+type of clause, formal
+parameters in a function contract are always interpreted
+in the pre-state.
 
 No logic label is visible in global logic declarations
 such as lemmas, axioms, definition of predicate or logic
@@ -1757,8 +1783,7 @@ In such cases, a use of the id (in a \lstinline|for| construct) refers to the in
 The \ensures\indextt{ensures} clause does not constrain the
 post-state when the annotated statement is terminated 
 by a \lstinline|goto| jumping out of it,
-by a \Break{}, \Continue{} or \Return{} statement,
-or by a call to the \exit{} function.
+by any abrupt termination of the statement that is annotated.
 To specify such behaviors, \textsl{abrupt clauses} (described in
 Section~\ref{sec:abrupt-clause}) need to be used.
 
@@ -1791,6 +1816,13 @@ are dynamically allocated or deallocated by the annotated statement from the \te
 they are defined later in Section~\ref{sec:allocation-clause}.
 % END proposition
 
+\ifCPPinput{cpp-class-contracts}
+\ifCPPinput{cpp-enum}
+\ifCPPinput{cpp-templates}
+\ifCPPinput{cpp-types}
+\ifCPPinput{cpp-visibility}
+\ifCPPinput{cpp-auto}
+\ifCPPinput{cpp-namespaces}
 
 \section{Termination}
 \label{sec:termination}
@@ -1860,7 +1892,7 @@ and for loops
 \end{listing-nonumber}
 In those cases, the logic expression \lstinline|e| has some type
 $\tau$ and \lstinline|R|
-must be relation on $\tau$, that is a binary predicate declared 
+must be a relation on $\tau$, that is a binary predicate declared 
 (see Section~\ref{sec:logicspec} for details) as
 \begin{listing-nonumber}
 //@ predicate R($\tau$ x, $\tau$ y) $\cdots$
@@ -1878,8 +1910,9 @@ termination, it must be proved that \lstinline|R| is a well-founded relation.
 
 The precise semantics of measures on recursive calls, especially in
 the general case of mutually recursive functions, is given as follows.
-We call \emph{cluster} a set of mutually recursive functions that
-is a strongly connected component of the call graph.
+We call a set of mutually recursive functions that
+is a strongly connected component of the call graph
+a \emph{cluster}.
 Within each cluster, each function must be annotated with a \decreases\
 clause with the same relation \lstinline|R| (syntactically). Then, in the body
 of any function \lstinline|f| of that cluster, any recursive call to a function
@@ -1941,7 +1974,7 @@ Note that nothing is specified for the case where \lstinline|p| does not hold:
 the function may terminate or not. In particular,
 \lstinline|terminates \false;| does not imply that the function loops
 forever. A possible specification for a function that never terminates
-is the following:
+is the following:\ifCPP{\footnote{in \lang, this specification would also include \lstinline|throws \false;|}}
 \begin{listing}{1}
 /*@ ensures \false;
     terminates \false;
@@ -2151,7 +2184,7 @@ higher-order logic.
 \begin{description}
 \item[Abstraction]\indexttbs{lambda}
   The term \lstinline|\lambda $\tau_1$ x$_1$,$\ldots$,$\tau_n$ x$_n$; t|
-  denotes the $n$-ary logic function which maps \lstinline|x$_1,\ldots,$x$_n$| to
+  denotes the $n$-ary logic function that maps \lstinline|x$_1,\ldots,$x$_n$| to
   \lstinline|t|. It has the same precedence as \Forall and \Exists
 \item[Extended quantifiers]
   Terms
@@ -2300,12 +2333,14 @@ context.
 
 Logic declarations may be augmented with a \reads{} clause, with the
 syntax given in Figure~\ref{fig:gram:logicreads}, which extends the
-one of Figure~\ref{fig:gram:logic}. This feature allows specifying the
+syntax in Figure~\ref{fig:gram:logic}. This feature allows specifying the
 \emph{footprint} of a hybrid predicate or function, that is, the set of
 memory locations that it depends on. From such information, one
 might deduce properties of the form $f\{L_1\}(args) = f\{L_2\}(args)$
 if it is known that between states $L_1$ and $L_2$, the memory changes are
 disjoint from the declared footprint.
+Only mutable locations need be listed in a \lstinline|reads| footprint: 
+locations that hold constants that do not change in the course of a program may be omitted.
 
 \begin{example}
   The following is the same as example~\ref{ex:nb_occ} augmented with
@@ -2324,11 +2359,15 @@ disjoint from the declared footprint.
 
 \experimental
 
+\ifCPP{Use namespaces instead?}
+
 \notimplemented{Specification modules can be provided} to encapsulate
 several logic definitions, for example
 \listinginput{1}{listmodule.c}
 Module components are then accessible using a qualified notation like
 \begin{notimplementedenv}\lstinline|List::length|\end{notimplementedenv}.
+
+\ifCPP{In \NAME, \lang namespaces can be used for this purpose.}
 
 Predefined algebraic specifications can be provided as
 libraries\index{library} (see
@@ -2346,7 +2385,7 @@ definitions, like the \lstinline|List| module above.
 % [Patrick B.] START proposition:
 The grammar for terms and predicates is
 extended with new constructs given in Figure~\ref{fig:gram:memory}. 
-\textsl{Location-address} denotes the address of a memory location. 
+\textsl{Location-address} is a term denoting a set of memory locations (a tset). 
 It is a set of values of some common pointer type as defined in Section~\ref{sec:locations}. As indicated below where necessary,
 many built-in functions and predicates dealing with
 pointers depend on the size of the referenced type. Thus, they cannot be given
@@ -2560,10 +2599,10 @@ and
       && \allocation{Here}(p)==\allocation{Pre}(p))
 \end{listing-nonumber}
 
-In fact, just as the \assigns clause does not specify which memory locations are
-assigned (just which are permitted to be assigned),
-the \textsl{allocation-clauses} do not specify which memory location 
-is dynamically allocated or deallocated (just those that might be allocated or deallocated).
+In fact, just as the \assigns clause does not specify precisely which memory locations are
+modified (just which are permitted to be modified),
+the \textsl{allocation-clauses} do not specify which memory locations 
+are dynamically allocated or deallocated (just those that might be allocated or deallocated).
 Pre-conditions and post-conditions should be added to complete the specifications
 about allocations and deallocations.
 The following shortcuts can be used for that:
@@ -2932,9 +2971,14 @@ In contrast to \ensures clauses, \assigns{},\indextt{assigns}
 \allocates{}\indextt{allocates} 
 and \frees\indextt{frees} clauses of function 
 and statement contracts constrain the post-state 
-even when the annotated function and statement terminates  abruptly. 
+even when the annotated function or statement terminates abruptly. 
 This is shown in example~\ref{ex:assigns-and-abrupt-termination} for a function contract.
 % END proposition:
+
+\ifCPPinput{cpp-exceptions}
+\ifCPPinput{cpp-attributes}
+\ifCPPinput{cpp-functional}
+
 
 %% TODO:
 %%  Discuter de exit versus return pour la fonction main. Discuter
@@ -3079,7 +3123,7 @@ which they are supposed to hold.
   Here is a longer example, the famous Dijkstra's Dutch flag algorithm.\\
   \listinginput{1}{flag.c}
 \end{example}
-Note that in this example the invariant could be declared \lstinline|strong|. However, not all \lstinline|enum|s would 
+Note that in this example the invariant could be declared \lstinline|strong|. However, not all C \lstinline|enum|s would 
 obey a corresponding invariant, because in C, \lstinline|enum| values are just \lstinline|int|s and can hold values other
 than those listed in the declaration of the \lstinline|enum| type.
 
@@ -3439,6 +3483,8 @@ and \lstinline|\valid_function(p)| holds if and only if
 %\experimental
 %
 %how to encapsulate several functions...
+\section{Logic attribute annotations}
+\label{sec:attribute_annot}
 
 
 %\section{Attribute annotations}
@@ -3447,6 +3493,20 @@ and \lstinline|\valid_function(p)| holds if and only if
 %\experimental
 %
 %These are annotations allowing to add attributes on variables, like regular C attributes (const, volatile, restrict).
+
+\ifCPP{
+\section{Other items to include somewhere}
+\begin{itemize}
+	\item name resolution for ACSL++ names
+	\item unsequenced behavior, e.g. i = v[i++]
+	\item which are reserved words
+	\item C++ friends
+	\item initialization (C++ ref 3.6.2)
+	\item range for statement -- need count, values?
+
+\textsl{}%	
+\end{itemize}
+}
 
 % The purpose of these are various:
 % \begin{itemize}
