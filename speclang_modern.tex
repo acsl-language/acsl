@@ -262,18 +262,6 @@ For example, \lstinline|a && b ==> c && d| parses as
 \lstinline|a && nm: b ==> c && d| parses as
 \lstinline|a && (nm: ( b ==> (c && d)))|.
 
-\paragraph{Ranges}
-The \lstinline|..| syntax for ranges of integers has the appearance of a
-binary operator but is not a binary operator with conventional precedence,
-because either or both operand is optional.  
-A missing operand designates an
-open range, that is the range includes all integers in the negative (if the left operand is missing) or positive direction (if the right operand is missing).
-This range syntax is used only within parentheses to designate a set of 
-integers (cf. Fig. \ref{fig:gram:locations} later) or within square brackets to designate a 
-range of array indices, as shown in Figs.  \ref{fig:gram:term} and 
-\ref{fig:gram:locations}.
-
-
 \subsection{Semantics}
 \label{sec:twovaluedlogic}
 
@@ -1287,6 +1275,18 @@ More generally, we introduce syntactic constructs to denote \emph{sets of
 \label{fig:gram:locations}
 \end{figure}
 
+\paragraph{Ranges}
+The \lstinline|..| syntax for ranges of integers has the appearance of a
+binary operator but is not a binary operator with conventional precedence,
+because either or both operand is optional.  
+A missing operand designates an
+open range, that is the range includes all integers in the negative (if the left operand is missing) or positive direction (if the right operand is missing).
+This range syntax is used only within parentheses to designate a set of 
+integers (cf. Fig. \ref{fig:gram:locations} later) or within square brackets to designate a 
+range of array indices, as shown in Figs.  \ref{fig:gram:term} and 
+\ref{fig:gram:locations}.
+
+\paragraph{Tsets}
 The grammar for tsets is given in
 Figure~\ref{fig:gram:locations}. The semantics is given below,
 where $s$ denotes any \textsl{tset}.
@@ -2242,6 +2242,33 @@ higher-order logic.
   If \lstinline|i>j| then \lstinline|\sum| and \lstinline|\numof| above are 0,
   \lstinline|\product| is 1, and \lstinline|\max| and \lstinline|\min| are
   unspecified (see Section~\ref{sec:twovaluedlogic}).
+\item[Array slice update]
+  A term of the form
+  \lstinline|{ $a$ \with [ $low$ .. $up$ ] = $f$}| allows updating a slice of
+  an array. $a$ must be an array of $\tau$ and $f$
+  a unary function taking as argument
+  an \lstinline|integer| and returning a value of type $\tau$. Such a term
+  denotes an array $a'$ such that:
+  \[
+    a'[i] = \left\{\begin{array}{lr}
+                    a[i] & \mathrm{if~} i < low \\
+                    f(i) & \mathrm{if~} low \leq i \leq up \\
+                    a[i] & \mathrm{if~} i > up
+                    \end{array}\right.
+  \]
+If $low$ (resp. $up$) is missing, then all the lower (resp. upper) part of
+the array gets modified in $a'$. If both bounds are omitted, all elements of
+$a'$ are computed using $f$.
+
+As a special case, a term of the form
+\lstinline|{ $a$ \with [ $low$ .. $up$ ] = $v$}| where $v$ is a term of type
+$\tau$ is equivalent to
+\lstinline|{ $a$ \with [ $low$ .. $up$ ] = \lambda $\mathbb{Z}$. $v$ }|, i.e.
+it evaluates to an array where the relevant cells all contain the same
+value $v$.
+
+Finally, ranges can also be used in designated initializers
+(see section \ref{sec:aggregate}), with the same semantics as above.
 \end{description}
 
 
@@ -2249,6 +2276,12 @@ higher-order logic.
   \label{ex:higherorder}
   Function that sums the elements of an array of doubles.
   \listinginput{1}{sum.c}
+\end{example}
+
+\begin{example}
+  \label{ex:arraysliceupdate}
+  Properties of arrays initialized as a whole slice
+  \listinginput{1}{arrayslice.c}
 \end{example}
 
 \subsection{Concrete logic types}\label{sec:concrete-logic-types}
