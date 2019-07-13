@@ -2,7 +2,7 @@
 \label{sec:auto}
 \index{auto}
 
-Beginning with C++11\footnote{Prior to C++11, \lstinline|auto| had a different meaning}, \lang{} permits designating the type of a variable as
+Beginning with C++11\footnote{Prior to C++11, \lstinline|auto| had a different meaning}, \lang permits designating the type of a variable as
 \lstinline|auto|.
  \lstinline|auto| may also be used as part of a type expression, as in \lstinline|auto*| or \lstinline|const auto[]|. In these cases the compiler performs type inference, producing a compile-time type and
 saving the user from having to write out the type.
@@ -22,13 +22,13 @@ Here the return type depends on the type of \lstinline|x| but is not hard-coded 
 The disadvantage of \lstinline|auto| is of course, that although the 
 program is still strongly typed, the actual types are harder for the reader to discern.
 
-\lstinline|auto| is also permitted within \NAME{} text, where the type can be inferred at compile time. The inferred type may be a logic type. For example, in
+\lstinline|auto| is also permitted within \NAME text, where the type can be inferred at compile time. The inferred type may be a logic type. For example, in
 \begin{lstlisting}
 //@ logic auto f(integer i) = i + 1;
 \end{lstlisting}
 the result type can be inferred to be \lstinline|integer|.
 
-Within \NAME{} specification text, the \lstinline|auto| keyword can be used in these locations:
+Within \NAME specification text, the \lstinline|auto| keyword can be used in these locations:
 \begin{itemize}
 	\item as the result type in a logic function declaration
 	\item as the variable type in a ghost declaration with initialization

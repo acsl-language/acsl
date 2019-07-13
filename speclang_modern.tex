@@ -123,7 +123,7 @@ grammar for the basic constructs of logic expressions. In that
 grammar, we distinguish between \emph{predicates}\index{predicate} and
 \emph{terms}\index{term}, following the usual distinction between
 propositions and terms in classical first-order logic.
-\ifCPP{\footnote{Although this distinction is traditional in mathematical logic, it is now less-common in specification languages, because the grammars for terms and predicates are so similar. Predicates can be seen simply as logic functions with boolean return values, particularly in languages with a built-in boolean type, such as \lang{} and \NAME{}. Although it would simplify the grammar and parsing tools considerably to unify predicates and terms, the Frama-C implementation has separate AST structures for the two and so such a collapsing of the grammar would be a very significant refactoring.}}
+\ifCPP{\footnote{Although this distinction is traditional in mathematical logic, it is now less-common in specification languages, because the grammars for terms and predicates are so similar. Predicates can be seen simply as logic functions with boolean return values, particularly in languages with a built-in boolean type, such as \lang and \NAME. Although it would simplify the grammar and parsing tools considerably to unify predicates and terms, the Frama-C implementation has separate AST structures for the two and so such a collapsing of the grammar would be a very significant refactoring.}}
 For reference, Fig. \ref{fig:gram:ctype} gives the C grammar for a C type expressions.
 
  The grammar
@@ -139,8 +139,8 @@ Note that declarations can differ slightly between C and ACSL logic. For example
 To understand the grammar, keep in mind the following distinctions:
 \begin{itemize}
 \item An \lstinline|id| is a basic alphanumeric identifier, used to denote all manner of language constructs.
-\item A \lstinline|poly-id| is an \lstinline|id| to be used in a declaration nor definition of that identifier, possibly with formal type or label arguments\ifCPP{, and, in \NAME{} possibly scope qualifiers}.
-\item An \lstinline|ident| is a reference to a previously declared programming or specification language item; syntactically it is an \lstinline|id| possibly decorated with type arguments and memory state labels\ifCPP{, and in \NAME{} possibly with scope qualifiers}.
+\item A \lstinline|poly-id| is an \lstinline|id| to be used in a declaration nor definition of that identifier, possibly with formal type or label arguments\ifCPP{, and, in \NAME possibly scope qualifiers}.
+\item An \lstinline|ident| is a reference to a previously declared programming or specification language item; syntactically it is an \lstinline|id| possibly decorated with type arguments and memory state labels\ifCPP{, and in \NAME possibly with scope qualifiers}.
 \end{itemize}
 
 With respect to C pure expressions, the additional constructs are as follows:
@@ -390,9 +390,9 @@ Notes:
   and \lstinline|\true| becomes 1.
 \ifCPP{
 \item
-\lang{} defines the type \lstinline|bool|. \lstinline|bool| is the programming
+\lang defines the type \lstinline|bool|. \lstinline|bool| is the programming
 language counterpart to the specification language \lstinline|boolean|. 
-\lang{} does distinguish \lstinline|bool| and integral types, but 
+\lang does distinguish \lstinline|bool| and integral types, but 
 like C, does permit implicit conversions from numeric and pointer types to \lstinline|bool|, as described in
 Section \ref{TBD}.}
 \item Quantification can be made over any type: logic types and C
@@ -1155,7 +1155,7 @@ The frame condition can follow either \emph{writes} semantics or \emph{modifies}
 	\item Under \lstinline|writes| (or assigns) semantics, only those memory locations listed in a frame condition may be \emph{written to}, that is, only those locations may be the target of an assignment statement or listed in the frame condition of a called function. This is true whether or not the value of the memory location changes.
 	\item Under \lstinline|modifies| semantics, a memory location may be written to, as long as the value is restored (that is, not modified) by the end of the scope of the function contract. Under this semantics, a frame condition is a requirement on the relationship between two states --- any memory location not a member of the frame condition must have the same value in its pre-state and its post-state.
 \end{itemize}
-Confusion can arise because the words \emph{assigns} and \emph{modifies} are sometimes used interchangeably. In particular, \textbf{\NAME{} uses
+Confusion can arise because the words \emph{assigns} and \emph{modifies} are sometimes used interchangeably. In particular, \textbf{\NAME uses
 	\emph{modifies} semantics, even though the frame condition is introduced by the \emph{assigns} keyword}.\footnote{For comparison, JML and the OpenJML tool define frame conditions to have write semantics but use the keywords assigns and modifies interchangeably; however, the KeY tool for JML implements modifies semantics. Ada/SPARK's data flow contracts effectively encode write semantics.}
 
 \subsection{Contracts with named behaviors}
@@ -2272,7 +2272,7 @@ to a logical inconsistency.
 The axiomatic construct is solely a grouping construct, meant to organize declarations that together define the behavior of a collection of types, predicates and logic functions. Currently the grammar 
 requires logic function and predicate declarations and axioms to be written inside an axiomatic; only full definitions may be written outside an axiomatic.
 
-\ifCPP{An axiomatic construct does not introduce a \lang{} nested scope, as do namespaces and classes.\footnote{This point is under discussion. It would be more convenient and consistent to have axiomatics be a nested scope, but this would not be backward compatible.}}
+\ifCPP{An axiomatic construct does not introduce a \lang nested scope, as do namespaces and classes.\footnote{This point is under discussion. It would be more convenient and consistent to have axiomatics be a nested scope, but this would not be backward compatible.}}
 
 \subsection{Polymorphic logic types}\label{sec:polym-logic-types}
 \index{type!polymorphic}
@@ -2670,7 +2670,7 @@ Some shortcuts are provided:
 \begin{itemize}
 \item \lstinline|\null|\indexttbs{null} is an
   extra notation for the
-  null pointer (\emph{i.e.} a shortcut for \lstinline|(void*)0|)\ifCPP{ and, in \lang{}, for \lstinline|nnullptr|}. 
+  null pointer (\emph{i.e.} a shortcut for \lstinline|(void*)0|)\ifCPP{ and, in \lang, for \lstinline|nnullptr|}. 
   As in C itself (see \cite{standardc99}, 6.3.2.3\S3),
   the constant \lstinline|0| can have any pointer type. Note that 
   \lstinline|\valid{L}((char*)\null)| and \lstinline|\valid_read{L}((char*)\null)|

@@ -3,13 +3,13 @@
 \index{templates}
 \subsection{Class templates}
 
-\lang{} includes syntax for parameterized template classes and functions.  \NAME{} constructs can occur within template classes, just as they can appear within non-template classes. However, note that \NAME{} (like ACSL) has its own syntax for declaring parameterized (polymorphic) types, so no additional 
-capabilities are needed within \NAME{} to allow
+\lang includes syntax for parameterized template classes and functions.  \NAME constructs can occur within template classes, just as they can appear within non-template classes. However, note that \NAME (like \acsl) has its own syntax for declaring parameterized (polymorphic) types, so no additional 
+capabilities are needed within \NAME to allow
 parameterized logic types, functions, or predicates.
 
-Naively, the consequence of an \NAME{} declaration being within a template is that some additional names are defined in the scope in which the \NAME{} declaration is declared. In particular, most commonly there are additional type names, but there can also be values of other types. Any \NAME{} contracts within the template can use the template parameters, just like any \lang{} construct can. 
+Naively, the consequence of an \NAME declaration being within a template is that some additional names are defined in the scope in which the \NAME declaration is declared. In particular, most commonly there are additional type names, but there can also be values of other types. Any \NAME contracts within the template can use the template parameters, just like any \lang construct can. 
 
-However, templates have a complication for both \lang{} and \NAME{}: until template parameters are given actual values (that is, until the template is instantiated) it cannot always be determined whether the code or specifications within the template are well-formed. This is because the declared names and the types of names and operations that are dependent on the template parameters cannot be resolved until the actual template parameters are known.  If \lstinline|T| is a template parameter, \lstinline|T::a| is not known to be syntactically valid, or, if it is, what its type is, until the value of \lstinline|T| itself is known.
+However, templates have a complication for both \lang and \NAME: until template parameters are given actual values (that is, until the template is instantiated) it cannot always be determined whether the code or specifications within the template are well-formed. This is because the declared names and the types of names and operations that are dependent on the template parameters cannot be resolved until the actual template parameters are known.  If \lstinline|T| is a template parameter, \lstinline|T::a| is not known to be syntactically valid, or, if it is, what its type is, until the value of \lstinline|T| itself is known.
 
 Therefore a library template cannot be fully verified as a parameterized class; only verifications of instantiations are possible.
 
@@ -21,7 +21,7 @@ Even if a parameterized template cannot be verified until it is instantiated, th
 
 \subsection{Function templates [C++]}
 
-\lang{} also allows declaring function templates, either as global functions or as members of aggregate classes. The corresponding capability is already present in \NAME{} as logic predicates and functions that have polymorphic type arguments.
+\lang also allows declaring function templates, either as global functions or as members of aggregate classes. The corresponding capability is already present in \NAME as logic predicates and functions that have polymorphic type arguments.
 
 \TODO{TODO: Example}
 
