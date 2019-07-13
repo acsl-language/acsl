@@ -391,7 +391,7 @@ Notes:
   expression \lstinline|x<y| in term position is a boolean, and the
   same expression
   is also allowed in predicate position.
-\item Unlike in C, in ACSL there is a distinction between booleans and
+\item Unlike in C, there is a distinction between booleans and
   integers. There is an implicit promotion from integers to booleans,
   thus one may write \lstinline|x && y| instead of \lstinline|x != 0 && y != 0|.
   If the reverse conversion is needed, an explicit cast\index{cast} is
@@ -517,7 +517,7 @@ provided in a library.
 Enum types are also interpreted as mathematical integers. Casting\index{cast}
 an integer into an enum in the logic gives the same result as
 if the cast was performed in the C code.
-\ifCPP{Enum types for \lang{} are discussed in \S\ref{sec:enums}.}
+\ifCPP{Enum types for \lang are discussed in \S\ref{sec:enums}.}
 
 
 \subsubsection{Bitwise operations}
@@ -2130,7 +2130,7 @@ Note that nothing is specified for the case where \lstinline|p| does not hold:
 the function may terminate or not. In particular,
 \lstinline|terminates \false;| does not imply that the function loops
 forever. A possible specification for a function that never terminates
-is the following (in \lang{}, this specification would also include \lstinline|throws \false;|):
+is the following:\ifCPP{\footnote{in \lang, this specification would also include \lstinline|throws \false;|}}
 \begin{listing}{1}
 /*@ ensures \false;
     terminates \false;
@@ -2532,7 +2532,7 @@ several logic definitions, for example
 Module components are then accessible using a qualified notation like
 \begin{notimplementedenv}\lstinline|List::length|\end{notimplementedenv}.
 
-\ifCPP{In \NAME{}, \lang{} namespaces can be used for this purpose.}
+\ifCPP{In \NAME, \lang namespaces can be used for this purpose.}
 
 Predefined algebraic specifications can be provided as
 libraries\index{library} (see
@@ -3587,7 +3587,7 @@ or only written to, the unused accessor function can be omitted from the
 \section{Initialization and undefined values}
 \label{sec:initialized}
 \indexttbs{initialized}
-\lstinline|\initialized{L}(p)| is a predicate taking a set of some pointer
+\lstinline|\initialized{L}(p)| is a predicate taking a set of pointers
 (having a type other than \lstinline|void*|) to l-values as
 argument (cf. Fig.~\ref{fig:gram:initialized}) and means that each l-value in this set is initialized at label \lstinline|L|.
 \\ \makebox[5mm]{} \lstinline|\initialized{id} : set<$\alpha$*> $\ra$ bool|
@@ -3603,7 +3603,7 @@ argument (cf. Fig.~\ref{fig:gram:initialized}) and means that each l-value in th
 \label{sec:dangling_pointers}
 \indexttbs{dangling}
 \lstinline|\dangling{L}(p)|
-is a predicate taking a set of some pointer
+is a predicate taking a set of pointers
 (having a type other than \lstinline|void*|) to l-values as
 argument (cf. Fig.~\ref{fig:gram:initialized}) and means that each l-value in this set has a \emph{dangling
   content} at label \lstinline|L|. That is, its value is (or contains bits
