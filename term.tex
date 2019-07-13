@@ -23,7 +23,6 @@
        | term bin-op term ;
        | term "[" term "]" ; array access
        | "{" term "\with" "[" term "]" "=" term "}" ; array functional modifier
-       | { "{" term "\with" "[" range "]" "=" term "}" }  ;  array functional modifier
        | term "." id  ; structure field access
        | "{" term "\with" "."id "=" term "}" ; field functional modifier
        | term "->" id ;
@@ -36,8 +35,6 @@
        | "sizeof" "(" C-type-expr ")" ;
        | id ":" term ; syntactic naming
        | string ":" term ; syntactic naming
-       \
-  range ::= term? ".." term?  
        \
   poly-id ::= id ; cf. Fig. \ref{fig:gram:this}
        \
