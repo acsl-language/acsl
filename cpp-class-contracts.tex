@@ -15,7 +15,7 @@ As described in Section \ref{sec:logicspec}, logical specifications (predicates,
 	qualification syntax; for example, \lstinline|A::m| names a 
 	logic predicate declared as \lstinline|m| in class
 	or namespace \lstinline|A|.
-	\item As for any other specification constructs, those defined in aggregate scope are only visible in specification annotations.
+	\item As for any other specification constructs, those defined in aggregate scope are only visible in specification annotations. However, logic declarations are always public.
 	\item Within aggregate scope, a predicate or function definition may be
 	declared \lstinline|static|, with the same meaning as 
 	\lstinline|static| has for \lang{} function 
@@ -38,7 +38,7 @@ function. The keyword \lstinline|this| refers to the current
 object, just as \lstinline|this| does within \lang{} code.
 The type of \lstinline|this| in contracts is the same as the type of \lstinline|this| in C++ code: \lstinline|T*| or \lstinline|const T*|, where \lstinline|T| is the type of the enclosing aggregate.
 
-\emph{TODO: Is this allowed to be used in constructor preconditions?}
+\TODO{TODO: Is this allowed to be used in constructor preconditions?}
 
 \subsection{\textbf{this} and \textbf{\textbackslash this}}
 
@@ -68,19 +68,17 @@ and subject to interpretation according to the appropriate state labels.
 instance on which a method is acting. It has type either \lstinline|T&| or
 \lstinline|const T&|. 
 \lstinline|\this| may be used in logic definitions
-such as predicates, functions, and class invariants. Axioms and lemmas
-do not have an implicit receiver. [TODO - anything else?]
+such as predicates, functions, constants, and class invariants. Axioms, lemmas, type definitions, global type invariants and data innvariants
+do not have an implicit receiver.
 
 \end{itemize}
 
 In C++, the fields and member functions of class objects are designated using 
-either dot or arrow notation. Within \NAME{} annotations, member functions are not
+either dot or arrow notation. Within \NAME{} annotations, \lang{} member functions are not
 permitted. However, \NAME{} allows logic functions, predicates, and class invariants to be defined
 within class scope and then called using conventional \lang{} dot and arrow notation.
-Axioms, lemmas, and type definitions are not considered class members with implicit receivers,
+Axioms, lemmas, type definitions, data and type invariants are not considered class members with implicit receivers,
 but may be designated by appropriate \lstinline|::| qualifiers.
-
-TODO - TBD - data definitions?
 
 \subsection{Scoping}
 
@@ -90,7 +88,7 @@ Names declared within a namespace or class/struct are available outside the scop
 The following code example shows some uses. Such syntax is typically needed only for \textit{static} entities.
 Entities that are members of their enclosing class have a receiver and are designated with dot or arrow syntax;
 the names are then found in the (static) class of the receiver term. In addition if a containing class is a template
-instance, the qualifier will have type arguments. The corresponding grammar enhancements are shown in 
+instance, the qualifier will have type arguments. The corresponding grammar enhancements are shown in Fig. \ref{fig:gram:this}.
 \begin{lstlisting}
 namespace A {
    int f; // A::f
@@ -116,6 +114,10 @@ A::B::C<int>::D x;
 
 \NAME{} axiomatics do not create a nested scope.
 
+\TODO{TODO: Order of name lookup}
+
+\TODO{TODO: C++ using statement}
+
 \subsection{Ghost functions}
 Aggregates may also contain declarations of ghost functions, as described in section TBD \TODO{Complete this subsection}
 
@@ -132,12 +134,13 @@ with an abstract method
 \lstinline|area| that returns the area of the shape. 
 Derived classes \lstinline|Circle| and \lstinline|Square| would contain concrete data fields that defined the parameters of circle and square shapes respectively; 
 the derived classes would each have its own implementation of the area() method appropriate to its kind of shape. 
-However, the key idea is that methods of a \lstinline|Shape| object can be used without knowing which derived class the object is actually an instance of.
+However, the key idea is that methods of a \lstinline|Shape| object can be used without knowing which derived class the object is actually an instance of and
+which derived class method implementation is actually invoked.
 
 The usual design intent is to obey Liskov and Wing's principle of \textit{behavioral subtyping}\cite{Liskov:1994:BNS:197320.197383}: 
 anything provable about a base type should be provable about a subtype.
 \NAME{} imposes that requirement on derived classes by 
-requiring that methods of derived classes obey the contract of any methods of parent classes that the derived class methods override. 
+requiring that each method of a derived class obeys the contract of any methods of parent classes that the derived class method overrides. 
 If behavior subtyping does not hold between a base and derived class, then the behavior of methods
 invoked on a pointer or reference whose static type is the
 parent class (but whose dynamic class is any derived class) may depend on the actual dynamic class, 
@@ -157,6 +160,7 @@ as described in section TBD\TODO{Sec ref needed}.
 \footnote{JML was designed explicitly around behavioral subtyping and the implications of behavioral subtyping are much simpler. 
 	See the comparative discussion in Appendix \ref{sec:comp-jml}.}
 
+\TODO{TODO: More + examples needed}
 
 \subsection{Specifications of operator overloads}
 Declarations of operator overloading as treated in \NAME{} just like other
@@ -205,10 +209,11 @@ class C {
     @    requires \true;
     @    assigns \nothing;
     @    ensures this->value == that->value;
-    @ C(const C& that);
     @*/
+  C(const C& that) = default;
 }
 \end{lstlisting}
+This syntax leverages the C++11 \lstinline|default| keyword, which indicates that the built-in default implementation for the construcxtor (or other special member function) is to be used. Thus we can attach a specification to 
 
 \emph{Grammar additions are needed}
 
@@ -216,14 +221,16 @@ The member functions for which implicit default functions are provided by the co
 \begin{itemize}
 	\item default constructor \lstinline|C()|: 
 	\item default copy constructor \lstinline|C(C&)| or \lstinline|C(const C&)|
-	\item default move constructor \lstinline|C(C&&)|
+	\item default move constructor \lstinline|C(C&&)| (since C++11)
 	\item default copy assignment operator \lstinline|C::operator=(C&)| or \lstinline|C::operator=(const C&)|
-	\item default move assignment operator \lstinline|C::operator=(C&&)| 
+	\item default move assignment operator \lstinline|C::operator=(C&&)| (since C++11)
 	\item default destructor \lstinline|C::~C()|
 \end{itemize}
 
+\TODO{TODO: What actually are the default specs}
+
 The \lstinline|operator new(...)| and 
-\lstinline|operator delete(...)| functions have the appearnace of being implicitly defined. However, they are defined in the standard library
+\lstinline|operator delete(...)| functions have the appearance of being implicitly defined. However, they are defined in the standard library
 (include file \lstinline|new|). Their specifications are given there as
 part of the specifications of the standard library.
 

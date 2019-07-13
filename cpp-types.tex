@@ -3,8 +3,8 @@
 
 \subsection{Logic types}
 
-ACSL already allows the definition of logic types (cf. \S\ref{TBD}). One can  declare a possibly polymorphic type name and then declare its properties by axiomatization. Alternatively, one can declare 
-a type name and give a concrete definition as either a record or sum type.
+ACSL already allows the definition of logic types (cf. \S\ref{sec:concretetypes}). One can declare a possibly polymorphic type name and then declare its properties by axiomatization. Alternatively, one can declare 
+a type name and give a concrete definition.
 
 These capabilities are still present in \NAME{}, but note that such types are strictly logic types; there is no inheritance relationship or dynamic dispatching of method calls.
 
@@ -12,7 +12,7 @@ These capabilities are still present in \NAME{}, but note that such types are st
 
 An additional means of defining types is to declare
 \lang{} class (or struct) types as logic types. The syntax for such a definition is simply to preface the declaration
-with the keyword \textbf{ghost} and write it within an ACSL annotation. Such a ghost class is considered a kind of logic type.
+with the keyword \textbf{ghost} and write it within an \NAME{} annotation. Such a ghost class is considered a kind of logic type.
 
 Consistent with other rules that maintain a separation between logic entities and C entities,
 \begin{itemize}
@@ -25,7 +25,7 @@ Consistent with other rules that maintain a separation between logic entities an
 
 As with \lang{} classes, ghost classes may inherit fields and methods from their base classes and method calls are subject to dynamic dispatch.
 
-This concept is still experimental because use cases are still be explored that would require this feature.
+This concept is still experimental because use cases are still being explored that would require this feature.
 
 \subsection{Static type information}
 
@@ -44,9 +44,14 @@ In addition, the \lstinline|value| field of each of these templates is a named \
 
 No new features are needed in \NAME{} to support static type information. 
 
+\TODO{Test that these are allowed in ACSL++}
+
 \subsection{Casting}
 
 \emph{Need grammar additions and examples}
+
+\TODO{Test that these are allowed in ACSL++}
+
 
 \lang{} added to C a number of casting operations. Most of these may be 
 used in logic expressions.
@@ -61,7 +66,7 @@ used in logic expressions.
 	
 	\item \textbf{dynamic\_cast<T>(e)} -- A dynamic cast is used to convert a value of pointer or reference type to the corresponding value of another pointer or reference type, typically within the first type's inheritance hierarchy. For pointer types, if the given expression \lstinline|e| is not a pointer to a complete instance of the desired type \lstinline|T|, then the result is \lstinline|null|. For reference types, if the desired conversion is not allowed, a \lstinline|bad_cast| exception is thrown. Thus this cast operator can be used to test type relationships.
 	
-	When used in a logic expression, the semantics of a \lstinline|dynamic_cast| operation applied to a pointer value is the same as in C, producing either a valid new pointer or a null value. When applied to a reference value however, if the operation would produce an exception, it instead produces an undefined value.\footnote{This is a case where the operation could be considered to be partial and ill-defined for a bad conversion. However, since the  functions of \NAME{}'s logic are in general total, the semantics of \lstinline|dynamic_cast| is defined to be total as well.}  
+	When used in a logic expression, the semantics of a \lstinline|dynamic_cast| operation applied to a pointer value is the same as in \lang{}, producing either a valid new pointer or a null value. When applied to a reference value however, if the operation would produce an exception, it instead produces an undefined value.\footnote{This is a case where the operation could be considered to be partial and ill-defined for a bad conversion. However, since the  functions of \NAME{}'s logic are in general total, the semantics of \lstinline|dynamic_cast| is defined to be total as well.}  
 	
 	\item \textbf{static\_cast<T>(e)} -- A static cast also operates on pointer or reference values, but simply returns the value of the given expression with the given static type. If the conversion is valid, the result is the same as dynamic casting. If the result is invalid, the result is undefined and may result in runtime errors later in program execution. \NAME{} tools may check whether a static cast produces a valid value.
 	
@@ -91,6 +96,8 @@ shown below.
 
 \lstinputlisting{ftype.cpp}
 
+\TODO{TODO: Put specs in the example?}
+
 No additional features are needed in \NAME{} to reason about such code. What is needed
 is the ability to reason about the dynamic type of a given pointer or reference to
 an object. 
@@ -100,7 +107,7 @@ Such capability is additionally needed to reason about uses of \lstinline|dynami
 
 \subsection{Implicit and explicit conversions}
 
-\lang{} defines a complex set of rules for determining implicit conversions to be applied. Besides the casts discussed in \S\ref{TBD}, there are two other conversions: the one-argument constructor and \lstinline|operator T()| conversion. 
+\lang{} defines a complex set of rules for determining implicit conversions to be applied in various circumstances. Besides the casts discussed in \S\ref{TBD}, there are two other conversions: the one-argument constructor and \lstinline|operator T()| conversion. 
 
 These conversions do not require any additional features within 
 \NAME{}. If the program defines either a one-argument constructor or a
@@ -109,4 +116,4 @@ function should also be given, so that any \NAME{} tools can appropriately analy
 
 These conversions may be used in logic expressions, either implicitly or explicitly, only if they are permitted by the rules of \S\ref{sec:pure}. 
 
-\marginpar{Examples needed}
+\TODO{Examples needed. Test that specs are used by fclang}

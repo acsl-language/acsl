@@ -17,7 +17,7 @@ BNF_FILES=term.tex predicate.tex binders.tex fn_behavior.tex \
           exitbehavior.tex dependencies.tex welltyped.tex list-gram.tex \
           c-type-name.tex \
           cpp-exceptionbehavior.tex cpp-default-values-syntax.tex \
-          cpp-class-invariants-fig.tex cpp-this.tex
+          cpp-class-invariants-fig.tex cpp-this.tex cpp-gram-pure.tex
 
 BNF_DEPS=$(BNF_FILES:.tex=.bnf)
 
@@ -40,6 +40,7 @@ DEPS= main.tex speclang_modern.tex macros_modern.tex intro_modern.tex		\
 	terminates_list.c glob_var_masked.c glob_var_masked_sol.c	\
 	intlists.c sign.c signdef.c oldat.c mean.c isgcd.c exit.c	\
 	mayexit.c loop_current.c welltyped.c list-observer.c            \
+	Makefile VERSION
 
 DEPS_CPP= acslpp.tex acslpp-implementation.tex cpp-abstraction.tex cpp-attributes.tex \
     cpp-auto.tex cpp-class-contracts.tex cpp-class-invariants.tex \
@@ -47,7 +48,7 @@ DEPS_CPP= acslpp.tex acslpp-implementation.tex cpp-abstraction.tex cpp-attribute
     cpp-exceptions.tex cpp-foreword.tex cpp-forrange.tex \
     cpp-functional-design.tex cpp-functional-examples.tex \
     cpp-functional.tex cpp-invariants.tex cpp-main.tex \
-	cpp-namespaces.tex cpp-preprocessing.tex cpp-pure-functions.tex \
+	cpp-namespaces.tex cpp-preprocessing.tex  \
     cpp-templates.tex cpp-types.tex cpp-type.tex cpp-visibility.tex
 
 TUTORIAL_EXAMPLES=max_ptr-tut.c max_ptr2-tut.c max_ptr_bhv-tut.c \
@@ -85,7 +86,7 @@ main.pdf:
 	@echo "Deprecated '$@' target:"
 	@echo "please, make 'acsl-implementation.pdf' or else 'acsl.pdf'"
 
-%.pdf: %.tex
+%.pdf: %.tex $(DEPS) $(BNF_DEPS)
 	latexmk -silent -pdf $<
 
 pp: pp.ml
@@ -230,7 +231,6 @@ super-clean: clean
 	rm -f $(PDF_OUTPUTS)
 
 # The ACSL document annoted about what is not implemented into Frama-C
-acsl-implementation.pdf: acsl-implementation.tex $(DEPS) $(BNF_DEPS) VERSION
 
 acsl-implementation.tex: $(MAIN).tex Makefile
 	@rm -f $@
@@ -238,9 +238,10 @@ acsl-implementation.tex: $(MAIN).tex Makefile
 	@chmod a-w $@
 
 # The ACSL reference document
-acsl.pdf: $(DEPS) $(BNF_DEPS)
 
-acslpp.pdf: $(DEPS) $(DEPS_CPP) $(BNF_DEPS)
+acslpp.pdf: $(DEPS_CPP)
+
+acslpp-implementation.pdf: $(DEPS_CPP)
 
 acsl.tex: $(MAIN).tex Makefile
 	@rm -f $@
