@@ -93,9 +93,9 @@ class Array {
   public:
 	
 	/*@
-	   logic int length() = this.data_length; 
+	   logic int length() = \this.data_length; 
 	   
-	   logic int value(int index) = this.data[index];
+	   logic int value(int index) = \this.data[index];
 	*/
 	
 	/*@ 
@@ -161,6 +161,9 @@ This example demonstrates the general solution for abstraction that respects inf
 
 \subsection{Pure functions}
 \label{sec:pure}
+
+\experimental
+
 A verbose aspect of the listing above is that the logic representation function \lstinline|value()| is essentially a replica of
 the \lang{} function \lstinline|getValue()|. Why write and maintain both of these? Can we not use at least some \lang{} functions in 
 specifications?
@@ -196,7 +199,9 @@ The principal restriction is that the function declared \lstinline|pure| must ha
 temporary stack variables, but it may not assign to any locations in the heap that are allocated in the pre-state of the function.
 No assignments are permitted to a pre-state location even if the assignment does not change the value stored in the location.
 This is partly a static condition, but when assigning to fields of an object, it must be demonstrated that the object is a local temporary or
-has been allocated since the pre-state; this demonstration may require reasoning about aliasing.
+has been allocated since the pre-state; this demonstration may require reasoning about aliasing. It is a compile error for a \lstinline|pure|
+function to have \lstinline|assigs| or \lstinline|allocates| or \lstinline|frees| clauses with content other than \lstinline|\empty| or \lstinline|\nothing|.
+Furthermore the function must terminate and may not exit abruptly in any way.
 
 \subsubsection{No heap changes}
 The rule prohibiting side-effects applies to the heap as well:
@@ -205,10 +210,15 @@ Stack operations are allowed. Thus, for example,
  implicit copy constructors that 
 only create and destroy stack temporaries are permitted.
 
+\subsubsection{Inheritance}
+If a function overrides a \lstinline|pure| function, then it also must be \lstinline|pure| and must be declared so
+
 \subsubsection*{Reading the heap}
 Since the pure function is indeed a C++ function, it may include read operations on the heap. When the pure function is used as a logic function,
 it must be invoked with respect to a given heap state. 
 That is, the pure function has a single implicit state label.
+
+
 An example showing this use is given below:
 \begin{lstlisting}
 class C {
@@ -225,12 +235,22 @@ public:
   void test() {
       x:
       count++;
-      //@ \textsl{}assert getCount{Here}() == 1 + getCount{x}();
+      //@ assert getCount{Here}() == 1 + getCount{x}();
   }
 
 \end{lstlisting}
 
 A special case of pure functions are those declared in \lang{} as \lstinline|constexpr|.
-Such functions compute constant values that may be evaluated at compile time. A function declared \lstinline|constexpr| is implicitly \lstinline|pure| and my be used in a logic expression.
+Such functions compute constant values that may be evaluated at compile time. A function declared \lstinline|constexpr| is implicitly \lstinline|pure| and may be used in a logic expression.
 
-	\emph{Is the rule concerning strong purity too draconian?}
+The grammar additions for designating \lstinline|pure| functions is shown in Fig. \ref{fig:gram:pure}.
+
+\begin{figure}
+\begin{cadre}
+\input{cpp-gram-pure.bnf}
+\end{cadre}
+\caption{Grammar additions for pure and auto}
+\label{fig:gram:pure}
+\end{figure}
+
+	\TODO{Is the rule concerning strong purity too draconian?}

@@ -1,11 +1,17 @@
 \begin{syntax}
 term ::= "this" ;
-  | "\\this" ;
+  | "\this" ;
+  | "\count" ;
+  | "\data" ;
   | term ( "." | "->" ) id "(" ( term ( "," term )* )? ")" ;
 \
-ident ::= ( qualifier "::" )* qualifier ;
+ident ::=  qualifier-seq? qualifier ;
 \
-poly-id ::= ( qualifier "::" )+ poly-id ;
+poly-id ::= qualifier-seq poly-id ;
+\
+logic-type-name ::= qualifier-seq id ;
+\
+qualifier-seq ::= "::"? ( qualifier "::")* [Must not be empty];
 \
 qualifier ::= id ( "<" type-expr ( "," type-expr )* ">" )? ;
 \
