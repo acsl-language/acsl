@@ -41,7 +41,7 @@ Frama-C include in particular:
 \end{itemize}
 }%
 
-\ifCPP{TBD -- REVIEW AND ADD ACSL++ ITEMS to this list of unimplemented features}
+\ifCPP{\TODO{TODO -- REVIEW AND ADD ACSL++ ITEMS to this list of unimplemented features}}
 
 The main inspiration for this language comes from the
 specification language of the \textsc{Caduceus}
@@ -113,7 +113,7 @@ Section~\ref{sec:multiplecontracts}).
 
   \item \emph{type invariant}\,: this allows declaring  structure invariants,
      union invariants, 
-     \ifthenelse{\isCPP}{class invariants,}{}
+     \ifCPP{class invariants,}
      and invariants on type names introduced by
     \typedef.  See section~\ref{sec:invariants}.
 

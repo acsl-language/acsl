@@ -10,15 +10,14 @@
 % rubber: depend ../../VERSION
 \documentclass[web]{frama-c-book}
 
-\newcommand{\NAME}{ACSL++}
-\newcommand{\lang}{C++}
+\newboolean{isCPP}
+\setboolean{isCPP}{true}
+\input{common}
 \newcommand{\fclang}{\textsc{Frama-Clang}\xspace}
 \newcommand{\framac}{\textsc{Frama-C}\xspace}
 \newcommand{\acsl}{\textsc{ACSL}\xspace}
 \newcommand{\acslb}{\acsl/\NAME\xspace}
-\newcommand{\isCPP}{\boolean{true}}
 \newcommand{\TODO}[1]{\textit{<<#1>>}\marginpar{TODO}}
-\input{common}
 \renewcommand{\version}{DRAFT}
 
 %Do not touch the following line. It is used in a Makefile hack to
@@ -167,6 +166,8 @@
 \input{compjml_modern}
 
 \input{typingrules_modern}
+
+\input{c-grammar}
 
 \input{template_modern}
 

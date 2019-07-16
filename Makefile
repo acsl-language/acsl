@@ -39,9 +39,10 @@ DEPS= main.tex speclang_modern.tex macros_modern.tex intro_modern.tex		\
 	terminates_list.c glob_var_masked.c glob_var_masked_sol.c	\
 	intlists.c sign.c signdef.c oldat.c mean.c isgcd.c exit.c	\
 	mayexit.c loop_current.c welltyped.c list-observer.c            \
+        c-grammar.tex \
 	Makefile VERSION
 
-DEPS_CPP= acslpp.tex acslpp-implementation.tex cpp-abstraction.tex cpp-attributes.tex \
+DEPS_CPP= cpp-main.tex cpp-abstraction.tex cpp-attributes.tex \
     cpp-auto.tex cpp-class-contracts.tex cpp-class-invariants.tex \
     cpp-default-values.tex cpp-defensive.tex cpp-enum.tex \
     cpp-exceptions.tex cpp-foreword.tex cpp-forrange.tex \
@@ -239,30 +240,30 @@ super-clean: clean
 
 acsl-implementation.tex: $(MAIN).tex Makefile
 	@rm -f $@
-	sed -e '/^% rubber:/s/main.cb/acsl-implementation.cb/g' $^ > $@
+	sed -e '/^% rubber:/s/main.cb/acsl-implementation.cb/g' $< > $@
 	@chmod a-w $@
 
 # The ACSL reference document
 
-acslpp.pdf: $(DEPS_CPP)
+acslpp.pdf: acslpp.tex $(DEPS_CPP)
 
-acslpp-implementation.pdf: $(DEPS_CPP)
+acslpp-implementation.pdf: acslpp-implementation.tex $(DEPS_CPP)
 
 acsl.tex: $(MAIN).tex Makefile
 	@rm -f $@
 	sed -e '/^% rubber:/s/main.cb/acsl.cb/g' \
-	    -e '/^%--.*{PrintImplementationRq}/s/%--//' $^ > $@
+	    -e '/^%--.*{PrintImplementationRq}/s/%--//' $< > $@
 	@chmod a-w $@
 
 acslpp.tex: cpp-$(MAIN).tex Makefile
 	@rm -f $@
 	sed -e '/^% rubber:/s/cpp-main.cb/acslpp.cb/g' \
-	    -e '/^%--.*{PrintImplementationRq}/s/%--//' $^ > $@
+	    -e '/^%--.*{PrintImplementationRq}/s/%--//' $< > $@
 	@chmod a-w $@
 
 acslpp-implementation.tex: cpp-$(MAIN).tex Makefile
 	@rm -f $@
-	sed -e '/^% rubber:/s/cpp-main.cb/acslpp-implementation.cb/g' $^ > $@
+	sed -e '/^% rubber:/s/cpp-main.cb/acslpp-implementation.cb/g' $< > $@
 	@chmod a-w $@
 
 cpp-as-appendix.pdf: cpp-as-appendix.tex $(DEPS) $(DEPS_CPP) $(BNF_DEPS)

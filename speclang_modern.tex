@@ -68,15 +68,9 @@ should be noted.
   with \texttt{//@} are parsed as if the \texttt{//@} is 
   replaced by white space. An ACSL annotation that contains only white space (after
   pre-processing) is ignored.
-  \item Some grammar elements are incorporated from C \ifCPP{and C++}.
-  \begin{itemize}
-  \item An \textit{integer literal} is a digit sequence with optional radix and bit-size indicators:  \lstinline| [+-]?(0|[1-9][0-9]*|0[0-7]+|0x[0-9A-Za-z]+) |
-  \item A \textit{real literal} has the form \lstinline|[ (0-9]+)? (\.[0-9]*)? ([eE][+-]?(0-9)+)? ([fFlL])? | where there must be either an initial digit sequence or post-decimal point digit sequence and either a decimal point or an exponent.\footnote{In C++17 exponents beginning with \lstinline|p| or \lstinline|P| and hex digit sequences with leading 0x are permitted.}
-  \item A \textit{character literal} is a single character or a backslash followed by a single character enclosed in single quotes, optionally 
-  preceded by the \lstinline|L| character to denote a wide character.
-  \item A \textit{string literal} is a sequence of printable characters or escape sequences enclosed in double quotes: TBD
-  \item  An \textit{id} is a sequence of alphanumeric characters and underscores beginning with a non-digit:  \lstinline| [a-zA-Z_][a-zA-Z_0-9]*|.
-\end{itemize}
+  \item \NAME uses some grammar elements from \lang, such as literals, type expressions, statements and declarations. Most of these are identified as 
+  such by \lstinline|C-| prefixes in the figures laying out the grammar.
+  They are described in more detail for reference in Appendix \ref{sec:cgrammar}.
 \end{itemize}
 
 %A bit complicated with listings
@@ -108,24 +102,14 @@ that we will introduce progressively.
 \label{fig:gram:pred}
 \end{figure}
 
-\begin{figure}[t]
-  \begin{cadre}
-    \input{c-type-name.bnf}
-  \end{cadre}
-  \caption{The grammar of C type expressions, from the C standard}
-\label{fig:gram:ctype}
-\end{figure}
-
-\ifCPP{\TODO{Review the figure on C type expressions}}
-
 Figures~\ref{fig:gram:term}~and~\ref{fig:gram:pred} present the
 grammar for the basic constructs of logic expressions. In that
 grammar, we distinguish between \emph{predicates}\index{predicate} and
 \emph{terms}\index{term}, following the usual distinction between
 propositions and terms in classical first-order logic.
-\ifCPP{\footnote{Although this distinction is traditional in mathematical logic, it is now less-common in specification languages, because the grammars for terms and predicates are so similar. Predicates can be seen simply as logic functions with boolean return values, particularly in languages with a built-in boolean type, such as \lang and \NAME. Although it would simplify the grammar and parsing tools considerably to unify predicates and terms, the Frama-C implementation has separate AST structures for the two and so such a collapsing of the grammar would be a very significant refactoring.}}
+\ifCPP{\footnote{Although this distinction is traditional in mathematical logic, it is now less common in specification languages because the grammars for terms and predicates are so similar. Predicates can be seen simply as logic functions with boolean return values, particularly in languages with a built-in boolean type, such as \lang and \NAME. Although it would simplify the grammar and parsing tools considerably to unify predicates and terms, the Frama-C implementation has separate AST structures for the two and so such a collapsing of the grammar would require a very significant refactoring.}}
 For reference, Fig. \ref{fig:gram:ctype} gives the C grammar for a C type expressions.
-
+ 
  The grammar
 for binders and type expressions is given separately in
 Figure~\ref{fig:gram:binders}. 
@@ -138,8 +122,8 @@ Note that declarations can differ slightly between C and ACSL logic. For example
 
 To understand the grammar, keep in mind the following distinctions:
 \begin{itemize}
-\item An \lstinline|id| is a basic alphanumeric identifier, used to denote all manner of language constructs.
-\item A \lstinline|poly-id| is an \lstinline|id| to be used in a declaration nor definition of that identifier, possibly with formal type or label arguments\ifCPP{, and, in \NAME possibly scope qualifiers}.
+\item An \lstinline|id| is a basic alphanumeric identifier, used to denote all manner of language constructs (cf. \S\ref{cgrammar}}.
+\item A \lstinline|poly-id| is an \lstinline|id| to be used in a declaration or definition of that identifier, possibly with formal type or label arguments\ifCPP{, and, in \NAME possibly scope qualifiers}.
 \item An \lstinline|ident| is a reference to a previously declared programming or specification language item; syntactically it is an \lstinline|id| possibly decorated with type arguments and memory state labels\ifCPP{, and in \NAME possibly with scope qualifiers}.
 \end{itemize}
 
@@ -211,7 +195,7 @@ Section~\ref{sec:logicspec} for detail.
   It is required that the \lstinline|$relop_i$| operators must be in
   the same ``direction'', \emph{i.e.} they must all belong either to
   $\{$\lstinline|<|, \lstinline|<=|, \lstinline|==|$\}$ or to
-  $\{$\lstinline|>|,\lstinline|>=|,\lstinline|==|$\}$. Expressions such as
+  $\{$\lstinline|>|, \lstinline|>=|, \lstinline|==|$\}$. Expressions such as
   \lstinline|x < y > z| or \lstinline|x != y != z| are not allowed.
   Furthermore the types of each of the terms being compared must be non-boolean.
   Note that consecutive comparison operators are allowed only 
@@ -403,7 +387,7 @@ Section \ref{TBD}.}
 \end{itemize}
 
 Formal typing rules for terms are given in appendix~\ref{sec:typingrules}.
-
+	
 \subsection{Integer arithmetic and machine integers}
 
 The following integer arithmetic operations apply to
@@ -2125,7 +2109,7 @@ Note that nothing is specified for the case where \lstinline|p| does not hold:
 the function may terminate or not. In particular,
 \lstinline|terminates \false;| does not imply that the function loops
 forever. A possible specification for a function that never terminates
-is the following:\ifCPP{\footnote{in \lang, this specification would also include \lstinline|throws \false;|}}
+is the following:\ifCPP{\footnote{in \lang, this specification would also include \lstinline|throws \\false;|}}
 \begin{listing}{1}
 /*@ ensures \false;
     terminates \false;
@@ -3018,7 +3002,7 @@ to the postcondition
 \forall char* p; \separated(\union(&L$_1$,$\ldots$,&L$_n$),p) ==> *p == \old(*p)
 \end{listing-nonumber}
 
-\TODO{Should set be \lstinline|\set|}
+\TODO{Should set be \textbackslash set}
 
 \subsection{Finite lists}\label{sec:lists}
 The built-in type \lstinline|\list<A>|\indexttbs{list} can be used for finite 
@@ -3309,7 +3293,7 @@ which they are supposed to hold.
   function is of type $\tau$, that result must also satisfy its
   weak invariant at function exit. 
 
-\item A strong type invariant on type $\tau$ must hold at any step
+\item A strong type invariant on type $\tau$ must hold at any step 
 (more precisely, ay sequence point as defined in C)
   during execution, and applies to any global variable, local
   variable, or formal parameter\index{formal parameter}
@@ -3426,7 +3410,7 @@ is a logic type, not a C type. Also, the semantics above is closer to
 the one of B machines~\cite{abrial96:_b_book}. It should be noticed
 that program verification with model variables does not have a
 well-established theoretical background~\cite{marche07,leavens07}, so
-we deliberately do not provide a precise semantics in this document .
+we deliberately do not provide a precise semantics in this document.
 
 \section{Ghost variables and statements}
 \label{sec:ghost}

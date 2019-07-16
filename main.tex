@@ -4,9 +4,8 @@
 % rubber: depend ../../VERSION
 \documentclass[web]{frama-c-book}
 
-\newcommand{\NAME}{ACSL}
-\newcommand{\lang}{C}
-\newcommand{\isCPP}{\boolean{false}}
+\newboolean{isCPP}
+\setboolean{isCPP}{false}
 
 \input{common}
 
@@ -166,6 +165,8 @@ We gratefully thank all the people who contributed to this document:
 \end{description}
 
 \input{compjml_modern}
+
+\input{c-grammar}
 
 \input{typingrules_modern}
 

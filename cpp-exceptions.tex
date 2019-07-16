@@ -21,7 +21,7 @@ Figure~\ref{fig:gram:throws-clause}. Note the following points:
 clause applies.
 \item The list of types may optionally be simply \ldots, meaning, as in C++, that the clause applies for any type.
 \item A throws clause with \ldots~for the list of type names is equivalent to the form with no type names at all.
-\item The new term \lstinline|\exception| may be used within the clause's predicate to refer to the exception object being thrown; its type is \lstinline|const T&|, where \lstlinline|T| is the type of the thrown exception.
+\item The new term \lstinline|\exception| may be used within the clause's predicate to refer to the exception object being thrown; its type is \lstinline|const T&|, where \lstinline|T| is the type of the thrown exception.
 \item If more than one type name is listed (or \ldots~for any type), the clauses's predicate must be syntactically and semantically valid for each possible type, with \lstinline|\exception| taking on each type in turn.
 \item There is no implicit order to \textsl{throws} clauses.
 \end{itemize}

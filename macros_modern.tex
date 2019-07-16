@@ -15,15 +15,13 @@
 \newboolean{ColorImplementationRq}
 \setboolean{ColorImplementationRq}{true}
 
-% ACSL++ flag
-\newboolean{isCPP}
-\setboolean{isCPP}{false}
-
 \newcommand{\ifCPP}[1]{\ifthenelse{\boolean{isCPP}}{#1}{}}
 \newcommand{\ifCPPinput}[1]{\ifCPP{\input{#1}}}
 
-\newcommand{\NAME}{\ifthenelse{\boolean{isCPP}}{ACSL++}{ACSL}\xspace}
-\newcommand{\lang}{\ifthenelse{\boolean{isCPP}}{C++}{C}\xspace}
+%\newcommand{\NAME}{\ifthenelse{\boolean{isCPP}}{ACSL++}{ACSL}\xspace}
+%\newcommand{\lang}{\ifthenelse{\boolean{isCPP}}{C++}{C}\xspace}
+\newcommand{\NAME}{ACSL++\xspace}
+\newcommand{\lang}{C++\xspace}
 
 %%% Commandes et environnements pour la version relative à l'implementation
 \newcommand{\highlightnotimplemented}{%
