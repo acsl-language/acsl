@@ -3,7 +3,7 @@
 
 This appendix chapter summarizes the elements of the \lang grammar that are used by \NAME.
 
-\subsectionn{Identifiers}
+\subsection{Identifiers}
 
 \begin{itemize}
   \item  An \textit{id} is a sequence of alphanumeric characters and underscores beginning with a non-digit:  \lstinline| [a-zA-Z_][a-zA-Z_0-9]* |.
@@ -17,7 +17,7 @@ Numeric, character and string literals are adopted from \lang without modificati
   \item A \textit{real literal} has the form \lstinline![+-]? (0-9]+)? (\.[0-9]*)? ([eE][+-]?(0-9)+)? ([fFlL])? ! \\where there must be either an initial digit sequence or post-decimal point digit sequence and either a decimal point or an exponent.\footnote{In C++17 exponents beginning with \lstinline|p| or \lstinline|P| and hex digit sequences with leading 0x are permitted.}
   \item A \textit{character literal} is a single character or a backslash followed by a single character enclosed in single quotes, optionally 
   preceded by the \lstinline|L| character to denote a wide character.
-  \item A \textit{string literal} is a sequence of printable characters or escape sequences enclosed in double quotes: TBD
+  \item A \textit{string literal} is a sequence of printable characters or escape sequences enclosed in double quotes: TODO
 \end{itemize}
 
 

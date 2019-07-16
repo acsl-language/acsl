@@ -121,7 +121,7 @@ Note that declarations can differ slightly between C and ACSL logic. For example
 
 To understand the grammar, keep in mind the following distinctions:
 \begin{itemize}
-\item An \lstinline|id| is a basic alphanumeric identifier, used to denote all manner of language constructs (cf. \S\ref{cgrammar}}.
+\item An \lstinline|id| is a basic alphanumeric identifier, used to denote all manner of language constructs (cf. \S\ref{sec:cgrammar}).
 \item A \lstinline|poly-id| is an \lstinline|id| to be used in a declaration or definition of that identifier, possibly with formal type or label arguments\ifCPP{, and, in \NAME possibly scope qualifiers}.
 \item An \lstinline|ident| is a reference to a previously declared programming or specification language item; syntactically it is an \lstinline|id| possibly decorated with type arguments and memory state labels\ifCPP{, and in \NAME possibly with scope qualifiers}.
 \end{itemize}
@@ -387,8 +387,7 @@ Notes:
 \lang defines the type \lstinline|bool|. \lstinline|bool| is the programming
 language counterpart to the specification language \lstinline|boolean|. 
 \lang does distinguish \lstinline|bool| and integral types, but 
-like C, does permit implicit conversions from numeric and pointer types to \lstinline|bool|, as described in
-Section \ref{TBD}.}
+like C, does permit implicit conversions from numeric and pointer types to \lstinline|bool|.}
 \item Quantification can be made over any type: logic types and C
   types. Quantification over pointers must be used carefully,
   since it depends on the memory state where dereferencing is done (see

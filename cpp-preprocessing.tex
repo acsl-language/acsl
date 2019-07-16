@@ -3,7 +3,7 @@
 
 The \fclang plug-in intends to provide a full translation of C++ and \NAME into the \framac internal representation, and from there be able to be analyzed by other \framac plug-ins. This is a work in progress. The following sections describe the  limitations of the current implementation.
 \begin{itemize}
-	\item The plug-in aims for the TBD version of C++
+	\item The plug-in aims for the C++11 version of C++
 	\item \NAME is described in the companion \NAME reference manual, also a part of the \framac release.
 \end{itemize}
 
@@ -31,18 +31,26 @@ remaining compiler phases.
 
 \subsection{Trigraphs}
 
-TBD - are these supported by clang?
+The frama-clang translator, building on the clang compiler, does not translate 
+trigraphs by default. It does so with the \lstinline|-trigraphs| option, and
+does so quietly by adding the \lstinline|-Wno-trigraphs| option.
+Trigraphs are likely to be removed from the C/C++ standard in the future.
+
+
+\subsection{Digraphs}
+Digraphs are alternate spellings of certain tokens and consequently need to be
+implemented in the scannner. \TODO{Finish info on digraphs}
 
 \subsection{Preprocessor tokens}
-Preprocessor tokens (per CPP) belong to one of five categories. White space (space, tab, TBD) serves only to separate tokens; it is not needed between tokens whose concatenation is not a single token. Line terminators also separate tokens and also delineate certain features: preprocessing directives and string literals do not extend over more than one (logical) line.
+Preprocessor tokens (per CPP) belong to one of five categories. White space (e.g., space and tab) serves only to separate tokens; it is not needed between tokens whose concatenation is not a single token. Line terminators also separate tokens and also delineate certain features: preprocessing directives and string literals do not extend over more than one (logical) line.
 \begin{itemize}
-	\item identifiers: character sequences that match the regular expression \texttt{[a-zA-Z\_][a-zA-Z\_0-9]*} . Dollar signs are allowed as non-digit identifier characters if the clang option \texttt{-fdollars-in-identifiers} is used. (TBD - on by default?)
-	\item number: character sequences that match the regular expression \texttt{[.]?[0-9]([0-9a-zA-Z.]|[eEpP][+-]))*} . (TBD - dollar signs also allowed?)
+	\item identifiers: character sequences that match the regular expression \texttt{[a-zA-Z\_][a-zA-Z\_0-9]*} . Dollar signs are allowed as non-digit identifier characters if the clang option \texttt{-fdollars-in-identifiers} is used. (TODO - on by default?)
+	\item number: character sequences that match the regular expression \texttt{[.]?[0-9]([0-9a-zA-Z.]|[eEpP][+-]))*} . (TODO - dollar signs also allowed?)
 	\item string literals: character sequence enclosed in " " or ' ' or < >, with \textbackslash " for " in a double-quoted literal (that is not a header file name) and \' for ' in a single-quoted literal.
 	\item punctuator: all single non-alphanumeric printable characters except \@, \# and `, and all multi-punctuation sequences that meaningful to C/C++ (e.g. >>>= ), but not an arbitrary multi-punctuation character sequence.
 	\\item other tokens: \@, \#, ` and all non-ASCII single characters.
 \end{itemize}
-TBD - unicode characters
+\TODO{ - unicode characters}
 Note that not all preprocessor tokens are valid C/C++ parser tokens. Tokens in the other category have no meaning to C/C++ and the \texttt{number} category allows many sequences that are not legal C/C++ numeric tokens. These tokens will generally provoke compiler errors. For example in C/C++, 0..2 is one token and is not interpreted as two consecutive numeric tokens.
 
 \acsl and \NAME have slightly different tokens than the above, so the preprocessor tokens need to be re-tokenized in some cases:
@@ -55,7 +63,9 @@ Note that not all preprocessor tokens are valid C/C++ parser tokens. Tokens in t
 		\item[] $-->$ (bit-wise implies)
 		\item[] $<==>$ (logical equality)
 		\item[] $<-->$ (bit-wise equality)
-		\item[] TBD any more?
+		\item[] \verb|^^| (logical exclusive or, a.k.a logical inequality))
+                \item[] \verb|..| (integer range)
+                \item[] \verb![| |] *^! (list syntax)
 	\end{itemize}
 	These \acslb tokens need to be assembled from multiple CPP tokens (and those CPP tokens must not be separated by white space)
 	\item A CPP numeric token that contains .. will not be a legal C/C++ number, but may be multiple legal \acslb tokens with the .. representing the range operator.  For example, the single CPP token \texttt{0..last} is retokenized for \acslb as if it were written \texttt{0 .. last} .
@@ -78,7 +88,7 @@ Note that not all preprocessor tokens are valid C/C++ parser tokens. Tokens in t
 %		\item[] $\Boolean$ (unicode 0x1D539) - set of booleans
 %		\item[] $\Integer$ (unicode 0x2124) - set of integers
 %		\item[] $\Real$ (unicode 0x211D) - set of reals
-		\item TBD - more - ensure unicode equivalent
+		\item TODO - more - ensure unicode equivalent
 	\end{itemize}
 \end{itemize}
 
@@ -103,7 +113,7 @@ Accordingly, \NAME imposes constraints on the directives that may be present wit
 	\item \texttt{if}, \texttt{ifdef}, \texttt{ifndef}, \texttt{elif}, \texttt{else}, \texttt{endif} are permitted but must be completely nested within the annotation in which they appear (an \#endif and its corresponding \#if/\#ifdef/\#ifndef must be in the same annotation comment.)
 	\item \texttt{warning} and \texttt{error} are permitted
 	\item \texttt{include} is permitted, but will cause errors if it contains, as is almost always the case, either \texttt{define} or \texttt{pragma} directives
-	\item \texttt{line} - TBD
+	\item \texttt{line} - TODO
 	\item \texttt{pragma} is not permitted
 \end{itemize}
 
