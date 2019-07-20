@@ -1,7 +1,5 @@
 \subsection{for with range statement [C++]}
 
-\emph{TODO: Grammar additions needed}
-
 \lang introduced a new kind of iteration statement: the range-based for statement, illustrated in the code below:
 \begin{lstlisting}
 void m() {
@@ -44,7 +42,7 @@ for-range syntax. So we define one, named \lstinline|\count|, for specification 
 \lstinline|\count| is the number of completed loop iterations so far; 
 at the beginning of the initial iteration its value is 0; it 
 increments by 1 each time the loop body is started again (including by a
-\lstinline|coninue| statement).
+\lstinline|continue| statement).
 We also define \lstinline|\data| to refer to the value of the array or list over which the for-loop ranges.
 
 With these constructs, we can specify our two example uses of for-range as follows:
@@ -75,5 +73,6 @@ void m() {
 }
 \end{lstlisting}
 
-\emph{TODO: The above may need to be revised when the capabilities for working with iterators are settled.}
+In \lang, a for-range loop is just another kind of loop statement, as in Fig. \ref{sec:loop_annot}. Thus the grammar for loop annotations needs no enhancement other than
+allowing \lstinline|\count| and \lstinline|\data| as terms, as shown in Fig. \ref{fig:gram:this}.
 

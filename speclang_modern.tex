@@ -1929,7 +1929,7 @@ at the beginning of the annotated statement and leading
 to a \lstinline|goto| jumping out of it, should be part of its 
 \assigns clause.
 %% TODO: Needs of clarification
-%% \marginpar{This behavior of assigns clauses for abrupt exits from statements is different than the corresponding behavior for loops. Should it be? }
+%% \marginpar{TODO: This behavior of assigns clauses for abrupt exits from statements is different than the corresponding behavior for loops. Should it be? }
 
 \begin{example} The clause \lstinline|assigns \nothing;| does not hold for that statement,
 even if the clause \lstinline|ensures x==\old(x);| holds: 
@@ -3668,14 +3668,14 @@ how to encapsulate several functions...
 These are annotations allowing to add attributes on variables, like regular C attributes (const, volatile, restrict).
 
 \ifCPP{
-\section{Other items to consider adding}
+\section{Questions and items to consider adding}
 \begin{itemize}
-	\item logic lambda expressions; allow a lambda expression in a decreases clause or in volatile clauses
+	\item logic lambda expressions; allow a lambda expression in a decreases clause, loop variant clause and in volatile clauses
 	\item let statements with multiple parallel local bindings
 	\item add nodangling or alter semantics of dangling
-
-
-\textsl{}%	
+	\item is the rule concerning strong purity too draconian? (\S\ref{sec:pure})
+	\ifCPP{\item discussion on how to specify and reason about \lang iterators}
+	
 \end{itemize}
 }
 
@@ -3687,11 +3687,9 @@ These are annotations allowing to add attributes on variables, like regular C at
 	\item which are reserved words
 	\item C++ friends
 	\item initialization (C++ ref 3.6.2)
-	\item range for statement -- need count, values?
 	\item restrictions on invariant footprint
 	\item examples of reasoning about types
-
-\textsl{}%	
+	
 \end{itemize}
 }
 
