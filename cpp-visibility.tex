@@ -1,8 +1,6 @@
 \section{Access control and abstraction [C++]}
 \label{sec:access}
 
-\TODO{Grammar additions needed}
-
 \subsection{Access control of \NAME constructs}
 
 \lang allows members of aggregate types to be declared as \lstinline|public|, \lstinline|protected|, or \lstinline|private|. This access control modifier affects whether the member can be accessed within other contexts. 
@@ -16,24 +14,13 @@ obey the same accessibility rules as do \lang constructs.
 However, the experience with other specification languages is that 
 public accessibility is almost always what is needed. Hence the design
 of \NAME avoids the complexity of detailed accessibility rules.
-%The same access rules apply to \NAME constructs declared at class scope. Any name that may be declared at class scope, such as logic functions, predicates, invariants and ghost code, has associated with it the access modifier that it would if it were a \lang
-%construct, with the same access defaults being used for struct and class declarations. Typically, \lstinline|private| \NAME
-%constructs would be used to aid in the proofs of the implementation of a class's members, whereas 
-%\lstinline|public| \NAME constructs are used as class abstractions or to assist in proofs of functions that use the class's
-%functionality.
-
-%Recall that a \lang context A can declare as a \lstinline|friend| a name N from context B and thereby allow 
-%the definition of B::N to use private elements of A. Similarly, within an \NAME annotation, context A can declare as
-%\lstinline|friend| a \NAME name N from context B and thereby allow 
-%the definition of B::N (within an ACSL annotation) to use private elements of A.
-%
-% \TODO{Need an example of access and motivating examples of the rul about friends.}
 
 It follows also then that \lstinline|friend| declarations are not 
 needed to provide access to \NAME specifications from other classes,
 as all specifications are \lstinline|public| by default.
  
 \subsection{Access, specifications and information hiding}
+\label{sec:infohiding}
 
 The typical purpose of using different access modifiers in a
 \lang implementation is information hiding: some aspects of
@@ -45,12 +32,6 @@ affecting the API.
 Simply written specifications typically refer to the private
 aspects of an implementation and thus can break information hiding.
 
-%If a particular \lang name is accessible and that name has an associated \NAME specification, then the specification is also accessible and all the names used within the specification must be
-%accessible. For example, if a function definition is accessible in some context, then the function contract is also accessible, so all the 
-%names used within that function contract must be accessible. This is a conceptual requirement: if a client of a class uses a function of the class, the client needs to be able to see the specification of that function, and thus it must have access to all the identifiers 
-%within the expressions of that specification.
-%
-%However, this naturally expressed requirement causes problems in writing specifications that adhere to the information hiding expectations of classes. 
 Consider a class that wraps an implementation of a simple array:
 
 \begin{listing-nonumber}
@@ -253,4 +234,3 @@ The grammar additions for designating \lstinline|pure| functions is shown in Fig
 \label{fig:gram:pure}
 \end{figure}
 
-	\TODO{Is the rule concerning strong purity too draconian?}
