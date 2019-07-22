@@ -1,6 +1,7 @@
 \begin{syntax}
 term ::= "\lambda" binders ";" term ; abstraction
-| ext-quantifier "(" term "," term "," term ")"
+| ext-quantifier "(" term "," term "," term ")";
+| { "{" term "\with" "[" range "]" "=" term "}" }; array slice update
 \
 ext-quantifier ::= "\max" | "\min" | "\sum";
                       | "\product" | "\numof"

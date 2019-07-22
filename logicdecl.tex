@@ -8,7 +8,7 @@
   | logic-const-decl ;
   | logic-predicate-decl ;
   | logic-function-decl ;
-  | axiom-decl 
+  | axiom-def 
   \
   logic-type-decl ::= "type" logic-type ";" ;
   \
@@ -25,5 +25,5 @@
   "predicate";
   poly-id parameters? ";"
   \
-  axiom-decl ::= "axiom" poly-id ":" pred ";" 
+  axiom-def ::= "axiom" poly-id ":" pred ";" 
 \end{syntax}

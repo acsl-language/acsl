@@ -4,7 +4,7 @@
   logic-def ::= logic-const-def ;
           | logic-function-def ;
           | logic-predicate-def ;
-          | lemma-decl ;
+          | lemma-def ;
   \
   type-var ::= id
   \
@@ -35,6 +35,6 @@
   \
   parameter ::= type-expr id
   \
-  lemma-decl ::= "lemma" poly-id ":";
+  lemma-def ::= "lemma" poly-id ":";
                    pred ";"
 \end{syntax}
