@@ -2,18 +2,19 @@
 \label{sec:namespaces}
 \index{namespaces}
 
-C++ introduced namespaces as a means to structure the scopes of declared names. Namespaces apply equivalently to \NAME{} 
-names. In particular,
+\lang introduced namespaces as a means to structure the scopes of declared names. Namespaces apply equivalently to \NAME. In particular,
 \begin{itemize}
-\item Any \NAME{} construct that may be declared or defined 
+\item Any \NAME construct that may be declared or defined 
 in global scope may be declared or defined within a namespace.
-\item Identifiers for such constructs may be constructed using namespaces names and \lstinline|::| tokens, just as for \lang{} names.
-\item Name resolution of \NAME{} names is performed just as for \lang{} names, with \NAME{} names being in scope only within \NAME{} annotations.
-\item It is preferable to avoid using names declared in \lang{} as the names of \NAME{} constructs as well. However, since namespaces can be extended, the author of \NAME{} annotations may not know about the \lang{} names that may be added in a namespace extension. Thus ambiguities can in
-principle arise: a \lang{} declaration and an \NAME{}
+\item Identifiers for such constructs may be constructed using namespace names and \lstinline|::| tokens, just as for \lang names.
+\item Name resolution of \NAME names is performed just as for \lang names, with \NAME names being in scope only within \NAME annotations.
+\item It is preferable to avoid using names declared in \lang as the names of \NAME constructs as well. However, since namespaces can be extended, the author of \NAME annotations may not know about the \lang names that may be added in a namespace extension. Thus ambiguities can in
+principle arise: a \lang declaration and an \NAME
 declaration may be equally applicable to a use of that name 
-in some \NAME{} construct. In that case the \NAME{} declaration applies.
+in some \NAME construct. In that case the \NAME declaration applies.
 Tools may wish to emit warnings for such cases.
 
 \TODO{This rule for ambiguity resolution is open for discussion.}
 \end{itemize}
+
+\TODO{Test and document using declarations}

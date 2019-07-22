@@ -27,6 +27,8 @@ version={4.0}]
 \usepackage[normalem]{ulem}
 \usepackage[leftbars]{changebar}
 \usepackage{alltt}
+\usepackage{hyperref}
+\usepackage{multirow}
 
 \lstset{
 numbers=left,
@@ -41,11 +43,17 @@ deletekeywords={assert}
 %\setlength{\oddsidemargin}{0mm}
 %\setlength{\evensidemargin}{0mm}
 
-\newcommand{\version}{1.12}
+\newcommand{\version}{ACSL_VERSION}
 
 \renewcommand{\textfraction}{0.01}
 \renewcommand{\topfraction}{0.99}
 \renewcommand{\bottomfraction}{0.99}
+
+\newcommand{\fclang}{\textsc{Frama-Clang}\xspace}
+\newcommand{\framac}{\textsc{Frama-C}\xspace}
+\newcommand{\acsl}{\textsc{ACSL}\xspace}
+\newcommand{\acslb}{\acsl/\NAME\xspace}
+\newcommand{\TODO}[1]{\textit{<<#1>>}\marginpar{TODO}}
 
 % already taken care of in frama-c-book
 % \usepackage{fancyhdr}
@@ -62,5 +70,3 @@ deletekeywords={assert}
 % \cfoot{}
 % \rfoot{\fancyplain{}{CAT RNTL project}}
 
-\newcommand{\ifCPP}[1]{\ifthenelse{\isCPP}{#1}{}}
-\newcommand{\ifCPPinput}[1]{\ifthenelse{\isCPP}{\input{#1}}{}}

@@ -4,9 +4,8 @@
 % rubber: depend ../../VERSION
 \documentclass[web]{frama-c-book}
 
-\newcommand{\NAME}{ACSL}
-\newcommand{\lang}{C}
-\newcommand{\isCPP}{\boolean{false}}
+\newboolean{isCPP}
+\setboolean{isCPP}{false}
 
 \input{common}
 
@@ -40,11 +39,10 @@
 %\setlength{\oddsidemargin}{0mm}
 %\setlength{\evensidemargin}{0mm}
 
-\newcommand{\version}{\input{ACSL_VERSION}}
-
 \renewcommand{\textfraction}{0.01}
 \renewcommand{\topfraction}{0.99}
 \renewcommand{\bottomfraction}{0.99}
+\renewcommand{\version}{DDD}
 
 % already taken care of in frama-c-book
 % \usepackage{fancyhdr}
@@ -206,6 +204,8 @@ We gratefully thank all the people who contributed to this document:
 \end{description}
 
 \input{compjml_modern}
+
+\input{c-grammar}
 
 \input{typingrules_modern}
 

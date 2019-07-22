@@ -2,9 +2,9 @@
 \label{sec:enums}
 \index{enum}
 
-\TODO{Needs grammar additions}
+\experimental
 
-\lang{} introduced enum types that are more strongly checked than in C. \lang{} allows the declaration of \textit{unscoped} and \textit{scoped} \lstinline|enum| types. In either case, the underlying type of the enum is some integral type. Accordingly, \lang{} still allows some conversions between enum values and integral values. Unscoped enumerations have an implicit conversion to an int, as in,
+\lang introduced enum types that are more strongly checked than in C. \lang allows the declaration of \textit{unscoped} and \textit{scoped} \lstinline|enum| types. In either case, the underlying type of the enum is some integral type. Accordingly, \lang still allows some conversions between enum values and integral values. Unscoped enumerations have an implicit conversion to an int, as in,
 
 \begin{listing-nonumber}
 enum color { red, orange, yellow}; // Unscoped type, 
@@ -36,7 +36,7 @@ In some situations, however, the author would like an enum type to be strictly d
 \item To forbid creating any enumerator values that are not named in the enumeration declaration.
 \end{itemize}
 
-\NAME{} allows two modifiers on an enum declaration: \lstinline|strong| and \lstinline|complete|. If these are present on any declaration or definition of an enum, they must be present on all declarations and definitions of the enumeration type.
+\NAME allows two modifiers on an enum declaration: \lstinline|strong| and \lstinline|complete|. If these are present on any declaration or definition of an enum, they must be present on all declarations and definitions of the enumeration type.
 \begin{itemize}
 	\item \lstinline|complete| means that no integral values are permitted that do not correspond to a named enumerator. A declaration of \lstinline|complete| means that any conversion from an integral value to an enum value 
 	creates a proof obligation that the integral value belongs to one of the declared enumerators.
@@ -47,3 +47,5 @@ In some situations, however, the author would like an enum type to be strictly d
 	A \lstinline|strong| enum forbids any conversion from an integral value
 	so it is also necessarily \lstinline|complete|.
 \end{itemize}
+
+The corresponding grammar additions are simple: the identifiers \lstinline|strong| or \lstinline|complete|, within an \NAME annotation, are placed just before a C enum specifier.

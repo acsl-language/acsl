@@ -1,7 +1,7 @@
 \section{A design for functional programming in C and \lang}
 \label{sec:functionalDiscussion}
 
-This section motivates the design of functional programming features in \NAME{}, describes how such features might be embedded in a deductive verification system, and provides several examples and use cases.
+This section motivates the design of functional programming features in \NAME, describes how such features might be embedded in a deductive verification system, and provides several examples and use cases.
 
 The first few sections summarize the use of function pointers
 in C/C++ and give a simple model for basic reasoning. 
@@ -15,19 +15,19 @@ dynamic contracts (\S\ref{sec:fpreasoning}).
 These mechanisms are then demonstrated with examples and use cases in \S\ref{sec:fpexamples}ff.
 
  
-\subsection{Functional programming features in C and \lang{}}
+\subsection{Functional programming features in C and \lang}
 \label{sec:fp}
 
 C programs allow creating function-pointer values that 
 can be used in expressions and assignments and later applied
 to a set of arguments to yield a result. 
-\lang{} adds 
+\lang adds 
 the	ability to take pointers to functions that are elements
 of classes and other aggregates and to create functions
 without the need to declare the function (lambda expressions). 
-Correspondingly ACSL and \NAME{} need to be able to manipulate such objects and reason about their effects.
+Correspondingly \acsl and \NAME need to be able to manipulate such objects and reason about their effects.
 
-Functional objects (including what are typically called function pointers) in C and \lang{} are subject to the following operations:
+Functional objects (including what are typically called function pointers) in C and \lang are subject to the following operations:
 \begin{itemize}[noitemsep,nolistsep]
 	\item creation
 	\item assignment and initialization
@@ -105,7 +105,7 @@ So the use of \lstinline|&| is optional for static functions; it is required for
 
 \subsubsection{Casts and conversions}
 
-TBD
+\TODO{TODO: Casts and conversions}
 
 \subsubsection{Comparison}
 
@@ -178,7 +178,7 @@ int main() {
  	all of these literals can be of the same logical sort.
  	\item Function pointer values consist of one of these logical literals or a logical value corresponding to 
  	\lstinline|nullptr| for function pointers.
- 	\item TBD about conversions
+ 	\item \TODO{ about conversions }
  \end{itemize}
 The above model is sufficient for reasoning about initialization, assignment, conversions, and comparisons.
 
@@ -239,7 +239,7 @@ There is a corresponding family of terms or predicates for each kind of function
 	\item \lstinline|\requires|, returning a \lstinline|boolean| value
 	\item \lstinline|\ensures|, returning a \lstinline|boolean| value
 	\item\lstinline|\assigns|, returning a \lstinline|tset| value
-	\item TBD: allocates, frees, throws, terminates, decreases, exits, breaks, continues, returns
+	\item \TODO{ allocates, frees, throws, terminates, decreases, exits, breaks, continues, returns}
 \end{itemize}
 
 Note the following:
@@ -480,7 +480,7 @@ TODO
 The C++ standard library includes a number of functions that take function pointer or similar arguments and apply them to various 
 collections or iterator-defined sequences of values. 
 It is important
-that reasoning about such constructs be straightforward within \NAME{} and
+that reasoning about such constructs be straightforward within \NAME and
 associated tools. 
 
 This subsection begins a series of examples showing how such methods might be 
@@ -560,8 +560,8 @@ There are compile-time evaluated restrictions on class objects (such as
 functors) that can impose such restrictions as having boolean member of function of a given signature, or being copy-constructible and the like.
 Concepts are part of C++ as of C++20 and so won't be considered 
 at present 
-for \NAME{}.
+for \NAME.
 
-TODO: what about quantification over labels
+\TODO{TODO: what about quantification over labels}
 
-TODO: Check all uses of labels in the examples
+\TODO{TODO: Check all uses of labels in the examples}

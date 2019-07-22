@@ -9,7 +9,8 @@ class A: public B {
   public:
     virtual const std::string who() {return "A"; }
 };
-  int main() {
+
+int main() {
     B* b = new B();
     B* bb = new B();
     A* a = new A();
@@ -26,5 +27,5 @@ class A: public B {
     std::cout << (bt==bbt) << " " << (bt!=at) << " " << (bt!=bat) 
                     << " " << (at==bat) << std::endl;
     return 0;
-  }
+}
 

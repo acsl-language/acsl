@@ -8,7 +8,7 @@
 
 \newcommand{\NAME}{ACSL++}
 \newcommand{\lang}{C++}
-\newcommand{\isCPP}{\boolean{true}}
+\setboolean{isCPP}{\true}
 \newcommand{\TODO}[1]{\textit{<<#1>>}\marginpar{TODO}}
 
 \input{common}
@@ -26,7 +26,7 @@
 \hbadness=10000
 
 \ifthenelse{\boolean{PrintImplementationRq}}%
-  {\coverpage{\vbox{\mbox{\NAME{} Version \version}\newline
+  {\coverpage{\vbox{\mbox{\NAME Version \version}\newline
 \mbox{Implementation in \framacversion{}}}}}%
   {\coverpage{\vbox{\mbox{\NAME: ANSI/ISO C++ Specification Language}\newline
         \mbox{Version \version} \newline \mbox{C++ excerpts only} }}}
@@ -73,37 +73,37 @@ $^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405
 %\include{intro_modern}
 
 %\include{speclang_modern}
-\ifthenelse{\isCPP}{\input{cpp-default-values}}{}
+\ifCPPinput{cpp-default-values}
 \clearpage
-\ifthenelse{\isCPP}{\input{cpp-class-contracts}}{}
+\ifCPPinput{cpp-class-contracts}
 \clearpage
-\ifthenelse{\isCPP}{\input{cpp-namespaces}}{}
+\ifCPPinput{cpp-namespaces}
 \clearpage
-\ifthenelse{\isCPP}{\input{cpp-exceptions}}{}
+\ifCPPinput{cpp-exceptions}
 \clearpage
-\ifthenelse{\isCPP}{\input{cpp-attributes}}{}
+\ifCPPinput{cpp-attributes}
 \clearpage
-\ifthenelse{\isCPP}{\input{cpp-pure-functions}}{}
+\ifCPPinput{cpp-pure-functions}
 \clearpage
-\ifthenelse{\isCPP}{\input{cpp-enum}}{}
+\ifCPPinput{cpp-enum}
 \clearpage
-\ifthenelse{\isCPP}{\input{cpp-types}}{}
+\ifCPPinput{cpp-types}
 \clearpage
-\ifthenelse{\isCPP}{\input{cpp-invariants}}{}
+\ifCPPinput{cpp-invariants}
 \clearpage
-\ifthenelse{\isCPP}{\input{cpp-functional}}{}
+\ifCPPinput{cpp-functional}
 \clearpage
-\ifthenelse{\isCPP}{\input{cpp-visibility}}{}
+\ifCPPinput{cpp-visibility}
 \clearpage
-%\ifthenelse{\isCPP}{\input{cpp-defensive}}{}
+%\ifCPPinput{cpp-defensive}
 %\clearpage
-\ifthenelse{\isCPP}{\input{cpp-templates}}{}
+\ifCPPinput{cpp-templates}
 \clearpage
-\ifthenelse{\isCPP}{\input{cpp-abstraction}}{}
+\ifCPPinput{cpp-abstraction}
 \clearpage
-\ifthenelse{\isCPP}{\input{cpp-types}}{}
+\ifCPPinput{cpp-types}
 \clearpage
-\ifthenelse{\isCPP}{\input{cpp-functional-examples}}{}
+\ifCPPinput{cpp-functional-examples}
 \clearpage
 
 \section{Other topics}

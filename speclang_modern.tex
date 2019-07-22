@@ -1,4 +1,4 @@
-/%; whizzy-master "main.tex"
+%; whizzy-master "main.tex"
 
 \chapter{Specification language}
 \label{chap:base}
@@ -67,16 +67,10 @@ should be noted.
   with \texttt{//@} are parsed as if the \texttt{//@} is 
   replaced by white space. An ACSL annotation that contains only white space (after
   pre-processing) is ignored.
-  \item Some grammar elements are incorporated from C \ifCPP{or CPP}.
-  \begin{itemize}
-  \item An \textit{integer literal} is a digit sequence with optional radix and bit-size indicators. TBD
-  \item A \textit{real literal} has the form TBD
-  \item A \textit{character literal} is a single character or a backslash followed by a single character enclosed in single quotes, optionally 
-  preceded by the \lstinline|L| character to denote a wide character: TBD
-  \item A \textit{string literal} is a sequence of printable characters or escape sequences enclosed in double quotes: TBD
-  \item  An \textit{id} is a sequence of alphanumeric characters and underscores beginning with a non-digit:  \lstinline| [a-zA-Z_][a-zA-Z_0-9]*|.
-\end{itemize}
-\end{itemize}
+  \item \NAME uses some grammar elements from \lang, such as literals, type expressions, statements and declarations. Most of these are identified as 
+  such by \lstinline|C-| prefixes in the figures laying out the grammar.
+  They are described in more detail for reference in Appendix \ref{sec:cgrammar}.
+ \end{itemize}
 
 %A bit complicated with listings
 %In this document, we use UTF8 characters in the examples, to improve
@@ -107,19 +101,15 @@ that we will introduce progressively.
 \label{fig:gram:pred}
 \end{figure}
 
-\begin{figure}[t]
-  \begin{cadre}
-    \input{c-type-name.bnf}
-  \end{cadre}
-  \caption{The grammar of C type expressions, from the C standard}
-\label{fig:gram:ctype}
-\end{figure}
-
 Figures~\ref{fig:gram:term}~and~\ref{fig:gram:pred} present the
 grammar for the basic constructs of logic expressions. In that
 grammar, we distinguish between \emph{predicates}\index{predicate} and
 \emph{terms}\index{term}, following the usual distinction between
-propositions and terms in classical first-order logic. The grammar
+propositions and terms in classical first-order logic.
+\ifCPP{\footnote{Although this distinction is traditional in mathematical logic, it is now less common in specification languages because the grammars for terms and predicates are so similar. Predicates can be seen simply as logic functions with boolean return values, particularly in languages with a built-in boolean type, such as \lang and \NAME. Although it would simplify the grammar and parsing tools considerably to unify predicates and terms, the Frama-C implementation has separate AST structures for the two and so such a collapsing of the grammar would require a very significant refactoring.}}
+For reference, Fig. \ref{fig:gram:ctype} gives the C grammar for a C type expressions.
+ 
+ The grammar
 for binders and type expressions is given separately in
 Figure~\ref{fig:gram:binders}. 
 Although a \textit{type-name} in the C grammar is actually an abstract type expression, possibly including qualifiers and pointer and array decorators,
@@ -131,9 +121,9 @@ Note that declarations can differ slightly between C and ACSL logic. For example
 
 To understand the grammar, keep in mind the following distinctions:
 \begin{itemize}
-\item An \lstinline|id| is a basic alphanumeric identifier, used to denote all manner of language constructs.
-\item A \lstinline|poly-id| is an \lstinline|id|, possibly with formal type or label arguments 
-\item An \lstinline|ident| is a reference to a previously declared programming or specification language item; syntactically it is an \lstinline|id| possibly decorated with type arguments and memory state labels.
+\item An \lstinline|id| is a basic alphanumeric identifier, used to denote all manner of language constructs (cf. \S\ref{sec:cgrammar}).
+\item A \lstinline|poly-id| is an \lstinline|id| to be used in a declaration or definition of that identifier, possibly with formal type or label arguments\ifCPP{, and, in \NAME possibly scope qualifiers}.
+\item An \lstinline|ident| is a reference to a previously declared programming or specification language item; syntactically it is an \lstinline|id| possibly decorated with type arguments and memory state labels\ifCPP{, and in \NAME possibly with scope qualifiers}.
 \end{itemize}
 
 With respect to C pure expressions, the additional constructs are as follows:
@@ -204,9 +194,9 @@ Section~\ref{sec:logicspec} for detail.
   It is required that the \lstinline|$relop_i$| operators must be in
   the same ``direction'', \emph{i.e.} they must all belong either to
   $\{$\lstinline|<|, \lstinline|<=|, \lstinline|==|$\}$ or to
-  $\{$\lstinline|>|,\lstinline|>=|,\lstinline|==|$\}$. Expressions such as
+  $\{$\lstinline|>|, \lstinline|>=|, \lstinline|==|$\}$. Expressions such as
   \lstinline|x < y > z| or \lstinline|x != y != z| are not allowed.
-  Furthermore the tdypes of each of the terms being compared must be non-boolean.
+  Furthermore the types of each of the terms being compared must be non-boolean.
   Note that consecutive comparison operators are allowed only 
   in predicate position.
   
@@ -385,7 +375,6 @@ Notes:
   expression \lstinline|x<y| in term position is a boolean, and the
   same expression
   is also allowed in predicate position.
-  \ifCPP{In \NAME, the programming language type \textbf{boolean} and the logic type \lstinline|boolean| are the same type.}
 \item Unlike in C, there is a distinction between booleans and
   integers. There is an implicit promotion from integers to booleans,
   thus one may write \lstinline|x && y| instead of \lstinline|x != 0 && y != 0|.
@@ -393,6 +382,12 @@ Notes:
   required, \emph{e.g.} \lstinline|(int)(x>0)+1|, where
   \lstinline|\false| becomes 0
   and \lstinline|\true| becomes 1.
+\ifCPP{
+\item
+\lang defines the type \lstinline|bool|. \lstinline|bool| is the programming
+language counterpart to the specification language \lstinline|boolean|. 
+\lang does distinguish \lstinline|bool| and integral types, but 
+like C, does permit implicit conversions from numeric and pointer types to \lstinline|bool|.}
 \item Quantification can be made over any type: logic types and C
   types. Quantification over pointers must be used carefully,
   since it depends on the memory state where dereferencing is done (see
@@ -401,16 +396,6 @@ Notes:
 \end{itemize}
 
 Formal typing rules for terms are given in appendix~\ref{sec:typingrules}.
-
-\ifCPP{
-\paragraph{\lang{}} typing of \lstinline|bool| and \lstinline|boolean|}
-\lang{} defines the type \lstinline|bool|. \lstinline|bool| is the programming
-language counterpart to the specification language \lstinline|boolean|. 
-As there are no difference in range, \lstinline|bool| and 
-\lstinline|boolean| may be implicitly converted to each other.
-
-Unlike C, \lang{} does distinguish \lstinline|bool| and integral types, but 
-like C, does permit implicit conversions from numeric and pointer types to \lstinline|bool|
 	
 \subsection{Integer arithmetic and machine integers}
 
@@ -424,7 +409,7 @@ Division and modulo are also mathematical operations, which coincide
 with the corresponding C operations on C machine integers, thus
 following the ISO C99 conventions. In particular, these are not the
 usual mathematical Euclidean division and remainder.
-Generally speaking, division
+C division
 rounds the result towards zero. The results are not specified if the
 divisor is zero; otherwise if $q$ and $r$ are the quotient and the
 remainder of $n$ divided by $d$ then:
@@ -682,6 +667,8 @@ doubles). In particular, this does not include NaN, +infinity and
 
 \subsubsection{Mathematical functions}
 
+\ifCPP{\TODO{Check this list. Should min max be n-ary}}
+
 Classical mathematical operations like exponential, sine, cosine, and
 such are built-in to ACSL:
 
@@ -726,6 +713,8 @@ Notation \lstinline|\pi| refers to the real number $\pi$ and \lstinline|\e| to
 the base of the natural logarithm: \lstinline|\log(\e)==1| and \lstinline|\exp(1)==\e|.
 
 \subsubsection{Exact computations}
+
+\ifCPP{\TODO{Exact computations needs clearer explanation}}
 
 In order to specify properties of rounding errors, it is useful to express
 something about the so-called \emph{exact}
@@ -833,6 +822,8 @@ Aggregate types can be declared in logic,
 any logic types themselves}. Constructing such values in logic can be
 performed using a syntax similar to C designated initializers.
 
+\ifCPP{\TODO{SHould there be a grammar for the above?}}
+
 \begin{example}
 Array types in logic may be declared either with or without an
 explicit non-negative length. The term \lstinline|\length|
@@ -893,6 +884,8 @@ is required that they have the same type. Then equality amounts to
 recursively checking equality of fields.  Equality of arrays of different
 lengths returns false.  Beware that equality of unions is also
 equality of all fields.
+
+\ifCPP{\TODO{Explain the above about equality of unions}}
 
 
 \subsubsection{C aggregate types}
@@ -1028,6 +1021,9 @@ allow specifying what happens when the function does not return
 normally but exits abruptly; they are defined in
 Section~\ref{sec:abrupt-clause}.
 
+The grammar in Fig. \ref{fig:gram:contracts} requires clauses to be written
+in a particular order. This order is helpful for readability, though tools may 
+be lenient towards out-of-order clauses.
 
 \subsection{Built-in constructs %
   \texorpdfstring{\old}{\textbackslash{}old} %
@@ -1044,7 +1040,7 @@ constructs (shown in Figure~\ref{fig:gram:oldandresult}).
 \lstinline|\old(e)| can be used only in \ensures{}, \assigns{},
 \allocates{} and \frees{} clauses, since
 the other clauses already refer to only one state, the pre-state.
-In addition, \result{} can not be used in the contract of a function that returns
+In addition, \result{} may not be used in the contract of a function that returns
 \void{}.
 
 %[Andre M.] START proposition:
@@ -1088,7 +1084,8 @@ The semantics of such a contract is as follows:
   and do not belong to the
   set \lstinline|L$_1$ $\cup$ L$_2$ $\cup \dots$| are left unchanged in the
   post-state. The set \lstinline|L$_1$ $\cup$ L$_2$ $\cup \dots$| 
-  itself is interpreted in the pre-state.
+  itself is interpreted in the pre-state, although it is permitted to 
+  refer to the post state through \lstinline|\at| expressions.
 \end{itemize}
 
 Having multiple \lstinline|requires|, \lstinline|assigns|, or 
@@ -1148,10 +1145,10 @@ It is worth pointing out that there are different treatments of
 frame conditions (assigns statements) in various specification languages.
 The frame condition can follow either \emph{writes} semantics or \emph{modifies} semantics.
 \begin{itemize}
-	\item Under \lstinline|writes| (or assigns) semantics, only those memory locations listed in a frame condition may be \emph{written to}, that is, only those locations may be the target of an assignment statement. This is true whether or not the value of the memory location changes.
+	\item Under \lstinline|writes| (or assigns) semantics, only those memory locations listed in a frame condition may be \emph{written to}, that is, only those locations may be the target of an assignment statement or listed in the frame condition of a called function. This is true whether or not the value of the memory location changes.
 	\item Under \lstinline|modifies| semantics, a memory location may be written to, as long as the value is restored (that is, not modified) by the end of the scope of the function contract. Under this semantics, a frame condition is a requirement on the relationship between two states --- any memory location not a member of the frame condition must have the same value in its pre-state and its post-state.
 \end{itemize}
-Confusion can arise because the words \emph{assigns} and \emph{modifies} are sometimes used interchangeably. In particular, \textbf{\NAME{} uses
+Confusion can arise because the words \emph{assigns} and \emph{modifies} are sometimes used interchangeably. In particular, \textbf{\NAME uses
 	\emph{modifies} semantics, even though the frame condition is introduced by the \emph{assigns} keyword}.\footnote{For comparison, JML and the OpenJML tool define frame conditions to have write semantics but use the keywords assigns and modifies interchangeably; however, the KeY tool for JML implements modifies semantics. Ada/SPARK's data flow contracts effectively encode write semantics.}
 
 \subsection{Contracts with named behaviors}
@@ -1307,9 +1304,9 @@ The simplified version of that clause
   @ complete behaviors;
   @*/
 \end{listing-nonumber}
-means that all named behaviors given in the contract should be taken into account.\footnote{If there is a default (unnamed) behavior, it has an 
+means that all named\footnote{If there is a default (unnamed) behavior, it has an 
 	\lstinline|assumes| clause of true; including it makes the 
-	completeness assertion trivially true.}
+	completeness assertion trivially true.} behaviors given in the contract should be taken into account.
 
 Similarly, it is not required that two distinct behaviors are disjoint.
 If desired, this can be specified with the following clause:
@@ -1331,8 +1328,8 @@ The simplified version of that clause
   @ disjoint behaviors;
   @*/
 \end{listing-nonumber}
-means that all named behaviors given in the contract should be taken into account.\footnote{If there is a default (unnamed) behavior, it has an 
-\lstinline|assumes| clause of true and is thus not disjoint with other clauses.}
+means that all named\footnote{If there is a default (unnamed) behavior, it has an 
+\lstinline|assumes| clause of true and is thus not disjoint with other clauses.} behaviors given in the contract should be taken into account.
 Multiple \lstinline|complete| and \lstinline|disjoint| sets of behaviors can
 be given for the same contract.
 
@@ -1361,8 +1358,7 @@ More generally, we introduce syntactic constructs to denote \emph{sets of
 The grammar for tsets is given in
 Figure~\ref{fig:gram:locations}. 
 Note though that tsets are actually simply terms whose type is a set. Thus, for example, the + operator is overloaded for various numeric and string types and also for sets.
-The constructs in Figure~\ref{fig:gram:locations} are syntactically valid whatever the types of terms are, but are only type-valid when used on values that are tsets as described.
-\footnote{Resolving the restrictions on tsets during type-checking rather than parsing greatly reduces the size and complexity of the overall grammar and avoids needing to
+The constructs in Figure~\ref{fig:gram:locations} are syntactically valid whatever the types of terms are, but are only type-valid when used on values that are tsets as described.\footnote{Resolving the restrictions on tsets during type-checking rather than parsing greatly reduces the size and complexity of the overall grammar and avoids needing to
 propagate meta-information along with parsing information.}
 
 The semantics of tset operations is given below,
@@ -1416,8 +1412,8 @@ Note that in some cases there is a small ambiguity. The
 use of an 
 individual variable, as in \lstinline|assigns x;|, invokes an implicit conversion to a singleton set, to 
 \lstinline|assigns {x};|, but only if the value of \lstinline|x| is not already a set of memory locations.
-Similarly, for example, if \lstinline|x| is a set of memory locations but \lstinline|y| is a simple variable (say of type \lstinline|int|), then \lstinline|assigns x,y;| means
-\lstinline|assigns \union(x,{y});|. If \lstinline|x| and \lstinline|y| are both simple variables, then \lstinline|assigns x,y;| means
+Similarly, for example, if \lstinline|x| is a set of memory locations but \lstinline|y| is not a set, then \lstinline|assigns x,y;| means
+\lstinline|assigns \union(x,{y});|. If neiether \lstinline|x| and \lstinline|y| are sets, then \lstinline|assigns x,y;| means
 \lstinline|assigns \union({x},{y});|. 
 
 \begin{example}
@@ -1466,6 +1462,8 @@ mandatory. On the other hand, if that function has a body, giving no
 \lstinline|assigns| clause means in practice that it is left to tools to
 compute an over-approximation of the sets of modified locations.
 
+\TODO{This rule seems not to be sound. Better would be a single-definition rule -- the same contract must be visible for all uses and implementations of a function. Repetitions of a contract must be token for token identical. }
+
 \ifCPPinput{cpp-default-values}
 	
 \section{Statement annotations}
@@ -1481,7 +1479,7 @@ Annotations on C statements are of three kinds:
   \lstinline|do ... while|.
 \item\index{statement contract}\index{contract}
   \emph{Statement contracts} are allowed before any C statement (including a block), specifying
-  its behavior in a similar manner to function contracts.
+  its behavior in a manner similar to function contracts.
 \end{itemize}
 
 \subsection{Assertions}
@@ -1709,7 +1707,7 @@ node ``inv'' to itself.
 \input{inductiveloopinvariants_modern}
 \end{example}
 
-\ifCPP{\input{cpp-forrange.tex}}
+\ifCPPinput{cpp-forrange}
 
 \subsection{Built-in construct \texorpdfstring{\at}{\textbackslash{}at}}
 \label{sec:at}
@@ -1748,6 +1746,33 @@ There are seven predefined logic labels: \lstinline|Pre|, \lstinline|Here|,
 and \lstinline|Init|.
 \lstinline|\old(e)|\indexttbs{old} is
 in fact syntactic sugar for \lstinline|\at(e,Old)|.
+
+\begin{table}
+\caption{Meaning and permitted locations of built-in labels}
+\label{tab:lables}
+\begin{tabular}[t]{|c|p{2.5in}|p{2.5in}|}
+\hline
+Label & Permitted locations & Meaning \\
+\hline
+\multirow{3}{*}{Here} & statement annotations & state where the annotation appears \\
+                              & function contracts & pre-state of function \\
+                              & data invariants & invocation point of the invariant  \\
+\hline
+\multirow{2}{*}{Old} & function contracts & pre-state of function \\
+                             & statement contracts & pre-state of statement \\
+\hline
+Pre & statement annotations & pre-state of enclosing function \\
+\hline
+Post & assigns and ensures clauses & post-state of contract \\
+\hline
+LoopEntry & loop annotations and loop statements & state prior to first loop entry \\
+\hline
+LoopCurrent & loop annotations and loop statements & state at beginning of current loop interation \\
+\hline
+Init & all annotations & state before call to main \\
+\hline
+\end{tabular}
+\end{table}
 
 \begin{itemize}
 
@@ -1904,7 +1929,7 @@ at the beginning of the annotated statement and leading
 to a \lstinline|goto| jumping out of it, should be part of its 
 \assigns clause.
 %% TODO: Needs of clarification
-%% \marginpar{This behavior of assigns clauses for abrupt exits from statements is different than the corresponding behavior for loops. Should it be? }
+%% \marginpar{TODO: This behavior of assigns clauses for abrupt exits from statements is different than the corresponding behavior for loops. Should it be? }
 
 \begin{example} The clause \lstinline|assigns \nothing;| does not hold for that statement,
 even if the clause \lstinline|ensures x==\old(x);| holds: 
@@ -1925,6 +1950,9 @@ L: ...
 \textsl{Allocation-clauses} allow specifying which memory locations 
 are dynamically allocated or deallocated by the annotated statement from the \textsl{heap}; 
 they are defined later in Section~\ref{sec:allocation-clause}.
+
+The semantics of multiple clauses or missing clauses of a given type within a behavior or in the 
+unnamed behavior are the same as for function contracts (cf. Section \ref{sec:multiplecontracts}).
 % END proposition
 
 %\ifCPPinput{cpp-class-contracts}
@@ -2085,7 +2113,7 @@ Note that nothing is specified for the case where \lstinline|p| does not hold:
 the function may terminate or not. In particular,
 \lstinline|terminates \false;| does not imply that the function loops
 forever. A possible specification for a function that never terminates
-is the following:\ifCPP{\footnote{in \lang, this specification would also include \lstinline|throws \false;|}}
+is the following:\ifCPP{\footnote{in \lang, this specification would also include \lstinline|throws \\false;|}}
 \begin{listing}{1}
 /*@ ensures \false;
     terminates \false;
@@ -2096,7 +2124,7 @@ void f() { while(1); }
 \begin{example}
   A concrete example of a function that may not always terminate is
   the \lstinline|incr_list| function of example \ref{ex:locations-list}. In
-  fact, The following contract is also acceptable for this function:
+  fact, the following contract is also acceptable for this function:
 \listinginput{1}{terminates_list.c}
 \end{example}
 
@@ -2229,18 +2257,18 @@ to a logical inconsistency.
   hence \lstinline|-1 == 1|
 \end{example}
 
-The axiomatic construct is solely a grouping construct. Currently the grammar 
+The axiomatic construct is solely a grouping construct, meant to organize declarations that together define the behavior of a collection of types, predicates and logic functions. Currently the grammar 
 requires logic function and predicate declarations and axioms to be written inside an axiomatic; only full definitions may be written outside an axiomatic.
 
-\ifCPP{An axiomatic construct does not introduce a \lang{} nested scope, as do namespaces and classes.\footnote{This point is under discussion. It would be more convenient and consistent to have axiomatics be a nested scope, but this would not be backward compatible.}}
+\ifCPP{An axiomatic construct does not introduce a \lang nested scope, as do namespaces and classes.\footnote{This point is under discussion. It would be more convenient and consistent to have axiomatics be a nested scope, but this would not be backward compatible.}}
 
 \subsection{Polymorphic logic types}\label{sec:polym-logic-types}
 \index{type!polymorphic}
 \index{polymorphism}
 
 We consider here an algebraic specification setting based on
-multi-sorted logic, where types can be \emph{polymorphic} that is
-parametrized by other types. For example, one may declare the type of
+multi-sorted logic, where types can be \emph{polymorphic} (that is, 
+parametrized by other types). For example, one may declare the type of
 polymorphic lists as
 \listinginput{1}{listdecl.c}
 One can then consider for
@@ -2348,6 +2376,7 @@ higher-order logic.
 
 \subsection{Concrete logic types}\label{sec:concrete-logic-types}
 \index{type!concrete}
+\label{sec:concretetypes}
 \experimental
 
 \begin{figure}[t]
@@ -2361,9 +2390,9 @@ higher-order logic.
 
 Logic types may not only be declared but also be given a
 definition. Defined logic types can be either record
-types\index{type!record}, or sum
-types\index{type!sum}. These definitions may be recursive.
-For record types, the field access notation $t.id$ can be used, and
+types\index{type!record}, sum
+types\index{type!sum}, product (tuple) types, and function types. These definitions may be recursive.
+For record types, the field access notation $t.id$ can be used;
 for sum types, a pattern-matching construction is available.
 Grammar rules for these additional constructions are given in
 Figure~\ref{fig:gram:logictype}
@@ -2512,8 +2541,8 @@ definitions, like the \lstinline|List| module above.
 % [Patrick B.] START proposition:
 The grammar for terms and predicates is
 extended with new constructs given in Figure~\ref{fig:gram:memory}. 
-\textsl{Location-address} is a term denoting a set of memory locations (a tset). 
-It is a set of values of some common pointer type as defined in Section~\ref{sec:locations}. As indicated below where necessary,
+The arguments of these built-in predicates are \textsl{terms} or \textsl{location-lists} designating sets of locations.
+Each argument is a set of values of some common pointer type as defined in Section~\ref{sec:locations}. As indicated below where necessary,
 many built-in functions and predicates dealing with
 pointers depend on the size of the referenced type. Thus, they cannot be given
 a pointer to \lstinline|void| as an argument. On the
@@ -2596,7 +2625,7 @@ Some shortcuts are provided:
 \begin{itemize}
 \item \lstinline|\null|\indexttbs{null} is an
   extra notation for the
-  null pointer (\emph{i.e.} a shortcut for \lstinline|(void*)0|). 
+  null pointer (\emph{i.e.} a shortcut for \lstinline|(void*)0|)\ifCPP{ and, in \lang, for \lstinline|nnullptr|}. 
   As in C itself (see \cite{standardc99}, 6.3.2.3\S3),
   the constant \lstinline|0| can have any pointer type. Note that 
   \lstinline|\valid{L}((char*)\null)| and \lstinline|\valid_read{L}((char*)\null)|
@@ -2607,7 +2636,7 @@ Some shortcuts are provided:
 %    \texttt{stddef.h} is added}
 \item \lstinline|\offset{L}(p)|%
   \indexttbs{offset}
-  returns the offset between \lstinline|p| and its base address
+  returns the offset in bytes between \lstinline|p| and its base address
 \\ \makebox[5mm]{} \begin{tabular}{lll}
     \lstinline|\offset{id}| &:& \lstinline|void* $\ra$ size_t| \\
     \lstinline|\offset{L}(p)| &=& \lstinline|(char*)p - \base_addr{L}(p)| \\
@@ -2645,6 +2674,10 @@ $i\neq j$, \lstinline|\separated(s$_i$,s$_j$)|.
 % END proposition:
 \end{itemize}
 
+Note that \lstinline|\separated| does not have a label argument. The separation of sets of locations
+ca be determined without reference to the content of the heap, so no reference to a heap state is needed.
+However the evaluation of each argument may depend on a heap state, so \lstinline|\at| expressions are often needed.
+
 
 \subsection{Dynamic allocation and deallocation}
 \label{sec:allocation-clause}
@@ -2678,9 +2711,9 @@ Clauses \allocates and \frees are tied together. The simple contract
   @ allocates Q$_1$,Q$_2$,`\dots`;
   @*/
 \end{listing-nonumber}
-means that any memory address, that does not belong to the union of sets of
-some pointer (having a type other than \lstinline|void*|)
-\lstinline|P$_i$| and \lstinline|Q$_j$|, has the same {\sl allocation status} 
+means that any memory address that does not belong to the union of the sets \lstinline|P$_i$| and \lstinline|Q$_j$| of
+some pointer type other than \lstinline|void*|
+has the same {\sl allocation status} 
 (see below) in the post-state as in the pre-state. The only difference
 between \lstinline|allocates| and \lstinline|frees| is that sets 
 \lstinline|P$_i$| are evaluated 
@@ -2882,12 +2915,12 @@ have not been freed since the beginning of the loop. Hence, they are still
 \lstinline|free(q[i])| will succeed at next step.
 \end{example}
 
-A {\sl loop-clause} without an allocation clause implicitly states \Loop \allocates \nothing.
+A {\sl loop-annot} without an allocation clause implicitly states \Loop \allocates \nothing.
 That means the {\sl allocation status} is not modified by the loop body.
 A {\sl loop-behavior} without allocation clause means that  
 the allocated and deallocated memory blocks are in fact specified by the allocation clauses
-of the {\sl loop-clauses}
-(Grammar of {\sl loop-clauses} and {\sl loop-behaviors} is given in Figure~\ref{fig:gram:loops}).
+of the {\sl loop-annot}
+(The grammar of {\sl loop-annot} and {\sl loop-behaviors} is given in Figure~\ref{fig:gram:loops}).
 
 \section{Sets and lists}
 
@@ -2896,7 +2929,7 @@ of the {\sl loop-clauses}
 Sets of memory locations (tsets), as defined in Section~\ref{sec:locations},
 can be used as first-class values in
 annotations. All the elements of such a set must share the same type
-(modulo the usual implicit conversions).
+(taking into account the usual implicit conversions).
 Sets have the built-in type \lstinline|set<A>|\index{set@\texttt{set} type}
 where \lstinline|A| is the type of terms contained in the set.
 
@@ -2939,6 +2972,8 @@ to the postcondition
 \begin{listing-nonumber}
 \forall char* p; \separated(\union(&L$_1$,$\ldots$,&L$_n$),p) ==> *p == \old(*p)
 \end{listing-nonumber}
+
+\TODO{Should set be \textbackslash set}
 
 \subsection{Finite lists}\label{sec:lists}
 The built-in type \lstinline|\list<A>|\indexttbs{list} can be used for finite 
@@ -2987,6 +3022,8 @@ The notation \lstinline![| |]! is just the same thing as \lstinline|\Nil| and
 \lstinline![|1,2,3|]! is the sequence of three integers.
 In addition the infix operator \lstinline|^| (resp. \lstinline|*^|) 
 is the same as function \lstinline|\concat| (resp. \lstinline|\repeat|).
+These infix operators have the same precedence as the conventional bit-wise exclusive-or operator
+and are left-associative.
 
 \begin{figure}[t]
   \begin{cadre}
@@ -3164,8 +3201,8 @@ corresponding contract.
 \index{data invariant}\index{global invariant}\index{type invariant}
 \index{invariant!data}\index{invariant!global}\index{invariant!type}
 Data invariants are properties on data that are supposed to hold
-permanently during the lifetime of these data. In ACSL, we distinguish
-between:
+permanently during the lifetime of these data. ACSL distinguishes
+between
 \begin{itemize}
 \item \emph{global} invariants and \emph{type} invariants: the former
   only apply to specified global variables, whereas the latter are
@@ -3228,7 +3265,8 @@ which they are supposed to hold.
   function is of type $\tau$, that result must also satisfy its
   weak invariant at function exit. 
 
-\item A strong type invariant on type $\tau$ must hold at any step
+\item A strong type invariant on type $\tau$ must hold at any step 
+(more precisely, ay sequence point as defined in C)
   during execution, and applies to any global variable, local
   variable, or formal parameter\index{formal parameter}
   with static type $\tau$. If the
@@ -3252,6 +3290,7 @@ Note that in this example the invariant could be declared \lstinline|strong|. Ho
 obey a corresponding invariant, because in C, \lstinline|enum| values are just \lstinline|int|s and can hold values other
 than those listed in the declaration of the \lstinline|enum| type.
 
+\ifCPPinput{cpp-class-invariants}
 
 \subsection{Model variables and model fields}
 \label{sec:model}
@@ -3273,7 +3312,7 @@ implementation must remain private.
 
 The precise syntax for declaring model variables and fields is given
 in Figure~\ref{fig:gram:model}. It is presented as additions to the
-regular C grammar for declarations
+regular C grammar for declarations.
 
 The informal semantics of model variables is as follows.
 \begin{itemize}
@@ -3343,9 +3382,7 @@ is a logic type, not a C type. Also, the semantics above is closer to
 the one of B machines~\cite{abrial96:_b_book}. It should be noticed
 that program verification with model variables does not have a
 well-established theoretical background~\cite{marche07,leavens07}, so
-we deliberately do not provide a precise semantics in this document .
-
-\ifCPP{\input{cpp-class-invariants}}
+we deliberately do not provide a precise semantics in this document.
 
 \section{Ghost variables and statements}
 \label{sec:ghost}
@@ -3631,19 +3668,18 @@ how to encapsulate several functions...
 These are annotations allowing to add attributes on variables, like regular C attributes (const, volatile, restrict).
 
 \ifCPP{
-\section{Other items to include somewhere}
+\section{Questions and items to consider adding}
 \begin{itemize}
-	\item name resolution for ACSL++ names
-	\item unsequenced behavior, e.g. i = v[i++]
-	\item which are reserved words
-	\item initialization (C++ ref 3.6.2)
-	\item restrictions on invariant footprint
-	\item examples of reasoning about types
+	\item logic lambda expressions; allow a lambda expression in a decreases clause, loop variant clause and in volatile clauses
+	\item let statements with multiple parallel local bindings
+	\item add nodangling or alter semantics of dangling
+	\item is the rule concerning strong purity too draconian? (\S\ref{sec:pure})
+	\ifCPP{\item discussion on how to specify and reason about \lang iterators}
+	
 \end{itemize}
-
 }
 
-\ifCPP{
+\ifCPP{ \TODO{}
 \section{Other items to include somewhere}
 \begin{itemize}
 	\item name resolution for ACSL++ names
@@ -3651,9 +3687,9 @@ These are annotations allowing to add attributes on variables, like regular C at
 	\item which are reserved words
 	\item C++ friends
 	\item initialization (C++ ref 3.6.2)
-	\item range for statement -- need count, values?
-
-\textsl{}%	
+	\item restrictions on invariant footprint
+	\item examples of reasoning about types
+	
 \end{itemize}
 }
 

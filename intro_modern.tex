@@ -3,7 +3,7 @@
 
 This document is a reference manual for
 \ifthenelse{\boolean{PrintImplementationRq}}%
-           {the \NAME{} implementation provided by the
+           {the \NAME implementation provided by the
              \mbox{\textsc{Frama-C}} %no cesure
             framework~\cite{frama-c}.}%
            {\NAME.}
@@ -37,15 +37,17 @@ Frama-C include in particular:
   (p.~\pageref{sec:semantics-ghost-code});
 \item specification of volatile variables
   (section~\ref{sec:volatile-variables});
-\ifCPP{\item the implementation of \NAME{} is being built on clang rather than the compiler that is part of Frama-C; this tool, frama-clang, is in early stages of development.}
+\ifCPP{\item the implementation of \NAME is being built on clang rather than the compiler that is part of Frama-C; this tool, frama-clang, is in early stages of development.}
 \end{itemize}
 }%
+
+\ifCPP{\TODO{TODO -- REVIEW AND ADD ACSL++ ITEMS to this list of unimplemented features}}
 
 The main inspiration for this language comes from the
 specification language of the \textsc{Caduceus}
 tool~\cite{filliatre04icfem,filliatre07cav} for deductive verification
 of behavioral properties of C programs. The specification language of
-Caduceus is itself inspired from the
+Caduceus is itself inspired by the
 \emph{Java Modeling Language} (JML~\cite{leavens00jml}), which aims at
 similar goals for Java source code: indeed it aims both at
 \emph{runtime assertion checking} and \emph{static verification} using
@@ -73,8 +75,8 @@ vocabulary, and discuss generalities about this specification
 language.  Chapter~\ref{chap:base} presents the specification language
 itself.  Chapter~\ref{chap:lib} presents additional information about
 \emph{libraries} of specifications. The appendices provide
-specific formal type-checking rules for \NAME{} annotations, 
-the relation between \NAME{} and JML, and specification templates.
+specific formal type-checking rules for \NAME annotations, 
+the relation between \NAME and JML, and specification templates.
 A detailed table of
 contents is given on page~\pageref{chap:contents}.
 A glossary is given in Appendix~\ref{sec:glossary}.
@@ -82,13 +84,13 @@ A glossary is given in Appendix~\ref{sec:glossary}.
 \section{Generalities about Annotations}\label{sec:gener-about-annot}
 
 In this document, we consider that specifications are given as
-annotations in comments written directly in \lang{} source files, so that
+annotations in comments written directly in \lang source files, so that
 source files remain compilable. Those comments must start with
 \verb|/*@| or \verb|//@| and end as usual in \lang.
 
 In some contexts, it is not possible to modify the source code.
 It is strongly recommended that a tool that implements
-\NAME{} specifications provide technical means to store annotations
+\NAME specifications provide technical means to store annotations
 separately from the source. It is not the purpose of this document
 to describe such means.  Nevertheless, some of the specifications,
 namely those at a global level, can be given in separate files:
@@ -111,7 +113,7 @@ Section~\ref{sec:multiplecontracts}).
 
   \item \emph{type invariant}\,: this allows declaring  structure invariants,
      union invariants, 
-     \ifthenelse{\isCPP}{class invariants,}{}
+     \ifCPP{class invariants,}
      and invariants on type names introduced by
     \typedef.  See section~\ref{sec:invariants}.
 
@@ -151,9 +153,9 @@ Section~\ref{sec:multiplecontracts}).
 
 \subsection{About preprocessing}
 
-This document considers \lang{} source \emph{after} preprocessing, except that, whereas normal preprocessing replaces all comments by white space, 
+This document considers \lang source \emph{after} preprocessing, except that, whereas normal preprocessing replaces all comments by white space, 
 for the purpose of 
-\NAME{}, comments specific to \NAME{} (cf. \ref{sec:lexicalrules}) are retained.
+\NAME, comments specific to \NAME (cf. \ref{sec:lexicalrules}) are retained.
 
 Tools must decide how they handle preprocessing (what to do with
 annotations, whether macro substitution should be performed, etc.)
@@ -163,7 +165,7 @@ As these are generally deprecated and en route to removal from the \lang
 standard, \NAME does not define uses of digraphs and trigraphs. Any tool that wishes to support such alternate syntax can preprocess the tokens into conventional tokens before passing the text to \NAME tools.
 
 \ifthenelse{\boolean{PrintImplementationRq}}{
-	The implementation of preprocessing in the \fclang tool for \NAME{} is described in Appendix \ref{sec:ppimpl}.
+	The implementation of preprocessing in the \fclang tool for \NAME is described in Appendix \ref{sec:ppimpl}.
 }{}
 
 \subsection{About keywords}

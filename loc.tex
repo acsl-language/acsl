@@ -12,11 +12,13 @@
        | tset "+" tset ;
        | "(" tset ")" ;
        | "{" tset "|" binders (";" pred)? "}" ; set comprehension
-       | "{" ( term ("," term )*)? "}" ; explicit set
+       | { "{" ( term ("," term )*)? "}" } ; explicit set
        | term [The given term may not itself be a set]; implicit singleton
        \
   pred ::= "\subset" "(" tset"," tset ")" ; set inclusion
        | term "\in" tset ; set membership
+       \
+  range ::= term? ".." term?
 \end{syntax}
 
 %%% Local Variables:

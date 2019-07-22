@@ -10,14 +10,8 @@
 % rubber: depend ../../VERSION
 \documentclass[web]{frama-c-book}
 
-\newcommand{\NAME}{ACSL++}
-\newcommand{\lang}{C++}
-\newcommand{\fclang}{\textsc{Frama-Clang}\xspace}
-\newcommand{\framac}{\textsc{Frama-C}\xspace}
-\newcommand{\acsl}{\textsc{ACSL}\xspace}
-\newcommand{\acslb}{\acsl/\NAME\xspace}
-\newcommand{\isCPP}{\boolean{true}}
-\newcommand{\TODO}[1]{\textit{<<#1>>}\marginpar{TODO}}
+\newboolean{isCPP}
+\setboolean{isCPP}{true}
 \input{common}
 \renewcommand{\version}{DRAFT}
 
@@ -33,7 +27,7 @@
 \hbadness=10000
 
 \ifthenelse{\boolean{PrintImplementationRq}}%
-  {\coverpage{\vbox{\mbox{\NAME{} Version \version}\newline
+  {\coverpage{\vbox{\mbox{\NAME Version \version}\newline
 \mbox{Implementation in \framacversion{}}}}}%
   {\coverpage{\vbox{\mbox{\NAME: ANSI/ISO C++ Specification Language}\newline
         \mbox{Version \version}}}}
@@ -52,7 +46,7 @@
 \today
 
 \vspace{-4em}
-\author{David R. Cok$^1$, ...}
+\author{David R. Cok$^1$}
 
 \vfill
 \centerline{Authors of the ACSL document:}
@@ -79,11 +73,9 @@
   Research and Innovation Program under grant agreement
   No. 731453.
   
-  TBD - STANCE
-  
   It builds on prior work supported by the ANR project CAT
   (ANR-05-RNTL-0030x), by the ANR CIFRE contract 2005/973,
-  by the ANR projecct U3CAT (08-SEGI-0210xx), and the ANR PICF
+  by the ANR project U3CAT (08-SEGI-0210xx), and the ANR PICF
   project DEVICE-Soft (2009-CARN-006-01).
 \end{flushleft}
 \end{titlepage}
@@ -169,6 +161,8 @@
 \input{compjml_modern}
 
 \input{typingrules_modern}
+
+\input{c-grammar}
 
 \input{template_modern}
 

@@ -7,14 +7,14 @@
   logic-type-lit ::= {record-type} ;
   | sum-type ;
   | product-type ;
-  | function-type ;
+  | {function-type} ;
   | type-expr ; type abbreviation
   \
   {record-type} ::= { "{" type-expr id } ;
                   { ( ";" type-expr id)* ";"? "}" }
   \
-  function-type ::= "("( logic-expr ("," logic-expr )*)?")";
-                    "->" logic-expr 
+  { function-type } ::= { "("( logic-expr ("," logic-expr )*)?")" } ;
+                    { "->" logic-expr }
   \
   sum-type ::= "|"? constructor ;
                ( "|" constructor)*
@@ -43,7 +43,7 @@
     | id "(" pat ( "," pat)* ")" ; non-constant constructor
     | pat "|" pat ; or pattern
     | "_" ; any pattern
-    | literal
+    | literal ;
     | "{" ("."id "=" pat)* "}" ; record pattern
     | "(" pat ( "," pat )* ")" ; tuple pattern
     | pat "as" id ; pattern binding

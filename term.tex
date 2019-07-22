@@ -23,7 +23,6 @@
        | term bin-op term ;
        | term "[" term "]" ; array access
        | "{" term "\with" "[" term "]" "=" term "}" ; array functional modifier
-       | "{" term "\with" "[" range "]" "=" term "}" ; array functional modifier
        | term "." id  ; structure field access
        | "{" term "\with" "."id "=" term "}" ; field functional modifier
        | term "->" id ;
@@ -37,11 +36,9 @@
        | id ":" term ; syntactic naming
        | string ":" term ; syntactic naming
        \
-  range ::= term? ".." term? ;
+  poly-id ::= id ; \ifCPP{cf. Fig. \ref{fig:gram:this}}
        \
-  poly-id ::= id ; 
-       \
-  ident ::= id ;  lexical identifier token 
+  ident ::= id ; \ifCPP{cf. Fig. \ref{fig:gram:this}}
 \end{syntax}
 
 %%% Local Variables:
