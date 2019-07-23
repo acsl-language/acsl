@@ -1,7 +1,5 @@
 \begin{syntax}
-  declaration ::= "/*@" data-inv-decl "*/"
-  \
-  data-inv-decl ::= data-invariant | type-invariant
+  data-inv-def ::= data-invariant | type-invariant
   \
   data-invariant ::= {inv-strength?} "global" "invariant";
                       id ":" pred ";"
