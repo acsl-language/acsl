@@ -16,4 +16,6 @@ qualifier-seq ::= "::"? ( qualifier "::")* [Must not be empty];
 qualifier ::= id ( "<" type-expr ( "," type-expr )* ">" )? ;
 \
 literal ::= "nullptr" | "true" | "false" ;
+\
+logic-def ::= "using" ident ";" ;
 \end{syntax}

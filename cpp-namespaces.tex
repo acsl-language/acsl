@@ -17,4 +17,15 @@ Tools may wish to emit warnings for such cases.
 \TODO{This rule for ambiguity resolution is open for discussion.}
 \end{itemize}
 
-\TODO{Test and document using declarations}
+\lang defines \lstinline|using| declarations to reduce the need for always qualifying commonly used members of namespaces or aggregate types.
+One can make available in the current scope a name defined in a different scope by declaring it in a \lstinline|using| declaration. For example,
+one ordinarily must write \lstinline|std::cout| to write text to the standard output. After writing \lstinline|using std::cout;| one can simply use \lstinline|cout| instead of \lstinline|std::cout| in the remainder of the scope containing the \stinline|using| declaration.
+Alternatively, one can write \lstinline|using namespace std;| to make available all names in the stated namespace without needing qualification.
+
+The same syntax can be used for \NAME definitions:
+\begin{itemize}
+	\item A \lang \lstinline|using namespace| declaration makes aavailable all \NAME members of the given namespace as well as all \lang members.
+	\item A \lstinline|using| declaration naming a particular (qualified) logic name introduces that name into the current scope just as it does for \lang names. Note though that such a \lstinline|using| declaration must itself be an \NAME declaration. The grammar enhancement is shown in Fig. \ref{fig:gram:this}.
+\end{itemize}
+
+
