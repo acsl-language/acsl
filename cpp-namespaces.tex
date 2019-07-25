@@ -19,7 +19,7 @@ Tools may wish to emit warnings for such cases.
 
 \lang defines \lstinline|using| declarations to reduce the need for always qualifying commonly used members of namespaces or aggregate types.
 One can make available in the current scope a name defined in a different scope by declaring it in a \lstinline|using| declaration. For example,
-one ordinarily must write \lstinline|std::cout| to write text to the standard output. After writing \lstinline|using std::cout;| one can simply use \lstinline|cout| instead of \lstinline|std::cout| in the remainder of the scope containing the \stinline|using| declaration.
+one ordinarily must write \lstinline|std::cout| to write text to the standard output. After writing \lstinline|using std::cout;| one can simply use \lstinline|cout| instead of \lstinline|std::cout| in the remainder of the scope containing the \lstinline|using| declaration.
 Alternatively, one can write \lstinline|using namespace std;| to make available all names in the stated namespace without needing qualification.
 
 The same syntax can be used for \NAME definitions:
