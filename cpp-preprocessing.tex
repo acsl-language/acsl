@@ -38,10 +38,12 @@ Trigraphs are likely to be removed from the C/C++ standard in the future.
 
 
 \subsection{Digraphs}
-Digraphs are alternate spellings of certain tokens and consequently need to be
-implemented in the scannner. \TODO{Finish info on digraphs}
+Digraphs are alternate spellings of certain tokens but only (in C and \lang) outside of comments. 
+Within \NAME comments, no scanner digraphs are defined. \acslb do allow certain unicode alternates for some tokens as described in \S\ref{sec:tokens}.
+
 
 \subsection{Preprocessor tokens}
+\label{sec:tokens}
 Preprocessor tokens (per CPP) belong to one of five categories. White space (e.g., space and tab) serves only to separate tokens; it is not needed between tokens whose concatenation is not a single token. Line terminators also separate tokens and also delineate certain features: preprocessing directives and string literals do not extend over more than one (logical) line.
 \begin{itemize}
 	\item identifiers: character sequences that match the regular expression \texttt{[a-zA-Z\_][a-zA-Z\_0-9]*} . Dollar signs are allowed as non-digit identifier characters if the clang option \texttt{-fdollars-in-identifiers} is used. (TODO - on by default?)
