@@ -21,10 +21,10 @@ Consequently, the following rules apply to preprocessing features within \NAME a
 	\item \texttt{include} is permitted, but will cause errors if it contains, as is almost always the case, other disallowed directives
 	\item \texttt{line} - is not permitted
 	\item \texttt{pragma} and the \texttt{\_Pragma} operator are not permitted
-	\item stringizing (\verb|\#|), charizing (\verb|\#@|), and string concatenation (\verb|\#\#|) operators are permitted
+	\item stringizing (\verb|#|) and string concatenation (\verb|##|) operators are permitted
 	\item the \verb|defined| operator is permitted
 	\item the standard predefined macro names are permitted: 
-	\texttt{\_\_cpluscplus}, 
+	\ifCPP{\texttt{\_\_cpluscplus}, }
 	\texttt{\_\_DATE\_\_}, 
 	\texttt{\_\_LINE\_\_},
     \texttt{\_\_TIME\_\_},
