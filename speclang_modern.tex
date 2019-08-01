@@ -660,46 +660,8 @@ doubles). In particular, this does not include NaN, +infinity and
 \ifCPP{\TODO{Check this list. Should min max be n-ary}}
 
 Classical mathematical operations like exponential, sine, cosine, and
-such are built-in to ACSL:
-
-\begin{listing-nonumber}
-integer \min(integer x, integer y) ;
-integer \max(integer x, integer y) ;
-real \min(real x, real y) ;
-real \max(real x, real y) ;
-integer \abs(integer x) ;
-real \abs(real x) ;
-
-real \sqrt(real x) ;
-real \pow(real x, real y) ;
-
-integer \ceil(real x) ;
-integer \floor(real x) ;
-
-real \e ;
-real \exp(real x) ;
-real \log(real x) ;
-real \log10(real x) ;
-
-real \pi ;
-real \cos(real x) ;
-real \sin(real x) ;
-real \tan(real x) ;
-
-real \cosh(real x) ;
-real \sinh(real x) ;
-real \tanh(real x) ;
-
-real \acos(real x) ;
-real \asin(real x) ;
-real \atan(real x) ;
-
-real \atan2(real y, real x) ;
-real \hypot(real x, real y) ;
-\end{listing-nonumber}
-\marginpar{Check this list}
-
-Notation \lstinline|\pi| refers to the real number $\pi$ and \lstinline|\e| to
+such are built-in to ACSL. These are listed in Appendix \S\ref{sec:builtins}.
+The symbol \lstinline|\pi| refers to the real number $\pi$ and \lstinline|\e| to
 the base of the natural logarithm: \lstinline|\log(\e)==1| and \lstinline|\exp(1)==\e|.
 
 \subsubsection{Exact computations}
@@ -1745,8 +1707,8 @@ Note that the \lstinline|\at| construct must be interpreted carefully when a var
 Consider the example below:
 \begin{example}
 \label{redeclaration}
-\inputlisting{redeclaredat.c}
-\end[example}
+\listinginput{1}{redeclaredat.c}
+\end{example}
 \begin{itemize}
 \item The assert annotation on line 9 refers to the value of \lstinline|x| declared on line 1 and set on line 6; it is proved without difficulty.
 \item The assert annotation on line 15 refers to the current state of \lstinline|*x|, where \lstinline|x| is declared on line 10, that is the assignment to \lstinline|y| on line 13; it is also proved without difficulty.
@@ -2166,6 +2128,11 @@ expressions, given after an equal sign.
   parameter and a new logic function \lstinline{sign} with a real
   parameter returning an integer.
 \end{example}
+
+\ifCPP{Logic functions and predicates that appear within \lang
+aggregate declarations may be declared \lstinline|static|, meaning that 
+they do not have an implicit \lstinline|this| receiver.
+}
 
 \subsection{Lemmas}
 Lemmas are user-given propositions, a facility that might help theorem
@@ -3019,7 +2986,7 @@ to the postcondition
 \forall char* p; \separated(\union(&L$_1$,$\ldots$,&L$_n$),p) ==> *p == \old(*p)
 \end{listing-nonumber}
 
-\TODO{Should set be \textbackslash set}
+
 
 \subsection{Finite lists}\label{sec:lists}
 The built-in type \lstinline|\list<A>|\indexttbs{list} can be used for finite 
@@ -3716,6 +3683,7 @@ These are annotations allowing to add attributes on variables, like regular C at
 	\item let statements with multiple parallel local bindings
 	\item add nodangling or alter semantics of dangling
 	\item is the rule concerning strong purity too draconian? (\S\ref{sec:pure})
+	\item should set be textbackslash set
 	\ifCPP{\item discussion on how to specify and reason about \lang iterators}
 	
 \end{itemize}

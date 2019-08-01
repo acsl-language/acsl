@@ -1,0 +1,59 @@
+\section{Builtin functions}
+\label{sec:builtinns}
+
+The following are pre-defined, mathematical logic functions that are built-in
+to \NAME.
+
+\begin{listing-nonumber}
+integer \min(integer x, integer y) ;
+integer \max(integer x, integer y) ;
+real \min(real x, real y) ;
+real \max(real x, real y) ;
+
+integer \abs(integer x) ;
+real \abs(real x) ;
+
+real \sqrt(real x) ;
+integer pow(integer x, integer y) ;
+real \pow(real x, real y) ;
+
+integer \ceil(real x) ;
+integer \floor(real x) ;
+
+real \e ;
+real \exp(real x) ;
+real \log(real x) ;
+real \log10(real x) ;
+
+real \pi ;
+real \sin(real x) ;
+real \cos(real x) ;
+real \tan(real x) ;
+
+real \cosh(real x) ;
+real \sinh(real x) ;
+real \tanh(real x) ;
+
+real \asin(real x) ;
+real \acos(real x) ;
+real \atan(real x) ;
+
+real \asinh(real x) ;
+real \acosh(real x) ;
+real \atanh(real x) ;
+
+real \atan2(real y, real x) ;
+real \hypot(real x, real y) ;
+\end{listing-nonumber}
+
+These are the built-in predicates:
+\begin{listing-nonumber}
+bool \is_finite(float x) ;
+bool \is_finite(double x) ;
+bool \is_NaN(float x) ;
+bool \is_NaN(double x) ;
+
+\end{listing-nonumber}
+\TODO{Also the items like eq_double}
+
+\ifCPPinput{cpp-builtins}

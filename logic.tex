@@ -19,15 +19,15 @@
   \
   poly-id ::= id type-var-binders ; polymorphic object identifier
   \
-  logic-const-def ::= "logic" type-expr;
+  logic-const-def ::= "logic" \ifCPP{"static"?} type-expr;
     poly-id "=" term ";"
   \
-  logic-function-def ::= "logic" type-expr;
+  logic-function-def ::= "logic" \ifCPP{"static"?} type-expr;
   poly-id parameters "=";
   term ";"
   \
   logic-predicate-def ::=
-  "predicate";
+  "predicate" \ifCPP{"static"?} ;
   poly-id parameters? "=";
   pred ";"
   \

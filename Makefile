@@ -29,7 +29,7 @@ DEPS= main.tex speclang_modern.tex macros_modern.tex intro_modern.tex		\
 	bsearch.c bsearch2.c assigns_array.c assigns_list.c sum.c	\
 	listdecl.c listdef.c listlengthdef.c import.c listmodule.c	\
 	strcpyspec.c dowhile.c num_of_pos.c nb_occ.c nb_occ_reads.c	\
-	permut.c permut_reads.c acsl_allocator.c			\
+	builtins.tex permut.c permut_reads.c acsl_allocator.c		\
 	gen_spec_with_model.c gen_code.c out_char.c ghostpointer.c	\
 	ghostcfg.c flag.c lexico.c footprint.c loopvariantnegative.c	\
 	fact.c mutualrec.c abrupt_termination.c				\
