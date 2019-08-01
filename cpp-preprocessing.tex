@@ -1,122 +1,34 @@
-\section{Implementation of preprocessing in frama-clang}
+\section{Preprocessing for \NAME}
 \label{sec:ppimpl}
 
-The \fclang plug-in intends to provide a full translation of C++ and \NAME into the \framac internal representation, and from there be able to be analyzed by other \framac plug-ins. This is a work in progress. The following sections describe the  limitations of the current implementation.
+The C/C++ preprocessor transforms input text files before the C/C++ compiler acts on them. 
+Although in principle any preprocessor could be used, in practice, a
+standard C/C++ preprocessor is used by nearly all C/C++ systems and its behavior is assumed in interpreting source files. 
+This standard behavior 
+replaces comments (including \NAME annotation comments) with white space as part of initial tokenization and before any preprocessing directives are
+interpreted.
+Thus any tool that embeds information in formatted comments, such as tools that support \NAME, must provide its own tools to do preprocessing.
+More importantly for language definition, any content within comments cannot change the interpretation of non-comment material that the C/C++ compiler sees.
+
+Consequently, the following rules apply to preprocessing features within \NAME annotations:
 \begin{itemize}
-	\item The plug-in aims for the C++11 version of C++
-	\item \NAME is described in the companion \NAME reference manual, also a part of the \framac release.
-\end{itemize}
-
-
-Notes
-\begin{itemize}
-	\item Which version of Clang?
-	\item Clang (8) support C++98 (except exported templates, later removed) and C++11 and current draft standard for C++1y 
-	\item see https://clang.llvm.org/docs/UsersManual.html\#cxx for supported features in clang C++
-\end{itemize}
-
-
-As a refresher, the C/C++ preprocessor (CPP) (cf. \url{https://gcc.gnu.org/onlinedocs/cpp/}) conceptually implements the following operations on a C++ source file:
-\begin{itemize}
-	\item The input is read and broken it into a sequence of physical lines according to the line terminators (ASCII character sequences \\r, \\n, or \\r\\n).
-	\item Each C trigraph is replaced by its corresponding character.
-	\item Any backslash-whitespace-line-terminator sequence is removed and the line that it ends is combined with the following line.
-	\item Comments are replaced by single spaces. This requires tokenizing the input to avoid recognizing comment markers within strings as indicating a comment. Note that this allows block comments to hide line terminations.
-	\item The input text is divided into preprocessing tokens grouped in logical lines. Each preprocessor token becomes a compiler token (except where \#\# concatenation occurs). However, \acslb tokens are slightly different, as described below.
-	\item The source text is transformed according to any preprocessing directives contained within it. Each preprocessing directive must be contained within one logical line
-	
-\end{itemize}
-The result is a sequence of preprocessing tokens that is passed on to the 
-remaining compiler phases.
-
-\subsection{Trigraphs}
-
-The frama-clang translator, building on the clang compiler, does not translate 
-trigraphs by default. It does so with the \lstinline|-trigraphs| option, and
-does so quietly by adding the \lstinline|-Wno-trigraphs| option.
-Trigraphs are likely to be removed from the C/C++ standard in the future.
-
-
-\subsection{Digraphs}
-Digraphs are alternate spellings of certain tokens but only (in C and \lang) outside of comments. 
-Within \NAME comments, no scanner digraphs are defined. \acslb do allow certain unicode alternates for some tokens as described in \S\ref{sec:tokens}.
-
-
-\subsection{Preprocessor tokens}
-\label{sec:tokens}
-Preprocessor tokens (per CPP) belong to one of five categories. White space (e.g., space and tab) serves only to separate tokens; it is not needed between tokens whose concatenation is not a single token. Line terminators also separate tokens and also delineate certain features: preprocessing directives and string literals do not extend over more than one (logical) line.
-\begin{itemize}
-	\item identifiers: character sequences that match the regular expression \texttt{[a-zA-Z\_][a-zA-Z\_0-9]*} . Dollar signs are allowed as non-digit identifier characters if the clang option \texttt{-fdollars-in-identifiers} is used. (TODO - on by default?)
-	\item number: character sequences that match the regular expression \texttt{[.]?[0-9]([0-9a-zA-Z.]|[eEpP][+-]))*} . (TODO - dollar signs also allowed?)
-	\item string literals: character sequence enclosed in " " or ' ' or < >, with \textbackslash " for " in a double-quoted literal (that is not a header file name) and \' for ' in a single-quoted literal.
-	\item punctuator: all single non-alphanumeric printable characters except \@, \# and `, and all multi-punctuation sequences that meaningful to C/C++ (e.g. >>>= ), but not an arbitrary multi-punctuation character sequence.
-	\\item other tokens: \@, \#, ` and all non-ASCII single characters.
-\end{itemize}
-\TODO{ - unicode characters}
-Note that not all preprocessor tokens are valid C/C++ parser tokens. Tokens in the other category have no meaning to C/C++ and the \texttt{number} category allows many sequences that are not legal C/C++ numeric tokens. These tokens will generally provoke compiler errors. For example in C/C++, 0..2 is one token and is not interpreted as two consecutive numeric tokens.
-
-\acsl and \NAME have slightly different tokens than the above, so the preprocessor tokens need to be re-tokenized in some cases:
-\begin{itemize}
-	\item The \@ token is a whitespace character in \acslb.
-	\item There are some \acslb multi-character punctuator tokens that are not
-	preprocessor tokens:
-	\begin{itemize}
-		\item[] $==>$ (logical implies)
-		\item[] $-->$ (bit-wise implies)
-		\item[] $<==>$ (logical equality)
-		\item[] $<-->$ (bit-wise equality)
-		\item[] \verb|^^| (logical exclusive or, a.k.a logical inequality))
-                \item[] \verb|..| (integer range)
-                \item[] \verb![| |] *^! (list syntax)
-	\end{itemize}
-	These \acslb tokens need to be assembled from multiple CPP tokens (and those CPP tokens must not be separated by white space)
-	\item A CPP numeric token that contains .. will not be a legal C/C++ number, but may be multiple legal \acslb tokens with the .. representing the range operator.  For example, the single CPP token \texttt{0..last} is retokenized for \acslb as if it were written \texttt{0 .. last} .
-	\item \acslb allows certain built-in non-ASCII symbols, namely
-	\begin{itemize}
-		\item[] $\forall$ (unicode 0x2200) - universal quantifier
-		\item[] $\exists$ (unicode 0x2203) - existential quantifier
-%		\item[] $\equal$ (unicode 0x2261) - equality
-%		\item[] $\notequal$ (unicode 0x2262) - inequality
-		\item[] $\leq$ (unicode 0x2264) - less than or equal
-		\item[] $\geq$ (unicode 0x2265) - greater than or equal
-%		\item[] $\minus$ (unicode 0x2212) - minus
-%		\item[] $\implies$ (unicode 0x21D2) - implies
-%		\item[] $\equiv$ (unicode 0x21D4) - equivalence
-		\item[] $\bigwedge$ (unicode 0x2227) - logical and
-		\item[] $\bigvee$ (unicode 0x2228) - logical or
-		\item[] $\neg$ (unicode 0x00AC) - logical negation
-%		\item[] $\logicalxor$ (unicode 0x22BB) - logical inequivalence
-		\item[] $\subset$ (unicode 0x2208) - subset
-%		\item[] $\Boolean$ (unicode 0x1D539) - set of booleans
-%		\item[] $\Integer$ (unicode 0x2124) - set of integers
-%		\item[] $\Real$ (unicode 0x211D) - set of reals
-		\item TODO - more - ensure unicode equivalent
-	\end{itemize}
-\end{itemize}
-
-\subsection{Preprocessor directives}
-A preprocessing directive consists of a line (after the previous preprocessing phaseshave been completed) that begins with optional white space, the '\#' character, additional optional white space, and a preprocessor directive identifier.
-The preprocessing language contains a fixed set of preprocessing directive identifiers:
-\begin{itemize}
-	\item \texttt{define}, \texttt{undef}
-	\item \texttt{if}, \texttt{ifdef}, \texttt{ifndef}, \texttt{elif}, \texttt{else}, \texttt{endif}
-	\item \texttt{warning}, \texttt{error}
-	\item \texttt{include}
-	\item \texttt{line}
-	\item \texttt{pragma}
-\end{itemize}
-In addition, identifiers that have been defined (by a \#define directive) as macros are expanded according to the macro expansion rules (not described here).
-
-Now \acslb annotations are contained in C/C++ comments. 
-Consequently, any directives contained in the annotation are not seen when the source file is processed simply as a C/C++ source file. However, the effect of some directives lasts until the end of the source file. 
-Accordingly, \NAME imposes constraints on the directives that may be present within annotations:
-\begin{itemize}
-	\item \texttt{define} and \texttt{undef} are not permitted in an annotation
-	\item \texttt{if}, \texttt{ifdef}, \texttt{ifndef}, \texttt{elif}, \texttt{else}, \texttt{endif} are permitted but must be completely nested within the annotation in which they appear (an \#endif and its corresponding \#if/\#ifdef/\#ifndef must be in the same annotation comment.)
+	\item \texttt{define} and \texttt{undef} are not permitted in an annotation. (If they were to be allowed, their scope would have to extend only to the end of the annotation, which could be confusing to readers.)
+	\item macros occurring in an annotation but defined by \texttt{define} statements prior to the annotation are expanded according to the normal rules, including concatenation by \texttt{\#\#} operators. 
+	The context of macro definitions corresponds to the textual location of the annotation, as would be the case if the
+	annotation were not embedded in a comment.
+	\item \texttt{if}, \texttt{ifdef}, \texttt{ifndef}, \texttt{elif}, \texttt{else}, \texttt{endif} are permitted but must be completely nested within the annotation in which they appear (an \texttt{endif} and its corresponding \texttt{if}, \texttt{ifdef}, \texttt{ifndef}, or \texttt{elif} must both be in the same annotation comment.)
 	\item \texttt{warning} and \texttt{error} are permitted
-	\item \texttt{include} is permitted, but will cause errors if it contains, as is almost always the case, either \texttt{define} or \texttt{pragma} directives
-	\item \texttt{line} - TODO
-	\item \texttt{pragma} is not permitted
+	\item \texttt{include} is permitted, but will cause errors if it contains, as is almost always the case, other disallowed directives
+	\item \texttt{line} - is not permitted
+	\item \texttt{pragma} and the \texttt{\_Pragma} operator are not permitted
+	\item stringizing (\verb|\#|), charizing (\verb|\#@|), and string concatenation (\verb|\#\#|) operators are permitted
+	\item the \verb|defined| operator is permitted
+	\item the standard predefined macro names are permitted: 
+	\texttt{\_\_cpluscplus}, 
+	\texttt{\_\_DATE\_\_}, 
+	\texttt{\_\_LINE\_\_},
+    \texttt{\_\_TIME\_\_},
+	\texttt{\_\_STDC\_HOSTED\_\_}
 \end{itemize}
 
 
