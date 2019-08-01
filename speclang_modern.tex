@@ -1707,11 +1707,11 @@ Consider the example below:
 \listinginput{1}{redeclaredat.c}
 \end{example}
 \begin{itemize}
-\item The assert annotation on line 9 refers to the value of \lstinline|x| declared on line 1 and set on line 6; it is proved without difficulty.
-\item The assert annotation on line 15 refers to the current state of \lstinline|*x|, where \lstinline|x| is declared on line 10, that is the assignment to \lstinline|y| on line 13; it is also proved without difficulty.
-\item The assert annotation on line 16 refers to the state of \lstinline|*x| at label \lstinline|c|, that is the assignment to \lstinline|y| on line 5; it is also proved without difficulty.
+\item The assert annotation on line 8 refers to the value of \lstinline|x| declared on line 1 and set on line 6; it is proved without difficulty.
+\item The assert annotation on line 14 refers to the current state of \lstinline|*x|, where \lstinline|x| is declared on line 9, that is the assignment to \lstinline|y| on line 12; it is also proved without difficulty.
+\item The assert annotation on line 156 refers to the state of \lstinline|*x| at label \lstinline|c|, that is the assignment to \lstinline|y| on line 5; it is also proved without difficulty.
 \end{itemize}
-But consider the assert annotation on line 14. It references the state at label b. At that label, \lstinline|x| refers to the declaration on line 1, not the declaration current at line 14, namely the declaration on line 10. 
+But consider the assert annotation on line 13. It references the state at label b. At that label, \lstinline|x| refers to the declaration on line 1, not the declaration current at line 13, namely the declaration on line 9. 
 
 Thus determining the value of an expression at a given label requires that the name and type resolution of the expression be performed at that label also, and may be different than the results of name and type resolution in the state in which the \lstinline|\at| expression occurs.
 
@@ -3644,6 +3644,7 @@ and \lstinline|\valid_function(p)| holds if and only if
 
 how to encapsulate several functions...
 
+\input{preprocessing}
 
 \section{Logic attribute annotations}
 \label{sec:attribute_annot}
