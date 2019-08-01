@@ -31,6 +31,7 @@ DEPS= main.tex speclang_modern.tex macros_modern.tex intro_modern.tex		\
 	listdecl.c listdef.c listlengthdef.c import.c listmodule.c	\
 	strcpyspec.c dowhile.c num_of_pos.c nb_occ.c nb_occ_reads.c	\
 	permut.c permut_reads.c acsl_allocator.c			\
+	preprocessing.tex \
 	gen_spec_with_model.c gen_code.c out_char.c ghostpointer.c	\
 	ghostcfg.c flag.c lexico.c footprint.c loopvariantnegative.c	\
 	fact.c mutualrec.c abrupt_termination.c				\
@@ -49,7 +50,7 @@ DEPS_CPP= cpp-main.tex cpp-abstraction.tex cpp-attributes.tex \
     cpp-exceptions.tex cpp-foreword.tex cpp-forrange.tex \
     cpp-functional-design.tex cpp-functional-examples.tex \
     cpp-functional.tex cpp-invariants.tex cpp-main.tex \
-	cpp-namespaces.tex cpp-preprocessing.tex  \
+	cpp-namespaces.tex  \
     cpp-templates.tex cpp-types.tex cpp-type.tex cpp-visibility.tex
 
 TUTORIAL_EXAMPLES=max_ptr-tut.c max_ptr2-tut.c max_ptr_bhv-tut.c \
