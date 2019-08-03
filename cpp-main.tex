@@ -176,10 +176,8 @@
 \pagebreak
 \input{template_modern}
 
-\ifthenelse{\boolean{PrintImplementationRq}}{
 \pagebreak
-\ifCPPinput{preprocessing}
-}{}
+\input{preprocessing}
 
 \pagebreak
 \ifCPPinput{cpp-functional-design}

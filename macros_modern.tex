@@ -29,6 +29,8 @@
            {\ul}%
 }%
 
+\newcommand{\ifImpl}[1]{\ifthenelse{\boolean{PrintImplementationRq}}{#1}{}}
+
 \newcommand{\notimplemented}[2][]{%
 \ifthenelse{\boolean{PrintImplementationRq}}{%
   \begin{changebar}%
