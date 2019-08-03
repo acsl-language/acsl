@@ -29,8 +29,6 @@ This concept is still experimental because use cases are still being explored th
 
 \subsection{Static type information}
 
-\emph{Need grammar additions and examples}
-
 \lang includes the \lstinline|type_traits| collection of template classes and functions to determine information about types.
 For example, for a type name \lstinline|T|, one can write
 \lstinline|std::is_fundamental<T>::value| or
@@ -38,21 +36,16 @@ For example, for a type name \lstinline|T|, one can write
 \lstinline|bool| value indicating whether 
 \lstinline|T| is a fundamental type or not.
 
-This is particularly useful for template type names.
+This is particularly useful for template type names. The examples shown in \S\ref{sec:templates} demonstrate uses of \lstinline|std::is_same_type<T,U>|.
 
 In addition, the \lstinline|value| field of each of these templates is a named \lang compile-time constant; they can be used in logic expressions and their values do not depend on state.
 
 No new features are needed in \NAME to support static type information. 
 
-\TODO{Test that these are allowed in ACSL++}
+The specific \lang functions of this kind that are permitted in \NAME are listed in \S\ref{sec:builtins}.
 
 \subsection{Casting}
 \label{sec:casts}
-
-\TODO{Need grammar additions and examples}
-
-\TODO{Test that these are allowed in ACSL++}
-
 
 \lang added to C a number of casting operations. Most of these may be 
 used in logic expressions.
@@ -81,9 +74,10 @@ used in logic expressions.
 	It may be used in a logic expression when needed for type matching. 
 	However, since logic expressions do not have side effects, no functions that actually modify non-const values can be used.\footnote{Even in \lang, using a const cast to enable modifying another const value produces undefined results.}
 	
-	
-
 \end{itemize}
+
+\ifImpl{Status: The functionality above is implemented, except that \framac does not yet reason about dynamic type information and the results of \lstinline|dynamic_cast|}
+
 \subsection{Dynamic type information}
 
 \emph{Grammar additions and examples, more about hash\_code and type\_index or omit them.}
@@ -97,12 +91,12 @@ shown below.
 
 \lstinputlisting{ftype.cpp}
 
-\TODO{TODO: Put specs in the example?}
-
+\ifImpl{
 No additional features are needed in \NAME to reason about such code. What is needed
 is the ability to reason about the dynamic type of a given pointer or reference to
 an object. 
 For this, the logical encoding of a \lang program does need a representation of \lang types and their inheritance relationships.
+}
 
 Such capability is additionally needed to reason about uses of \lstinline|dynamic_cast|.
 

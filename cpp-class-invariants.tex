@@ -23,3 +23,7 @@ type invariants: they are implicitly assumed and asserted at various
 program points.
 
 Just like type invariants (Section \ref{sec:invariants}), class invariants can be \lstinline|weak| or \lstinline|strong|, with the same semantics as for type invariants.
+
+If the class invariant is a member of a \textit{virtual} class then the invariant is intrinsically virtual as well. That is, if a derived class has a class invariant with the same
+name and signature, then invocations of the invariant depend on the dynamic type of the receiver in the invocation expression. If this behavior is not desired, use a type invariant
+instead of a class invariant.

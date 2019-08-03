@@ -22,8 +22,13 @@ As described in Section \ref{sec:logicspec}, logical specifications (predicates,
 	declarations: non-static logic predicates and functions
 	may refer to \lstinline|this| and are invoked with the
 	\lang arrow or dot syntax.
+	
+	\item A logic function or predicate may be declared \lstinline|virtual| (but not then also \lstinline|static|) if it is declared within a class that is virtual itself, that is, the class has at least one \lang virtual method. In such a case, dynamic binding applies: just as for \lang methods,
+	the logic function invoked by depends on the dynamic type of the receiver used to call the virtual logic function.
 
-	\item Logic lemmas, logic type definitions, axiomatic definitions, and logic constant definitions are always implicitly static. The effect of declaring them within an aggregate is just one of name scope.
+	\item Logic lemmas, logic type definitions, axiomatic definitions, and logic constant definitions are always implicitly static and are never virtual. The effect of declaring them within an aggregate is just one of name scope.
+	
+	\item Aggregates may contain declarations of ghost functions, as described in section \S\ref{sec:ghost} \TODO{Complete this subsection}
 \end{itemize}
 
 \TODO{Should give some significant examples}
@@ -118,9 +123,6 @@ A::B::C<int>::D x;
 
 Note that the standard scoping can be modified by C++ \lstinline|using| declarations, as described in \S\ref{sec:namespaces}.
 
-\subsection{Ghost functions}
-Aggregates may also contain declarations of ghost functions, as described in section \S\ref{sec:ghost} \TODO{Complete this subsection}
-
 
 \subsection{Inheritance of function contracts}
 
@@ -191,15 +193,12 @@ public:
 \lang implicitly declares and provides a default implementation for some member functions under some circumstances. 
 Thus they also have an implicit specification. However, the user may also wish to provide an explicit specification for such implicit functions, but there is no
 explicit declaration in the \lang code to which to attach such a 
-specification.
+specification. In this case \lang's \lstinline|default| facility should be used
 
-In such a case, a corresponding declaration may be written as a \NAME 
-declaration, with an attached specification. 
 In the following example, class \lstinline|C| has an implicitly defined
-copy constructor. The \NAME comment gives an explicit specification.
-No body is given for the declaration of the \lang copy constructor.
-Such declarations are only valid if the rules of \lang state that such
-a member function is implicitly defined.
+copy constructor. The declaration with the \lstinline|default| keyword indicates
+the the implicit implementation should be used.
+Then a \NAME comment can be associated with this declaration and gives an explicit specification.
 \begin{lstlisting}
 class C {
   public:
@@ -213,9 +212,7 @@ class C {
   C(const C& that) = default;
 }
 \end{lstlisting}
-This syntax leverages the C++11 \lstinline|default| keyword, which indicates that the built-in default implementation for the construcxtor (or other special member function) is to be used. Thus we can attach a specification to 
 
-\emph{Grammar additions are needed}
 
 The member functions for which implicit default functions are provided by the compiler are the following. In each case the default action (and corresponding implicit specification) is to apply the corresponding operation on each base class and data member of the object at hand.
 \begin{itemize}

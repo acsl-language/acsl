@@ -1,5 +1,5 @@
 \begin{syntax}
-  C-external-declaration ::= "/*@" logic-def+ "*/"[These may appear as global \ifCPP{or class} declarations] ;
+  C-external-declaration ::= "/*@" logic-def+ "*/"[These may appear as global \ifCPPnc{or class} declarations] ;
   \
   logic-def ::= logic-const-def ;
           | logic-function-def ;
@@ -19,15 +19,15 @@
   \
   poly-id ::= id type-var-binders ; polymorphic object identifier
   \
-  logic-const-def ::= "logic" \ifCPP{"static"?} type-expr;
+  logic-const-def ::= "logic" \ifCPPnc{"static"?} type-expr;
     poly-id "=" term ";"
   \
-  logic-function-def ::= "logic" \ifCPP{"static"?} type-expr;
+  logic-function-def ::= "logic" \ifCPPnc{"static"?} type-expr;
   poly-id parameters "=";
   term ";"
   \
   logic-predicate-def ::=
-  "predicate" \ifCPP{"static"?} ;
+  "predicate" \ifCPPnc{"static"?} ;
   poly-id parameters? "=";
   pred ";"
   \

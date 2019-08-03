@@ -71,7 +71,7 @@ should be noted.
   \item \NAME uses some grammar elements from \lang, such as literals, type expressions, statements and declarations. Most of these are identified as 
   such by \lstinline|C-| prefixes in the figures laying out the grammar.
   They are described in more detail for reference in Appendix \ref{sec:cgrammar}.
-\end{itemize}
+ \end{itemize}
 
 %A bit complicated with listings
 %In this document, we use UTF8 characters in the examples, to improve
@@ -90,7 +90,7 @@ that we will introduce progressively.
     \input{term.bnf}
   \end{cadre}
   \caption{Grammar of terms. The terminals \emph{id}, \emph{C-type-name}, and various literals are
-  	the same as the corresponding C lexical tokens.}
+  	the same as the corresponding C lexical tokens (cf. \S\ref{sec:cgrammar}).}
 \label{fig:gram:term}
 \end{figure}
 
@@ -365,7 +365,7 @@ Notes:
   same expression
   is also allowed in predicate position.
   \ifCPP{In \NAME, the programming language type \textbf{boolean} and the logic type \lstinline|boolean| are the same type.}
-\item Unlike in C, there is a distinction between booleans and
+\item Unlike in C, in \NAME there is a distinction between booleans and
   integers. There is an implicit promotion from integers to booleans,
   thus one may write \lstinline|x && y| instead of \lstinline|x != 0 && y != 0|.
   If the reverse conversion is needed, an explicit cast\index{cast} is
@@ -657,16 +657,12 @@ doubles). In particular, this does not include NaN, +infinity and
 
 \subsubsection{Mathematical functions}
 
-\ifCPP{\TODO{Check this list. Should min max be n-ary}}
-
 Classical mathematical operations like exponential, sine, cosine, and
 such are built-in to ACSL. These are listed in Appendix \S\ref{sec:builtins}.
 The symbol \lstinline|\pi| refers to the real number $\pi$ and \lstinline|\e| to
 the base of the natural logarithm: \lstinline|\log(\e)==1| and \lstinline|\exp(1)==\e|.
 
 \subsubsection{Exact computations}
-
-\ifCPP{\TODO{Exact computations needs clearer explanation}}
 
 In order to specify properties of rounding errors, it is useful to express
 something about the so-called \emph{exact}
@@ -836,8 +832,6 @@ is required that they have the same type. Then equality amounts to
 recursively checking equality of fields.  Equality of arrays of different
 lengths returns false.  Beware that equality of unions is also
 equality of all fields.
-
-\ifCPP{\TODO{Explain the above about equality of unions}}
 
 
 \subsubsection{C aggregate types}
@@ -1378,7 +1372,7 @@ use of an
 individual variable, as in \lstinline|assigns x;|, invokes an implicit conversion to a singleton set, to 
 \lstinline|assigns {x};|, but only if the value of \lstinline|x| is not already a set of memory locations.
 Similarly, for example, if \lstinline|x| is a set of memory locations but \lstinline|y| is not a set, then \lstinline|assigns x,y;| means
-\lstinline|assigns \union(x,{y});|. If neiether \lstinline|x| and \lstinline|y| are sets, then \lstinline|assigns x,y;| means
+\lstinline|assigns \union(x,{y});|. If neither \lstinline|x| and \lstinline|y| are sets, then \lstinline|assigns x,y;| means
 \lstinline|assigns \union({x},{y});|. 
 
 \begin{example}
@@ -1718,7 +1712,7 @@ But consider the assert annotation on line 13. It references the state at label 
 
 Thus determining the value of an expression at a given label requires that the name and type resolution of the expression be performed at that label also, and may be different than the results of name and type resolution in the state in which the \lstinline|\at| expression occurs.
 
-
+\ifCPP{\ifImpl{Status: frama-clang does not yet implement the above in cases where the type of the redeclared variable changes}}
 
 
 \subsubsection*{Default logic labels}\label{sec:default-logic-labels}
@@ -2404,7 +2398,7 @@ Finally, ranges can also be used in designated initializers
 Logic types may not only be declared but also be given a
 definition. Defined logic types can be either record
 types\index{type!record}, sum
-types\index{type!sum}, product (tuple) types, and function types. These definitions may be recursive.
+types\index{type!sum}, product (tuple) types, or function types. These definitions may be recursive.
 For record types, the field access notation $t.id$ can be used;
 for sum types, a pattern-matching construction is available.
 Grammar rules for these additional constructions are given in
@@ -2638,7 +2632,7 @@ Some shortcuts are provided:
 \begin{itemize}
 \item \lstinline|\null|\indexttbs{null} is an
   extra notation for the
-  null pointer (\emph{i.e.} a shortcut for \lstinline|(void*)0|)\ifCPP{ and, in \lang, for \lstinline|nnullptr|}. 
+  null pointer (\emph{i.e.} a shortcut for \lstinline|(void*)0|)\ifCPP{ and, in \lang, for \lstinline|nullptr|}. 
   As in C itself (see \cite{standardc99}, 6.3.2.3\S3),
   the constant \lstinline|0| can have any pointer type. Note that 
   \lstinline|\valid{L}((char*)\null)| and \lstinline|\valid_read{L}((char*)\null)|
@@ -2725,7 +2719,7 @@ Clauses \allocates and \frees are tied together. The simple contract
   @*/
 \end{listing-nonumber}
 means that any memory address that does not belong to the union of the sets \lstinline|P$_i$| and \lstinline|Q$_j$| of
-some pointer type other than \lstinline|void*|
+some common pointer type other than \lstinline|void*|
 has the same {\sl allocation status} 
 (see below) in the post-state as in the pre-state. The only difference
 between \lstinline|allocates| and \lstinline|frees| is that sets 
@@ -3681,7 +3675,7 @@ These are annotations allowing to add attributes on variables, like regular C at
 \section{Questions and items to consider adding}
 \begin{itemize}
 	\item logic lambda expressions; allow a lambda expression in a decreases clause, loop variant clause and in volatile clauses
-	\item let statements with multiple parallel local bindings
+	\item let statements with multiple parallel local bindings; let statement grammar does not look correct
 	\item add nodangling or alter semantics of dangling
 	\item is the rule concerning strong purity too draconian? (\S\ref{sec:pure})
 	\item should set be textbackslash set
@@ -3696,11 +3690,26 @@ These are annotations allowing to add attributes on variables, like regular C at
 	\item name resolution for ACSL++ names
 	\item unsequenced behavior, e.g. i = v[i++]
 	\item which are reserved words
-	\item C++ friends
 	\item initialization (C++ ref 3.6.2)
 	\item restrictions on invariant footprint
 	\item examples of reasoning about types
-	
+	\item should min and max are any number of arguments
+	\item clearer explanation of exact computations
+	\item clearer explanation of equality of unions
+	\item The loop annotations section needs an example
+	\item The general inductive invariants section needs an example
+	\item Discuss strong and weak invariants with respect to sequence points
+	\item need an example and use case of dynamically dispatched class invariants
+	\item should lambda expressions be allowed instead of idents in volatile declarations; must the idents be ghost functions?
+	\item should set be \textbackslash set
+	\item expressions for function types
+	\item Annotate the standard library
+	\item Annotate an example code base
+	\item Jens: THere should be some text on how tyhe kinds of C++ reference types are treated in ACSL++ (compared to the treatment of pointers in ACSL).
+	\item ownership?
+	\item \textbackslash constructed
+	\item ghost arrays
+	\item can't do a reference in let
 \end{itemize}
 }
 

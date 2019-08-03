@@ -36,14 +36,11 @@ Consider a class that wraps an implementation of a simple array:
 
 \begin{listing-nonumber}
 class Array {
-	
   private:
-	
 	int* data;
 	int data_length;
 
   public:
-	
 	/*@ 
 	requires 0 <= index < data_length;
 	assigns \nothing;
@@ -65,17 +62,13 @@ One solution to this representation problem is to write the following:
 
 \begin{listing-nonumber}
 class Array {
-	
   private:
-	
 	int* data;
 	int data_length;
 	
   public:
-	
-	/*@
+	/*@ // These each have a single implicit logic label {L}
 	   logic int length() = \this.data_length; 
-	   
 	   logic int value(int index) = \this.data[index];
 	*/
 	
@@ -172,7 +165,8 @@ class Array {
 }
 \end{listing-nonumber}
 
-When designated \lstinline|pure|, a \lang function may also be used in a \NAME specification. The conditions under which a 
+When designated \lstinline|pure|, a \lang function may also be used in a \NAME specification. Effectively, a corresponding logic function is generated. 
+The conditions under which a 
 \lang function may be declared \lstinline|pure| are discussed in the following subsections.
 
 \subsubsection{No side-effects}
@@ -192,7 +186,7 @@ Stack operations are allowed. Thus, for example,
 only create and destroy stack temporaries are permitted.
 
 \subsubsection{Inheritance}
-If a function overrides a \lstinline|pure| function, then it also must be \lstinline|pure| and must be declared so
+If a function overrides a \lstinline|pure| function, then it also must be \lstinline|pure| and must be declared so.
 
 \subsubsection*{Reading the heap}
 Since the pure function is indeed a C++ function, it may include read operations on the heap. When the pure function is used as a logic function,
@@ -225,6 +219,9 @@ A special case of pure functions are those declared in \lang as \lstinline|const
 Such functions compute constant values that may be evaluated at compile time. A function declared \lstinline|constexpr| is implicitly \lstinline|pure| and may be used in a logic expression.
 
 The grammar additions for designating \lstinline|pure| functions is shown in Fig. \ref{fig:gram:pure}.
+
+\ifImpl{Status: The \lstinline|pure| keyword is parsed, and name resolution is performed properly. But the logic function is not yet created in the IL for Frama-C to see. 
+Also the restrictions on pure functions are not all checked.}
 
 \begin{figure}
 \begin{cadre}

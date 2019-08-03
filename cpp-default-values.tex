@@ -20,6 +20,18 @@ As the \lstinline|\default_value| syntax applies only to formal parameters, any 
 formal parameter that has a default value declaration, no
 matter what other shadowing declarations may exist.
 
-An example is shown in the code below.
+The example below demonstrates the syntax:
 
-\TODO{Insert example}
+\begin{example}
+/*@ behavior default
+      assumes \\default\_value(y) == 42;
+      ...
+    behavior nondefault
+      assumes \\default\_value(y) != 42;
+      ...
+*/
+int m(int x, int y = 42) { ... }
+
+\end{example}
+
+\ifImpl{Status: The default\_value feature is implemented for simple constant values of the formal parameter.}
