@@ -13,7 +13,9 @@
 \newboolean{isCPP}
 \setboolean{isCPP}{true}
 \input{common}
-\renewcommand{\version}{DRAFT}
+\renewcommand{\version}{Potassium}
+\renewcommand{\ppversion}{0.1-REVIEW}
+\renewcommand{\fclangversion}{0.1-REVIEW}
 
 %Do not touch the following line. It is used in a Makefile hack to
 %produce the ACSL document shipped with the Frama-C distribution.
@@ -27,8 +29,8 @@
 \hbadness=10000
 
 \ifthenelse{\boolean{PrintImplementationRq}}%
-  {\coverpage{\vbox{\mbox{\NAME Version \version}\newline
-\mbox{Implementation in \framacversion{}}}}}%
+  {\coverpage{\vbox{\mbox{\NAME Version \ppversion}\newline
+\mbox{Implementation in \fclang \fclangversion{}}}}}%
   {\coverpage{\vbox{\mbox{\NAME: ANSI/ISO C++ Specification Language}\newline
         \mbox{Version \version}}}}
 
@@ -39,8 +41,9 @@
 
 \title{\NAME: ANSI/ISO C++ Specification Language %
 \ifCPP{(Implementation Guide)}}%
-{Version \version{}\ifthenelse{\boolean{PrintImplementationRq}}%
-{~--~\framacversion}{}}
+{{Version \ppversion \vspace{1em}} \ifthenelse{\boolean{PrintImplementationRq}}%
+{\newline {as implemented in \fclang version \fclangversion} \newline {for \framac version TBD}}
+{}}
 
 \vspace{-4em}
 \today
@@ -175,7 +178,7 @@
 
 \ifthenelse{\boolean{PrintImplementationRq}}{
 \pagebreak
-\ifCPPinput{cpp-preprocessing}
+\ifCPPinput{preprocessing}
 }{}
 
 \pagebreak
