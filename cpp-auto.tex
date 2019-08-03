@@ -2,6 +2,7 @@
 \label{sec:auto}
 \index{auto}
 
+\subsection{auto}
 Beginning with C++11\footnote{Prior to C++11, \lstinline|auto| had a different meaning}, \lang permits designating the type of a variable as
 \lstinline|auto|.
  \lstinline|auto| may also be used as part of a type expression, as in \lstinline|auto*| or \lstinline|const auto[]|. In these cases the compiler performs type inference, producing a compile-time type and
@@ -22,7 +23,9 @@ Here the return type depends on the type of \lstinline|x| but is not hard-coded 
 The disadvantage of \lstinline|auto| is of course, that although the 
 program is still strongly typed, the actual types are harder for the reader to discern.
 
-\lstinline|auto| is also permitted within \NAME text, where the type can be inferred at compile time. The inferred type may be a logic type. For example, in
+\lstinline|auto| is also permitted within \NAME text, where the type can be inferred at compile time.
+Inn particular, if the variable has an initializer, the type is readily inferred.
+ The inferred type may be a logic type. For example, in
 \begin{lstlisting}
 //@ logic auto f(integer i) = i + 1;
 \end{lstlisting}
@@ -32,7 +35,11 @@ Within \NAME specification text, the \lstinline|auto| keyword can be used in the
 \begin{itemize}
 	\item as the result type in a logic function declaration
 	\item as the variable type in a ghost declaration with initialization
-	\item as the binder type in a \lstinline|\let| expression
 \end{itemize}
+
+\subsection{decltype}
+
+\NAME annotations may also use the \lstinline|decltype| feature of \lang. \lstinline|decltype| takes a single argument, either a type or an expression. The keyword and its argument are
+replaced by the type of the expression. The effect is precisely as in \lang, and the reader should refer to the \lang standard or explanations for details.
 
 

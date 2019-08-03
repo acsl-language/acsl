@@ -15,7 +15,8 @@
 \newboolean{ColorImplementationRq}
 \setboolean{ColorImplementationRq}{true}
 
-\newcommand{\ifCPP}[1]{\ifthenelse{\boolean{isCPP}}{#1}{}}
+\newcommand{\ifCPPnc}[1]{\ifthenelse{\boolean{isCPP}}{#1}{}}
+\newcommand{\ifCPP}[1]{\ifthenelse{\boolean{isCPP}}{\color{darkgreen}#1\color{black}}{}}
 \newcommand{\ifCPPinput}[1]{\ifCPP{\input{#1}}}
 
 %\newcommand{\NAME}{\ifthenelse{\boolean{isCPP}}{ACSL++}{ACSL}\xspace}

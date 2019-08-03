@@ -1,5 +1,5 @@
 \section{Templates [C++]}
-\label{sec:tempaltes}
+\label{sec:templates}
 \index{templates}
 \subsection{Class templates}
 
@@ -17,12 +17,47 @@ Therefore a library template cannot be fully verified as a parameterized class; 
 
 Even if a parameterized template cannot be verified until it is instantiated, the template text must still contain its specification. That specification must be written using names and operations that are in scope within the template specification, even if they are instantiated along with the template itself.
 
-\TODO{TODO: Example}
+In the example below, the template methods \lstinline|length| and \lstinline|intsum| of an implementation of a singly-linked list each have corresponding logic functions. The logic functions can use the data fields of the class. The logic function \lstinline|intsum| is total, but only has a known value if the \lstinline|static_cast| is valid, that is, if \lstinline|value| can be legitimately cast to an \lstinline|int|. In the post-condition of the \lang function \lstinline|intsum|, the condition giving the \lstinline|\result| is conditioned on the type being \lstinline|int|.
+\begin{example}
+\#include <type\_traits>
+
+template<class T> class list {
+  list<T>* next;
+  T value;
+  
+public:
+
+  //@ int length() = 1 + (next == nullptr ? 0: next.length());
+
+  //@ ensures \result == length();
+  int length();
+  
+  //@ int intsum() =  static\_cast<int>(value) + (next == nullptr ? 0 : next.intsum());
+  
+  //@ ensures std::is\_same\_type<T,int>::value ==> \result == intsum();
+  int intsum();
+  
+}
+\end{example} 
 
 \subsection{Function templates [C++]}
 
 \lang also allows declaring function templates, either as global functions or as members of aggregate classes. The corresponding capability is already present in \NAME as logic predicates and functions that have polymorphic type arguments.
 
-\TODO{TODO: Example}
+In the following example, the templated function \lstinline|larger| requires that the template type argument have an operator \lstinline|>| defined; if so, it returns the larger of two items according to that comparison. The difficulty with specifying such a template is that we need the comparable generality in writing \NAME annotations. The example shows a vbehavior case conditioned onn the type parameter. One might also write logic functions representing the comparison for cases that do not have a logic interpretation of \lstinline|>|.
 
-\TODO{TODO:  Global declarations within a template are not yet implemented, nor are function contracts for template functions}
+\begin{example}
+\#include <type\_traits>
+/*@ behavior int :
+       assume std::is\_same\_type<M,int>::value;
+       ensures \result == (a > b ? a : b);
+ */
+template <class M>
+M larger(M a, M b) {
+  return a > b ? a : b;
+}
+\end{example}
+
+\ifImpl{Status: \NAME specifications within template classes or attached to template functions are not yet implemented.}
+
+\TODO{Check specs on template specializations}

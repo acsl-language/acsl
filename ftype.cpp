@@ -20,10 +20,14 @@ int main() {
     const std::type_info& at = typeid(*a);
     const std::type_info& bat = typeid(*ba); // type_info of the dynamic type
     
+    // Emits dynamic value of who(): BBAA
     std::cout << b->who() << bb->who() << a->who() << ba->who() << std::endl;
+    
+    // Emits mangled names of dynamic type: 1B 1B 1A 1A
     std::cout << bt.name() << " " << bbt.name() << " " 
                << at.name() << " " << bat.name() << std::endl;
-    // All comparisons are true
+ 
+    // All comparisons are true. Emits: 1 1 1 1
     std::cout << (bt==bbt) << " " << (bt!=at) << " " << (bt!=bat) 
                     << " " << (at==bat) << std::endl;
     return 0;
