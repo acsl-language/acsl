@@ -15,6 +15,7 @@ BNF_FILES=term.tex predicate.tex binders.tex fn_behavior.tex \
           logicdecl.tex logictypedecl.tex higherorder.tex logiclabels.tex \
           logicreads.tex memory.tex initialized.tex data_invariants.tex volatile-gram.tex \
           exitbehavior.tex dependencies.tex welltyped.tex list-gram.tex c-type-name.tex\
+	  cpp-functional-gram.tex \
           cpp-exceptionbehavior.tex cpp-default-values-syntax.tex \
           cpp-class-invariants-fig.tex cpp-this.tex cpp-gram-pure.tex
 
@@ -48,7 +49,7 @@ DEPS_CPP= cpp-main.tex cpp-abstraction.tex cpp-attributes.tex \
     cpp-default-values.tex cpp-defensive.tex cpp-enum.tex \
     cpp-exceptions.tex cpp-foreword.tex cpp-forrange.tex \
     cpp-functional-design.tex cpp-functional-examples.tex \
-    cpp-functional.tex cpp-invariants.tex cpp-main.tex \
+    cpp-functional.tex cpp-main.tex \
 	cpp-namespaces.tex  \
     cpp-templates.tex cpp-types.tex cpp-type.tex cpp-visibility.tex
 

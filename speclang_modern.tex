@@ -770,8 +770,6 @@ Aggregate types can be declared in logic,
 any logic types themselves}. Constructing such values in logic can be
 performed using a syntax similar to C designated initializers.
 
-\ifCPP{\TODO{SHould there be a grammar for the above?}}
-
 \begin{example}
 Array types in logic may be declared either with or without an
 explicit non-negative length. The term \lstinline|\length|
@@ -2127,6 +2125,12 @@ expressions, given after an equal sign.
 aggregate declarations may be declared \lstinline|static|, meaning that 
 they do not have an implicit \lstinline|this| receiver.
 }
+
+\ifCPP{\NAME expressions may include applications of predicates and logic functions.
+They may not include applications of \lang functions. This includes applications of
+overloaded operators. For example, the \lstinline|==| operation applied to two class objects
+is applying the built-in \NAME operation of equality between two structures, 
+not a user-defined ]\lang equality operation on that class.}
 
 \subsection{Lemmas}
 Lemmas are user-given propositions, a facility that might help theorem
@@ -3710,6 +3714,8 @@ These are annotations allowing to add attributes on variables, like regular C at
 	\item \textbackslash constructed
 	\item ghost arrays
 	\item can't do a reference in let
+	\item Is a grammar needed for \S\ref{sec:aggregate}
+	\item C++: Check that defaults specs when [[noreturn]] is present are what is expected
 \end{itemize}
 }
 
