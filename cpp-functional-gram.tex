@@ -1,0 +1,8 @@
+\begin{syntax}
+spec-keyword ::= "\requires" | "\ensures" | "\assigns"  ;
+    | "\allocates" | "\frees" | "\throws" | "\exits" 
+\
+term ::= spec-keyword "(" term ("," term)* ")" 
+\
+term ::= term ( "->" | "." ) spec-keyword "(" term ("," term)* ")" 
+\end{syntax}
