@@ -28,7 +28,7 @@ As described in Section \ref{sec:logicspec}, logical specifications (predicates,
 
 	\item Logic lemmas, logic type definitions, axiomatic definitions, and logic constant definitions are always implicitly static and are never virtual. The effect of declaring them within an aggregate is just one of name scope.
 	
-	\item Aggregates may contain declarations of ghost functions, as described in section \S\ref{sec:ghost} \TODO{Complete this subsection}
+	\item Aggregates may contain declarations of ghost functions, as described in section \S\ref{sec:ghost}.
 \end{itemize}
 
 \TODO{Should give some significant examples}
@@ -87,8 +87,8 @@ but may be designated by appropriate \lstinline|::| qualifiers.
 
 \subsection{Scoping}
 
-\lang permits user control of identifier scopes and name conflicts by two mechanisms: class/structs and namespaces. 
-Names declared within a namespace or class/struct are available outside the scope only when qualified by the
+\lang permits user control of identifier scopes and name conflicts by two mechanisms: aggregates (classes, structs, unions)  and namespaces. 
+Names declared within a namespace or aggregate are available outside the scope only when qualified by the
 \lstinline|::| double-colon syntax. This standard \lang syntax is available within \NAME annotations as well.
 The following code example shows some uses. Such syntax is typically needed only for \textit{static} entities.
 Entities that are members of their enclosing class have a receiver and are designated with dot or arrow syntax;
@@ -119,7 +119,10 @@ A::B::C<int>::D x;
 
 \NAME axiomatics do not create a nested scope.
 
-\TODO{TODO: Order of name lookup}
+\NAME expressions can contain instances of logic functions and predicates but not \lang functions. However, \NAME expressions can contain both logic constants
+and \lang constants. If an identifier could be resolved as either, then the
+\lang declaration takes precedence. Tools may wish to warn about such
+ambiguities.
 
 Note that the standard scoping can be modified by C++ \lstinline|using| declarations, as described in \S\ref{sec:namespaces}.
 
@@ -157,10 +160,9 @@ Behavioral subtyping is obeyed if (a) the (composite) precondition of
 postconditions in derived classes may be more strict than the parent class postcondition, but will always 
 satisfy the parent postcondition. 
 
-This fairly straightforward requirement becomes complex in its interaction with function contracts that have multiple behaviors, 
-as described in \S \TODO{Sec ref needed}.
-\footnote{JML was designed explicitly around behavioral subtyping and the implications of behavioral subtyping are much simpler. 
-	See the comparative discussion in Appendix \ref{sec:comp-jml}.}
+Rather than imposing syntactic requirements on method contracts\footnote{as in JML, for example, which was designed explicitly around behavioral subtyping and the implications of behavioral subtyping are much simpler. 
+	See the comparative discussion in Appendix \ref{sec:comp-jml}.},
+\NAME adds verification conditions: when declaring a derived class from a virtual base class (a) it must be provable that any parent class precondition implies the derived class precondition and (b) it must be provable that the derived class postcondition implies each parent class postcondition (for each kind of postcondition clause). 
 
 \TODO{TODO: More + examples needed}
 

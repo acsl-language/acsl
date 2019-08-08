@@ -23,6 +23,7 @@
 %\newcommand{\lang}{\ifthenelse{\boolean{isCPP}}{C++}{C}\xspace}
 \newcommand{\NAME}{ACSL++\xspace}
 \newcommand{\lang}{C++\xspace}
+\newcommand{\review}[1]{\color{darkgreen}Question for Reviewers: #1\color{black}}
 
 %%% Commandes et environnements pour la version relative à l'implementation
 \newcommand{\highlightnotimplemented}{%
@@ -30,7 +31,7 @@
            {\ul}%
 }%
 
-\newcommand{\ifImpl}[1]{\ifthenelse{\boolean{PrintImplementationRq}}{#1}{}}
+\newcommand{\ifImpl}[1]{\ifthenelse{\boolean{PrintImplementationRq}}{\textit{#1}}{}}
 
 \newcommand{\notimplemented}[2][]{%
 \ifthenelse{\boolean{PrintImplementationRq}}{%

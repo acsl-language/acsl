@@ -18,15 +18,15 @@
   \
   poly-id ::= id type-var-binders ; polymorphic object identifier
   \
-  logic-const-def ::= "logic" \ifCPPnc{"static"?} type-expr;
+  logic-const-def ::= "logic" \ifCPPnc{( "static" | "virtual" )?} type-expr;
     poly-id "=" term ";"
   \
-  logic-function-def ::= "logic" \ifCPPnc{"static"?} type-expr;
+  logic-function-def ::= "logic" \ifCPPnc{( "static" | "virtual" )?} type-expr;
   poly-id parameters "=";
   term ";"
   \
   logic-predicate-def ::=
-  "predicate" \ifCPPnc{"static"?} ;
+  "predicate" \ifCPPnc{( "static" | "virtual" )?};
   poly-id parameters? "=";
   pred ";"
   \
