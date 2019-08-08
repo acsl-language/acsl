@@ -5,7 +5,10 @@
 
 In \lang, functions can be declared to have parameters that can be omitted in a function call, with their values supplied by default values. 
 
-The arguments that have default values still have names, so the arguments can be referred to in function and statement contracts as usual. However it may also be useful to refer to the default value of the argument.This is done using the syntax \lstinline|\default_value(<name>)|. The type of this term is the same as the declared type of the formal parameter, which may be different than the natural type of the expression giving the default value, since that expression may be implicitly cast to the argument's type. 
+The arguments that have default values still have names, so the arguments can be referred to in function and statement contracts as usual. 
+However it may also be useful to refer to the default value of the argument.
+This is done using the syntax \texttt{\textbackslash default\_value(\textit{name})}. 
+The type of this term is the same as the declared type of the formal parameter, which may be different than the natural type of the expression giving the default value, since that expression may be implicitly cast to the argument's type. 
 The additions to the grammar are given in Fig.~\ref{fig:gram:default-values}.
 
 \begin{figure}[t]
@@ -23,15 +26,19 @@ matter what other shadowing declarations may exist.
 The example below demonstrates the syntax:
 
 \begin{example}
+
+\begin{listing-nonumber}
+
 /*@ behavior default
-      assumes \\default\_value(y) == 42;
+      assumes \default_value(y) == 42;
       ...
     behavior nondefault
-      assumes \\default\_value(y) != 42;
+      assumes \default_value(y) != 42;
       ...
 */
 int m(int x, int y = 42) { ... }
 
+\end{listing-nonumber}
 \end{example}
 
 \ifImpl{Status: The default\_value feature is implemented for simple constant values of the formal parameter.}

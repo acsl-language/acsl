@@ -26,11 +26,13 @@ clause is \lstinline|ensures \\false;| (rather than the usual \lstinline|ensures
 
 The following code demonstrates this feature:
 \begin{example}
+\begin{listing-nonumber}
 /*@
 ensures \\false;
 ensures \\true; // ILLEGAL in combination with [[noreturn]]
 */
 void m() [[noreturn]] { ... }
+\end{listing-nonumber}
 \end{example}
 
 \ifImpl{Status: [[noreturn]] is noted and the implications for specifications are checked.}
@@ -53,9 +55,9 @@ Thus
 \end{itemize}
 
 An example of this is shown here:
-\begin{example}
+\begin{listing-nonumber}
 //@ throws  d == 0;  // ILLEGAL in conjunction with noexcept
 int m(int d) noexcept {}
-\end{example}
+\end{listing-nonumber}
 
 \ifImpl{The syntactic checks are not yet performed.}

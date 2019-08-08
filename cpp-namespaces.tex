@@ -11,10 +11,10 @@ in global scope may be declared or defined within a namespace.
 \item It is preferable to avoid using names declared in \lang as the names of \NAME constructs as well. However, since namespaces can be extended, the author of \NAME annotations may not know about the \lang names that may be added in a namespace extension. Thus ambiguities can in
 principle arise: a \lang declaration and an \NAME
 declaration may be equally applicable to a use of that name 
-in some \NAME construct. In that case the \NAME declaration applies.
+in some \NAME construct. In that case the \lang declaration applies.
 Tools may wish to emit warnings for such cases.
 
-\TODO{This rule for ambiguity resolution is open for discussion.}
+\review{Should such ambiguities be resolved in favor of \lang or \NAME or be an error?}
 \end{itemize}
 
 \lang defines \lstinline|using| declarations to reduce the need for always qualifying commonly used members of namespaces or aggregate types.
@@ -28,4 +28,4 @@ The same syntax can be used for \NAME definitions:
 	\item A \lstinline|using| declaration naming a particular (qualified) logic name introduces that name into the current scope just as it does for \lang names. Note though that such a \lstinline|using| declaration must itself be an \NAME declaration. The grammar enhancement is shown in Fig. \ref{fig:gram:this}.
 \end{itemize}
 
-
+\ifImpl{Status: Namespaces are fully implemented for ACSL++ names; using declarations for looking up ACSL++ names are not.}

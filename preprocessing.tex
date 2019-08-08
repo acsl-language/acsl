@@ -1,6 +1,8 @@
 \section{Preprocessing for \NAME}
 \label{sec:ppimpl}
 
+\review{Should this section be included in ACSL?}
+\color{darkgreen}
 The C/C++ preprocessor transforms input text files before the C/C++ compiler acts on them. 
 Although in principle any preprocessor could be used, in practice, a
 standard C/C++ preprocessor is used by nearly all C/C++ systems and its behavior is assumed in interpreting source files. 
@@ -24,13 +26,14 @@ Consequently, the following rules apply to preprocessing features within \NAME a
 	\item stringizing (\verb|#|) and string concatenation (\verb|##|) operators are permitted
 	\item the \verb|defined| operator is permitted
 	\item the standard predefined macro names are permitted: 
-	\ifCPP{\texttt{\_\_cpluscplus__}, }
+	\ifCPP{\texttt{\_\_cplusplus}, }
 	\texttt{\_\_DATE\_\_}, 
-	\texttt{\_\_LINE\_\_},
     \texttt{\_\_TIME\_\_},
+	\texttt{\_\_FILE\_\_},
+	\texttt{\_\_LINE\_\_},
 	\texttt{\_\_STDC\_HOSTED\_\_}
 \end{itemize}
 
 
 
-
+\color{black}
