@@ -1,19 +1,41 @@
+%% This is the main file for the ACSL and ACSL++ language definition documents
+%% There are four variants (C/C==) X (language/implementation)
+%% They are all created from this document by rewriting this document to change
+%% the values of two variables: isCPP and 
+%% acslpp.tex is the main file for the language reference (make acslpp.pdf)
+%% cpp-main.tex is the main file for the implementation guide (make cpp-main.pdf)
+
+
 %; whizzy section -pdf -initex "pdflatex -ini"
 % rubber: watch main.cb
 % rubber: watch main.cb2
 % rubber: depend ../../VERSION
 \documentclass[web]{frama-c-book}
 
+\newcommand{\TODO}[1]{\textit{<<#1>>}\marginpar{TODO}}
+\renewcommand{\TODO}{}
+\usepackage[
+type={CC},
+modifier={by},
+version={4.0}]
+{doclicense}
+
+\usepackage{ifthen}
+\input{./macros_modern}
+
 \newboolean{isCPP}
 \setboolean{isCPP}{false}
-
-\input{common}
 
 %Do not touch the following line. It is used in a Makefile hack to
 %produce the ACSL document shipped with the Frama-C distribution.
 %--\setboolean{PrintImplementationRq}{false}
 
 %\setboolean{ColorImplementationRq}{false}
+
+\newcommand{\framacversion}{\input{VERSION}}
+
+
+\input{common}
 
 %Already set in frama-c-book
 %\usepackage[a4paper=true,pdftex,colorlinks=true,urlcolor=blue,pdfstartview=FitH]{hyperref}
@@ -30,6 +52,15 @@
 \usepackage[normalem]{ulem}
 \usepackage[leftbars]{changebar}
 \usepackage{alltt}
+\usepackage{hyperref}
+\usepackage{multirow}
+
+\lstset{
+	numbers=left,
+	deletekeywords={assert}
+}
+
+
 \makeindex
 
 %Already set in frama-c-book
@@ -58,6 +89,12 @@
 % \lfoot{\fancyplain{}{ANSI/ISO C Specification Language}}
 % \cfoot{}
 % \rfoot{\fancyplain{}{CAT RNTL project}}
+
+\newcommand{\fclang}{\textsc{Frama-Clang}\xspace}
+\newcommand{\framac}{\textsc{Frama-C}\xspace}
+\newcommand{\acsl}{\textsc{ACSL}\xspace}
+\newcommand{\acslb}{\acsl/\NAME\xspace}
+
 
 \begin{document}
 \sloppy

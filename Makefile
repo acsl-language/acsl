@@ -233,23 +233,20 @@ super-clean: clean
 	@echo "Removing PDF outputs: $(PDF_OUTPUTS)"
 	rm -f $(PDF_OUTPUTS)
 
-# The ACSL document annoted about what is not implemented into Frama-C
-
-acsl-implementation.tex: $(MAIN).tex Makefile
-	@rm -f $@
-	sed -e '/^% rubber:/s/main.cb/acsl-implementation.cb/g' $< > $@
-	@chmod a-w $@
-
 # The ACSL reference document
-
-acslpp.pdf: acslpp.tex $(DEPS_CPP)
-
-acslpp-implementation.pdf: acslpp-implementation.tex $(DEPS_CPP)
+# Four different documents can be created: 
+#   C (acsl) or C++ (acslpp) X  language definition or implementation guide (-implementation)
+# The implementation guides include text about what is not implemented into Frama-C
 
 acsl.tex: $(MAIN).tex Makefile
 	@rm -f $@
 	sed -e '/^% rubber:/s/main.cb/acsl.cb/g' \
 	    -e '/^%--.*{PrintImplementationRq}/s/%--//' $< > $@
+	@chmod a-w $@
+
+acsl-implementation.tex: $(MAIN).tex Makefile
+	@rm -f $@
+	sed -e '/^% rubber:/s/main.cb/acsl-implementation.cb/g' $< > $@
 	@chmod a-w $@
 
 acslpp.tex: cpp-$(MAIN).tex Makefile
@@ -263,8 +260,10 @@ acslpp-implementation.tex: cpp-$(MAIN).tex Makefile
 	sed -e '/^% rubber:/s/cpp-main.cb/acslpp-implementation.cb/g' $< > $@
 	@chmod a-w $@
 
-cpp-as-appendix.pdf: cpp-as-appendix.tex $(DEPS) $(DEPS_CPP) $(BNF_DEPS)
-	latexmk -f -silent -pdf $<
+
+acslpp.pdf:: $(DEPS_CPP)
+
+acslpp-implementation.pdf:: $(DEPS_CPP)
 
 # Internal to Frama-C
 FRAMAC ?= ../../bin/frama-c
@@ -273,13 +272,13 @@ HAS_FRAMAC:=$(shell if test -x $(FRAMAC); then echo yes; else echo no; fi)
 
 ifeq ("$(HAS_FRAMAC)","yes")
 
-acsl: acsl-implementation.pdf acsl.pdf acslpp.pdf
+acsl: acsl.pdf acsl-implementation.pdf acslpp.pdf acslpp-implementation.pdf
 
 all: acsl tutorial full-check
 
 tutorial: tutorial-check acsl-mini-tutorial.pdf
 
-install: acsl-implementation.pdf acsl.pdf acslpp.pdf
+install: acsl
 	rm -f  ../manuals/acsl-implementation.pdf  ../manuals/acsl.pdf ../manuals/acslpp.pdf
 	cp -f acsl-implementation.pdf acsl.pdf acslpp.pdf ../manuals/
 
