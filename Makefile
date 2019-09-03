@@ -96,8 +96,10 @@ transfmain.cmo: transf.cmo
 
 # Internal to Frama-C
 FRAMAC ?= ../../bin/frama-c
+FRAMAC_MANUALS = $(dir $(FRAMA_C))/manuals
 
 HAS_FRAMAC:=$(shell if test -x $(FRAMAC); then echo yes; else echo no; fi)
+HAS_FRAMAC_MANUALS:=$(shell if test -d $(FRAMAC_MANUALS); then echo yes; else echo no; fi)
 
 .PHONY: full-check check tutorial-check grammar-check
 full-check: check tutorial-check grammar-check
@@ -106,7 +108,7 @@ ifneq ("$(HAS_FRAMAC)","yes")
 
 .PHONY: cannot-check
 cannot-check:
-	@echo "check targets can only be made within Frama-C sources"
+	@echo "check targets can only be made within Frama-C binary"
 	@exit 2
 
 tutorial-check: cannot-check
@@ -132,7 +134,7 @@ sort.c specified.c sqsum-tut.c sqsum2-tut.c strcpyspec.c sum.c          \
 swap-tut.c terminates_list.c type_invariant-tut.c volatile.c dangling.c \
 welltyped.c list-observer.c
 
-BAD=acsl_allocator.c gen_code.c gen_spec_with_ghost.c			\
+BAD=acsl_allocator.c arrayslice.c gen_code.c gen_spec_with_ghost.c	\
 gen_spec_with_model.c ghostcfg.c import.c invariants.c			\
 lexico.c listlengthdef.c listmodule.c                                   \
 modifier.c out_char.c sum2.c
@@ -203,12 +205,15 @@ grammar-check: transf
 
 .PHONY: clean
 
-clean:
+clean-tools:
+	@echo "Cleaning generated tools..."
+	rm -f transf transf.ml pp.ml pp *.cm?
+
+clean: clean-tools
 	@echo "Cleaning..."
 	rm -rf *~ *.aux *.log *.nav *.out *.snm *.toc *.lof *.pp *.bnf \
 		*.haux  *.hbbl *.htoc \
-                *.cb? *.cm? *.bbl *.blg *.idx *.ind *.ilg *.fls *.fdb_latexmk \
-		transf trans.ml pp.ml pp
+                *.cb? *.bbl *.blg *.idx *.ind *.ilg *.fls *.fdb_latexmk
 
 .PHONY: super-clean
 super-clean: clean
@@ -240,10 +245,6 @@ all: acsl tutorial full-check
 
 tutorial: tutorial-check acsl-mini-tutorial.pdf
 
-install: acsl-implementation.pdf acsl.pdf
-	rm -f  ../manuals/acsl-implementation.pdf  ../manuals/acsl.pdf
-	cp -f acsl-implementation.pdf acsl.pdf ../manuals/
-
 tutorial-valid: $(TUTORIAL_EXAMPLES:.c=.proved)
 VERSION:
 	$(FRAMAC) -version > $@
@@ -253,11 +254,18 @@ acsl: acsl.pdf
 tutorial: acsl-mini-tutorial.pdf
 all: acsl tutorial
 
-install:
-	@echo "install target can only be made within Frama-C sources"
-	@exit 2
 VERSION:
-	@echo "VERSION can only be made within Frama-C sources"
+	@echo "VERSION can only be made within Frama-C binary"
+	@exit 2
+endif
+
+ifeq ("$(HAS_FRAMAC_MANUALS)","yes")
+install: acsl-implementation.pdf acsl.pdf
+	rm -f  $(FRAMAC_MANUALS)/acsl-implementation.pdf  $(FRAMAC_MANUALS)/acsl.pdf
+	cp -f acsl-implementation.pdf acsl.pdf $(FRAMAC_MANUALS)/
+else
+install:
+	@echo "install target can only be made within directory Frama-C manuals"
 	@exit 2
 endif
 
