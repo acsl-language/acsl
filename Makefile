@@ -96,7 +96,7 @@ transfmain.cmo: transf.cmo
 
 # Internal to Frama-C
 FRAMAC ?= ../../bin/frama-c
-FRAMAC_MANUALS = $(dir $(FRAMA_C))/manuals
+FRAMAC_MANUALS = $(dir $(FRAMAC))/../doc/manuals
 
 HAS_FRAMAC:=$(shell if test -x $(FRAMAC); then echo yes; else echo no; fi)
 HAS_FRAMAC_MANUALS:=$(shell if test -d $(FRAMAC_MANUALS); then echo yes; else echo no; fi)
