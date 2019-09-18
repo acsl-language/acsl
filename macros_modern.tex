@@ -15,14 +15,21 @@
 \newboolean{ColorImplementationRq}
 \setboolean{ColorImplementationRq}{true}
 
-\newcommand{\ifCPPnc}[1]{\ifthenelse{\boolean{isCPP}}{#1}{}}
 \newcommand{\ifCPP}[1]{\ifthenelse{\boolean{isCPP}}{\color{darkgreen}#1\color{black}}{}}
 \newcommand{\ifCPPinput}[1]{\ifCPP{\input{#1}}}
+%% ifCPP without color, as color does not work within grammar files
+\newcommand{\ifCPPnc}[1]{\ifthenelse{\boolean{isCPP}}{#1}{}}
 
-%\newcommand{\NAME}{\ifthenelse{\boolean{isCPP}}{ACSL++}{ACSL}\xspace}
-%\newcommand{\lang}{\ifthenelse{\boolean{isCPP}}{C++}{C}\xspace}
-\newcommand{\NAME}{ACSL++\xspace}
-\newcommand{\lang}{C++\xspace}
+\ifthenelse{\boolean{isCPP}}
+ {\newcommand{\NAME}{ACSL++\xspace}} 
+ {\newcommand{\NAME}{ACSL\xspace}}
+% \newcommand{\NAME}{\ifthenelse{\boolean{isCPP}}{ACSL++}{ACSL}\xspace}
+\ifthenelse{\boolean{isCPP}}
+ {\newcommand{\lang}{C++\xspace}} 
+ {\newcommand{\lang}{C\xspace}}
+%%\newcommand{\lang}{\ifthenelse{\boolean{isCPP}}{C++}{C}\xspace}
+%%\newcommand{\NAME}{ACSL++\xspace}
+%%\newcommand{\lang}{C++\xspace}
 \newcommand{\review}[1]{\color{darkgreen}Question for Reviewers: #1\color{black}}
 
 %%% Commandes et environnements pour la version relative à l'implementation

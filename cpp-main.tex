@@ -14,9 +14,9 @@
 \setboolean{isCPP}{true}
 \input{common}
 \renewcommand{\version}{Potassium} %% Version of Frama-C
-\newcommand{\acslversion}{TODO} %% Version of ACSL document
-\renewcommand{\ppversion}{0.1-REVIEW} %% Version of ACSL++ document
-\renewcommand{\fclangversion}{0.1-REVIEW} %% Version of Frama-Clang software
+\newcommand{\acslversion}{1.14} %% Version of ACSL document
+\renewcommand{\ppversion}{0.1} %% Version of ACSL++ document
+\renewcommand{\fclangversion}{0.1} %% Version of Frama-Clang software
 
 %Do not touch the following line. It is used in a Makefile hack to
 %produce the ACSL document shipped with the Frama-C distribution.
@@ -31,10 +31,11 @@
 \hbadness=10000
 
 \ifthenelse{\boolean{PrintImplementationRq}}%
-  {\coverpage{\vbox{\mbox{\NAME Version \ppversion}\newline
-\mbox{Implementation in \fclang \fclangversion{}}}}}%
   {\coverpage{\vbox{\mbox{\NAME: ANSI/ISO C++ Specification Language}\newline
-        \mbox{Version \version}}}}
+                    \mbox{\NAME Version \ppversion}\newline
+                    \mbox{Implementation in \fclang \fclangversion{}}}}}%
+  {\coverpage{\vbox{\mbox{\NAME: ANSI/ISO C++ Specification Language}\newline
+        \mbox{Version \ppversion}}}}
 
 \begin{titlepage}
 \includegraphics[height=16mm]{cealistlogo}
@@ -44,7 +45,7 @@
 \title{\NAME: ANSI/ISO C++ Specification Language %
 \ifImpl{(Implementation Guide)}}%
 {{Version \ppversion \vspace{1em}} \ifthenelse{\boolean{PrintImplementationRq}}%
-{\newline {as implemented in \fclang version \fclangversion} \newline {for \framac version TBD}}
+{\newline {as implemented in \fclang version \fclangversion} \newline {for \framac version \version}}
 {}}
 
 \vspace{-4em}
