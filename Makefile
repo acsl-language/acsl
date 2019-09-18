@@ -49,8 +49,7 @@ DEPS_CPP= cpp-main.tex cpp-abstraction.tex cpp-attributes.tex \
     cpp-default-values.tex cpp-defensive.tex cpp-enum.tex \
     cpp-exceptions.tex cpp-foreword.tex cpp-forrange.tex \
     cpp-functional-design.tex cpp-functional-examples.tex \
-    cpp-functional.tex cpp-main.tex \
-	cpp-namespaces.tex  \
+    cpp-functional.tex cpp-namespaces.tex  \
     cpp-templates.tex cpp-types.tex cpp-type.tex cpp-visibility.tex
 
 TUTORIAL_EXAMPLES=max_ptr-tut.c max_ptr2-tut.c max_ptr_bhv-tut.c \
@@ -229,9 +228,9 @@ clean: clean-tools
 	rm -rf *~ *.aux *.log *.nav *.out *.snm *.toc *.lof *.pp *.bnf \
 		*.haux  *.hbbl *.htoc \
                 *.cb? *.cm? *.bbl *.blg *.idx *.ind *.ilg *.fls *.fdb_latexmk \
-		transf trans.ml pp.ml pp acsl.tex acsl-implementation.tex \
-		acslpp.tex acslpp-implementation.tex acsl.pdf \
-		acsl-implementation.pdf acslpp.pdf acslpp-implementation.pdf
+		transf trans.ml pp.ml pp \
+		acsl.tex acsl-implementation.tex \
+		acslpp.tex acslpp-implementation.tex
 
 .PHONY: super-clean
 super-clean: clean
@@ -246,6 +245,8 @@ acsl-implementation.tex: $(MAIN).tex Makefile
 	@chmod a-w $@
 
 # The ACSL reference document
+
+acsl: $(PDF_OUTPUTS)
 
 acslpp.pdf: acslpp.tex $(DEPS_CPP)
 
@@ -271,24 +272,26 @@ acslpp-implementation.tex: cpp-$(MAIN).tex Makefile
 cpp-as-appendix.pdf: cpp-as-appendix.tex $(DEPS) $(DEPS_CPP) $(BNF_DEPS)
 	latexmk -f -silent -pdf $<
 
-ifeq ("$(HAS_FRAMAC)","yes")
+# Internal to Frama-C
+FRAMAC ?= ../../bin/frama-c
 
-acsl: acsl-implementation.pdf acsl.pdf acslpp.pdf
+HAS_FRAMAC:=$(shell if test -x $(FRAMAC); then echo yes; else echo no; fi)
+
+ifeq ("$(HAS_FRAMAC)","yes")
 
 all: acsl tutorial full-check
 
 tutorial: tutorial-check acsl-mini-tutorial.pdf
 
-install: acsl-implementation.pdf acsl.pdf acslpp.pdf
-	rm -f  ../manuals/acsl-implementation.pdf  ../manuals/acsl.pdf ../manuals/acslpp.pdf
-	cp -f acsl-implementation.pdf acsl.pdf acslpp.pdf ../manuals/
+install: $(PDF_OUTPUTS)
+	(cd ../manuals; rm -f  $(PDF_OUTPUTS) )
+	cp -f $(PDF_OUTPUTS) ../manuals/
 
 tutorial-valid: $(TUTORIAL_EXAMPLES:.c=.proved)
 VERSION:
 	$(FRAMAC) -version > $@
 
 else
-acsl: acsl.pdf acslpp.pdf
 tutorial: acsl-mini-tutorial.pdf
 all: acsl tutorial
 
