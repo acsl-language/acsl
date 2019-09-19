@@ -2,7 +2,7 @@
 \chapter{Introduction}
 
 This document is a reference manual for
-\ifthenelse{\boolean{PrintImplementationRq}}%
+\iftoggle{PrintImplementationRq}%
            {the \NAME implementation provided by the
              \mbox{\textsc{Frama-C}} %no cesure
             framework~\cite{frama-c}.}%
@@ -10,13 +10,13 @@ This document is a reference manual for
 \NAME{} is an acronym for ``ANSI/ISO \lang{} 
 Specification Language''. 
 This is a Behavioral Interface Specification Language (BISL)~\cite{hatcliff2012behavioral}
-\ifthenelse{\boolean{PrintImplementationRq}}%
+\iftoggle{PrintImplementationRq}%
            {for}%
            {implemented in the \textsc{Frama-C} framework. It aims at}
 specifying behavioral properties of \lang{}
 source code.
 
-\ifthenelse{\boolean{PrintImplementationRq}}{%
+\iftoggle{PrintImplementationRq}{%
 Not all of the features mentioned in this document are currently
 implemented in the Frama-C kernel. Unimplemented features are signaled
 as in the following line:
@@ -140,7 +140,7 @@ Section~\ref{sec:multiplecontracts}).
     be checked (e.g., no goto going inside, no goto
     going outside).  See Section~\ref{sec:statement_contract}.
 
-  \item \emph{ghost code}\,: regular C code, only visible from the
+  \item \emph{ghost code}\,: regular \lang code, only visible from the
     specifications and only allowed to modify ghost
     variables. See section~\ref{sec:ghost}. This includes ghost braces
     for enclosing blocks.
@@ -164,9 +164,12 @@ Preprocessing includes interpreting \lang digraphs and trigraphs.
 As these are generally deprecated and en route to removal from the \lang
 standard, \NAME does not define uses of digraphs and trigraphs. Any tool that wishes to support such alternate syntax can preprocess the tokens into conventional tokens before passing the text to \NAME tools.
 
-\ifthenelse{\boolean{PrintImplementationRq}}{
-	The implementation of preprocessing in the \fclang tool for \NAME is described in Appendix \ref{sec:ppimpl}.
-}{}
+\ifCPP{
+  \iftoggle{PrintImplementationRq}{
+    The implementation of preprocessing in the \fclang tool for \NAME
+    is described in Appendix \ref{sec:ppimpl}.
+  }{}
+}
 
 \subsection{About keywords}
 

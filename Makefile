@@ -2,36 +2,35 @@ default: acsl.pdf
 
 MAIN=main
 
-PDF_OUTPUTS=acsl-implementation.pdf acsl.pdf acslpp-implementation.pdf acslpp.pdf
+PDF_OUTPUTS_CPP=acslpp-implementation.pdf acslpp.pdf
+PDF_OUTPUTS_C=acsl-implementation.pdf acsl.pdf
+PDF_OUTPUTS=$(PDF_OUTPUTS_C) $(PDF_OUTPUTS_CPP)
 
-## Notes:
-## no longer built target: acsl-mini-tutorial.pdf
-## PDF_OUTPUTS are copied to "../manuals" directory bg "install" target
-
-BNF_FILES=term.tex predicate.tex binders.tex fn_behavior.tex \
-          oldandresult.tex at.tex loc.tex assertions.tex loops.tex  \
-          assertions.tex loops.tex allocation.tex generalinvariants.tex \
-          st_contracts.tex ghost.tex model.tex logic.tex inductive.tex \
-          logicdecl.tex logictypedecl.tex higherorder.tex logiclabels.tex \
-          logicreads.tex memory.tex initialized.tex data_invariants.tex volatile-gram.tex \
-          exitbehavior.tex dependencies.tex welltyped.tex list-gram.tex c-type-name.tex\
-	  cpp-functional-gram.tex \
-          cpp-exceptionbehavior.tex cpp-default-values-syntax.tex \
+BNF_FILES=term.tex predicate.tex binders.tex fn_behavior.tex		\
+          oldandresult.tex at.tex loc.tex assertions.tex loops.tex	\
+          assertions.tex loops.tex allocation.tex			\
+          generalinvariants.tex st_contracts.tex ghost.tex model.tex	\
+          logic.tex inductive.tex logicdecl.tex logictypedecl.tex	\
+          higherorder.tex logiclabels.tex logicreads.tex memory.tex	\
+          initialized.tex data_invariants.tex volatile-gram.tex		\
+          exitbehavior.tex dependencies.tex welltyped.tex		\
+          list-gram.tex c-type-name.tex cpp-functional-gram.tex		\
+          cpp-exceptionbehavior.tex cpp-default-values-syntax.tex	\
           cpp-class-invariants-fig.tex cpp-this.tex cpp-gram-pure.tex
 
 BNF_DEPS=$(BNF_FILES:.tex=.bnf)
 
-DEPS= main.tex speclang_modern.tex macros_modern.tex intro_modern.tex		\
-	libraries_modern.tex compjml_modern.tex div_lemma.c assigns.c	\
-	invariants.c example-lt-modern.tex biblio.bib			\
-	malloc_free_fn.c malloc-free2-fn.c loop-frees.c isqrt.c		\
-	sizeof.c incrstar.c parsing_annot_modern.tex			\
-	integer-cast-modern.tex max.c max_index.c cond_assigns.c	\
-	bsearch.c bsearch2.c assigns_array.c assigns_list.c sum.c	\
-	listdecl.c listdef.c listlengthdef.c import.c listmodule.c	\
-	strcpyspec.c dowhile.c num_of_pos.c nb_occ.c nb_occ_reads.c	\
-	builtins.tex permut.c permut_reads.c acsl_allocator.c		\
-	preprocessing.tex \
+DEPS= main.tex version.tex changes.tex speclang_modern.tex		\
+	macros_modern.tex intro_modern.tex libraries_modern.tex		\
+	compjml_modern.tex div_lemma.c assigns.c invariants.c		\
+	example-lt-modern.tex biblio.bib malloc_free_fn.c		\
+	malloc-free2-fn.c loop-frees.c isqrt.c sizeof.c incrstar.c	\
+	parsing_annot_modern.tex integer-cast-modern.tex max.c		\
+	max_index.c cond_assigns.c bsearch.c bsearch2.c			\
+	assigns_array.c assigns_list.c sum.c listdecl.c listdef.c	\
+	listlengthdef.c import.c listmodule.c strcpyspec.c dowhile.c	\
+	num_of_pos.c nb_occ.c nb_occ_reads.c builtins.tex permut.c	\
+	permut_reads.c acsl_allocator.c preprocessing.tex		\
 	gen_spec_with_model.c gen_code.c out_char.c ghostpointer.c	\
 	ghostcfg.c flag.c lexico.c footprint.c loopvariantnegative.c	\
 	fact.c mutualrec.c abrupt_termination.c				\
@@ -40,17 +39,16 @@ DEPS= main.tex speclang_modern.tex macros_modern.tex intro_modern.tex		\
 	dangling.c sum2.c modifier.c gen_spec_with_ghost.c		\
 	terminates_list.c glob_var_masked.c glob_var_masked_sol.c	\
 	intlists.c sign.c signdef.c oldat.c mean.c isgcd.c exit.c	\
-	mayexit.c loop_current.c welltyped.c list-observer.c            \
-        c-grammar.tex \
-	Makefile VERSION
+	mayexit.c loop_current.c welltyped.c list-observer.c		\
+	c-grammar.tex Makefile
 
-DEPS_CPP= cpp-main.tex cpp-abstraction.tex cpp-attributes.tex \
-    cpp-auto.tex cpp-class-contracts.tex cpp-class-invariants.tex \
-    cpp-default-values.tex cpp-defensive.tex cpp-enum.tex \
-    cpp-exceptions.tex cpp-foreword.tex cpp-forrange.tex \
-    cpp-functional-design.tex cpp-functional-examples.tex \
-    cpp-functional.tex cpp-namespaces.tex  \
-    cpp-templates.tex cpp-types.tex cpp-type.tex cpp-visibility.tex
+DEPS_CPP=cpp-abstraction.tex cpp-attributes.tex cpp-auto.tex		\
+    cpp-class-contracts.tex cpp-class-invariants.tex			\
+    cpp-default-values.tex cpp-defensive.tex cpp-enum.tex		\
+    cpp-exceptions.tex cpp-foreword.tex cpp-forrange.tex		\
+    cpp-functional-design.tex cpp-functional-examples.tex		\
+    cpp-functional.tex cpp-namespaces.tex cpp-templates.tex		\
+    cpp-types.tex cpp-type.tex cpp-visibility.tex cpp-changes.tex
 
 TUTORIAL_EXAMPLES=max_ptr-tut.c max_ptr2-tut.c max_ptr_bhv-tut.c \
                   max_seq_ghost-tut.c
@@ -86,6 +84,11 @@ TUTORIAL_EXAMPLES=max_ptr-tut.c max_ptr2-tut.c max_ptr_bhv-tut.c \
 main.pdf:
 	@echo "Deprecated '$@' target:"
 	@echo "please, make 'acsl-implementation.pdf' or else 'acsl.pdf'"
+
+$(PDF_OUTPUTS): %.pdf: main.tex $(DEPS) $(BNF_DEPS)
+	latexmk -silent -pdf -jobname=$* $<
+
+$(PDF_OUTPUTS_CPP): $(DEPS_CPP)
 
 %.pdf: %.tex $(DEPS) $(BNF_DEPS)
 	latexmk -silent -pdf $<
@@ -228,49 +231,14 @@ clean: clean-tools
 	rm -rf *~ *.aux *.log *.nav *.out *.snm *.toc *.lof *.pp *.bnf \
 		*.haux  *.hbbl *.htoc \
                 *.cb? *.cm? *.bbl *.blg *.idx *.ind *.ilg *.fls *.fdb_latexmk \
-		transf trans.ml pp.ml pp \
-		acsl.tex acsl-implementation.tex \
-		acslpp.tex acslpp-implementation.tex
+		transf trans.ml pp.ml pp
 
 .PHONY: super-clean
 super-clean: clean
 	@echo "Removing PDF outputs: $(PDF_OUTPUTS)"
 	rm -f $(PDF_OUTPUTS)
 
-# The ACSL document annoted about what is not implemented into Frama-C
-
-acsl-implementation.tex: $(MAIN).tex Makefile
-	@rm -f $@
-	sed -e '/^% rubber:/s/main.cb/acsl-implementation.cb/g' $< > $@
-	@chmod a-w $@
-
-# The ACSL reference document
-
 acsl: $(PDF_OUTPUTS)
-
-acslpp.pdf: acslpp.tex $(DEPS_CPP)
-
-acslpp-implementation.pdf: acslpp-implementation.tex $(DEPS_CPP)
-
-acsl.tex: $(MAIN).tex Makefile
-	@rm -f $@
-	sed -e '/^% rubber:/s/main.cb/acsl.cb/g' \
-	    -e '/^%--.*{PrintImplementationRq}/s/%--//' $< > $@
-	@chmod a-w $@
-
-acslpp.tex: cpp-$(MAIN).tex Makefile
-	@rm -f $@
-	sed -e '/^% rubber:/s/cpp-main.cb/acslpp.cb/g' \
-	    -e '/^%--.*{PrintImplementationRq}/s/%--//' $< > $@
-	@chmod a-w $@
-
-acslpp-implementation.tex: cpp-$(MAIN).tex Makefile
-	@rm -f $@
-	sed -e '/^% rubber:/s/cpp-main.cb/acslpp-implementation.cb/g' $< > $@
-	@chmod a-w $@
-
-cpp-as-appendix.pdf: cpp-as-appendix.tex $(DEPS) $(DEPS_CPP) $(BNF_DEPS)
-	latexmk -f -silent -pdf $<
 
 # Internal to Frama-C
 FRAMAC ?= ../../bin/frama-c
@@ -282,10 +250,6 @@ ifeq ("$(HAS_FRAMAC)","yes")
 all: acsl tutorial full-check
 
 tutorial: tutorial-check acsl-mini-tutorial.pdf
-
-install: $(PDF_OUTPUTS)
-	(cd ../manuals; rm -f  $(PDF_OUTPUTS) )
-	cp -f $(PDF_OUTPUTS) ../manuals/
 
 tutorial-valid: $(TUTORIAL_EXAMPLES:.c=.proved)
 VERSION:
