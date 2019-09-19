@@ -6,6 +6,7 @@
 
 \input{common}
 \input{version}
+\newcommand{\version}{\iftoggle{isCPP}{\acslppversion}{\acslversion}}
 \renewcommand{\TODO}[1]{}
 
 \begin{document}
@@ -17,15 +18,15 @@
     \coverpage{
       \vbox{
         \mbox{\NAME: ANSI/ISO \lang Specification Language}\newline
-        \mbox{\NAME Version \ppversion}\newline
-        \mbox{Implementation in \framac \version
+        \mbox{\NAME Version \acslppversion}\newline
+        \mbox{Implementation in \framac \fcversion
           \ifCPP{and \fclang \fclangversion{}}}}}
   }
   {
     \coverpage{
       \vbox{
         \mbox{\NAME: ANSI/ISO \lang Specification Language}\newline
-        \mbox{Version \ppversion}}}
+        \mbox{Version \iftoggle{isCPP}{\acslppversion}{\acslversion}}}}
   }
 
 \begin{titlepage}
@@ -34,9 +35,10 @@
 \includegraphics[height=18mm]{inria}
 \vfill
 \title{\NAME: ANSI/ISO \lang Specification Language}%
-{Version \version{}\iftoggle{PrintImplementationRq}%
-{~--~\framac~\version\ifCPP{~\fclang \fclangversion}}{}}
-iftoggle{isCPP}
+{Version \iftoggle{isCPP}{\acslppversion}{\acslversion}
+\iftoggle{PrintImplementationRq}%
+{~--~\framac~\fcversion\ifCPP{~\fclang \fclangversion}}{}}
+\iftoggle{isCPP}
 {\author{David R. Cok$^1$}}
 {\author{Patrick Baudin$^1$, Pascal Cuoq$^1$,
          Jean-Christophe Filli\^atre$^{4,3}$, Claude March\'e$^{3,4}$,\\
@@ -80,33 +82,7 @@ $^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405
 \label{chap:contents}
 \tableofcontents
 
-\iftoggle{isCPP}{\include{cpp-foreword}}
-{
-\chapter*{Foreword}
-
-% This is a preliminary design of the ACSL language, a deliverable of
-% the task 7.2 of the ANR RNTL project CAT
-% (\url{http://www.rntl.org/projet/resume2005/cat.htm}). In this
-% project, a reference implementation of ACSL is provided: the Frama-C
-% platform (\url{http://frama-c.cea.fr}).
-
-This document describes version \version{} of the ANSI/ISO C Specification Language (ACSL). 
-The language features may still evolve in the future. 
-In particular, some features in this document
-are considered \emph{experimental}, meaning that their syntax and
-semantics is not yet fixed.  
-These features are marked with
-\experimental.  
-They should also be considered advanced features,
-which not needed for a basic use of this
-specification language.
-
-\section*{Acknowledgements}
-
-We gratefully thank all the people who contributed to this document:
-\include{names}
-
-\include{foreword}}
+\iftoggle{isCPP}{\include{cpp-foreword}}{\include{foreword}}
 
 \include{intro_modern}
 
