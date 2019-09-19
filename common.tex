@@ -26,6 +26,7 @@ version={4.0}]
 \usepackage{alltt}
 \usepackage{hyperref}
 \usepackage{multirow}
+\usepackage{fixme}
 
 \lstset{
 numbers=left,
@@ -48,7 +49,10 @@ deletekeywords={assert}
 \newcommand{\framac}{\textsc{Frama-C}\xspace}
 \newcommand{\acsl}{\textsc{ACSL}\xspace}
 \newcommand{\acslb}{\acsl/\NAME\xspace}
-\newcommand{\TODO}[1]{\textit{<<#1>>}\marginpar{TODO}}
+
+\newcommand{\TODO}[1]{\fxnote[margin]{TODO: #1}}
+\newcommand{\review}[1]
+{\fxnote[inline,nomargin]{\color{darkgreen}Question for Reviewers: #1}}
 
 % already taken care of in frama-c-book
 % \usepackage{fancyhdr}

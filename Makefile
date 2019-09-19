@@ -20,7 +20,7 @@ BNF_FILES=term.tex predicate.tex binders.tex fn_behavior.tex		\
 
 BNF_DEPS=$(BNF_FILES:.tex=.bnf)
 
-DEPS= main.tex version.tex changes.tex speclang_modern.tex		\
+DEPS= main.tex version.tex changes.tex common.tex speclang_modern.tex	\
 	macros_modern.tex intro_modern.tex libraries_modern.tex		\
 	compjml_modern.tex div_lemma.c assigns.c invariants.c		\
 	example-lt-modern.tex biblio.bib malloc_free_fn.c		\
@@ -85,8 +85,14 @@ main.pdf:
 	@echo "Deprecated '$@' target:"
 	@echo "please, make 'acsl-implementation.pdf' or else 'acsl.pdf'"
 
+ifeq ("$(DRAFT)","yes")
+  DRAFT_OPT="-usepretex=\PassOptionsToPackage{status=draft}{fixme}"
+else
+  DRAFT_OPT=
+endif
+
 $(PDF_OUTPUTS): %.pdf: main.tex $(DEPS) $(BNF_DEPS)
-	latexmk -silent -pdf -jobname=$* $<
+	latexmk -silent -pdf -jobname=$* $(DRAFT_OPT) $<
 
 $(PDF_OUTPUTS_CPP): $(DEPS_CPP)
 
