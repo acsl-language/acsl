@@ -2,6 +2,7 @@
   pred ::= "\initialized"  one-label? "(" location-address ")";
        | "\dangling"  one-label? "(" location-address ")";
        \
+  location-address ::= "&" location ;
 \end{syntax}
 
 %%% Local Variables:

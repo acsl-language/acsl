@@ -2,8 +2,8 @@
   ident ::= ident label-binders [An ident can have label-binders and actual type arguments, in either order but only at most one of each.]
   \
   poly-id ::= id label-binders ;
-  | id type-arguments label-binders ;
-  | id label-binders type-arguments ;
+  | id type-var-binders label-binders ;
+  | id label-binders type-var-binders ;
   \
   label-binders ::= "{" label-id (, label-id)* "}" ; label-id defined in Fig. \ref{fig:gram:at}
 \end{syntax}
