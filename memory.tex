@@ -8,9 +8,9 @@
   pred ::=  "\allocable" one-label? "(" term ")" ;
        |  "\freeable" one-label? "(" term ")" ;
        | "\fresh"   two-labels? "(" term, term ")" ;
-       | "\valid"  one-label?  "(" location-list ")" ;
-       | "\valid_read"  one-label? "(" location-list ")";
-       | "\separated" "(" location "," location-list ")" ;
+       | "\valid"  one-label?  "(" locations-list ")" ;
+       | "\valid_read"  one-label? "(" locations-list ")";
+       | "\separated" "(" location "," locations-list ")" ;
        \
   one-label ::= "{" label-id "}" ;
        \

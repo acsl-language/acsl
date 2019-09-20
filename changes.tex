@@ -1,0 +1,130 @@
+\subsection{Version 1.14} % Potassium
+\begin{itemize}
+\item Introduce \lstinline|check| annotation (section~\ref{sec:assertions})
+\end{itemize}
+
+\subsection{Version 1.13} % Chlorine and Argon
+\begin{itemize}
+\item New infix predicate \lstinline|\in| for set membership
+  (section~\ref{sec:locations})
+\item Fixes some typing error for constructs rejecting
+  \lstinline|void*| pointers (section~\ref{subsec:allocation-contract})
+\item Notations added for real numbers $\pi$ and $e$
+  (section~\ref{sec:floating-point})
+\end{itemize}
+
+\subsection{Version 1.12} % Sulfur
+\begin{itemize}
+\item Fixes syntax rule for statement contracts in allowing completeness clauses
+  (figure~\ref{fig:gram:stcontracts})
+\end{itemize}
+
+\subsection{Version 1.11}
+\begin{itemize}
+\item Functions related to infinites and the sign of floating-point value
+  (section~\ref{sec:floating-point})
+\item New section for predicates related to well-typedness
+  (section~\ref{sec:welltyped})
+\item Syntax for defining a set by giving explicitely its elements
+  (section~\ref{sec:locations})
+\item Adding lists as first-class values (section~\ref{sec:lists})
+\item Change the associativity of bitwise operator \lstinline|-->| to right,
+  in accordance with the one of \lstinline|==>| operator
+\item Glyph used for \lstinline|^^| operator (xor) fixed
+\end{itemize}
+
+\subsection{Version 1.10}
+\begin{itemize}
+\item Change keyword for importing libraries (section~\ref{sec:specmodules})
+\item Fix numerous typos reported by David Cok
+\item Disallow meaningless \lstinline|assigns \nothing \from x| 
+  (section~\ref{sec:func-dep})
+\end{itemize}
+
+\subsection{Version 1.9}
+\begin{itemize}
+\item Fix typo in definition of \lstinline|\fresh| predicate
+  (section~\ref{sec:allocation-clause})
+\item Fix grammar inconsistencies
+  \begin{itemize}
+  \item use proper C rules names
+  \item fix mismatch in non-terminal names
+  \end{itemize}
+\item Rename "Unspecified values" to "Dangling pointers" and precise it
+  (section~\ref{sec:dangling_pointers})
+\end{itemize}
+
+\subsection{Version 1.8}
+\begin{itemize}
+\item Mention binary literal constant typing
+\end{itemize}
+
+\subsection{Version 1.7}
+\begin{itemize}
+\item Added missing shift operators in figure~\ref{fig:gram:term}
+\item Modified syntax for naming terms and predicates (figures~\ref{fig:gram:pred} and \ref{fig:gram:term})
+\item Added syntax rule for literal constants (figure~\ref{fig:gram:term})
+\end{itemize}
+
+\subsection{Version 1.6}
+\begin{itemize}
+\item Modified syntax for model fields (section~\ref{sec:model})
+\item Added missing logical xor operator (figure~\ref{fig:gram:term}).
+\item Addition of logical labels related to loops
+  (section~\ref{sec:default-logic-labels}).
+\item Addition of labels to built-ins related to memory blocks
+  (section~\ref{subsec:memory})
+\item Introduction of \lstinline|\valid_read| built-in and clarification of
+  the notion of validity (section~\ref{subsec:memory}).
+\item Introduction of built-in \lstinline|\allocable|,
+  \lstinline|\allocation|, \lstinline|\freeable| and
+  \lstinline|\fresh| (section~\ref{sec:allocation-clause}).
+\item Introduction of \allocates and \frees clauses
+  (section~\ref{sec:allocation-clause}).
+\item Clarify the semantics of \assigns clauses into statement contract.
+\item Improvements to the \volatile clause 
+  (section~\ref{sec:volatile-variables}).
+\item Clarify the evaluation of arrays inside an \lstinline|at| 
+  (section~\ref{sec:at}).
+\end{itemize}
+
+\subsection{Version 1.5}
+
+\begin{itemize}
+\item Clarify the status of \Loop \invariant in presence of
+  \Break or side-effects in the loop test.
+\item Introduction of \lstinline|\with| keyword for functional updates.
+\item Added bnf entry for completeness of function behaviors.
+\item Order of clauses in statement contracts is now fixed.
+\item \requires clauses are allowed before behaviors of statement contracts.
+\item Added explicit singleton construct for sets.
+\item Introduction of logical arrays.
+\item Operations over pointers and arrays have been precised.
+\item Predicate \lstinline|\initialized| (section~\ref{sec:initialized})
+  now takes a set of pointers as argument.
+\end{itemize}
+
+\subsection{Version 1.4}
+\begin{itemize}
+\item Added UTF-8 counterparts for built-in types
+  (\lstinline|integer|, \lstinline|real|, \lstinline|boolean|).
+\item Fixed typos in the examples corresponding to features
+  implemented in Frama-C.
+\item Order of clauses in function contracts is now fixed.
+\item Introduction of abrupt termination clauses.
+\item Introduction of \lstinline|axiomatic| to gather predicates, logic
+  functions, and their defining axioms.
+\item Added specification templates appendix for common specification issues.
+\item Use of sets as first-class term has been precised.
+\item Fixed semantics of predicate \lstinline|\separated|.
+\end{itemize}
+
+\subsection{Version 1.3}
+\begin{itemize}
+\item Functional update of structures.
+\item Terminates clause in function behaviors.
+\item Typos reported by David Mentr\'e.
+\end{itemize}
+
+\subsection{Version 1.2}
+This is the first public release of this document.

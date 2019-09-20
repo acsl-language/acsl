@@ -1,10 +1,6 @@
 \begin{syntax}
   statement ::= "/*@" loop-annot "*/" ;
-  C-while-statement ;
-  | "/*@" loop-annot "*/" ;
-  C-for-statement ;
-  | "/*@" loop-annot "*/" ;
-  C-do-while-statement ;
+  C-iteration-statement ;
   \
   loop-annot [empty loop annotations are forbidden] ::= loop-clause* loop-behavior* ;
                  loop-variant?

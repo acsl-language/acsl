@@ -3,62 +3,65 @@
 %%% lorsque PrintRemarks=false
 
 \usepackage{comment}
+\usepackage{etoolbox}
+\usepackage{xstring}
 
 % true = prints marks signaling the state of the implementation
 % false = prints only the ACSL definition, without remarks on implementation.
-\newboolean{PrintImplementationRq}
-\setboolean{PrintImplementationRq}{true}
+\newtoggle{PrintImplementationRq}
+\IfEndWith*{\jobname}{implementation}
+  {\toggletrue{PrintImplementationRq}}
+  {\togglefalse{PrintImplementationRq}}
 
 % true = remarks about the current state of implementation in Frama-C
 % are in color.
 % false = they are rendered with an underline
-\newboolean{ColorImplementationRq}
-\setboolean{ColorImplementationRq}{true}
+\newtoggle{ColorImplementationRq}
+\toggletrue{ColorImplementationRq}
 
-\newcommand{\ifCPP}[1]{\ifthenelse{\boolean{isCPP}}{\color{darkgreen}#1\color{black}}{}}
+\newtoggle{isCPP}
+\IfBeginWith*{\jobname}{acslpp}{\toggletrue{isCPP}}{\togglefalse{isCPP}}
+
+\newcommand{\ifCPP}[1]{\iftoggle{isCPP}{\color{darkgreen}#1\color{black}}{}}
 \newcommand{\ifCPPinput}[1]{\ifCPP{\input{#1}}}
 %% ifCPP without color, as color does not work within grammar files
-\newcommand{\ifCPPnc}[1]{\ifthenelse{\boolean{isCPP}}{#1}{}}
-
-\ifthenelse{\boolean{isCPP}}
- {\newcommand{\NAME}{ACSL++\xspace}} 
- {\newcommand{\NAME}{ACSL\xspace}}
-% \newcommand{\NAME}{\ifthenelse{\boolean{isCPP}}{ACSL++}{ACSL}\xspace}
-\ifthenelse{\boolean{isCPP}}
- {\newcommand{\lang}{C++\xspace}} 
- {\newcommand{\lang}{C\xspace}}
-%%\newcommand{\lang}{\ifthenelse{\boolean{isCPP}}{C++}{C}\xspace}
-%%\newcommand{\NAME}{ACSL++\xspace}
-%%\newcommand{\lang}{C++\xspace}
-\newcommand{\review}[1]{\color{darkgreen}Question for Reviewers: #1\color{black}}
+\newcommand{\ifCPPnc}[1]{\iftoggle{isCPP}{#1}{}}
+\newcommand{\noCPP}[1]{\iftoggle{isCPP}{}{#1}}
+\iftoggle{isCPP}
+{\newcommand{\NAME}{ACSL++\xspace}\newcommand{\lang}{C++\xspace}}
+{\newcommand{\NAME}{ACSL\xspace}\newcommand{\lang}{C\xspace}}
 
 %%% Commandes et environnements pour la version relative à l'implementation
 \newcommand{\highlightnotimplemented}{%
-\ifthenelse{\boolean{ColorImplementationRq}}{\color{red}}%
-           {\ul}%
+\iftoggle{ColorImplementationRq}{\color{red}}{\ul}%
 }%
 
-\newcommand{\ifImpl}[1]{\ifthenelse{\boolean{PrintImplementationRq}}{\textit{#1}}{}}
+\newcommand{\ifImpl}[1]{\iftoggle{PrintImplementationRq}{\textit{#1}}{}}
 
 \newcommand{\notimplemented}[2][]{%
-\ifthenelse{\boolean{PrintImplementationRq}}{%
-  \begin{changebar}%
-  {\highlightnotimplemented #2}%
-  \ifthenelse{\equal{#1}{}}{}{\footnote{#1}}%
-  \end{changebar}%
-}%
-{#2}}
+  \iftoggle{PrintImplementationRq}{%
+    \begin{changebar}%
+      {\highlightnotimplemented #2}%
+      \notblank{#1}{\footnote{#1}}{}%
+    \end{changebar}%
+  }%
+  {#2}
+}
 
 \newenvironment{notimplementedenv}[1][]{%
-\ifthenelse{\boolean{PrintImplementationRq}}{%
-  \begin{changebar}%
-  \highlightnotimplemented%
-  \ifthenelse{\equal{#1}{}}{}{\def\myrq{#1}}%
-  \bgroup
-}{}}%
-{\ifthenelse{\boolean{PrintImplementationRq}}{%
+  \iftoggle{PrintImplementationRq}{%
+    \begin{changebar}%
+      \notblank{#1}{\def\myrq{#1}{}}%
+      \highlightnotimplemented%
+      \bgroup
+    }{}
+}%
+{
+  \iftoggle{PrintImplementationRq}{%
     \egroup%
-    \ifthenelse{\isundefined{\myrq}}{}{\footnote{\myrq}}\end{changebar}}{}}
+    \ifdef{\myrq}{\footnote{\myrq}}{}%
+  \end{changebar}}{}
+}
 
 %%% Environnements et commandes non conditionnelles
 \newcommand{\experimental}{\textsc{Experimental}}
@@ -159,11 +162,11 @@
 \newif\ifnewentry
 \newcommand{\addspace}{\ifspace ~ \spacefalse \fi}
 \newcommand{\term}[2]{\addspace\hbox{\lstinline|#1|%
-\ifthenelse{\equal{#2}{}}{}{\indexttbase{#2}{#1}}}\spacetrue}
+\notblank{#2}{\indexttbase{#2}{#1}}{}}\spacetrue}
 \newcommand{\nonterm}[2]{%
-  \ifthenelse{\equal{#2}{}}%
-             {\addspace\hbox{\textsl{#1}\ifnewentry\index{grammar entries!\textsl{#1}}\fi}\spacetrue}%
-             {\addspace\hbox{\textsl{#1}\footnote{#2}\ifnewentry\index{grammar entries!\textsl{#1}}\fi}\spacetrue}}
+  \ifblank{#2}%
+   {\addspace\hbox{\textsl{#1}\ifnewentry\index{grammar entries!\textsl{#1}}\fi}\spacetrue}%
+   {\addspace\hbox{\textsl{#1}\footnote{#2}\ifnewentry\index{grammar entries!\textsl{#1}}\fi}\spacetrue}}
 \newcommand{\repetstar}{$^*$\spacetrue}
 \newcommand{\repetplus}{$^+$\spacetrue}
 \newcommand{\repetone}{$^?$\spacetrue}

@@ -6,10 +6,7 @@ modifier={by},
 version={4.0}]
 {doclicense}
 
-\usepackage{ifthen}
-
 \input{./macros_modern}
-\newcommand{\framacversion}{Potassium}
 
 %Already set in frama-c-book
 %\usepackage[a4paper=true,pdftex,colorlinks=true,urlcolor=blue,pdfstartview=FitH]{hyperref}
@@ -29,6 +26,7 @@ version={4.0}]
 \usepackage{alltt}
 \usepackage{hyperref}
 \usepackage{multirow}
+\usepackage{fixme}
 
 \lstset{
 numbers=left,
@@ -43,10 +41,6 @@ deletekeywords={assert}
 %\setlength{\oddsidemargin}{0mm}
 %\setlength{\evensidemargin}{0mm}
 
-\newcommand{\version}{1.14} %% Version of ACSL
-\newcommand{\ppversion}{TBD}
-\newcommand{\fclangversion}{TBD}
-
 \renewcommand{\textfraction}{0.01}
 \renewcommand{\topfraction}{0.99}
 \renewcommand{\bottomfraction}{0.99}
@@ -55,7 +49,10 @@ deletekeywords={assert}
 \newcommand{\framac}{\textsc{Frama-C}\xspace}
 \newcommand{\acsl}{\textsc{ACSL}\xspace}
 \newcommand{\acslb}{\acsl/\NAME\xspace}
-\newcommand{\TODO}[1]{\textit{<<#1>>}\marginpar{TODO}}
+
+\newcommand{\TODO}[1]{\fxnote[margin]{TODO: #1}}
+\newcommand{\review}[1]
+{\fxnote[inline,nomargin]{\color{darkgreen}Question for Reviewers: #1}}
 
 % already taken care of in frama-c-book
 % \usepackage{fancyhdr}

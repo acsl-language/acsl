@@ -1,4 +1,6 @@
 \begin{syntax}
+  range ::= term? ".." term? ;
+       \
   tset ::= "\empty" ; empty set
        | tset "->" id ;
        | tset "." id ;
@@ -15,7 +17,7 @@
        | { "{" ( term ("," term )*)? "}" } ; explicit set
        | term [The given term may not itself be a set]; implicit singleton
        \
-  pred ::= "\subset" "(" tset"," tset ")" ; set inclusion
+  pred ::= "\subset" "(" tset "," tset ")" ; set inclusion
        | term "\in" tset ; set membership
        \
   range ::= term? ".." term?
