@@ -1,5 +1,4 @@
 main.pdf
-/*.pdf
 /*.aux
 /*.bbl
 /*.blg
@@ -19,13 +18,8 @@ main.pdf
 /*.synctex.gz
 /acsl-implementation.tex
 /acsl.tex
-<<<<<<< HEAD
-/acslpp-implementation.tex
-/acslpp.tex
-=======
 /acslpp.tex
 /acslpp-implementation.tex
->>>>>>> 52f90d63cdf87ac8828c9a30b1c081c597ac71b7
 /framacversion.tex
 /acsl-mini-tutorial.tex
 /*-tut.c
@@ -34,7 +28,6 @@ main.pdf
 /*.cm*
 /*.o
 /VERSION
-main.txss
 /cfg.mpx
 /cfg.mps
 

@@ -237,9 +237,7 @@ clean: clean-tools
 	rm -rf *~ *.aux *.log *.nav *.out *.snm *.toc *.lof *.pp *.bnf \
 		*.haux  *.hbbl *.htoc \
                 *.cb? *.cm? *.bbl *.blg *.idx *.ind *.ilg *.fls *.fdb_latexmk \
-		transf trans.ml pp.ml pp \
-		acsl.tex acsl-implementation.tex \
-		acslpp.tex acslpp-implementation.tex
+		transf trans.ml pp.ml pp
 
 .PHONY: super-clean
 super-clean: clean
@@ -253,11 +251,7 @@ FRAMAC ?= ../../bin/frama-c
 
 HAS_FRAMAC:=$(shell if test -x $(FRAMAC); then echo yes; else echo no; fi)
 
-acslpp.tex: cpp-$(MAIN).tex Makefile
-	@rm -f $@
-	sed -e '/^% rubber:/s/cpp-main.cb/acslpp.cb/g' \
-	    -e '/^%--.*{PrintImplementationRq}/s/%--//' $< > $@
-	@chmod a-w $@
+ifeq ("$(HAS_FRAMAC)","yes")
 
 all: acsl tutorial full-check
 
