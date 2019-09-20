@@ -18,8 +18,8 @@
       \vbox{
         \mbox{\NAME: ANSI/ISO \lang Specification Language}\newline
         \mbox{\NAME Version \acslppversion}\newline
-        \mbox{Implementation in \framac \fcversion
-          \ifCPP{and \fclang \fclangversion{}}}}}
+        \mbox{\LARGE Implementation in \framac \fcversion}
+        \mbox{\LARGE \ifCPP{and \fclang \fclangversion{}}}}}
   }
   {
     \coverpage{
@@ -36,7 +36,7 @@
 \title{\NAME: ANSI/ISO \lang Specification Language}%
 {Version \iftoggle{isCPP}{\acslppversion}{\acslversion}
 \iftoggle{PrintImplementationRq}%
-{~--~\framac~\fcversion\ifCPP{~\fclang \fclangversion}}{}}
+{~-- as implemented in\\~\framac~\fcversion\ifCPP{~and \fclang \fclangversion}}{}}
 \iftoggle{isCPP}
 {\author{David R. Cok$^1$}}
 {\author{Patrick Baudin$^1$, Pascal Cuoq$^1$,
