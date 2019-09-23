@@ -77,7 +77,7 @@
 \setlength\unitlength{1cm}
 \begin{picture}(0,0)(3.27,26.75)
 \put(0.58,0.70){\includegraphics[width=20.9cm]{frama-c-cover.pdf}}
-\put(2.0,20.5){\makebox[8cm][l]{\fontfamily{phv}\fontseries{m}\fontsize{24}{2}\selectfont #1}}
+\put(2.0,18.5){\makebox[8cm][l]{\fontfamily{phv}\fontseries{m}\fontsize{24}{2}\selectfont #1}}
 \end{picture}
 }
 
