@@ -3,7 +3,7 @@ int x;
 /*@ assigns x;
   @ ensures x == \old(x+a);
   @*/
-void increment(int a) { ... }
+void increment(int a) { x+=a; }
 
 void test() {
   void (*fp)(int) = increment;

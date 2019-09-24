@@ -2,6 +2,7 @@
 void m(std::list<int>& data) {
    for (auto value: data) {
       int i = value;
+      value = i+1;
    }
 
    int k = 0;

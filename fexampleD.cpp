@@ -27,4 +27,5 @@ int test() {
   //@ assert y == 43;
   y = doTwice(increment,42);
   //@ assert y == 44;
+  return y;
 }

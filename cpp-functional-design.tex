@@ -147,24 +147,10 @@ default arguments.
 When calling member functions through member function pointers, one must supply an object along with the actual arguments. The syntax is \\
 (\emph{object}.*\emph{mfp})(\emph{args}) or
 (\emph{object-ptr}->*\emph{mfp})(\emph{args}).
-Note that dynmamic dispatch is still used for virtual functions, as in the following example:
-\begin{lstlisting}
-#include <iostream>
-class A {
-  public:
-    virtual int m(int x) { return x; }
-};
-class B: public A {
-  public:
-    virtual int m(int x) { return x+10; }
-};
-int main() {
-    int (A::* mfp)(int) = &A::m;
-    std::cout << (A().*mfp)(1) << std::endl; // prints '1'
-    std::cout << (B().*mfp)(1) << std::endl; // prints '11'
-}
-\end{lstlisting} 
- 
+Note that dynamic dispatch is still used for virtual functions,
+as in the following example:
+\lstinputlisting{virtual_fct_ptr.cpp}
+
 \subsection{Modeling function pointers in logic}
 \label{sec:modelingfp}
  
@@ -287,20 +273,19 @@ int m(int k) { ... }
 
 \subsection{Member function pointers}
 \label{sec:memberfp}
-Member function pointers occupy a different region of type space than do static function pointers, but are nevertheless treated quite
-similarly. Each member function has implicitly provided the same \lstinline|\requires| and other dynamic specifications. Now however the definition of those predicates can include references to \lstinline|this| to refer to a pointer to the receiver object. For example, given
-\begin{lstlisting}
-class A {
-  private:
-    int x;
-  public:
-    /*@ requires x > 0;
-        assigns \empty;
-        ensures \result == x + 1;
-    int m() { return x+1; }
-}
-\end{lstlisting}
-we have (with \lstinline+|A::m|+ the name of the literal for the textual function) the implicitly defined terms
+Member function pointers occupy a different region of type space than
+do static function pointers, but are nevertheless treated quite
+similarly. Each member function has implicitly provided the same
+\lstinline|\requires| and other dynamic specifications. Now however
+the definition of those predicates can include references to
+\lstinline|this| to refer to a pointer to the receiver object. For
+example, given:
+
+\lstinputlisting{member_fct_ptr.cpp}
+
+we have (with \lstinline+|A::m|+ the name of the literal for the textual
+function) the implicitly defined terms
+
 \begin{lstlisting}
   \forall A t; \requires(|A::m|,t) == this->x > 0;
   \forall A t; \assigns(|A::m|,t) == \empty;

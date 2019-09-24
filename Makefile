@@ -112,9 +112,6 @@ transf: transf.cmo transfmain.cmo
 	$(FRAMAC) -wp $<
 	touch $@
 
-%.check: %.c acsl-mini-tutorial.tex
-	$(FRAMAC) $<
-
 transfmain.cmo: transf.cmo
 
 # Internal to Frama-C
@@ -138,6 +135,9 @@ tutorial-check: cannot-check
 check: cannot-check
 
 else
+HAS_FCLANG=$(shell if $(FRAMAC) -plugins | grep -q "Frama_Clang"; \
+                   then echo yes; else echo no; fi)
+
 GOOD=abrupt_termination.c advancedloopinvariants.c assert-tut.c		\
 assigns_array.c assigns.c assigns_list.c bsearch.c bsearch2.c		\
 cond_assigns.c div_lemma.c dowhile.c euclide.c exit.c extremum-tut.c	\
@@ -162,15 +162,41 @@ gen_spec_with_model.c ghostcfg.c import.c invariants.c			\
 lexico.c listlengthdef.c listmodule.c                                   \
 modifier.c out_char.c sum2.c
 
+ifeq ("$(HAS_FCLANG)","yes")
+CHECK_FILES=*.c *.cpp
+else
+CHECK_FILES=*.c
+endif
+
+C_FILES:=$(wildcard *.c)
+CPP_FILES:=$(wildcard *.cpp)
+
+C_CHECK:=$(C_FILES:.c=.check)
+CPP_CHECK:=$(CPP_FILES:.cpp=.check)
+
+check-c-files: $(C_CHECK)
+check-cpp-files: $(CPP_CHECK)
+
+%.check: %.c
+	gcc -std=c99 -c -Wall -Werror $(WFLAGS) $^
+
+%.check: %.cpp
+	g++ -std=c++11 -c -Wall -Werror $(WFLAGS) $^
+
+# some examples are intended to trigger gcc warnings
+dangling.check: WFLAGS:=-Wno-return-local-addr
+redeclaredat.check: WFLAGS:=-Wno-unused-label
+
 check: acsl-mini-tutorial.tex
-	gcc -c -std=c99 *.c -Wall
+	$(MAKE) -k check-c-files
+	$(MAKE) -k check-cpp-files
 	@good=0; \
         bad=0; \
         failed=0; \
         passed=0; \
 	failed_list=""; \
         passed_list=""; \
-        for f in *.c ; do \
+        for f in $(CHECK_FILES); do \
 	  echo "considering $$f"; \
 	  if test `grep -c "NOPP-END." $$f` -ne 0 ; then \
 	    echo "Failure since NOPP-END should end the line: $$f"; \

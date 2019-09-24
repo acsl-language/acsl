@@ -94,28 +94,8 @@ The following code example shows some uses. Such syntax is typically needed only
 Entities that are members of their enclosing class have a receiver and are designated with dot or arrow syntax;
 the names are then found in the (static) class of the receiver term. In addition if a containing class is a template
 instance, the qualifier will have type arguments. The corresponding grammar enhancements are shown in Fig. \ref{fig:gram:this}.
-\begin{lstlisting}
-namespace A {
-   int f; // A::f
-   class B {
-      static int f; // A::B::f
-      
-      //@ predicate pos1() = f > 0;  // A::B::f
-      //@ predicate pos2() = A::B::f > 0;  // A::B::f
-      //@ predicate pos3() = A::f > 0;  // A::f
-      //@ predicate pos4() = B::f > 0;  // A::B::f   
-   }
-   template <typename T> class C {
-      class D {}
-   }
-}
 
-predicate pos5() = f > 0;  // not legal
-predicate pos6() = A::f > 0;  // A::f
-predicate pos7() = A::B::f > 0;  // A::B::f
-
-A::B::C<int>::D x;
-\end{lstlisting}|
+\lstinputlisting{scoping.cpp}
 
 \NAME axiomatics do not create a nested scope.
 
@@ -168,28 +148,10 @@ Rather than imposing syntactic requirements on method contracts\footnote{as in J
 
 \subsection{Specifications of operator overloads}
 Declarations of operator overloading as treated in \NAME just like other
-methods. In particular they can have function contracts as in this example:
-\begin{lstlisting}
-class MyType {
-private:
-    int myint;
-public:
-    MyType(int i): myint(i) {}
+methods. In particular they can have function contracts as in this example.
 
-    //@ ensures \result.myint == this->myint + other.myint;
-    MyType operator+(MyType& const other) {
-        return MyType(myint + other.myint);
-    }
-}
+\lstinputlisting{overload_contract.cpp}
 
-/*@
-@    requires \true;
-@    assigns \nothing;
-@    ensures this->value == that->value;
-@ C(const C& that);
-@*/
-}
-\end{lstlisting}
 \subsection{Specifications of special member functions}
 
 \lang implicitly declares and provides a default implementation for some member functions under some circumstances. 
@@ -197,24 +159,13 @@ Thus they also have an implicit specification. However, the user may also wish t
 explicit declaration in the \lang code to which to attach such a 
 specification. In this case \lang's \lstinline|default| facility should be used
 
-In the following example, class \lstinline|C| has an implicitly defined
-copy constructor. The declaration with the \lstinline|default| keyword indicates
-the the implicit implementation should be used.
-Then a \NAME comment can be associated with this declaration and gives an explicit specification.
-\begin{lstlisting}
-class C {
-  public:
-  //@ logic integer value;
-  
-  /*@
-    @    requires \true;
-    @    assigns \nothing;
-    @    ensures this->value == that->value;
-    @*/
-  C(const C& that) = default;
-}
-\end{lstlisting}
+In the following example, class \lstinline|C| has an implicitly
+defined copy constructor. The declaration with the \lstinline|default|
+keyword indicates the the implicit implementation should be used.
+Then a \NAME comment can be associated with this declaration and gives
+an explicit specification.
 
+\lstinputlisting{defaulted_contract.cpp}
 
 The member functions for which implicit default functions are provided by the compiler are the following. In each case the default action (and corresponding implicit specification) is to apply the corresponding operation on each base class and data member of the object at hand.
 \begin{itemize}

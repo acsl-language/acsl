@@ -16,30 +16,9 @@ implicitly converted to the logic type \lstinline|boolean|.
 However, \lstinline|boolean| values must be explicitly cast to be
 converted to \lstinline|bool| values.
 
-For example, the following code parses and proves successfully:
-\begin{lstlisting}
-//@ logic bool negate(bool b) = !b;
-//@ logic boolean lnegate(boolean b) = !b;
-//@ predicate P(bool b) = b;
-//@ predicate LP(boolean b) = b;
+For example, the following code parses and proves successfully.
 
-void m() {
-
-  //@ assert \true == true;
-  //@ assert \false == false;
-  //@ assert \null == nullptr;
-
-  //@ assert LP(true);
-  //@ assert LP(\true);
-  //@ assert P(true);
-  //@ assert P((bool)\true);
-
-  //@ assert lnegate(false);
-  //@ assert lnegate(\false);
-  //@ assert negate(false);
-  //@ assert negate((bool)\false);
-}
-\end{lstlisting}
+\lstinputlisting{literals.cpp}
 
 But these examples provoke errors complaining that the implicit conversion
 is not performed.

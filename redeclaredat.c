@@ -13,4 +13,5 @@ c:
   //@ assert \at(x,b) == 4;
   //@ assert *x == 3;
   //@ assert \at(*x,c) == 2;
+  *x = 5;
 }

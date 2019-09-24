@@ -11,4 +11,5 @@ int foo(bool b) {
   int (*fp)(int) = b ? increment : decrement;
   int y = fp(4);
   //@ assert y != 4;
+  return y;
 }

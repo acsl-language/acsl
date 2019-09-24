@@ -10,5 +10,5 @@ int main() {
 
   //@ assert !\valid_function((volatile int* (*)(int)) p);
     // not compatible: qualifiers cannot be dropped (see C99 6.7.3:9)
-  return 0;
+  return *(p(0));
 }

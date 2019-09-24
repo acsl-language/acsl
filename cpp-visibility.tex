@@ -194,26 +194,9 @@ it must be invoked with respect to a given heap state.
 That is, the pure function has a single implicit state label.
 
 
-An example showing this use is given below:
-\begin{lstlisting}
-class C {
-private:
-  int count;
+An example showing this use is given below.
 
-public:
-   /*@ ensures \result == count;
-       pure
-     @*/   
-  int getCount() { return count; }
-  
-  
-  void test() {
-      x:
-      count++;
-      //@ assert getCount{Here}() == 1 + getCount{x}();
-  }
-
-\end{lstlisting}
+\lstinputlisting{pure.cpp}
 
 A special case of pure functions are those declared in \lang as \lstinline|constexpr|.
 Such functions compute constant values that may be evaluated at compile time. A function declared \lstinline|constexpr| is implicitly \lstinline|pure| and may be used in a logic expression.
