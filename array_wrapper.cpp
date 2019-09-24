@@ -12,4 +12,4 @@ public:
   int getValue(int index) {
     return data[index];
   }
-}
+};

@@ -18,4 +18,4 @@ public:
   //@ ensures std::is_same_type<T,int>::value ==> \result == intsum();
   int intsum();
 
-}
+};

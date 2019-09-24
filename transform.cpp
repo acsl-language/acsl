@@ -1,12 +1,13 @@
-#include<vector>
+#include <vector>
+#include <algorithm>
 
-extern vector<int> f(int);
+extern std::vector<int> f(int);
 
 int main() {
   int sum = 0;
-  auto op = [](int i) mutable { sum += i; return -i; }
-  vector<int> a = f(0);
-  vector<int> b = f(1);
+  auto op = [=](int i) mutable { sum += i; return -i; };
+  std::vector<int> a = f(0);
+  std::vector<int> b = f(1);
 
   std::transform(a.begin(), a.end(), b.begin(), op);
 }
