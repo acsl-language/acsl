@@ -1,6 +1,6 @@
 #include <list>
 
-extern std::list<int> f(void)
+extern std::list<int> f(void);
 
 void m() {
   int k = 0;

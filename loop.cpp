@@ -7,7 +7,7 @@ void m() {
     loop variant 6 - j;
   @*/
   for (int j = 0; j < 6; j++) {
-    i = array[j];
+    int i = array[j];
     k += i;
   }
 }

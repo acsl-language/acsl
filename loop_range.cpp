@@ -15,7 +15,7 @@ void m() {
 
   k = 0;
   std::list<int> data = f();
-  size_t len = data.size();
+  //@ ghost size_t len = data.size();
   /*@
     loop invariant 0 <= \count <= len;
     loop invariant k == \sum(0,\count-1,

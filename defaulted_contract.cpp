@@ -8,4 +8,4 @@ class C {
     @    ensures this->value == that->value;
     @*/
   C(const C& that) = default;
-}
+};

@@ -7,4 +7,4 @@ class A {
         ensures \result == x + 1;
     */
     int m() { return x+1; }
-}
+};

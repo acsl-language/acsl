@@ -187,6 +187,8 @@ check-cpp-files: $(CPP_CHECK)
 dangling.check: WFLAGS:=-Wno-return-local-addr
 redeclaredat.check: WFLAGS:=-Wno-unused-label
 
+pure.check: WFLAGS:=-Wno-unused-label
+
 check: acsl-mini-tutorial.tex
 	$(MAKE) -k check-c-files
 	$(MAKE) -k check-cpp-files
