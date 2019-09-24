@@ -28,8 +28,8 @@ The following code demonstrates this feature:
 \begin{example}
 \begin{listing-nonumber}
 /*@
-ensures \\false;
-ensures \\true; // ILLEGAL in combination with [[noreturn]]
+ensures \false;
+ensures \true; // ILLEGAL in combination with [[noreturn]]
 */
 void m() [[noreturn]] { ... }
 \end{listing-nonumber}

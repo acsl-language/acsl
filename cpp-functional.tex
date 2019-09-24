@@ -54,22 +54,14 @@ Then, for this function, for all \lstinline|int k|
 \end{listing-nonumber}
 The other functions with one formal int parameter and an int result would have analogous definitions for \lstinline|\requires|, etc.
 
-An example function that takes such functions as arguments is this:
-\begin{listing-nonumber}
-void m(int a[], int i, int j, int f(int) ) {
-  for (int k = i; k<j; k++) a[k] = f(a[k]);
-}
-\end{listing-nonumber}
+An example function that takes such functions as arguments is this.
 
-It could have this specification:
-\begin{listing-nonumber}
-/*@
-  requires \valid(a[i..j-1]);
-  requires \forall int k; \assigns(f,k) == \empty;  // requires f has no side-effects
-  ensures \forall int k; k < i || k >= j; a[k] == \old(a[k]);
-  ensures \forall int k; i <= k < j; \ensures(f, a[k], \old(a[k]));
-*/
-\end{listing-nonumber}
+\lstinputlisting[linerange={7-9}]{func_args.cpp}
+
+It could have this specification.
+
+\lstinputlisting[linerange={1-6}]{func_args.cpp}
+
 Then the effect of, say the call \lstinline|m(a,4,7,inc)|, can be determined by logical reasoning.
 
 These specifications only apply for the case of the actual parameter being a function with no side-effects. More complex specifications (and perhaps additional specification language features) are still under experimentation.
@@ -82,7 +74,7 @@ The implicit receiver is accommodated by inserting an additional first argument.
 \begin{listing-nonumber}
 class C {
   int m(int k) { ... }
-}
+};
 \end{listing-nonumber}
 then the  \lstinline|\requires| predicate for the member method looks like \lstinline|\requires(pointer_to_C, &C::m, k) == ... |.
 

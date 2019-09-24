@@ -32,25 +32,9 @@ affecting the API.
 Simply written specifications typically refer to the private
 aspects of an implementation and thus can break information hiding.
 
-Consider a class that wraps an implementation of a simple array:
+Consider a class that wraps an implementation of a simple array.
 
-\begin{listing-nonumber}
-class Array {
-  private:
-	int* data;
-	int data_length;
-
-  public:
-	/*@ 
-	requires 0 <= index < data_length;
-	assigns \nothing;
-	ensures \result == data[index];
-	*/
-	int getValue(int index) {
-		return data[index];
-	}
-}
-\end{listing-nonumber}
+\lstinputlisting{array_wrapper.cpp}
 
 Here the representation of the Array object, its data values and length, are appropriately private, while the accessor function is public.
 However, expressing the specification of the accessor function requires using the private members, violating information hiding and
@@ -58,29 +42,9 @@ the abstraction boundary.
 
 The core problem is this: to express the valid values of \lstinline|index|, one needs the concept of the length of the array; that is, one needs an abstraction, namely length(). In this example the abstract \lstinline|length()| is represented by the data value \lstinline|data_length|, but the class could have chosen some other representation.
 
-One solution to this representation problem is to write the following:
+One solution to this representation problem is to write the following.
 
-\begin{listing-nonumber}
-class Array {
-  private:
-	int* data;
-	int data_length;
-	
-  public:
-	/*@ // These each have a single implicit logic label {L}
-	   logic int length() = \this.data_length; 
-	   logic int value(int index) = \this.data[index];
-	*/
-	
-	/*@ 
-	   requires 0 <= index < length();
-	   ensures \result == value(index);
-	*/
-	int getValue(int index) {
-		return data[index];
-	}
-}
-\end{listing-nonumber}
+\lstinputlisting{array_wrapper_pred.cpp}
 
 This example demonstrates the general solution for abstraction that respects information hiding: write logic functions, predicates or invariants that express the abstract properties of the class, express the specifications of the public members of the class in terms of those (public) abstractions, and write the implementation of the abstractions in terms of the appropriate private aspects of the class.
 
@@ -142,28 +106,10 @@ A verbose aspect of the listing above is that the logic representation function 
 the \lang function \lstinline|getValue()|. Why write and maintain both of these? Can we not use at least some \lang functions in 
 specifications?
 
-The syntax to do so is shown in the following listing, but there are restrictions on when this is allowed.
+The syntax to do so is shown in the following listing, but there are
+restrictions on when this is allowed.
 
-\begin{listing-nonumber}
-class Array {
-	
-  private:
-	
-    int* data;
-    int data_length;
-	
-  public:
-	
-    /*@ 
-      requires 0 <= index < data_length;
-      ensures \result == data[index];
-      pure
-    */
-    int getValue(int index) {
-		return data[index];
-    }	
-}
-\end{listing-nonumber}
+\lstinputlisting{array_wrapper_pure.cpp}
 
 When designated \lstinline|pure|, a \lang function may also be used in a \NAME specification. Effectively, a corresponding logic function is generated. 
 The conditions under which a 

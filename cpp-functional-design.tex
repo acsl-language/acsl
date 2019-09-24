@@ -176,16 +176,10 @@ Conventional function definitions have an established place to insert their spec
 
 C++ represents lambda expressions as an \lstinline|operator()| wrapped in an anonymous unique class. We can follow this 
 approach in providing a function contract for a lambda expression.  
-For example, if we have a lambda expression such as \lstinline|[](int x, int y)-> { return -x; }| we can write its contract like this:
-\begin{listing-nonumber}
-	class Negator {
-		/*@ requires \true;
-		  @ assigns \nothing;
-		  @ ensures \result == -x;
-		  @*/
-		int operator()(int x);
-	}
-\end{listing-nonumber}
+For example, if we have a lambda expression such as \lstinline|[](int x, int y)-> { return -x; }| we can write its contract like this.
+
+\lstinputlisting{operator.cpp}
+
 We call such a class a \emph{specification contract class}.
 We use a \emph{specification cast} to attach this contract to
 the lambda expression:\\
@@ -240,7 +234,8 @@ Note the following:
 	\item Some clauses allow using special terms (such as 
 	\lstinline|\result|, 
 	\lstinline|\exception|, \lstinline|\exit_status|). 
-	These are represented by a special explicit argument. Consider, for example, the ensures predicate for the example below:
+	These are represented by a special explicit argument. Consider, for example, the ensures predicate for the example below.
+
 \begin{listing-nonumber}
 int j;
 		
