@@ -71,11 +71,11 @@ non-inlined instance of the function will be created by the compiler.
 The type of functions with default arguments includes all the arguments; any defaults are ignored.
 
 \subsubsection{Assignment, initialization and typing}
-A function pointer type includes the type and number of its arguments, the type of the return value, and any qualifications (such as 
-\lstinline|const|). 
-In addition, whether the final argument is a var-args
-argument is also part of the type.
-The type of a pointer to member function includes the type of the receiver object.
+A function pointer type includes the type and number of its arguments,
+the type of the return value, and any qualifications (such as
+\lstinline|const|).  In addition, whether the final argument is a
+var-args argument is also part of the type.  The type of a pointer to
+member function includes the type of the object it is called for.
 
 The declaration of a variable with function pointer type is given by syntax like\\
 \emph{ret-type} (*\emph{var-name})(\emph{arg-types}), with optional \lstinline|const| and other modifiers.
@@ -85,8 +85,8 @@ A variable with a function pointer type can be initialized with or assigned a fu
 A \emph{static} member function and
 a global function with the same signature have the same type.
 \emph{Non-static} member functions have different types because
-the signature and type implicitly include the receiver object
-and the fact that it is a member function.
+the signature and type implicitly include the object the member function
+is called for and the fact that it is a member function.
 
 A lambda expression \emph{that has an empty capture specification} and
 a global function with the same signature have the same type.
@@ -273,8 +273,8 @@ do static function pointers, but are nevertheless treated quite
 similarly. Each member function has implicitly provided the same
 \lstinline|\requires| and other dynamic specifications. Now however
 the definition of those predicates can include references to
-\lstinline|this| to refer to a pointer to the receiver object. For
-example, given:
+\lstinline|this| to refer to a pointer to the object the member
+function is called for. If we take the following example:
 
 \lstinputlisting{member_fct_ptr.cpp}
 
@@ -286,7 +286,8 @@ function) the implicitly defined terms
   \forall A t; \assigns(|A::m|,t) == \empty;
   \forall A t, int result; \ensures(|A::m|,t,result) == (result == t->x + 1);
 \end{lstlisting}
-(Here the quantification variable \lstinline|t| ranges over possible receivers.)
+(Here the quantification variable \lstinline|t| ranges over the possible
+objects the member function is called for.)
 
 \subsection{Examples}
 \label{sec:fpexamples}

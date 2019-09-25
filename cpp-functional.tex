@@ -68,9 +68,14 @@ These specifications only apply for the case of the actual parameter being a fun
 
 \subsection{C++ member and virtual functions}
 
-Where the function in question is a method of a class, there are two additional considerations: there is an implicit receiver and the method may be virtual.
+Where the function in question is a non-static member function of a class,
+there are two
+additional considerations: there is an implicit object the function
+is called for and the function may be virtual.
 
-The implicit receiver is accommodated by inserting an additional first argument. For example if we had a method
+The object for which the member function is called is accommodated by inserting
+an additional first argument. For example if we had a member function defined
+as such:
 \begin{listing-nonumber}
 class C {
   int m(int k) { ... }
@@ -78,7 +83,13 @@ class C {
 \end{listing-nonumber}
 then the  \lstinline|\requires| predicate for the member method looks like \lstinline|\requires(pointer_to_C, &C::m, k) == ... |.
 
-Now suppose \lstinline|C::m| is virtual. The example above gives the precondition for method \lstinline|C::m|, even if that method is virtual. However, there is also a need at times to express the dynamic precondition. In that case, the syntax is to place a receiver prior to the keyword, with either a dot or an arrow as appropriate (again, cf. Fig. \ref{fig:gram:functional}).
+Now suppose \lstinline|C::m| is virtual. The example above gives the
+precondition for method \lstinline|C::m|, even if that method is
+virtual. However, there is also a need at times to express the dynamic
+precondition. In that case, the syntax is to place an object for which
+the member function is called prior to
+the keyword, with either a dot or an arrow as appropriate (again,
+cf. Fig. \ref{fig:gram:functional}).
 
 
 \subsection{Specifying lambda expressions}
