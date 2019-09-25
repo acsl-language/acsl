@@ -23,16 +23,16 @@ As the \lstinline|\default_value| syntax applies only to formal parameters, any 
 formal parameter that has a default value declaration, no
 matter what other shadowing declarations may exist.
 
-The example below demonstrates the syntax:
+The example below demonstrates the syntax.
 
 \begin{example}
 
 \begin{listing-nonumber}
 
-/*@ behavior default
+/*@ behavior default:
       assumes \default_value(y) == 42;
       ...
-    behavior nondefault
+    behavior nondefault:
       assumes \default_value(y) != 42;
       ...
 */

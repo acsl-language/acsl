@@ -1,4 +1,4 @@
-/*@ behavior
+/*@ behavior model:
   requires \valid(first1,last1) && \valid(result + (0.. last1-first1));
   {
     InputIterator in = first1; 

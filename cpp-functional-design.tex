@@ -241,11 +241,11 @@ int j;
 		
 /*@
 requires r0;
-behavior b1l
+behavior b1l:
   assumes a1;
   requires r1;
   ensures \result == \old(j) + k;
-behavior b2;
+behavior b2:
   assumes a2;
   requires r2;
   ensures \result >= 0;
