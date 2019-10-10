@@ -19,7 +19,7 @@ Consider the following example (in which, for convenience, the data members are 
 \lstinputlisting{array_wrapper_defensive.cpp}
 
 This specification is the desired specification for the implementation: it specifies the behavior for both the normal condition and the error situation.  But what do we want for the caller? With this specification the caller is permitted to cat \lstinline|getValue| with \lstinline|index| either in range or out of range; in the latter case the specification tells the caller to expect an exception to be thrown. But what if the error handling implementatino is purely defensive and we really want to state, and check, that the caller
-always calls \stinline|getValue| with a avlid value of \lstinline|index|? That would correspond to a specification such as this.
+always calls \stinline|getValue| with a valid value of \lstinline|index|? That would correspond to a specification such as this.
 
 \lstinputlisting{array_wrapper_defensive2.cpp}
 
