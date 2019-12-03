@@ -47,8 +47,16 @@ The specific \lang functions of this kind that are permitted in \NAME are listed
 \subsection{Casting}
 \label{sec:casts}
 
-\lang added to C a number of casting operations. Most of these may be 
-used in logic expressions.
+\begin{figure}[t]
+  \begin{cadre}
+     \input{cpp-casts.bnf}
+    \end{cadre}
+    \caption{Grammar of C++ casts}
+  \label{fig:gram:cpp-casts}
+\end{figure}
+
+\lang added to C a number of casting operations (cf. Fig. \ref{fig:gram:cpp-casts}). 
+Most of these may be used in logic expressions.
 
 \begin{itemize}
 	\item \textbf{(T)e} and \textbf{T(e)} casts -- When applied to primitive types, these casts perform an arithmetic conversion. Aside from potential numeric overflow errors, these are appropriate to use in logic expressions. When applied to pointers and reference expressions, these casts are equivalent to
