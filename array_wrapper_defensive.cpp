@@ -14,7 +14,7 @@ public:
     ensures \false;
     throws \true;
     @*/
-  int getValue(int index) {
+  int getValue(int index) const {
     if (index < 0) throw std::range_error("negative index");
     if (index >= data_length) throw std::range_error("index too large");
 

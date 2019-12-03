@@ -12,7 +12,7 @@ class Array {
       ensures \result == data[index];
       pure
     */
-    int getValue(int index) {
+    int getValue(int index) const {
 		return data[index];
     }
 };

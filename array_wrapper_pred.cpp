@@ -13,7 +13,7 @@ public:
     requires 0 <= index < length();
     ensures \result == value(index);
   */
-  int getValue(int index) {
+  int getValue(int index) const {
     return data[index];
   }
 };

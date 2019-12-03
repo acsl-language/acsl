@@ -447,6 +447,10 @@ example, the logic expression denoting the value of the C expression
 Note that there is no implicit cast from integers to C integral types.
 \input{integer-cast-modern}
 
+\ifCPP{In \lang and \NAME, casts may also be written in functional form (and some coding styles prefer this form).
+For example, one can write  \lstinline|int(x)|, \lstinline|boolean(x)|, and \lstinline|T(a)|, where \lstinline|T| is a program-defined type.
+}
+
 \subsubsection{Quantification on C integral types}
 \label{sec:quantification}
 
@@ -1090,7 +1094,7 @@ The frame condition can follow either \emph{writes} semantics or \emph{modifies}
 	\item Under \lstinline|writes| (or assigns) semantics, only those memory locations listed in a frame condition may be \emph{written to}, that is, only those locations may be the target of an assignment statement or listed in the frame condition of a called function. This is true whether or not the value of the memory location changes.
 	\item Under \lstinline|modifies| semantics, a memory location may be written to, as long as the value is restored (that is, not modified) by the end of the scope of the function contract. Under this semantics, a frame condition is a requirement on the relationship between two states --- any memory location not a member of the frame condition must have the same value in its pre-state and its post-state.
 \end{itemize}
-Confusion can arise because the words \emph{assigns} and \emph{modifies} are sometimes used interchangeably. In particular, \textbf{\NAME uses
+Confusion can arise because the words \emph{assigns} and \emph{modifies} are sometimes used interchangeably. In particular, \textbf{ACSL \ifCPP{and \NAME} \iftoggle{isCPP}{use}{uses}
 	\emph{modifies} semantics, even though the frame condition is introduced by the \emph{assigns} keyword}.\footnote{For comparison, JML and the OpenJML tool define frame conditions to have write semantics but use the keywords assigns and modifies interchangeably; however, the KeY tool for JML implements modifies semantics. Ada/SPARK's data flow contracts effectively encode write semantics.}
 
 \subsection{Contracts with named behaviors}

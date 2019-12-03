@@ -83,9 +83,9 @@ used in logic expressions.
 \TODO{Grammar additions and examples, more about hash\_code and type\_index or omit them.}
 
 \lang also has means to obtain information about the dynamic
-type of an expression using the \lstinline|typeid| operator. It can be applied to either a type name or an expression; it can be used (through \lstinline|hash_code| or \lstinline|type_index|) to check equality of types.
+type of an expression using the \lstinline|typeid| operator. It can be applied to either a type name or an expression; it can be used (through \lstinline|std::type_info::hash_code| or \lstinline|std::type_index|) to check equality of types.
 
-The  \lstinline|typeid| operator and the \lstinline|hash_code| and \lstinline|type_index| may all be used in logic expressions. They are
+The  \lstinline|typeid| operator, \lstinline|std::type_info::hash_code| and \lstinline|std::type_index| may all be used in logic expressions. They are
 applied to \lang objects, not to logic values. Example uses of these features are
 shown below.
 

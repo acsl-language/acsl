@@ -9,7 +9,7 @@ public:
     assigns \nothing;
     ensures \result == data[index];
   */
-  int getValue(int index) {
+  int getValue(int index) const {
     return data[index];
   }
 };
