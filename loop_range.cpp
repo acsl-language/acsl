@@ -14,15 +14,15 @@ void m() {
   }
 
   k = 0;
-  std::list<int> data = f();
-  //@ ghost size_t len = data.size();
+  std::list<int> intlist = f();
+  //@ ghost size_t len = intlist.size();
   /*@
     loop invariant 0 <= \count <= len;
     loop invariant k == \sum(0,\count-1,
                 \lambda integer j; *(\data.begin()+j));
     loop variant len - j;
   @*/
-  for (auto value: data) {
+  for (auto value: intlist) {
     k += value;
   }
 }

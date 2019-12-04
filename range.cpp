@@ -9,8 +9,8 @@ void m() {
   }
 
   k = 0;
-  std::list<int> data = f();
-  for (auto value: data) {
+  std::list<int> intlist = f();
+  for (auto value: intlist) {
      k += value;
   }
 }
