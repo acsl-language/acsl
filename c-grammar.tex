@@ -1,0 +1,39 @@
+\section{C grammar elements}
+\label{sec:cgrammar}
+
+This appendix chapter summarizes the elements of the \lang grammar that are used by \NAME.
+
+\subsection{Identifiers}
+
+\begin{itemize}
+  \item  An \textit{id} is a sequence of alphanumeric characters and underscores beginning with a non-digit:  \lstinline| [a-zA-Z_][a-zA-Z_0-9]* |.
+\end{itemize}
+
+\subsection{Literals}
+
+Numeric, character and string literals are adopted from \lang without modification:
+\begin{itemize}
+  \item An \textit{integer literal} is a digit sequence with optional radix and bit-size indicators: \\ \lstinline! [+-]?(0 | [1-9][0-9]* | 0[0-7]+ | 0x[0-9A-Za-z]+) !
+  \item A \textit{real literal} has the following form:
+ \begin{lstlisting}
+   [+-]? ([0-9]+)? (\.[0-9]*)? ([eE][+-]?(0-9)+)? ([fFlL])?
+   \end{lstlisting}
+where there must be either an initial digit sequence or post-decimal point digit sequence and either a decimal point or an exponent.\footnote{In C++17 exponents beginning with \lstinline|p| or \lstinline|P| and hex digit sequences with leading 0x are permitted.}
+  \item A \textit{character literal} is a single character or a backslash followed by a single character enclosed in single quotes, optionally 
+  preceded by the \lstinline|L| character to denote a wide character.
+  \item A \textit{string literal} is a sequence of printable characters or escape sequences enclosed in double quotes: TODO
+\end{itemize}
+
+
+\subsection{C Type Expressions}
+
+\begin{figure}[htp]
+  \begin{cadre}
+    \input{c-type-name.bnf}
+  \end{cadre}
+  \caption{The grammar of C type expressions, from the C standard}
+\label{fig:gram:ctype}
+\end{figure}
+
+\ifCPP{\TODO{Review the figure on C type expressions}}
+

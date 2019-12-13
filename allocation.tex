@@ -5,6 +5,5 @@
   loop-allocation ::= "loop" "allocates"  dyn-allocation-addresses ";";
                     | "loop" "frees"  dyn-allocation-addresses ";" ;
   \
-  dyn-allocation-addresses ::= location-addresses ;
-                       | \nothing
+  dyn-allocation-addresses ::= locations [\nothing is allowed] ; 
  \end{syntax}

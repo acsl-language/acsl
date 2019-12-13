@@ -1,0 +1,557 @@
+\section{A design for functional programming in C and \lang}
+\label{sec:functionalDiscussion}
+
+This section motivates the design of functional programming features in \NAME, describes how such features might be embedded in a deductive verification system, and provides several examples and use cases.
+
+The first few sections summarize the use of function pointers
+in C/C++ and give a simple model for basic reasoning. 
+The crux of the design is specifying and reasoning about application of 
+function pointer values; this is addressed in the bulk of this
+section.
+Two mechanisms are used to attach specifications to function literals: conventional function contracts for classic C/C++ functions and 
+specification interfaces (\S\ref{sec:lambdaspecs}) for lambda expressions; 
+reasoning about functional objects is accomplished using
+dynamic contracts (\S\ref{sec:fpreasoning}). 
+These mechanisms are then demonstrated with examples and use cases in \S\ref{sec:fpexamples}ff.
+
+ 
+\subsection{Functional programming features in C and \lang}
+\label{sec:fp}
+
+C programs allow creating function-pointer values that 
+can be used in expressions and assignments and later applied
+to a set of arguments to yield a result. 
+\lang adds 
+the	ability to take pointers to functions that are elements
+of classes and other aggregates and to create functions
+without the need to declare the function (lambda expressions). 
+Correspondingly \acsl and \NAME need to be able to manipulate such objects and reason about their effects.
+
+Functional objects (including what are typically called function pointers) in C and \lang are subject to the following operations:
+\begin{itemize}[noitemsep,nolistsep]
+	\item creation
+	\item assignment and initialization
+	\item address-of operation
+	\item casting and conversion
+	\item equality comparison
+	\item application
+\end{itemize}
+
+Functor objects are an alternative to simple function pointers.
+Functor objects are instances of classes that contain an 
+\lstinline|operator()|. 
+They can be called as shown at the end
+of the code in Example \ref{Ex-FN1}. 
+The relationships between
+`naked' function pointers and functor objects and techniques for 
+specifying and reasoning about functor objects are presented in \S\ref{sec:functors}.
+
+\subsubsection{Creation}
+
+Function objects can be created by
+\begin{itemize}[noitemsep,nolistsep]
+	\item Taking the address of a textually defined global function.
+	\item Taking the address of a member function of an aggregate.
+	\item Writing a lambda expression.
+\end{itemize}
+These are demonstrated in Example \ref{Ex-FN1}.
+Using a \lstinline|&| to convert a function name to a function
+pointer is optional for static functions. The conversion is performed implicitly where needed. The \lstinline|&| is needed when taking the address
+of a member function.
+\begin{example}
+	 \label{Ex-FN1}
+	Example uses of C and C++ function values.
+	\listinginput{1}{fexample1.cpp}
+\end{example}
+
+Function pointers can be taken from inline functions. In that case 
+the actual application of the function will not be inlined: a 
+non-inlined instance of the function will be created by the compiler.
+
+The type of functions with default arguments includes all the arguments; any defaults are ignored.
+
+\subsubsection{Assignment, initialization and typing}
+A function pointer type includes the type and number of its arguments,
+the type of the return value, and any qualifications (such as
+\lstinline|const|).  In addition, whether the final argument is a
+var-args argument is also part of the type.  The type of a pointer to
+member function includes the type of the object it is called for.
+
+The declaration of a variable with function pointer type is given by syntax like\\
+\emph{ret-type} (*\emph{var-name})(\emph{arg-types}), with optional \lstinline|const| and other modifiers.
+
+A variable with a function pointer type can be initialized with or assigned a function pointer value if they have the same type.
+
+A \emph{static} member function and
+a global function with the same signature have the same type.
+\emph{Non-static} member functions have different types because
+the signature and type implicitly include the object the member function
+is called for and the fact that it is a member function.
+
+A lambda expression \emph{that has an empty capture specification} and
+a global function with the same signature have the same type.
+Lambda expressions with non-empty capture specifications are discussed 
+in \S\ref{sec:functors}.
+
+\subsubsection{Address-of}
+
+A function pointer is a pointer, to a function. 
+The \lstinline|&| operator is traditionally used to take
+the address of something. 
+This operation is shown in Example \ref{Ex-FN1}.
+However, there is an automatic conversion from the textual
+name of a function to function pointer value. 
+So the use of \lstinline|&| is optional for static functions; it is required for member function pointers.
+
+\subsubsection{Casts and conversions}
+
+\textit{To be written}
+\TODO{TODO: Casts and conversions}
+
+\subsubsection{Comparison}
+
+The only comparison operations on function pointers are 
+equality and inequality. Two function pointers of the 
+same type are equal precisely when they point to the same
+textual definition; since functions must have only one
+definition (though perhaps multiple declarations), 
+the instance being referred to is unique. 
+The equality operation is type-incorrect if the two
+pointers have different types.
+
+Two function pointers are not equal if they point to 
+different textual functions even if they implement precisely the
+same computation or have precisely the same text.
+
+Function pointers can also be compared to the predefined value \lstinline|nullptr|. A function pointer variable may have
+a value of \lstinline|nullptr|, but the value of the address
+of any textual function or member function or lambda expression
+ is always not
+equal to \lstinline|nullptr|.
+
+\subsubsection{Application}
+
+The value of a function pointer is typically known only by
+executing the program. (Otherwise, one could simply call the
+known function directly.) To call the function to which the
+function pointer points, one uses this syntax:
+(\emph{expr})(\emph{args}) where \emph{expr} is an expression yielding a value of the correct type for the argument list. If the expression is
+more than a simple name, parentheses are required.
+Very typically the expression is simply the name of a variable of function pointer type, or *\emph{name} where the optional \lstinline|*| indicates a dereference (the dereference is always implicitly applied).
+In this case, with the name being \lstinline|fp|, the syntax is simply (fp)(\emph{args}) or just
+fp(\emph{args}).
+
+Note that when a function is called through a function pointer, all arguments must be present; the function pointer knows nothing about
+default arguments.
+
+When calling member functions through member function pointers, one must supply an object along with the actual arguments. The syntax is \\
+(\emph{object}.*\emph{mfp})(\emph{args}) or
+(\emph{object-ptr}->*\emph{mfp})(\emph{args}).
+Note that dynamic dispatch is still used for virtual functions,
+as in the following example:
+\lstinputlisting{virtual_fct_ptr.cpp}
+
+\subsection{Modeling function pointers in logic}
+\label{sec:modelingfp}
+ 
+ Since function pointers are unique values with no constituent parts, they can be modeled in logic simply as a set of distinct values. It simplifies the reasoning engine's task if
+ function pointers are considered distinct from other objects.
+ Conversion to or from other objects is rare, but, if necessary can still be accomplished using logical adapter functions.
+ 
+ In this model
+ \begin{itemize}
+ 	\item Each textual instance of a function, member function or lambda expression is assigned a unique logical literal.
+ 	Since the programming language takes care of type checking,
+ 	all of these literals can be of the same logical sort.
+ 	\item Function pointer values consist of one of these logical literals or a logical value corresponding to 
+ 	\lstinline|nullptr| for function pointers.
+ 	\item \TODO{ about conversions }
+ \end{itemize}
+The above model is sufficient for reasoning about initialization, assignment, conversions, and comparisons.
+
+\subsection{Specifications for lambda expressions}
+\label{sec:lambdaspecs}
+
+Conventional function definitions have an established place to insert their specification (cf. \S\ref{sec:fn-behavior}). Functions defined by lambda expressions do not. These appear in the middle of expressions where the insertion of a function contract would be intrusive and difficult to read.
+
+C++ represents lambda expressions as an \lstinline|operator()| wrapped in an anonymous unique class. We can follow this 
+approach in providing a function contract for a lambda expression.  
+For example, if we have a lambda expression such as \lstinline|[](int x, int y)-> { return -x; }| we can write its contract like this.
+
+\lstinputlisting{operator.cpp}
+
+We call such a class a \emph{specification contract class}.
+We use a \emph{specification cast} to attach this contract to
+the lambda expression:\\
+\lstinline|std::foreach(first, last, /*@ (Negator)@*/[](int x, int y)-> { return -x; }|
+
+For a simple lambda expression such as the one above, a tool might readily infer the necessary specification contract class and cast. But lambda expressions can be arbitrarily complex, in which case a user-written specification contract class and cast will be necessary.
+
+Casts such as these create a proof obligation, namely, that the 
+lambda expression does indeed satisfy the specification given in the
+specification contract class.
+
+\subsection{Reasoning about function pointer application}
+\label{sec:fpreasoning}
+The meat of reasoning about function pointers is reasoning about the result of application of an unknown pointer to a set of arguments. 
+The properties of a function are its
+preconditions, postconditions, frame-conditions and other effects on the program state. 
+For textually defined functions, these properties are given by 
+the function contract, which is textually written in
+conjunction with the function definition or declaration.
+We need a comparable means to express the contract of an
+arbitrary unknown value of a given function pointer type.
+
+Consider preconditions. 
+A precondition is a predicate over a
+function's arguments and possibly the program state; it is 
+true when a call of the function with those arguments is 
+well-defined (that is, is known to obey the rest of the function contract). 
+For a function pointer \emph{value}, say \lstinline|fp|, we can express this predicate as a logical function
+\lstinline|\requires(fp,|\emph{args}\lstinline|)|. 
+Furthermore, we can implicitly define this term for every function in the program -- or at least for every function in the program whose address is taken and thus might be the value of a function pointer expression.
+
+Note that \lstinline|\requires| is not a term itself. It is the name of a family of logic functions that differ by the types of the function arguments. There is in addition a state label representing the program state, in order to capture
+information about values used by the function that are not in
+the argument list. 
+
+There is a corresponding family of terms or predicates for each kind of function contract clause:
+\begin{itemize}[noitemsep,nolistsep]
+	\item \lstinline|\requires|, returning a \lstinline|boolean| value
+	\item \lstinline|\ensures|, returning a \lstinline|boolean| value
+	\item\lstinline|\assigns|, returning a \lstinline|tset| value
+	\item \textit{Other clauses to be completed} \TODO{ allocates, frees, throws, terminates, decreases, exits, breaks, continues, returns}
+\end{itemize}
+
+Note the following:
+\begin{itemize}
+	\item Some clauses, such as the \lstinline|ensures| clause,
+	state properties comparing two states. They therefore have two state labels.
+	\item The property represented by these terms is that
+	given by the effective clause value combined across all the
+	behaviors of the function contract. Thus there are no
+	corresponding dynamic predicates for the \lstinline|assumes| clause (see the example below).
+	\item Some clauses allow using special terms (such as 
+	\lstinline|\result|, 
+	\lstinline|\exception|, \lstinline|\exit_status|). 
+	These are represented by a special explicit argument. Consider, for example, the ensures predicate for the example below.
+
+\begin{listing-nonumber}
+int j;
+		
+/*@
+requires r0;
+behavior b1l:
+  assumes a1;
+  requires r1;
+  ensures \result == \old(j) + k;
+behavior b2:
+  assumes a2;
+  requires r2;
+  ensures \result >= 0;
+*/
+int m(int k) { ... }
+\end{listing-nonumber}
+
+	In this case the consolidated precondition is the following:
+	\begin{listing-nonumber}
+          r0 && (a1==>r1) && (a2 ==> r2)
+        \end{listing-nonumber}
+	while the consolidated postcondition is:
+	\begin{listing-nonumber}
+          (a1==>(\result==\at(LPre,j)+k)) && (a2 ==> (\result>= 0))
+        \end{listing-nonumber}
+	The C++ function takes a single argument and produces a single result. So its signature is
+	\lstinline|\ensures{LPre,LPost}(int (*fp)(int), int result, int k)|	
+	and its definition for the function \lstinline|m| (presuming the
+        function has a logical literal identifier \lstinline|M|) is:
+	\begin{listing-nonumber}
+        \ensures{LPre,LPost}(M,r,k) <==>
+            (r0 && (a1==>(r==\at(j,LPre)+k)) && (a2 ==> (r >= 0))
+        \end{listing-nonumber}
+	The postcondition term is true for any combination of 
+	result value and argument values for which the ensures clause would be true. Any underspecification of the function is readily represented.
+
+\end{itemize}
+
+\subsection{Member function pointers}
+\label{sec:memberfp}
+Member function pointers occupy a different region of type space than
+do static function pointers, but are nevertheless treated quite
+similarly. Each member function has implicitly provided the same
+\lstinline|\requires| and other dynamic specifications. Now however
+the definition of those predicates can include references to
+\lstinline|this| to refer to a pointer to the object the member
+function is called for. If we take the following example:
+
+\lstinputlisting{member_fct_ptr.cpp}
+
+we have (with \lstinline+|A::m|+ the name of the literal for the textual
+function) the implicitly defined terms
+
+\begin{lstlisting}
+  \forall A t; \requires(|A::m|,t) == this->x > 0;
+  \forall A t; \assigns(|A::m|,t) == \empty;
+  \forall A t, int result; \ensures(|A::m|,t,result) == (result == t->x + 1);
+\end{lstlisting}
+(Here the quantification variable \lstinline|t| ranges over the possible
+objects the member function is called for.)
+
+\subsection{Examples}
+\label{sec:fpexamples}
+
+This section presents a number of manually worked examples 
+to demonstrate how the design above enables reasoning about
+a variety of uses of function pointers.
+In these examples we ignore questions of arithmetic overflow and 
+differences between machine integers and mathematical integers.
+
+The examples show a snippet of C++ code and then a translation into a logical
+pseudo-code. The pseudo-code contains declarations, assignments, state labels, assume, assert and havoc statements. 
+The assume statements are axioms implied by the semantics of the
+programming language, i.e. C++. 
+The assert statements are verification conditions that
+must be proved according to the rules of \NAME.
+Havoc statements give the listed memory locations arbitrary values (which are then constrained by the postcondition). Also,
+\begin{itemize}[noitemsep,nolistsep]
+	\item the symbol \lstinline|\flit| represents the logical sort of function pointers;
+	\item the symbol \lstinline|<:=| is the relation between two sets of memory locations that the left side is a subset of the right side;
+	\item the \lstinline|@| symbol is an operator giving the value of a memory location (the lhs) at a given program state (the rhs).
+\end{itemize}
+
+We also use arithmetic, logical, and quantified expressions in what should be familiar syntax to ACSL and C++ knowledgeable readers.
+
+It will be helpful in reading the logical representation to recall that
+a translation of a function to be verified consists of
+\begin{itemize}[noitemsep,nolistsep]
+	\item declarations of formal arguments, external global variables, and a special value for the return value of the function being proved
+	\item assuming the preconditions of the function
+	\item translating the body of the function
+	\item asserting (to be proved) the postconditions of the function
+\end{itemize}
+A function call within the body of the function being verified is
+translated as follows:
+\begin{itemize}[noitemsep,nolistsep]
+	\item declaration of a temporary variable to hold the result of the subexpression that is the function call
+	\item assertion (to be proved) that the precondition of the callee is satisfied
+	\item assertion (to be proved) that the frame of the callee (the set of memory locations possibly written by the callee) is a subset of the frame of the caller
+	\item havoc (set to arbitrary values) any memory location in the frame of the callee
+	\item assume the postcondition of the callee
+\end{itemize}
+
+For the first few examples, the (manual) translation into SMT-LIB is shown.
+
+\subsubsection{Simple initialization and application}
+
+Consider the code in the following listing. It initializes a function pointer with a known value and then applies it to an argument.
+\lstinputlisting{fexampleA.cpp}
+
+First note that if a tool processing this code performed constant propagation and constant folding, the tool would realize, as a human immediately does, that the function 
+pointer being applied in line 3 of \lstinline|main| can only point to 
+\lstinline|increment|, and so we can use \lstinline|increment|'s specifications directly.
+For the sake of generality, though, we will presume that such 
+optimizations are not available.
+
+The translation into pseudo-code gives
+\lstinputlisting{fexampleA.logic}
+
+Here
+\begin{itemize}[noitemsep,nolistsep]
+	\item Line 1 gives a declaration of the logic name representing 
+	the function pointer literal for the \lstinline|increment| function
+	\item Lines 2--5 show the properties of this literal obtained
+	automatically from \lstinline|increment|'s function contract
+	(Lines 1-3 in the C++ code).
+	\item Line 6 declares a logic name for the program variable 
+	\lstinline|fp|; line 6 is the translation of line 7 of the C++ code above.
+	\item Line 8 is a state label marking the state prior to the 
+	function call (\lstinline|fp(4)|).
+	\item Line 9 is an assertion of \lstinline|fp|'s precondition
+	\item The check on the frame condition is omitted
+	\item Line 10 havocs the values in the frame of \lstinline|fp|,
+	whatever they might be (here the expression evaluates to 
+	\lstinline|\empty|).
+	\item Line 11 declares a temporary variable to hold the result of
+	the subexpression that is the function call
+	\item Line 12 gives a state label for the post-state of the function call
+	\item Line 13 is the assumption of the callee postcondition. It relates the two labeled states --- before and after the function call.
+	\item Line 14 is the declaration of a logic variable corresponding 
+	to the program variable of the same name
+	\item Line 15 is the translation of the assignment of the result of
+	the function call to the program variable \lstinline|y|.
+	\item Line 16 asserts the postcondition to be proved
+\end{itemize}
+
+The corresponding SMT proof obligation is
+\lstinputlisting{fexampleA.smt2}
+which is proved immediately.
+
+There a few points to note here:
+\begin{itemize}
+	\item Because \lstinline|\requires| denotes a family of logic functions, one for each different signature, we represent them in SMT-LIB with mangled names.
+	\item Since there are no state changes in this example, we do not introduce variable incarnations as needed by the traditional 
+	single assignment form of SMT-based verification conditions.
+\end{itemize}
+
+\subsubsection{Function pointer expression}
+
+This next example slightly expands on the former example: now the function pointer is initialized with an expression and is not a constant.
+\lstinputlisting{fexampleB.cpp}
+
+The translation into pseudo-code gives
+\lstinputlisting{fexampleB.logic}
+
+The corresponding SMT-LIB is
+\lstinputlisting{fexampleB.smt2}
+
+\subsubsection{State changing application}
+The next example requires using labels to distinguish program states.
+\lstinputlisting{fexampleC.cpp}
+
+The translation into pseudo-code gives:
+\lstinputlisting{fexampleC.logic}
+
+Here since the functions and function pointers have a void return type, there is no argument of the \lstinline|\ensures| term corresponding to the return value. Also, the \lstinline|test| function has no frame condition, 
+so it is implicitly assumed to be \lstinline|assigns \everything;|, meaning writes to any memory location are allowed. This is evident on
+Lines 13 and 16; these assertions state that the callee frame must be 
+a subset of the caller's frame, which is \lstinline|\everything|;
+the assertions are trivially true. 
+\begin{itemize}
+	\item Line 17 states that the input argument \lstinline|x| of \lstinline|doTwice|
+	must satisfy (a) the precondition of the first application of
+	\lstinline|fp|, and then (b), whatever result (\lstinline|t|) might be allowed
+	for that first application of \lstinline|fp| must satisfy the
+	precondition for the second application of \lstinline|fp|.
+	\item Line 18 states that the overall frame of \lstinline|doTwice| is
+	the union of the frame for \lstinline|fp| applied to the input and
+	\lstinline|fp| applied to the intermediate value.
+	\item Line 19 states the postcondition: a value \lstinline|r| is 
+	permitted as a result of \lstinline|doTwice| if there is some
+	intermediate value \lstinline|t| such that \lstinline|t| is a permitted result of a (first) application of \lstinline|fp| with \lstinline|x| as input and that \lstinline|r| is a permitted result
+	of a (second) application of \lstinline|fp| with \lstinline|t| as input.
+\end{itemize}
+The frame conditions here are \emph{dynamic}: they are not 
+necessarily just a simple list of statically known memory locations. The logical encoding and
+reasoning about dynamic frames is more difficult than for static frames.
+The complexity of specifying and proving frame conditions quickly encourage one to use, as much as possible, functions without side-effects,
+that is, to adopt a functional programming style.
+
+
+\subsubsection{Function pointers as function arguments}
+The next example shows the use of function pointers as arguments to other functions: the functions \lstinline|doOnce|
+and \lstinline|doTwice| each take a function pointer with signature \lstinline|(int)->int| and apply it once or twice to an
+argument. Then the function \lstinline|test| exercises these combinator functions. All three functions need to be verified.
+
+\lstinputlisting{fexampleD.cpp}
+
+This example, although still simple, shows that the dynamic contracts
+are beginning to look complicated; they essentially need to account
+for intermediate values that are computed in the function body and used as input to subsequent methods.
+
+
+ 
+The logic translation of \lstinline|doOnce| is shown next. Its proof is fairly obvious because the assertions to be proved match 
+assumptions given.
+
+\lstinputlisting{fexampleD1.logic}
+
+The logic translation of \lstinline|doTwice| is more complicated.
+
+\lstinputlisting{fexampleD2.logic}
+
+\TODO{Comments on assigns reasoning; pure functions; need translation of test methods}
+
+\subsubsection{Composition}
+
+\TODO{}
+
+\subsubsection{Library methods: all\_of}
+\label{sec:libraryMethods}
+The C++ standard library includes a number of functions that take function pointer or similar arguments and apply them to various 
+collections or iterator-defined sequences of values. 
+It is important
+that reasoning about such constructs be straightforward within \NAME and
+associated tools. 
+
+This subsection begins a series of examples showing how such methods might be 
+specified and how a reasoning tool might translate and verify uses of such methods. So as to avoid needing to model iterators in general, the 
+following examples will demonstrate our function pointer design just
+for arrays.
+
+The first such example is the library function \lstinline|std::all_of|,
+which operates on a sequence (of array elements, here) to determine
+whether a given predicate is true for all of the elements. In this
+case the predicate is required to have no side-effects.
+
+\TODO{}
+
+\subsubsection{Library methods: transform}
+
+\TODO{}
+
+\subsubsection{Library methods: foreach}
+
+\TODO{}
+
+\subsection{Functors and capturing lambda expressions}
+\label{sec:functors}
+
+An alternate to function pointers and simple lambdas are functors. Functors are classes, typically with state, and an
+\lstinline|operator()|. Functors can be used in functional programming environments, in which case it is the special 
+\lstinline|operator()| that is called. For example, an instance of a functor class can be passed to 
+\lstinline|std::all_of|; the \lstinline|bool operator(T t)| is called on each element of the container to determine if
+the operator answers \lstinline|true| for all of them.
+
+Since functors are classes, there is no problem with writing a function contract in place.
+
+\lstinputlisting{ffunctorA.cpp}
+
+The \lstinline|std::any_of| algorithm takes a function object (pointer or functor) as its last argument. To reason about
+the effect of \lstinline|std::any_of| requires the dynamic contract predicates to be defined. These can be defined for 
+\lstinline|FF.operator()| by direct (and automatic) inspection of the contract for that function.
+
+A lambda expression that does not capture any variables from its scope is equivalent to a function pointer.
+A lambda expression
+that does capture variables is equivalent to a functor. 
+However, as discussed earlier, there is no natural syntactic place to
+put a function contract for the lambda expression. We use the same solution as above, namely specification contract classes and casts.
+A specification class for a lambda expression looks exactly like a functor declaration. 
+The example just above can be rewritten using lambdas and specification classes as follows:
+
+\lstinputlisting{ffunctorB.cpp}
+
+Now the logical encoding of the call of \lstinline|any_of| considers its last argument to have type \lstinline|FF|,
+and represents that last actual argument with a function object literal, the properties of which are expressed with 
+dynamic function contract predicates.
+
+\subsection{std::function}
+\label{sec:stdfunction}
+
+\lstinline|std::function| is a C++ template adapter that can hold any object that takes arguments and returns a value: function pointer, 
+functor,
+capturing or non-capturing lambda expression,
+pointers to member functions, 
+and even pointers to member data items.
+ \lstinline|std::function|  provides a uniform way to hold, assign, and pass any of these functional objects to generic algorithms.
+ 
+ \lstinline|std::function| is also then a unifying way to reason about all of the functional objects and their uses. In particular,
+ \begin{itemize}[noitemsep,nolistsep]
+ 	\item each static function definition and lambda expression is
+ 	represented as a logical literal of a sort that is used for all
+ 	\lstinline|std::function| types.
+ 	\item each literal has associated with it dynamic function contracts as have been illustrated in past sections
+ \end{itemize}
+
+\subsection{Concepts}
+\label{sec:concepts}
+Although \lstinline|std::function| is the unifying type for functional objects, the direction of C++ is to declare functional 
+arguments to standard library algorithms using \emph{Concepts}.
+There are compile-time evaluated restrictions on class objects (such as
+functors) that can impose such restrictions as having boolean member of function of a given signature, or being copy-constructible and the like.
+Concepts are part of C++ as of C++20 and so won't be considered 
+at present 
+for \NAME.
+
+\TODO{TODO: what about quantification over labels}
+
+\TODO{TODO: Check all uses of labels in the examples}

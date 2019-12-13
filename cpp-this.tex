@@ -1,0 +1,21 @@
+\begin{syntax}
+term ::= "this" ;
+  | "\this" ;
+  | "\count" ;
+  | "\data" ;
+  | term ( "." | "->" ) id "(" ( term ( "," term )* )? ")" ;
+\
+ident ::=  qualifier-seq? qualifier ;
+\
+poly-id ::= qualifier-seq poly-id ;
+\
+logic-type-name ::= qualifier-seq id ;
+\
+qualifier-seq ::= "::"? ( qualifier "::")* [Must not be empty];
+\
+qualifier ::= id ( "<" type-expr ( "," type-expr )* ">" )? ;
+\
+literal ::= "nullptr" | "true" | "false" ;
+\
+logic-def ::= "using" ident ";" ;
+\end{syntax}

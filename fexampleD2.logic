@@ -1,0 +1,38 @@
+\flit f;
+int x;
+int result;
+// assume caller preconditions
+assume \requires{Here}(f,x) &&
+  (\forall int t; \ensures{Here,Here}(f,t,x) ==> \requires{Here}(f,t));
+Pre:
+
+// translate result1 = f(x)
+//   temporary for result value
+int result1;
+L1:
+assert \requires{Here}(f,x);
+assert \assigns{Here}(f,x) <:=
+                \assigns{Pre}(f,x) \union
+                (\union int t: \ensures(f,t,x); \assigns(f,t));
+havoc \assigns{Here}(f,x);
+assume \ensures{L1,Here}(f,result1,x);
+
+// translate result2 = f(result1)
+//   temporary for result value
+int result2;
+L2:
+assert \requires{Here}(f,result1);
+assert \assigns{Here}(f,result1) <:=
+         \assigns{Pre}(f,x) \union
+         (\union int t: \ensures{Pre}(f,t,x); \assigns{Pre}(f,t));
+havoc \assigns{Here}(f,result2);
+assert \exists int t; \ensures{L2,Here}(f,t,x) && \ensures{L2,Here}(f,result,t);
+
+// translate: result = result2
+assume result == result2;
+
+// function postcondition to be checked
+/*@ assert \exists int t;
+      \ensures{Pre,Here}(f,t,x) &&
+      \ensures{Pre,Here}(f, result, t);
+*/

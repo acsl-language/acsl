@@ -9,16 +9,18 @@
        | tset "[" tset "]" ;
        | tset "[" range "]" ;
        | "(" range ")" ; a range as a set of integers
-       | "\union" "(" tset ("," tset)* ")" ; union of locations
-       | "\inter" "(" tset ("," tset)* ")" ; intersection
+       | "\union" "(" tset ("," tset)* ")" ; union of location sets
+       | "\inter" "(" tset ("," tset)* ")" ; intersection of location sets
        | tset "+" tset ;
        | "(" tset ")" ;
        | "{" tset "|" binders (";" pred)? "}" ; set comprehension
-       | "{" ( term ("," term )*)? "}" ; explicit set
+       | { "{" ( term ("," term )*)? "}" } ; explicit set
        | term [The given term may not itself be a set]; implicit singleton
        \
-  pred ::= "\subset" "(" tset"," tset ")" ; set inclusion
+  pred ::= "\subset" "(" tset "," tset ")" ; set inclusion
        | term "\in" tset ; set membership
+       \
+  range ::= term? ".." term?
 \end{syntax}
 
 %%% Local Variables:

@@ -1,0 +1,221 @@
+\section{Class contracts [C++]}
+\label{sec:class-contracts}
+
+C++ allows the declaration of functions and data fields within
+the scope of the declaration of an aggregate type (class, struct or union). Similarly \NAME specification annotations
+may be present at class (or struct or union) scope.
+
+\subsection{Global declarations}
+
+As described in Section \ref{sec:logicspec}, logical specifications (predicates, functions, lemmas, and constants) may be defined at global scope. They may also be defined in class (that is, aggregate) scope. The following considerations apply:
+\begin{itemize}
+	\item Just as for \lang identifiers, any names 
+	declared are part of the aggregate scope. The name may
+	be referred to outside of the aggregate using \lang's 
+	qualification syntax; for example, \lstinline|A::m| names a 
+	logic predicate declared as \lstinline|m| in class
+	or namespace \lstinline|A|.
+	\item As for any other specification constructs, those defined in aggregate scope are only visible in specification annotations. However, logic declarations are always public.
+	\item Within aggregate scope, a predicate or function definition may be
+	declared \lstinline|static|, with the same meaning as 
+	\lstinline|static| has for \lang function 
+	declarations: non-static logic predicates and functions
+	may refer to \lstinline|this| and are invoked with the
+	\lang arrow or dot syntax.
+	
+      \item A logic function or predicate may be declared
+        \lstinline|virtual| (but not then also \lstinline|static|) if
+        it is declared within a class that is virtual itself, that is,
+        the class has at least one \lang virtual member function. In such a
+        case, dynamic binding applies: just as for \lang member functions, the
+        actual logic function invoked depends on the dynamic type of the
+        object for which it is called.
+
+	\item Logic lemmas, logic type definitions, axiomatic definitions, and logic constant definitions are always implicitly static and are never virtual. The effect of declaring them within an aggregate is just one of name scope.
+	
+	\item Aggregates may contain declarations of ghost functions, as described in section \S\ref{sec:ghost}.
+\end{itemize}
+
+\TODO{Should give some significant examples}
+
+\subsection{Function contracts within class scope}
+
+Function declarations or definitions that belong to an aggregate (i.e., member functions) may have function
+contracts just like functions declared or defined at global scope. If the function is not declared \lstinline|static|, then
+the keyword \lstinline|this| may be used within the function
+contract and within any statement contract within the 
+function. The keyword \lstinline|this| refers to the current
+object, just as \lstinline|this| does within \lang code.
+The type of \lstinline|this| in contracts is the same as the type of \lstinline|this| in C++ code: \lstinline|T*| or \lstinline|const T*|, where \lstinline|T| is the type of the enclosing aggregate.
+
+\TODO{TODO: Is this allowed to be used in constructor preconditions?}
+
+\subsection{\textbf{this} and \textbf{\textbackslash this}}
+
+
+\begin{figure}
+\begin{cadre}
+\input{cpp-this.bnf}
+\end{cadre}
+\caption{ACSL++ grammar enhancements from C++}
+\label{fig:gram:this}
+\end{figure}
+
+Within C++ class methods, the identifier \lstinline|this| represents a
+pointer to the object instance on which a method is acting. \NAME
+allows both \lstinline|this| and this new construct \lstinline|\this| 
+to be used as follows.
+\begin{itemize}
+\item \lstinline|this| designates, as in C++, a pointer to the object
+instance a method is acting on. It has type either \lstinline|T*|
+or \lstinline|const T*| per C++ rules (where \lstinline|T| is the type
+of the class owning the method). \lstinline|this| may be used
+within function contracts or statement contracts of non-static methods.
+\lstinline|this| is a C++ entity permitted to be used in a logic context
+and subject to interpretation according to the appropriate state labels.
+
+\item \lstinline|\this| designates a \textit{reference} to the object
+  instance on which a method is acting. It has type either
+  \lstinline|T&| or \lstinline|const T&|.  \lstinline|\this| may be
+  used in logic definitions such as predicates, functions, constants,
+  and class invariants. Axioms, lemmas, type definitions, global type
+  invariants and data invariants are static, {\it i.e.} they
+  are not called for a specific object.
+
+\end{itemize}
+
+In C++, the fields and member functions of class objects are
+designated using either dot or arrow notation. Within \NAME
+annotations, \lang member functions are not permitted. However, \NAME
+allows logic functions, predicates, and class invariants to be defined
+within class scope and then called using conventional \lang dot and
+arrow notation.  Axioms, lemmas, type definitions, data and type
+invariants are considered static ({\it i.e.} they are not called for
+a specific object). However, they may be designated by appropriate
+\lstinline|::| qualifiers.
+
+\subsection{Scoping}
+
+\lang permits user control of identifier scopes and name conflicts by
+two mechanisms: aggregates (classes, structs, unions) and namespaces.
+Names declared within a namespace or aggregate are available outside
+the scope only when qualified by the \lstinline|::| double-colon
+syntax. This standard \lang syntax is available within \NAME
+annotations as well.  The following code example shows some uses. Such
+syntax is typically needed only for \textit{static} entities.
+Entities that are non-static members of their enclosing class 
+must be accessed from an enclosing object with dot or arrow syntax;
+the names are then found in the (static) class of the enclosing object.
+In addition if
+a containing class is a template instance, the qualifier will have
+type arguments. The corresponding grammar enhancements are shown in
+Fig. \ref{fig:gram:this}.
+
+\lstinputlisting{scoping.cpp}
+
+\NAME axiomatics do not create a nested scope.
+
+\NAME expressions can contain instances of logic functions and predicates but not \lang functions. However, \NAME expressions can contain both logic constants
+and \lang constants. If an identifier could be resolved as either, then the
+\lang declaration takes precedence. Tools may wish to warn about such
+ambiguities.
+
+Note that the standard scoping can be modified by C++ \lstinline|using| declarations, as described in \S\ref{sec:namespaces}.
+
+
+\subsection{Inheritance of function contracts}
+
+A key aspect of object-oriented programming is 
+that one can derive classes from parent classes and in 
+the process inherit behaviors of the parent class, 
+while specializing the implementation to something appropriate to the derived class. 
+To use a standard example, 
+one might define an abstract base class \lstinline|Shape| to describe arbitrary 2D geometric shapes, 
+with an abstract method 
+\lstinline|area| that returns the area of the shape. 
+Derived classes \lstinline|Circle| and \lstinline|Square| would contain concrete data fields that defined the parameters of circle and square shapes respectively; 
+the derived classes would each have its own implementation of the area() method appropriate to its kind of shape. 
+However, the key idea is that methods of a \lstinline|Shape| object can be used without knowing which derived class the object is actually an instance of and
+which derived class method implementation is actually invoked.
+
+The usual design intent is to obey Liskov and Wing's principle of \textit{behavioral subtyping}\cite{Liskov:1994:BNS:197320.197383}: 
+anything provable about a base type should be provable about a subtype.
+\NAME imposes that requirement on derived classes by 
+requiring that each method of a derived class obeys the contract of any methods of parent classes that the derived class method overrides. 
+If behavior subtyping does not hold between a base and derived class, then the behavior of methods
+invoked on a pointer or reference whose static type is the
+parent class (but whose dynamic class is any derived class) may depend on the actual dynamic class, 
+a complex situation for program understanding, debugging, or verification.
+
+Consider a derived class method \lstinline|D::m| that overrides a parent class method \lstinline|P::m|.
+Behavioral subtyping is obeyed if (a) the (composite) precondition of
+\lstinline|P::m| implies the (composite) precondition of 
+\lstinline|D::m| and (b) the (composite) postcondition of
+\lstinline|D::m| implies the (composite) postcondition of 
+\lstinline|P::m|. That is, a derived class method satisfies the precondition stated in the parent class, but may be more lenient; 
+postconditions in derived classes may be more strict than the parent class postcondition, but will always 
+satisfy the parent postcondition. 
+
+Rather than imposing syntactic requirements on method contracts\footnote{as in JML, for example, which was designed explicitly around behavioral subtyping and the implications of behavioral subtyping are much simpler. 
+	See the comparative discussion in Appendix \ref{sec:comp-jml}.},
+\NAME adds verification conditions: when declaring a derived class from a virtual base class (a) it must be provable that any parent class precondition implies the derived class precondition and (b) it must be provable that the derived class postcondition implies each parent class postcondition (for each kind of postcondition clause). 
+
+\TODO{TODO: More + examples needed}
+
+\subsection{Specifications of operator overloads}
+Declarations of operator overloading as treated in \NAME just like other
+methods. In particular they can have function contracts as in this example.
+
+\lstinputlisting{overload_contract.cpp}
+
+\subsection{Specifications of special member functions}
+
+\lang implicitly declares and provides a default implementation for some member functions under some circumstances. 
+Thus they also have an implicit specification. However, the user may also wish to provide an explicit specification for such implicit functions, but there is no
+explicit declaration in the \lang code to which to attach such a 
+specification. In this case \lang's \lstinline|default| facility should be used
+
+In the following example, class \lstinline|C| has an implicitly
+defined copy constructor. The declaration with the \lstinline|default|
+keyword indicates the the implicit implementation should be used.
+Then a \NAME comment can be associated with this declaration and gives
+an explicit specification.
+
+\lstinputlisting{defaulted_contract.cpp}
+
+The member functions for which implicit default functions are provided by the compiler are the following. In each case the default action (and corresponding implicit specification) is to apply the corresponding operation on each base class and data member of the object at hand.
+\begin{itemize}
+	\item default constructor \lstinline|C()|: 
+	\item default copy constructor \lstinline|C(C&)| or \lstinline|C(const C&)|
+	\item default move constructor \lstinline|C(C&&)| (since C++11)
+	\item default copy assignment operator \lstinline|C::operator=(C&)| or \lstinline|C::operator=(const C&)|
+	\item default move assignment operator \lstinline|C::operator=(C&&)| (since C++11)
+	\item default destructor \lstinline|C::~C()|
+\end{itemize}
+
+\TODO{TODO: What actually are the default specs}
+
+The \lstinline|operator new(...)| and 
+\lstinline|operator delete(...)| functions have the appearance of being implicitly defined. However, they are defined in the standard library
+(include file \lstinline|new|). Their specifications are given there as
+part of the specifications of the standard library.
+
+\subsection{Deleted and defaulted definitions}
+
+ \lang functions can be defined to be either deleted or defaulted, as in this code:
+ \begin{lstlisting}[deletekeywords={default}]
+ C::C(const& C) = delete; 
+ C::C(const& C) = default; 
+ \end{lstlisting}
+ A definition that is \lstinline|=delete| results in a program for which any use of the given method results in a compile-time error,
+ as if the function is not at all defined. It can be used to preclude the
+ generation of otherwise implicitly generated functions.
+ 
+ A definition that is \lstinline|=default| results in the corresponding
+ function defined to have the body it would have as an implicit default
+ member, even if the \lang rules would otherwise preclude the 
+ function from being implicitly generated. That is, it forces 
+ generation of the member function where it would not otherwise be implicitly generated.
+ 
+Both of these features are handled by \lang and do not require 
+extra features in \NAME. Only, if a method is implicitly generated, whether by using \lstinline|=default| or not, an implicit specification must be correspondingly generated.

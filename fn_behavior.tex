@@ -7,16 +7,18 @@
   \
   terminates-clause ::= "terminates" pred ";"
   \
-  decreases-clause ::= "decreases" term ("for" id)? ";"
+  decreases-clause ::= "decreases" term ("for" ident)? ";"
   \
   simple-clause ::= assigns-clause | ensures-clause ;
                 | allocation-clause | abrupt-clause 
   \
   assigns-clause ::= "assigns" locations ";"
   \
-  locations ::= location ("," location) * | "\nothing"
+  locations ::= locations-list | "\nothing"
   \
-  location ::= tset
+  locations-list ::= location ("," location) *
+  \
+  location ::= tset [A 'location' may hold a set of many memory locations] ;
   \
   ensures-clause ::= "ensures" pred ";"
   \

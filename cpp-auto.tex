@@ -1,0 +1,45 @@
+\section{Automatic type inference [C++]}
+\label{sec:auto}
+\index{auto}
+
+\subsection{auto}
+Beginning with C++11\footnote{Prior to C++11, \lstinline|auto| had a different meaning}, \lang permits designating the type of a variable as
+\lstinline|auto|.
+ \lstinline|auto| may also be used as part of a type expression, as in \lstinline|auto*| or \lstinline|const auto[]|. In these cases the compiler performs type inference, producing a compile-time type and
+saving the user from having to write out the type.
+
+A second use of \lstinline|auto| is as a simple way of keeping the types
+within some code flexible. For example, one might write
+\begin{lstlisting}
+auto f(int x) {
+   auto y = ... computation involving x ...
+   auto z = ... more computation using x and y ...
+   return z;
+}
+\end{lstlisting}
+Here the return type depends on the type of \lstinline|x| but is not hard-coded into the body of \lstinline|f|. If one changes the declared type of
+\lstinline|x| to say \lstinline|double|, all the inferred types change without needing further editing.
+
+The disadvantage of \lstinline|auto| is of course, that although the 
+program is still strongly typed, the actual types are harder for the reader to discern.
+
+\lstinline|auto| is also permitted within \NAME text, where the type can be inferred at compile time.
+In particular, if the variable has an initializer, the type is readily inferred.
+ The inferred type may be a logic type. For example, in
+\begin{lstlisting}
+//@ logic auto f(integer i) = i + 1;
+\end{lstlisting}
+the result type can be inferred to be \lstinline|integer|.
+
+Within \NAME specification text, the \lstinline|auto| keyword can be used in these locations:
+\begin{itemize}
+	\item as the result type in a logic function declaration
+	\item as the variable type in a ghost declaration with initialization
+\end{itemize}
+
+\subsection{decltype}
+
+\NAME annotations may also use the \lstinline|decltype| feature of \lang. \lstinline|decltype| takes a single argument, either a type or an expression. The keyword and its argument are
+replaced by the type of the expression. The effect is precisely as in \lang, and the reader should refer to the \lang standard or explanations for details.
+
+

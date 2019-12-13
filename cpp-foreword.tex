@@ -1,0 +1,60 @@
+\thispagestyle{plain}
+\chapter*{Foreword [C++]}
+
+This document describes version \acslppversion{}
+of the ANSI/ISO \lang Specification Language (\NAME). 
+The language features will evolve in the future. 
+In particular, some features in this document
+are considered \emph{experimental}, meaning that their syntax and
+semantics is not yet fixed.  
+These features are marked with
+\experimental.  
+They must also be considered advanced features,
+which are not needed for basic use of this
+specification language.
+
+\section*{Acknowledgements --- \NAME}
+
+This language design and document incorporate nearly all the 
+ACSL language and documentation; many portions of the text
+are explicitly shared. 
+Some sections are nearly verbatim 
+duplicates of the corresponding ACSL material, with light edits
+to reflect the use in \NAME~ as well. 
+Other sections, marked \texttt{[C++]}, are new to \NAME.
+\ifCPP{
+  In both cases, \NAME specificities with respect to ACSL will appear
+  in dark green, like this sentence.
+}
+
+Thus we acknowledge the extensive
+set of collaborators and commenters on ACSL that are listed
+in the companion ACSL documentation and replicated below.
+
+The design of \NAME~also draws from the specification
+languages of other object-oriented programming languages,
+such as Java \cite{leavens00jml}.
+
+The following people have contributed explicitly to the formation of
+this document and the design of \NAME~itself.
+We gratefully thank all the people who contributed to this document:
+
+David Cok,
+Patrick Baudin,
+Virgile Prevosto,
+Franck Védrine.
+
+We also wish to thank Jens Gerlach for his feedback on the first version
+of the document.
+
+\section*{Acknowledgements --- ACSL}
+There are many contributors to ACSL, including principally the following
+(as listed in the ACSL Reference Manual):
+\input{names}
+
+\section*{Funding}
+The writing of this document describing \NAME is done in the context of
+project VESSEDIA,
+which  received funding from the European Union's 2020
+Research and Innovation Program under grant agreement
+No. 731453.

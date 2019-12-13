@@ -1,0 +1,31 @@
+\section{Namespaces [C++]}
+\label{sec:namespaces}
+\index{namespaces}
+
+\lang introduced namespaces as a means to structure the scopes of declared names. Namespaces apply equivalently to \NAME. In particular,
+\begin{itemize}
+\item Any \NAME construct that may be declared or defined 
+in global scope may be declared or defined within a namespace.
+\item Identifiers for such constructs may be constructed using namespace names and \lstinline|::| tokens, just as for \lang names.
+\item Name resolution of \NAME names is performed just as for \lang names, with \NAME names being in scope only within \NAME annotations.
+\item It is preferable to avoid using names declared in \lang as the names of \NAME constructs as well. However, since namespaces can be extended, the author of \NAME annotations may not know about the \lang names that may be added in a namespace extension. Thus ambiguities can in
+principle arise: a \lang declaration and an \NAME
+declaration may be equally applicable to a use of that name 
+in some \NAME construct. In that case the \lang declaration applies.
+Tools may wish to emit warnings for such cases.
+
+\review{Should such ambiguities be resolved in favor of \lang or \NAME or be an error?}
+\end{itemize}
+
+\lang defines \lstinline|using| declarations to reduce the need for always qualifying commonly used members of namespaces or aggregate types.
+One can make available in the current scope a name defined in a different scope by declaring it in a \lstinline|using| declaration. For example,
+one ordinarily must write \lstinline|std::cout| to write text to the standard output. After writing \lstinline|using std::cout;| one can simply use \lstinline|cout| instead of \lstinline|std::cout| in the remainder of the scope containing the \lstinline|using| declaration.
+Alternatively, one can write \lstinline|using namespace std;| to make available all names in the stated namespace without needing qualification.
+
+The same syntax can be used for \NAME definitions:
+\begin{itemize}
+	\item A \lang \lstinline|using namespace| declaration makes aavailable all \NAME members of the given namespace as well as all \lang members.
+	\item A \lstinline|using| declaration naming a particular (qualified) logic name introduces that name into the current scope just as it does for \lang names. Note though that such a \lstinline|using| declaration must itself be an \NAME declaration. The grammar enhancement is shown in Fig. \ref{fig:gram:this}.
+\end{itemize}
+
+\ifImpl{Status: Namespaces are fully implemented for ACSL++ names; using declarations for looking up ACSL++ names are not.}

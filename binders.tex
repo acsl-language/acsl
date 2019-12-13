@@ -1,13 +1,15 @@
 \begin{syntax}
   binders ::= binder (, binder)* ;
   \
-  binder ::= type-expr variable-ident;
+  binder ::= type-name variable-ident;
              (,variable-ident)*
   \
-  type-expr ::= logic-type-expr | C-type-name
+  type-name ::= logic-type-name | C-type-name
   \
-  logic-type-expr ::= built-in-logic-type ;
-  | id ; type identifier
+  type-expr ::= logic-type-name | C-type-expr
+  \
+  logic-type-name ::= built-in-logic-type ;
+  | ident ; type identifier
   \
   built-in-logic-type ::= "boolean" | "integer" | "real"
   \

@@ -1,0 +1,32 @@
+\subsection{Class invariants [C++]}
+
+\begin{figure}[t]
+\begin{cadre}
+\input{cpp-class-invariants-fig.bnf}
+\end{cadre}
+\caption{The grammar for class invariants}
+\label{fig:gram:classinvariant}
+\end{figure}
+
+In C++, classes and structs are often used to encapsulate a data structure, 
+providing a uniform means of reading and modifying properties of the data
+structure and hiding implementation details. Often the implementation
+data structure is expected to satisfy some well-formedness properties, such as
+that various fields have mutually-consistent values or have values within
+some subrange of their declared type.
+
+Such properties can be expressed using \textit{class invariants}. Class invariants
+are a form of type invariant, as shown in Fig. \ref{fig:gram:classinvariant}.
+Such declarations must appear within a class or struct declaration and 
+apply to that particular type. In other respects they are similar to 
+type invariants: they are implicitly assumed and asserted at various
+program points.
+
+Just like type invariants (Section \ref{sec:invariants}), class invariants can be \lstinline|weak| or \lstinline|strong|, with the same semantics as for type invariants.
+
+If the class invariant is a member of a \textit{virtual} class then
+the invariant is intrinsically virtual as well. That is, if a derived
+class has a class invariant with the same name and signature, then
+invocations of the invariant depend on the dynamic type of the
+object the class invariant is called for. If this behavior is not
+desired, use a type invariant instead of a class invariant.

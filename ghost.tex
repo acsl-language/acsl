@@ -2,9 +2,7 @@
 
   ghost-type-specifier ::= C-type-specifier ;
   | {logic-type} \
-  declaration ::= C-declaration ;
-  | "/*@" "ghost";
-     ghost-declaration "*/" \
+  logic-def ::= "ghost" ghost-declaration \
   direct-declarator ::= C-direct-declarator ;
     | direct-declarator ;
     "(" C-parameter-type-list? ")";
@@ -17,7 +15,8 @@
      "(" C-argument-expression-list? ")";
      {"/*@" "ghost"} ;
      {  "(" ghost-argument-expression-list ")"};
-     {  "*/"} ; call with ghosts
+     {  "*/"} ; call
+              ; with ghosts
     \
   statement ::= C-statement ;
              | statements-ghost \

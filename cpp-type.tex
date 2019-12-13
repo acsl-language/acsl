@@ -1,0 +1,22 @@
+\section{Types}
+\label{sec:type}
+\experimental
+
+\lang includes the \lstinline|typeid| operator, which produces values of
+type \lstinline|type_info|, which in turn uniquely identify types within
+a \lang program. These \lstinline|type_info| objects are immutable and are suitable for comparing types in logic expressions as well as in \lang.
+The type information is the full type information, and not subject to erasure,
+as for example in Java.
+
+\lang does provide static, template-based operations that report variuos traits of types. But these are static and do not enable reasoning about 
+dynamic types represented by \lstinline|type_info| values.
+\lang does not define any operations on \lstinline|type_info| values other than equality and conversion to a (arbitrary) name. As an exploratory experiment
+\NAME defines some such operators, corresponding to those in \lstinline|type_traits|:
+\begin{itemize}
+\item  \lstinline|\is_integral|
+\item \lstinline|\is_primitive|
+\item \lstinline|\is_object|
+\item \lstinline|\is_subclassof|
+\item \lstinline|\is_array|
+\item \lstinline|\is_enum|
+\end{itemize}

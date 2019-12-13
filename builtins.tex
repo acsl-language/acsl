@@ -1,0 +1,80 @@
+\section{Builtin functions}
+\label{sec:builtins}
+
+The following are pre-defined, mathematical logic functions that are built-in
+to \NAME.
+
+\begin{listing-nonumber}
+integer \min(integer x, integer y) ;
+integer \max(integer x, integer y) ;
+real \min(real x, real y) ;
+real \max(real x, real y) ;
+
+integer \abs(integer x) ;
+real \abs(real x) ;
+
+real \sqrt(real x) ;
+integer pow(integer x, integer y) ;
+real \pow(real x, real y) ;
+
+integer \ceil(real x) ;
+integer \floor(real x) ;
+
+real \e ;
+real \exp(real x) ;
+real \log(real x) ;
+real \log10(real x) ;
+
+real \pi ;
+real \sin(real x) ;
+real \cos(real x) ;
+real \tan(real x) ;
+
+real \cosh(real x) ;
+real \sinh(real x) ;
+real \tanh(real x) ;
+
+real \asin(real x) ;
+real \acos(real x) ;
+real \atan(real x) ;
+
+real \asinh(real x) ;
+real \acosh(real x) ;
+real \atanh(real x) ;
+
+real \atan2(real y, real x) ;
+real \hypot(real x, real y) ;
+
+float \round_float(rounding_mode m, real x) ;
+double \round_double(rounding_mode, real x) ;
+
+\end{listing-nonumber}
+
+These are the built-in predicates:
+\begin{listing-nonumber}
+ \is_finite(float x) ;
+ \is_finite(double x) ;
+ \is_NaN(float x) ;
+ \is_NaN(double x) ;
+ \is_plus_infinity( float x) ;
+ \is_plus_infinity( double x) ;
+ \is_minus_infinity( float x) ;
+ \is_minus_infinity( double x) ;
+
+ \eq_float(float x, float y) ;
+ \eq_double(double x, double y) ;
+ \gt_float(float x, float y) ;
+ \gt_double(double x, double y) ;
+ \ge_float(float x, float y) ;
+ \ge_double(double x, double y) ;
+ \lt_float(float x, float y) ;
+ \lt_double(double x, double y) ;
+ \le_float(float x, float y) ;
+ \le_double(double x, double y) ;
+ \ne_float(float x, float y) ;
+ \ne_double(double x, double y) ;
+ 
+
+\end{listing-nonumber}
+
+\ifCPPinput{cpp-builtins}

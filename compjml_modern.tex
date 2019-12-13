@@ -1,12 +1,16 @@
 \section{Comparison with JML}
 \label{sec:comp-jml}
 
-Although we took our inspiration from the Java Modeling Language (aka
-JML~\cite{jmlhomepage}), ACSL is notably different from JML in
+\ifCPP{This section was written in conjunction with the definition of \acsl. Most of the points are also accurate for \NAME. However, 
+since \lang an object-oriented language with inheritance and exceptions, some
+aspects of \NAME, more so than \acsl, are similar (and were inspired by) JML.}
+
+Although \acsl took inspiration from the Java Modeling Language (aka
+JML~\cite{jmlhomepage}), \acsl is notably different from JML in
 two crucial aspects:
 
 \begin{itemize}
-\item ACSL is a BISL for C, a low-level structured language, while JML
+\item \acsl is a BISL for C, a low-level structured language, while JML
   is a BISL for Java, an object-oriented inheritance-based high-level
   language. Not only are the language features not the same between Java and C, but the
   programming styles and idioms are very different, which then entails
@@ -42,7 +46,7 @@ complex features in JML (\emph{e.g.}, \verb|spec_public| modifier, data
 groups, represents clauses, etc), that are necessary to express the
 desired inheritance-related specifications while respecting visibility
 and modularity. Since C has no inheritance, these intricacies are
-avoided in ACSL.
+avoided in \acsl.
 
 \subsubsection*{Error handling without exceptions}
 \label{sec:errorhandling}
@@ -50,7 +54,7 @@ avoided in ACSL.
 The usual way of signaling errors in Java is through
 exceptions. Therefore, JML specifications are tailored to express
 exceptional postconditions, depending on the exception raised. Since C
-has no exceptions, ACSL does not use exceptional
+has no exceptions, \acsl does not use exceptional
 specifications. Instead, C programmers typically signal errors by
 returning special values, as is mandated in various ways by the C standard.
 
@@ -121,8 +125,8 @@ public static void Java_nullify(char[] a) {
 }
 \end{listing}
 
-On the contrary, the precondition of the same function in C, whose
-definition follows, is more involved. First, remark that the
+On the other hand, the precondition of the same function in C, whose
+definition follows, is more involved. First, note that the
 C programmer has to add an extra argument for the size of the array,
 or rather a lower bound on this array size.
 
@@ -165,7 +169,7 @@ corresponding paths. Since C has no memory
 primitives, these tests involve other variables that the C programmer
 adds to track additional information, such as {\ttfamily n} in our example.
 
-To make it easier, it is possible in ACSL to distinguish between the
+To make it easier, it is possible in \acsl to distinguish between the
 \lstinline|assumes| part of a behavior, that specifies the tests that need
 to succeed for this behavior to apply, and the \lstinline|requires| part
 that specifies the additional assumptions that must be true when a
@@ -184,11 +188,11 @@ translated into:
 This is equivalent to the previous requirement, except here behaviors
 can be completed with postconditions that belong to one behavior only.
 
-\subsubsection*{ACSL contracts vs. JML ones}
+\subsubsection*{\acsl contracts vs. JML ones}
 
 In JML, the set of stated behaviors is assumed to cover all
 permitted uses of the function; any calling context in which none of the requires preconditions are true would be identified as an error.
-In ACSL, the set of behaviors for a function do not
+In \acsl, the set of behaviors for a function do not
 necessarily cover all cases of use for this function, as mentioned in
 Section~\ref{subsec:behaviors}. This allows for partial
 specifications. In the example above, our two behaviors are clearly mutually exclusive,
@@ -203,9 +207,9 @@ Section~\ref{sec:compl-behav}).
   @*/
 \end{listing}
 
-To fully understand the difference between specifications in ACSL and
+To fully understand the difference between specifications in \acsl and
 JML, we detail below the requirements on the pre-state and
-the guarantees in the post-state given by behaviors in JML and ACSL.
+the guarantees in the post-state given by behaviors in JML and \acsl.
 
 A JML contract is either \emph{lightweight} or \emph{heavyweight}.
 For the purpose of our comparison, it is sufficient to know that a
@@ -234,7 +238,7 @@ and guarantees that the following condition holds in post-state:
 Note particularly that the pre-state is required to satisfy
 the precondition of at least one behavior.
 
-Here is now a syntactically similar ACSL specification:
+Here is now a syntactically similar \acsl specification:
 
 \begin{listing}{1}
 /*@ requires $P_1$;
@@ -291,13 +295,18 @@ The contract guarantees that the following condition holds in the post-state:
 (\true ==> ($Q_1$ && $Q_2$)) && (\old($A_1$) ==> $E_1$) && (\old($A_2$) ==> $E_2$)
 \end{listing-nonumber}
 
-Thus, ACSL allows distinguishing between the clauses that control
+Thus, \acsl allows distinguishing between the clauses that control
 which behavior is active (the \lstinline|assumes| clauses) and the
 clauses that are preconditions for a particular behavior (the internal
 \lstinline|requires| clauses). 
 
 In addition, as mentioned above, there is
-by default no requirement in ACSL for the specification to be complete. In JML an incomplete specification may cause a warning in a calling context; partial behavior is specified by an explicitly underspecified postcondition. In ACSL, an incomplete specification specifies partial behavior; a warning for a particular behavior is produced by a \lstinline|requires \false;| clause.
+by default no requirement in \acsl for the specification to be complete. In JML an incomplete specification may cause a warning in a calling context; partial behavior is specified by an explicitly underspecified postcondition. In \acsl, an incomplete specification specifies partial behavior; a warning for a particular behavior is produced by a \lstinline|requires \false;| clause.
+
+\subsubsection*{Modifies vs. writes semantics}
+
+
+As described in \S\ref{sec:writesSemantics}, \acsl interprets frame conditions with \emph{modifies} semantics, whereas JML defines frame conditions with \emph{writes} semantics.
 
 \subsection{Deductive verification vs. RAC}
 
@@ -338,7 +347,7 @@ used in specifications; if the model function does not have
 a body, then RAC cannot be used. But for deductive verification, 
 the properties of a model function can be specified axiomatically.
 
-ACSL focuses on deductive verification and currently only allows calls to logical functions in
+\acsl focuses on deductive verification and currently only allows calls to logical functions in
 specifications. These functions may be defined, like program functions, but
 they may also be only declared (with a suitable declaration of \reads
 clause) and their behavior defined through an axiomatization.
@@ -348,7 +357,7 @@ automatic or in manual deductive verification.
 
 \subsection{Syntactic differences}
 
-The following table summarizes the difference between JML and ACSL keywords, when the intent is the same, although minor differences
+The following table summarizes the difference between JML and \acsl keywords, when the intent is the same, although minor differences
 might exist.
 \begin{center}
 \begin{tabular}{|l|l|}

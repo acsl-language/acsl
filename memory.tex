@@ -8,17 +8,13 @@
   pred ::=  "\allocable" one-label? "(" term ")" ;
        |  "\freeable" one-label? "(" term ")" ;
        | "\fresh"   two-labels? "(" term, term ")" ;
-       | "\valid"  one-label?  "(" location-address ")" ;
-       | "\valid_read"  one-label? "(" location-address ")";
-       | "\separated" "(" location-address "," location-addresses ")" ;
+       | "\valid"  one-label?  "(" locations-list ")" ;
+       | "\valid_read"  one-label? "(" locations-list ")";
+       | "\separated" "(" location "," locations-list ")" ;
        \
   one-label ::= "{" label-id "}" ;
        \
   two-labels ::= "{" label-id, label-id "}" ;
-       \
-  location-addresses ::= location-address ("," location-address)*
-  \
-  location-address ::= tset
 \end{syntax}
 
 %%% Local Variables:

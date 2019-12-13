@@ -1,0 +1,30 @@
+The C/C++ preprocessor transforms input text files before the C/C++ compiler acts on them. 
+Although in principle any preprocessor could be used, in practice, a
+standard C/C++ preprocessor is used by nearly all C/C++ systems and its behavior is assumed in interpreting source files. 
+This standard behavior 
+replaces comments (including \NAME annotation comments) with white space as part of initial tokenization and before any preprocessing directives are
+interpreted.
+Thus any tool that embeds information in formatted comments, such as tools that support \NAME, must provide its own tools to do preprocessing.
+More importantly for language definition, any content within comments cannot change the interpretation of non-comment material that the C/C++ compiler sees.
+
+Consequently, the following rules apply to preprocessing features within \NAME annotations:
+\begin{itemize}
+	\item \texttt{define} and \texttt{undef} are not permitted in an annotation. (If they were to be allowed, their scope would have to extend only to the end of the annotation, which could be confusing to readers.)
+	\item macros occurring in an annotation but defined by \texttt{define} statements prior to the annotation are expanded according to the normal rules, including concatenation by \texttt{\#\#} operators. 
+	The context of macro definitions corresponds to the textual location of the annotation, as would be the case if the
+	annotation were not embedded in a comment.
+	\item \texttt{if}, \texttt{ifdef}, \texttt{ifndef}, \texttt{elif}, \texttt{else}, \texttt{endif} are permitted but must be completely nested within the annotation in which they appear (an \texttt{endif} and its corresponding \texttt{if}, \texttt{ifdef}, \texttt{ifndef}, or \texttt{elif} must both be in the same annotation comment.)
+	\item \texttt{warning} and \texttt{error} are permitted
+	\item \texttt{include} is permitted, but will cause errors if it contains, as is almost always the case, other disallowed directives
+	\item \texttt{line} is not permitted
+	\item \texttt{pragma} and the \texttt{\_Pragma} operator are not permitted
+	\item stringizing (\verb|#|) and string concatenation (\verb|##|) operators are permitted
+	\item the \verb|defined| operator is permitted
+	\item the standard predefined macro names are permitted: 
+	\ifCPP{\texttt{\_\_cplusplus}, }
+	\texttt{\_\_DATE\_\_}, 
+    \texttt{\_\_TIME\_\_},
+	\texttt{\_\_FILE\_\_},
+	\texttt{\_\_LINE\_\_},
+	\texttt{\_\_STDC\_HOSTED\_\_}
+\end{itemize}

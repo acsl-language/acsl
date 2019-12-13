@@ -1,0 +1,122 @@
+\section{\lang types and casting [C++]}
+\label{sec:types}
+
+\subsection{Logic types}
+
+ACSL already allows the definition of logic types (cf. \S\ref{sec:concretetypes}). One can declare a possibly polymorphic type name and then declare its properties by axiomatization. Alternatively, one can declare 
+a type name and give a concrete definition.
+
+These capabilities are still present in \NAME, but note that such types are strictly logic types; there is no inheritance relationship or dynamic dispatching of method calls.
+
+\experimental
+
+An additional means of defining types is to declare
+\lang class (or struct) types as logic types. The syntax for such a definition is simply to preface the declaration
+with the keyword \textbf{ghost} and write it within an \NAME annotation. Such a ghost class is considered a kind of logic type.
+
+Consistent with other rules that maintain a separation between logic entities and C entities,
+\begin{itemize}
+	\item ghost classes may not appear in non-ghost code
+	\item a non-ghost class may not inherit from a ghost class
+	\item the fields of ghost classes may only use logic types
+	\item any implementations given for methods of ghost classes may only use logic types and may only write to ghost memory locations
+	\item ghost classes may contain \NAME annotations in the same way that C classes do, with the syntax adjusted for being written within ghost code
+\end{itemize}
+
+As with \lang classes, ghost classes may inherit fields and methods from their base classes and method calls are subject to dynamic dispatch.
+
+This concept is still experimental because use cases are still being explored that would require this feature.
+
+\subsection{Static type information}
+
+\lang includes the \lstinline|type_traits| collection of template classes and functions to determine information about types.
+For example, for a type name \lstinline|T|, one can write
+\lstinline|std::is_fundamental<T>::value| or
+\lstinline|std::is_fundamental<T>()|, obtaining a 
+\lstinline|bool| value indicating whether 
+\lstinline|T| is a fundamental type or not.
+
+This is particularly useful for template type names. The examples shown in \S\ref{sec:templates} demonstrate uses of \lstinline|std::is_same_type<T,U>|.
+
+In addition, the \lstinline|value| field of each of these templates is a named \lang compile-time constant; they can be used in logic expressions and their values do not depend on state.
+
+No new features are needed in \NAME to support static type information. 
+
+The specific \lang functions of this kind that are permitted in \NAME are listed in \S\ref{sec:builtins}.
+
+\subsection{Casting}
+\label{sec:casts}
+
+\begin{figure}[t]
+  \begin{cadre}
+     \input{cpp-casts.bnf}
+    \end{cadre}
+    \caption{Grammar of C++ casts}
+  \label{fig:gram:cpp-casts}
+\end{figure}
+
+\lang added to C a number of casting operations (cf. Fig. \ref{fig:gram:cpp-casts}). 
+Most of these may be used in logic expressions.
+
+\begin{itemize}
+	\item \textbf{(T)e} and \textbf{T(e)} casts -- When applied to primitive types, these casts perform an arithmetic conversion. Aside from potential numeric overflow errors, these are appropriate to use in logic expressions. When applied to pointers and reference expressions, these casts are equivalent to
+	\lstinline|reinterpret_cast|s. The cast works fine for conversions to and from \lstinline|void*| and certain pairs of related types, but it is better to use one of
+	the \lang casts described in the following bullets.
+	Thus the use of these C- and function-style casts on 
+	pointers and references in logic expressions is 
+	deprecated (in \NAME) in favor of the \lang-style casts.
+	
+	\item \textbf{dynamic\_cast<T>(e)} -- A dynamic cast is used to convert a value of pointer or reference type to the corresponding value of another pointer or reference type, typically within the first type's inheritance hierarchy. For pointer types, if the given expression \lstinline|e| is not a pointer to a complete instance of the desired type \lstinline|T|, then the result is \lstinline|null|. For reference types, if the desired conversion is not allowed, a \lstinline|bad_cast| exception is thrown. Thus this cast operator can be used to test type relationships.
+	
+	When used in a logic expression, the semantics of a \lstinline|dynamic_cast| operation applied to a pointer value is the same as in \lang, producing either a valid new pointer or a null value. When applied to a reference value however, if the operation would produce an exception, it instead produces an undefined value.\footnote{This is a case where the operation could be considered to be partial and ill-defined for a bad conversion. However, since the  functions of \NAME's logic are in general total, the semantics of \lstinline|dynamic_cast| is defined to be total as well.}  
+	
+	\item \textbf{static\_cast<T>(e)} -- A static cast also operates on pointer or reference values, but simply returns the value of the given expression with the given static type. If the conversion is valid, the result is the same as dynamic casting. If the result is invalid, the result is undefined and may result in runtime errors later in program execution. \NAME tools may check whether a static cast produces a valid value.
+	
+	The semantics of \lstinline|static_cast| in a logic expression is that it produces the expected value for valid conversions and is undefined for invalid conversions.
+	
+	\item \textbf{reinterpret\_cast<T>(e)} -- A reinterpret cast simply  maintains the same underlying bits, but interprets them as the given type. 
+	Whether this produces valid results and what the results are is likely to be platform-dependent. 
+	Accordingly, \lstinline|reinterpret_cast|s are not permitted in logic expressions.
+	
+	\item \textbf{const\_cast<T>(e)} -- A const cast simply restates the type of the expression without const qualification. 
+	It may be used in a logic expression when needed for type matching. 
+	However, since logic expressions do not have side effects, no functions that actually modify non-const values can be used.\footnote{Even in \lang, using a const cast to enable modifying another const value produces undefined results.}
+	
+\end{itemize}
+
+\ifImpl{Status: The functionality above is implemented, except that \framac does not yet reason about dynamic type information and the results of \lstinline|dynamic_cast|}
+
+\subsection{Dynamic type information}
+
+\TODO{Grammar additions and examples, more about hash\_code and type\_index or omit them.}
+
+\lang also has means to obtain information about the dynamic
+type of an expression using the \lstinline|typeid| operator. It can be applied to either a type name or an expression; it can be used (through \lstinline|std::type_info::hash_code| or \lstinline|std::type_index|) to check equality of types.
+
+The  \lstinline|typeid| operator, \lstinline|std::type_info::hash_code| and \lstinline|std::type_index| may all be used in logic expressions. They are
+applied to \lang objects, not to logic values. Example uses of these features are
+shown below.
+
+\lstinputlisting{ftype.cpp}
+
+\ifImpl{
+No additional features are needed in \NAME to reason about such code. What is needed
+is the ability to reason about the dynamic type of a given pointer or reference to
+an object. 
+For this, the logical encoding of a \lang program does need a representation of \lang types and their inheritance relationships.
+}
+
+Such capability is additionally needed to reason about uses of \lstinline|dynamic_cast|.
+
+\subsection{Implicit and explicit conversions}
+
+\lang defines a complex set of rules for determining implicit conversions to be applied in various circumstances. Besides the casts discussed in \S\ref{sec:casts}, there are two other conversions: the one-argument constructor and \lstinline|operator T()| conversion. 
+
+These conversions do not require any additional features within 
+\NAME. If the program defines either a one-argument constructor or a
+\lstinline|operator T()| conversion, then a specification for that
+function should also be given, so that any \NAME tools can appropriately analyze the code.
+
+These conversions may be used in logic expressions, either implicitly or explicitly, only if they are permitted by the rules of \S\ref{sec:pure}. 
+
+\TODO{Examples needed. Test that specs are used by fclang}

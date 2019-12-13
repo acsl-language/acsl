@@ -1,0 +1,20 @@
+\flit f;
+int x;
+int result; // return value of doOnce
+// assume preconditions of doOnce
+assume \requires{Here}(f,x);
+Pre:
+// method body
+// translation of: result1 = f(x)
+int result1;                  
+L1:
+assert \requires{Here}(f,x);  
+assert \assigns{Here}(f,x) <:= \assigns{Pre}(f,x);
+havoc \assigns{Here}(f,x) ;         
+assume \ensures{L1,Here}(f,result1,x); 
+
+// assignment of callee return value to caller return value
+assume result == result1;     
+
+// assert caller postconditions
+assert \ensures{Pre,Here}(f,result1,x);

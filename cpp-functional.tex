@@ -1,0 +1,109 @@
+\section{Functional programming [C/C++]}
+\label{sec:functional}
+
+\experimental
+
+\subsection{C function pointers}
+
+In C (and C++) function pointers can be formal arguments to other functions and can be invoked without knowing which functional literal the pointer refers to. 
+In order to reason about such constructs, \NAME needs means to describe and reason about the properties of function pointers. The feastures and design presented here are
+described more fully in \S\ref{sec:functional}.
+
+The essential properties of function pointers are its specifications. For a function pointer \lstinline|&f| for a known function \lstinline|f|,  we could write \lstinline|\requires(&f)| to represent the predicate that is the precondition of \lstinline|f|. However this then requires the specification language to treat predicates as first class elements and its reasoning becomes higher-order. Instead we follow \cite{20.500.11850/153152} and write, for a function \lstinline|f| with arguments \lstinline|...args|, the expression \lstinline|\requires(&f, ...args)| to be equal to the  value of
+the precondition of \lstinline|f| when evaluated at the arguments \lstinline|,...args|.
+
+In particular, if \lstinline|f| has the specification
+\begin{listing-nonumber}
+requires R0;
+ensures E0;
+assigns L0;
+behavior b1:
+  assumes A1;
+  requires R1;
+  ensures E1;
+  assidgns L1;
+  allocates C1;
+  frees F1;
+behavior b2:
+  assumes A2;
+  ...
+\end{listing-nonumber}
+where each of the clauses is an expression over the formal arguments and perhaps other variables in scope, then
+
+\begin{listing-nonumber}
+\requires(f,...args) = R0 && (A1==>R1) && (A2==>R2) ...
+\ensures(f,result,...args) = E0 && (A1 ==> E1) && (A2 ==> E2) ...
+\assigns(f,...args) = E0 && (A1 ==> L1) && (A2 ==> L2) ...
+\end{listing-nonumber}
+In the case of \lstinline|\ensures|, the extra parameter, here labeled \lstinline|result| corresponds to the \lstinline|\result| identifier in the \lstinline|Ei| expressions.
+There is a backslash-keyword for each kind of function contract clause (as shown in Fig. \ref{fig:gram:functional}).
+
+As an example, if we have a function such as 
+\begin{listing-nonumber}
+/*@ requires i < 100;
+       assigns \empty;
+       ensures \result == i+1;
+       */
+int inc(int i) { return i + 1; }
+\end{listing-nonumber}
+Then, for this function, for all \lstinline|int k|
+\begin{listing-nonumber}
+\requires(inc, k) == k < 100;
+\assigns(inc, k) == \empty;
+\ensures(inc, result, k) == (result == k+1);
+\end{listing-nonumber}
+The other functions with one formal int parameter and an int result would have analogous definitions for \lstinline|\requires|, etc.
+
+An example function that takes such functions as arguments is this.
+
+\lstinputlisting[linerange={10-12}]{func_args.cpp}
+
+It could have this specification.
+
+\lstinputlisting[linerange={1-9}]{func_args.cpp}
+
+Then the effect of, say the call \lstinline|m(a,4,7,inc)|, can be determined by logical reasoning.
+
+These specifications only apply for the case of the actual parameter being a function with no side-effects. More complex specifications (and perhaps additional specification language features) are still under experimentation.
+
+\subsection{C++ member and virtual functions}
+
+Where the function in question is a non-static member function of a class,
+there are two
+additional considerations: there is an implicit object the function
+is called for and the function may be virtual.
+
+The object for which the member function is called is accommodated by inserting
+an additional first argument. For example if we had a member function defined
+as such:
+\begin{listing-nonumber}
+class C {
+  int m(int k) { ... }
+};
+\end{listing-nonumber}
+then the  \lstinline|\requires| predicate for the member method looks like \lstinline|\requires(pointer_to_C, &C::m, k) == ... |.
+
+Now suppose \lstinline|C::m| is virtual. The example above gives the
+precondition for method \lstinline|C::m|, even if that method is
+virtual. However, there is also a need at times to express the dynamic
+precondition. In that case, the syntax is to place an object for which
+the member function is called prior to
+the keyword, with either a dot or an arrow as appropriate (again,
+cf. Fig. \ref{fig:gram:functional}).
+
+
+\subsection{Specifying lambda expressions}
+
+The difficulty with specifying lambda expressions is that the lambda is an expression, not a statement, and thus there is not necessarily a convenient location to write a specification.
+C++ lambda expressions however do include a block statement; they have syntax of the form\\
+\centerline{ [ \textit{captures} ] ( \textit{parameters} ) -> \textit{return-type}  \{ \textit{lambda statements} \} }
+The specification of the lambda function can be placed immediately before the opening brace, as in \\
+\centerline{ [ \textit{captures} ] ( \textit{parameters} ) -> \textit{return-type} /*@ function-contract */ \{ \textit{lambda statements} \} }
+
+\begin{figure}
+\begin{cadre}
+\input{cpp-functional-gram.bnf}
+\end{cadre}
+\caption{Grammar elements to support specification of functors}
+\label{fig:gram:functional}
+\end{figure}

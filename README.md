@@ -17,4 +17,17 @@ In order to generate a pdf version of the manual, you will need the following:
 - latexmk
 - ocaml
 
-then, typing `make acsl.pdf` or `make acslpp.pdf` should produce the `acsl.pdf` and acslpp.pdf documents, respectively.
+then, typing `make acsl.pdf` or `make acslpp.pdf` should produce
+the `acsl.pdf` and acslpp.pdf documents, respectively.
+
+It is also possible, for both documents, to activate a draft mode that will
+show some comments about possible extensions and enhancements. To do that,
+use `make DRAFT=yes acsl.pdf` or `make DRAFT=yes acslpp.pdf`
+
+# Frama-C's implementation notes
+
+If this directory is located inside the `doc` directory of a Frama-C
+distribution, it is possible to also generate implementation notes manuals
+(for both ACSL and ACSL++) indicating the level of support of each feature
+inside the tool, and perform various consistency checks. Use the `make all`
+command for that.

@@ -1,0 +1,63 @@
+\section{Attributes [C++]}
+\label{sec:attributes}
+
+\experimental
+
+\lang allows decorating declarations with \textit{attributes}. 
+These can be thought of as supplying small amounts of specification information.
+
+\subsection{[[noreturn]]}
+\label{sec:noreturn}
+
+The \lstinline|[[noreturn]]| attribute on a C++ function declaration means
+that the function never returns: if it terminates at all, it always throws 
+exceptions or exits abruptly. Consequently, the only appropriate \lstinline|ensures| clause
+is \lstinline|ensures \\false;|.
+
+Thus
+\begin{itemize}
+\item It is a syntactic error if a function has both a \lstinline|[[noreturn]]|
+attribute and an \lstinline|ensures| clause whose predicate is not the 
+boolean literal \lstinline|\\false|.
+\item If a function with an \lstinline|[[noreturn]]| attribute has a behavior
+that contains no \lstinline|ensures| clause, the default \lstinline|ensures|
+clause is \lstinline|ensures \\false;| (rather than the usual \lstinline|ensures \true;|).
+\end{itemize}
+
+The following code demonstrates this feature:
+\begin{example}
+\begin{listing-nonumber}
+/*@
+ensures \false;
+ensures \true; // ILLEGAL in combination with [[noreturn]]
+*/
+void m() [[noreturn]] { ... }
+\end{listing-nonumber}
+\end{example}
+
+\ifImpl{Status: [[noreturn]] is noted and the implications for specifications are checked.}
+
+\subsection{noexcept}
+\label{sec:noexcept}
+
+The \lstinline|[[noexcept]]| attribute on a C++ function declaration means
+that the function never throws an exception: if it terminates at all, it always terminates normally. Consequently, the only appropriate \lstinline|throws| clause
+is \lstinline|throws \\false;|.
+
+Thus
+\begin{itemize}
+	\item It is a syntactic error if a function has both a \lstinline|[[noexcept]]|
+	attribute and a \lstinline|throws| clause whose predicate is not the 
+	boolean literal \lstinline|\\false|.
+	\item If a function with a \lstinline|[[noexcept]]| attribute has a behavior
+	that contains no \lstinline|throws| clause, the default \lstinline|throws|
+	clause is \lstinline|throws \\false;| (rather than the usual \lstinline|throws \true;|).
+\end{itemize}
+
+An example of this is shown here:
+\begin{listing-nonumber}
+//@ throws  d == 0;  // ILLEGAL in conjunction with noexcept
+int m(int d) noexcept {}
+\end{listing-nonumber}
+
+\ifImpl{The syntactic checks are not yet performed.}

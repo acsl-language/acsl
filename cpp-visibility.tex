@@ -1,0 +1,162 @@
+\section{Access control and abstraction [C++]}
+\label{sec:access}
+
+\subsection{Access control of \NAME constructs}
+
+\lang allows members of aggregate types to be declared as \lstinline|public|, \lstinline|protected|, or \lstinline|private|. This access control modifier affects whether the member can be accessed within other contexts. 
+
+\NAME constructs, on the other hand, are always public and accessible from any other scope (perhaps using scope qualifiers). 
+Furthermore, \lang constructs are always accessible within \NAME
+specification constructs.
+
+One could adopt a more restrictive design, in which \NAME constructs
+obey the same accessibility rules as do \lang constructs. 
+However, the experience with other specification languages is that 
+public accessibility is almost always what is needed. Hence the design
+of \NAME avoids the complexity of detailed accessibility rules.
+
+It follows also then that \lstinline|friend| declarations are not 
+needed to provide access to \NAME specifications from other classes,
+as all specifications are \lstinline|public| by default.
+ 
+\subsection{Access, specifications and information hiding}
+\label{sec:infohiding}
+
+The typical purpose of using different access modifiers in a
+\lang implementation is information hiding: some aspects of
+the implementation are not meant to be part of the public API;
+by keeping the implementation aspects out of the public API, the
+author of the code is free to change the implementation without
+affecting the API.
+
+Simply written specifications typically refer to the private
+aspects of an implementation and thus can break information hiding.
+
+Consider a class that wraps an implementation of a simple array.
+
+\lstinputlisting{array_wrapper.cpp}
+
+Here the representation of the Array object, its data values and length, are appropriately private, while the accessor function is public.
+However, expressing the specification of the accessor function requires using the private members, violating information hiding and
+the abstraction boundary.
+
+The core problem is this: to express the valid values of \lstinline|index|, one needs the concept of the length of the array; that is, one needs an abstraction, namely length(). In this example the abstract \lstinline|length()| is represented by the data value \lstinline|data_length|, but the class could have chosen some other representation.
+
+One solution to this representation problem is to write the following.
+
+\lstinputlisting{array_wrapper_pred.cpp}
+
+This example demonstrates the general solution for abstraction that respects information hiding: write logic functions, predicates or invariants that express the abstract properties of the class, express the specifications of the public members of the class in terms of those (public) abstractions, and write the implementation of the abstractions in terms of the appropriate private aspects of the class.
+
+%\subsection{Usability improvements}
+%
+%In the example above we abstracted the concept of array length by defining the public logic function \lstinline|length()|. 
+%In this case, the sole purpose of \lstinline|length()| is 
+%to hide the implementation field \lstinline|data_length|. It may seem verbose and overkill to need to define and use \lstinline|length()|  solely to expose \lstinline|data_length|. An alternative is to declare
+%that although \lstinline|data_length| is private for \lang implementation purposes, it is public for specification purposes.
+%In this case we write
+%
+%\begin{listing-nonumber}
+%class Array {
+%	
+%  private:
+%	
+%    //@ spec_public
+%  	int[] data;
+%	
+%    //@ spec_public
+%	int data_length;
+%	
+%  public:
+%	
+%	/*@
+%	   requires 0 <= index < this.data_length;
+%	   logic int value(int index) = this.data[index]; 
+%	*/
+%	
+%	/*@ 
+%	   requires 0 <= index < data_length;
+%	   ensures \result == this.value(index);
+%	*/
+%	int getValue(int index) {
+%		return data[index];
+%	}	
+%}
+%\end{listing-nonumber}
+%
+%The \lstinline|spec_public| access specifier applies only to the next declaration within the class declaration: in the example above both
+%\lstinline|data| and \lstinline|data_length| are still 
+%\lstinline|private| in \lang, since that is the most recent \lang access specifier, but the declarations have \lstinline|public| access within specifications. 
+%
+%The advantage of this syntax is more concise expression; there is no need to declare \lstinline|length()| just to replicate \lstinline|data_length|.
+%The disadvantage is that we have lost a measure of information hiding. By using the abstraction \lstinline|length()| we could
+%have altered the representation of length within the class without affecting the public specifications and what clients of the class see.
+%By using \lstinline|spec_public|, that is no longer the case.
+%Accordingly, \lstinline|spec_public| should only be used in temporary situations, during development, or where it is clear that the representation is not going to change.
+%
+%The access specifier \lstinline|spec_protected| may be used (within \NAME annotations) to give \lang~\lstinline|protected| access to \lang constructs
+%that would otherwise be \lstinline|private|.
+
+\subsection{Pure functions}
+\label{sec:pure}
+
+\experimental
+
+A verbose aspect of the listing above is that the logic representation function \lstinline|value()| is essentially a replica of
+the \lang function \lstinline|getValue()|. Why write and maintain both of these? Can we not use at least some \lang functions in 
+specifications?
+
+The syntax to do so is shown in the following listing, but there are
+restrictions on when this is allowed.
+
+\lstinputlisting{array_wrapper_pure.cpp}
+
+When designated \lstinline|pure|, a \lang function may also be used in a \NAME specification. Effectively, a corresponding logic function is generated. 
+The conditions under which a 
+\lang function may be declared \lstinline|pure| are discussed in the following subsections.
+
+\subsubsection{No side-effects}
+The principal restriction is that the function declared \lstinline|pure| must have no side-effects. It may compute a value and may have 
+temporary stack variables, but it may not assign to any locations in the heap that are allocated in the pre-state of the function.
+No assignments are permitted to a pre-state location even if the assignment does not change the value stored in the location.
+This is partly a static condition, but when assigning to fields of an object, it must be demonstrated that the object is a local temporary or
+has been allocated since the pre-state; this demonstration may require reasoning about aliasing. It is a compile error for a \lstinline|pure|
+function to have \lstinline|assigs| or \lstinline|allocates| or \lstinline|frees| clauses with content other than \lstinline|\empty| or \lstinline|\nothing|.
+Furthermore the function must terminate and may not exit abruptly in any way.
+
+\subsubsection{No heap changes}
+The rule prohibiting side-effects applies to the heap as well:
+no allocations or deallocations of memory are allowed in pure functions.
+Stack operations are allowed. Thus, for example,
+ implicit copy constructors that 
+only create and destroy stack temporaries are permitted.
+
+\subsubsection{Inheritance}
+If a function overrides a \lstinline|pure| function, then it also must be \lstinline|pure| and must be declared so.
+
+\subsubsection*{Reading the heap}
+Since the pure function is indeed a C++ function, it may include read operations on the heap. When the pure function is used as a logic function,
+it must be invoked with respect to a given heap state. 
+That is, the pure function has a single implicit state label.
+
+
+An example showing this use is given below.
+
+\lstinputlisting{pure.cpp}
+
+A special case of pure functions are those declared in \lang as \lstinline|constexpr|.
+Such functions compute constant values that may be evaluated at compile time. A function declared \lstinline|constexpr| is implicitly \lstinline|pure| and may be used in a logic expression.
+
+The grammar additions for designating \lstinline|pure| functions is shown in Fig. \ref{fig:gram:pure}.
+
+\ifImpl{Status: The \lstinline|pure| keyword is parsed, and name resolution is performed properly. But the logic function is not yet created in the IL for Frama-C to see. 
+Also the restrictions on pure functions are not all checked.}
+
+\begin{figure}
+\begin{cadre}
+\input{cpp-gram-pure.bnf}
+\end{cadre}
+\caption{Grammar additions for pure and auto}
+\label{fig:gram:pure}
+\end{figure}
+

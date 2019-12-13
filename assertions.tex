@@ -1,8 +1,9 @@
 \begin{syntax}
-  C-compound-statement ::= "{" declaration* statement* assertion+ "}"
+  C-compound-statement ::= "{" C-declaration* C-statement* assertion+ "}"
         \
   C-statement ::= assertion C-statement \
   assertion-kind ::= "assert" | "check" \
   assertion ::= "/*@" assertion-kind pred ";" "*/" ;
-  | "/*@" "for" id ("," id)* ":" assertion-kind pred ";" "*/" ;
+  | "/*@" "for" id ("," id)* ":" ;
+      assertion-kind pred ";" "*/" ;
 \end{syntax}

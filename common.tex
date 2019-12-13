@@ -1,0 +1,71 @@
+%\usepackage{hevea}
+
+\usepackage[
+type={CC},
+modifier={by},
+version={4.0}]
+{doclicense}
+
+\input{./macros_modern}
+
+%Already set in frama-c-book
+%\usepackage[a4paper=true,pdftex,colorlinks=true,urlcolor=blue,pdfstartview=FitH]{hyperref}
+
+%already set in frama-c-book
+%\usepackage[T1]{fontenc}
+%\usepackage{times}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{enumitem}
+%\usepackage{tikz}
+\usepackage{color}
+\usepackage{xspace}
+\usepackage{makeidx}
+\usepackage[normalem]{ulem}
+\usepackage[leftbars]{changebar}
+\usepackage{alltt}
+\usepackage{hyperref}
+\usepackage{multirow}
+\usepackage{fixme}
+
+\lstset{
+numbers=left,
+deletekeywords={assert}
+}
+\makeindex
+
+%Already set in frama-c-book
+%\setlength{\textheight}{240mm}
+%\setlength{\topmargin}{-10mm}
+%\setlength{\textwidth}{160mm}
+%\setlength{\oddsidemargin}{0mm}
+%\setlength{\evensidemargin}{0mm}
+
+\renewcommand{\textfraction}{0.01}
+\renewcommand{\topfraction}{0.99}
+\renewcommand{\bottomfraction}{0.99}
+
+\newcommand{\fclang}{\textsc{Frama-Clang}\xspace}
+\newcommand{\framac}{\textsc{Frama-C}\xspace}
+\newcommand{\acsl}{\textsc{ACSL}\xspace}
+\newcommand{\acslb}{\acsl/\NAME\xspace}
+
+\newcommand{\TODO}[1]{\fxnote[margin]{TODO: #1}}
+\newcommand{\review}[1]
+{\fxnote[inline,nomargin]{\color{darkgreen}Question for Reviewers: #1}}
+
+% already taken care of in frama-c-book
+% \usepackage{fancyhdr}
+% \pagestyle{fancyplain}
+% \renewcommand{\footrulewidth}{0.4pt}
+% \addtolength{\headheight}{2pt}
+% \addtolength{\headwidth}{1cm}
+% \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+% \renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+% \lhead[\fancyplain{}{\bfseries\thepage}]{\fancyplain{}{\bfseries\rightmark}}
+% \chead{}
+% \rhead[\fancyplain{}{\bfseries\leftmark}]{\fancyplain{}{\bfseries\thepage}}
+% \lfoot{\fancyplain{}{ANSI/ISO C Specification Language}}
+% \cfoot{}
+% \rfoot{\fancyplain{}{CAT RNTL project}}
+
