@@ -5,10 +5,11 @@
        | string ; (lexical) string constants
        | character ; (lexical) character constants
        \ 
-  bin-op ::= "+" | "-" | "*" | "/" | "%" | "<<" | ">>";
+  bin-op ::= "+" | "-" | "*" | "/" | "%" ;
        | "==" | "!=" | "<=" | ">=" | ">" | "<" ;
        | "&&" | "||" | "^^"  ; boolean operations
-       | "&" | "|" | "-->" 
+       | "<<" | ">>" ;
+       | "&" | "|" | "-->"
        | "<-->" | "^"; bitwise operations
        \
   unary-op ::= "+" | "-" ; unary plus and minus
@@ -22,11 +23,12 @@
        | unary-op term ;
        | term bin-op term ;
        | term "[" term "]" ; array access
-       | "{" term "\with" "[" term "]" "=" term "}" ; array functional modifier
+       | "{" term ;
+            "\with" "[" term "]" "=" term "}" ; array functional modifier
        | term "." id  ; structure field access
        | "{" term "\with" "."id "=" term "}" ; field functional modifier
        | term "->" id ;
-       | "(" type-expr ")" term  ; cast \ifCPP{(see also section~\ref{sec:casts})}
+       | "(" type-expr ")" term  ; cast \ifCPP{(see section~\ref{sec:casts})}
        | ident "(" term ("," term)* ")" ; function application
        | "(" term ")" ; parentheses
        | term "?" term ":" term ; ternary condition

@@ -15,7 +15,8 @@
      "(" C-argument-expression-list? ")";
      {"/*@" "ghost"} ;
      {  "(" ghost-argument-expression-list ")"};
-     {  "*/"} ; call with ghosts
+     {  "*/"} ; call
+              ; with ghosts
     \
   statement ::= C-statement ;
              | statements-ghost \

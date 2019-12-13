@@ -49,8 +49,11 @@ DEPS_CPP=cpp-abstraction.tex cpp-attributes.tex cpp-auto.tex		\
     cpp-exceptions.tex cpp-foreword.tex cpp-forrange.tex		\
     cpp-functional-design.tex cpp-functional-examples.tex		\
     cpp-functional.tex cpp-namespaces.tex cpp-templates.tex		\
-    overload_contract.cpp                                               \
-    cpp-types.tex cpp-type.tex cpp-visibility.tex cpp-changes.tex
+    overload_contract.cpp ffunctorB.cpp cpp-types.tex cpp-type.tex	\
+    cpp-visibility.tex cpp-changes.tex fexample1.cpp fexampleA.cpp	\
+    fexampleA.logic fexampleA.smt2 fexampleB.cpp fexampleB.logic	\
+    fexampleB.smt2 fexampleC.cpp fexampleC.logic fexampleD1.logic	\
+    fexampleD2.logic fexampleD.cpp fexampleD.logic
 
 TUTORIAL_EXAMPLES=max_ptr-tut.c max_ptr2-tut.c max_ptr_bhv-tut.c \
                   max_seq_ghost-tut.c

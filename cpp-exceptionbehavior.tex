@@ -5,7 +5,8 @@
   \
   throws-clause ::= "throws" pred ";" ;
                   | "throws" "{" "..." "}" pred ";" ;
-                  | "throws" "{" C-type-name ( "," C-type-name )* "}" pred ";" ;
+                  | "throws" "{" C-type-name ;
+                    ( "," C-type-name )* "}" pred ";" ;
   \
   term ::= "\exception"
 \end{syntax}

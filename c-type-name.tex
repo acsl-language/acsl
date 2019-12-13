@@ -26,13 +26,17 @@ C-abstract-declarator ::= C-pointer ;
 C-pointer ::= ( "*" C-type-qualifier* )+
 \
 C-direct-abstract-declarator ::= "(" C-abstract-declarator ")" ; 
-| C-direct-abstract-declarator? "[" C-constant-expression "]" ;
-| C-direct-abstract-declarator? "(" C-parameter-type-list? ")"
+| C-direct-abstract-declarator? ;
+  "[" C-constant-expression "]" ;
+| C-direct-abstract-declarator? ;
+  "(" C-parameter-type-list? ")"
 \
-C-parameter-type-list ::= C-parameter-declaration ("," C-parameter-declaration )+
+C-parameter-type-list ::= C-parameter-declaration;
+ ("," C-parameter-declaration )+
 \
 C-parameter-declaration ::= C-declaration-specifier+ C-declarator ;
-                          | C-declaration-specifier+ C-abstract-declarator ;
+                          | C-declaration-specifier+ ;
+                            C-abstract-declarator ;
                           | C-declaration-specifier+ ;
 \
 C-declaration-specifier ::= C-type-specifier | C-type-qualifier
@@ -41,8 +45,10 @@ C-declarator ::= C-pointer? C-direct-declarator
 \
 C-direct-declarator ::= ident ;
                       | "(" C-declarator ")" ;
-                      | C-direct-declarator "[" C-constant-expression? "]" ;
-                      | C-direct-declarator "(" C-parameter-type-list ")" ;
+                      | C-direct-declarator;
+                        "[" C-constant-expression? "]" ;
+                      | C-direct-declarator;
+                        "(" C-parameter-type-list ")" ;
                       | C-direct-declarator "(" ident* ")"
 \
 C-constant-expression ::=  ... [An expression formed from constant literals]

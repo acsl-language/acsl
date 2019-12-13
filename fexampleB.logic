@@ -1,11 +1,13 @@
 \flit FLIT_inc;
 assume forall int x; \requires{L}(FLIT_inc,x) == \true;
 assume forall int x; \assigns{L}(FLIT_inc,x) == \empty;
-assume forall int r,x; \ensures{LPre,LPost}(FLIT_inc,r,x) == (r@LPost > x@LPre);
+assume forall int r,x;
+  \ensures{LPre,LPost}(FLIT_inc,r,x) == (r@LPost > x@LPre);
 \flit FLIT_dec;
 assume forall int x; \requires{L}(FLIT_dec,x) == \true;
 assume forall int x; \assigns{L}(FLIT_dec,x) == \empty;
-assume forall int r,x; \ensures{LPre,LPost}(FLIT_dec,r,x) == (r@LPost < x@LPre);
+assume forall int r,x;
+  \ensures{LPre,LPost}(FLIT_dec,r,x) == (r@LPost < x@LPre);
 bool b;
 \flit fp;
 assume fp == b ? FLIT_inc : FLIT_dec;

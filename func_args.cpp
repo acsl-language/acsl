@@ -1,6 +1,9 @@
 /*@
   requires \valid(a[i..j-1]);
-  requires \forall int k; \assigns(f,k) == \empty;  // requires f has no side-effects
+
+  // requires f has no side-effects
+  requires \forall int k; \assigns(f,k) == \empty;
+
   ensures \forall int k; k < i || k >= j; a[k] == \old(a[k]);
   ensures \forall int k; i <= k < j; \ensures(f, a[k], \old(a[k]));
 */

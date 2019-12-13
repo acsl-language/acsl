@@ -1699,8 +1699,9 @@ variables within C statements (see~\cite{KR88}, Section A11.1).
 
 Note that the \lstinline|\at| construct must be interpreted carefully when a variable is redeclared within the body of a function.
 Consider the example below:
-\begin{example}
+\begin{example}{labels and scopes of local variables}
 \label{redeclaration}
+
 \listinginput{1}{redeclaredat.c}
 \end{example}
 \begin{itemize}
@@ -1727,7 +1728,7 @@ in fact syntactic sugar for \lstinline|\at(e,Old)|.
 \begin{table}
 \caption{Meaning and permitted locations of built-in labels}
 \label{tab:lables}
-\begin{tabular}[t]{|c|p{2.5in}|p{2.5in}|}
+\begin{tabular}[t]{|c|p{2.3in}|p{2.3in}|}
 \hline
 Label & Permitted locations & Meaning \\
 \hline

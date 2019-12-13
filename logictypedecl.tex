@@ -13,7 +13,8 @@
   {record-type} ::= { "{" type-expr id } ;
                   { ( ";" type-expr id)* ";"? "}" }
   \
-  { function-type } ::= { "("( type-expr ("," type-expr )*)?")" } ;
+  { function-type } ::= { "("( type-expr };
+                     { ("," type-expr )*)?")" } ;
                     { "->" type-expr }
   \
   sum-type ::= "|"? constructor ;

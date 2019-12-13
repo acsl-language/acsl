@@ -56,9 +56,9 @@ typedef struct _memory_block {
   @*/
 
 /* A memory chunk holds a pointer [data] to some part of a memory block
- * [block]. It maintains the [offset] at which it points in the block, as well
- * as the [size] of the block it is allowed to access. A field [free] tells
- * whether the chunk is used or not.
+ * [block]. It maintains the [offset] at which it points in the block,
+ * as well as the [size] of the block it is allowed to access.
+ * A field [free] tells whether the chunk is used or not.
  */
 typedef struct _memory_chunk {
   //@ ghost boolean packed;

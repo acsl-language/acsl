@@ -1,7 +1,8 @@
 \flit FLIT_inc;
 assume forall int x; \requires{L}(FLIT_inc,x) == \true;
 assume forall int x; \assigns{L}(FLIT_inc,x) == \empty;
-assume forall int r,x; \ensures{LPre,LPost}(FLIT_inc,r,x) == (r@LPost == x@LPre+1);
+assume forall int r,x;
+  \ensures{LPre,LPost}(FLIT_inc,r,x) == (r@LPost == x@LPre+1);
 \flit fp;
 assume fp == FLIT_inc;
 Lab_1:

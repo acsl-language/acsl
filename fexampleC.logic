@@ -2,7 +2,8 @@
 int x;
 assume forall int k; \requires{L}(FLIT_inc,k) == \true;
 assume forall int k; \assigns{L}(FLIT_inc,k) == { x };
-assume forall int k; \ensures{LPre,LPost}(FLIT_inc,k) == (x@LPost == x@LPre + k);
+assume forall int k;
+  \ensures{LPre,LPost}(FLIT_inc,k) == (x@LPost == x@LPre + k);
 Pre:
 \flit fp;
 assume fp == FLIT_inc;

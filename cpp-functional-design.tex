@@ -253,14 +253,22 @@ behavior b2:
 int m(int k) { ... }
 \end{listing-nonumber}
 
-	In this case the consolidated precondition is
-	\lstinline|r0 && (a1==>r1) && (a2 ==> r2)|
-	and the consolidated postcondition is 
-	\lstinline|(a1==>(\result==\at(LPre,j)+k)) && (a2 ==> (\result>= 0))|.
+	In this case the consolidated precondition is the following:
+	\begin{listing-nonumber}
+          r0 && (a1==>r1) && (a2 ==> r2)
+        \end{listing-nonumber}
+	while the consolidated postcondition is:
+	\begin{listing-nonumber}
+          (a1==>(\result==\at(LPre,j)+k)) && (a2 ==> (\result>= 0))
+        \end{listing-nonumber}
 	The C++ function takes a single argument and produces a single result. So its signature is
 	\lstinline|\ensures{LPre,LPost}(int (*fp)(int), int result, int k)|	
-	and its definition for the function \lstinline|m| (presuming the function has a logical literal identifier \lstinline|M|) is
-	\lstinline|\ensures{LPre,LPost}(M,r,k) == (r0 && (a1==>(r==\at(j,LPre)+k)) && (a2 ==> (r >= 0))|.
+	and its definition for the function \lstinline|m| (presuming the
+        function has a logical literal identifier \lstinline|M|) is:
+	\begin{listing-nonumber}
+        \ensures{LPre,LPost}(M,r,k) <==>
+            (r0 && (a1==>(r==\at(j,LPre)+k)) && (a2 ==> (r >= 0))
+        \end{listing-nonumber}
 	The postcondition term is true for any combination of 
 	result value and argument values for which the ensures clause would be true. Any underspecification of the function is readily represented.
 
@@ -351,27 +359,27 @@ Here
 \begin{itemize}[noitemsep,nolistsep]
 	\item Line 1 gives a declaration of the logic name representing 
 	the function pointer literal for the \lstinline|increment| function
-	\item Lines 2--4 show the properties of this literal obtained
+	\item Lines 2--5 show the properties of this literal obtained
 	automatically from \lstinline|increment|'s function contract
 	(Lines 1-3 in the C++ code).
-	\item Line 5 declares a logic name for the program variable 
+	\item Line 6 declares a logic name for the program variable 
 	\lstinline|fp|; line 6 is the translation of line 7 of the C++ code above.
-	\item Line 7 is a state label marking the state prior to the 
+	\item Line 8 is a state label marking the state prior to the 
 	function call (\lstinline|fp(4)|).
-	\item Line 8 is an assertion of \lstinline|fp|'s precondition
+	\item Line 9 is an assertion of \lstinline|fp|'s precondition
 	\item The check on the frame condition is omitted
-	\item Line 9 havocs the values in the frame of \lstinline|fp|,
+	\item Line 10 havocs the values in the frame of \lstinline|fp|,
 	whatever they might be (here the expression evaluates to 
 	\lstinline|\empty|).
-	\item Line 10 declares a temporary variable to hold the result of
+	\item Line 11 declares a temporary variable to hold the result of
 	the subexpression that is the function call
-	\item Line 11 gives a state label for the post-state of the function call
-	\item Line 12 is the assumption of the callee postcondition. It relates the two labeled states --- before and after the function call.
-	\item Line 13 is the declaration of a logic variable corresponding 
+	\item Line 12 gives a state label for the post-state of the function call
+	\item Line 13 is the assumption of the callee postcondition. It relates the two labeled states --- before and after the function call.
+	\item Line 14 is the declaration of a logic variable corresponding 
 	to the program variable of the same name
-	\item Line 14 is the translation of the assignment of the result of
+	\item Line 15 is the translation of the assignment of the result of
 	the function call to the program variable \lstinline|y|.
-	\item Line 15 asserts the postcondition to be proved
+	\item Line 16 asserts the postcondition to be proved
 \end{itemize}
 
 The corresponding SMT proof obligation is
@@ -400,7 +408,7 @@ The corresponding SMT-LIB is
 The next example requires using labels to distinguish program states.
 \lstinputlisting{fexampleC.cpp}
 
-The translation into pseudo-code gives
+The translation into pseudo-code gives:
 \lstinputlisting{fexampleC.logic}
 
 Here since the functions and function pointers have a void return type, there is no argument of the \lstinline|\ensures| term corresponding to the return value. Also, the \lstinline|test| function has no frame condition, 
