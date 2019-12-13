@@ -17,7 +17,8 @@
     \coverpage{
       \vbox{
         \mbox{\NAME: ANSI/ISO \lang Specification Language}\\[1ex]
-        \mbox{\NAME Version \acslppversion}\\[1ex]
+        \mbox{\NAME Version
+               \iftoggle{isCPP}{\acslppversion}{\acslversion}}\\[1ex]
         \mbox{\LARGE Implementation in \framac \fcversion}
         \mbox{\LARGE \ifCPP{and \fclang \fclangversion{}}}}}
   }
@@ -106,12 +107,14 @@ $^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405
 \label{sec:glossary}
 
 \begin{description}
-\item[pure expressions] \index{pure expression} In ACSL setting, a
-  \emph{pure} expression is a C expression which contains no assignments, no
+\item[pure expressions] \index{pure expression} In \NAME setting, a
+  \emph{pure} expression is a \lang expression which contains no assignments, no
   incrementation operator \lstinline|++| or \lstinline|--|, no function call,
   and no access to a volatile object. The set of pure expressions is a
-  subset of the set of C expressions without side effect (C
-  standard~\cite{KR88,standardc99}, \S 5.1.2.3, alinea 2).
+  subset of the set of \lang expressions without side effect
+  \iftoggle{isCPP}
+  {(C++ standard~\cite{C++-2011}, \S 1.9, [intro.execution], alinea 2)}
+  {(C standard~\cite{KR88,standardc99}, \S 5.1.2.3, alinea 2)}.
 
 \item[left-values] \index{left-value}\index{lvalue}
 
@@ -121,8 +124,10 @@ $^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405
   either a variable identifier or an expression of the form \lstinline|*e|,
   \lstinline|e[e]|, \lstinline|e.id| or \lstinline|e->id|, where
   \lstinline |e| is any expression and \lstinline|id| a field name.
-  See C standard, \S 6.3.2.1 for a more
-  detailed description of lvalues.
+  \iftoggle{isCPP}
+  {See C++ standard, \S 3.10 [basic.lval]}
+  {See C standard, \S 6.3.2.1}
+  for a more detailed description of lvalues.
 
   A \emph{modifiable lvalue} is an lvalue allowed in the left part of
   an assignment. In essence, all lvalues are modifiable except

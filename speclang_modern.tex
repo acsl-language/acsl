@@ -3651,8 +3651,12 @@ the function it points to is axiomatized, through the predicate
 and \lstinline|\valid_function(p)| holds if and only if
 \begin{itemize}
 \item \lstinline|p| is a pointer to a function of type \lstinline|t|, and
-\item \lstinline|*p| is a function whose type is \emph{compatible}
-  with \lstinline|t|, in the sense of \cite[\S6.2.7]{standardc99}
+\item \lstinline|*p| is a function whose type is
+\iftoggle{isCPP}{\emph{layout-compatible}}{\emph{compatible}}
+  with \lstinline|t|, in the sense of
+\iftoggle{isCPP}
+{\cite{C++-2011} \S3.9 [basic.types], alinea 11}
+{\cite[\S6.2.7]{standardc99}}
 \end{itemize}
 
 \begin{example}
