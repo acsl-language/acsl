@@ -3461,10 +3461,9 @@ grammar are the following:
 
 \paragraph{Semantics of Ghost Code}
 \label{sec:semantics-ghost-code}
-The question of semantics is essential for ghost code.
-\notimplemented[Not checked in the current implementation]{Informally, the
+The question of semantics is essential for ghost code. Informally, the
 semantics requires that ghost statements do not change the regular
-program execution.} This implies several conditions, including e.g.:
+program execution. This implies several conditions, including e.g.:
 \begin{itemize}
 \item Ghost code cannot modify a non-ghost C variable.
 \item Ghost code cannot modify a non-ghost structure field.
@@ -3494,7 +3493,7 @@ or non-ghost. Then, the semantics is that any memory side-effects of ghost
 code must be only in the ghost heap or the ghost stack.
 
 Notice that this semantics is not statically decidable.
-\notimplemented{It is left to tools to provide approximations},
+It is left to tools to provide approximations,
 correct in the sense that any code
 statically detected as ghost must be semantically ghost.
 
