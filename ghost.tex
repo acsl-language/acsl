@@ -6,16 +6,16 @@
   direct-declarator ::= C-direct-declarator ;
     | direct-declarator ;
     "(" C-parameter-type-list? ")";
-        {"/*@" "ghost"};
-          {"(" ghost-parameter-type-list")"};
-          {"*/"}; ghost args
+        "/*@" "ghost";
+          "(" ghost-parameter-type-list")";
+          "*/"; ghost args
         \
   postfix-expression ::= C-postfix-expression ;
     | postfix-expression ;
      "(" C-argument-expression-list? ")";
-     {"/*@" "ghost"} ;
-     {  "(" ghost-argument-expression-list ")"};
-     {  "*/"} ; call
+     "/*@" "ghost" ;
+       "(" ghost-argument-expression-list ")";
+       "*/" ; call
               ; with ghosts
     \
   statement ::= C-statement ;
