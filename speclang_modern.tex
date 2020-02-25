@@ -3434,17 +3434,15 @@ grammar are the following:
   
 \item \notimplemented{Logical types, such as \lstinline|integer| or
 \lstinline|real| are authorized in ghost code}.
-\item \notimplemented{A non-ghost function can take ghost
-    parameters}.
+\item A non-ghost function can take ghost parameters.
   If such a ghost
   clause is present in the declarator, then the list of ghost
   parameters must be non-empty and fixed (no vararg ghost). The call
   to the function must then provide the appropriate number of ghost parameters.
 \item Any non-ghost \textit{if-statement} that does not have a non-ghost
-  \lstinline|else| clause \notimplemented{can be augmented with a ghost
-    one}. Similarly, a non-ghost
-  \lstinline|switch| can have \notimplemented{a ghost \lstinline|default:|
-    clause}
+  \lstinline|else| clause can be augmented with a ghost one.
+  Similarly, a non-ghost
+  \lstinline|switch| can have a ghost \lstinline|default:| clause
   if it does not have a non-ghost one
   (there are however semantic restrictions for valid
   ghost labelled statements in a switch, see next paragraph for details).

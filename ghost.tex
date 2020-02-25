@@ -25,9 +25,9 @@
   ghost-selection-statement ::= C-selection-statement ;
     | "if" "(" C-expression ")";
        statement;
-      {"/*@" "ghost" "else"};
-      {  ghost-statement+ };
-      {  "*/"} \
+      "/*@" "ghost" "else";
+        ghost-statement+ ;
+        "*/" \
 
   struct-declaration ::= C-struct-declaration ;
   | {"/*@" "ghost" };
