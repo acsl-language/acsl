@@ -3507,22 +3507,19 @@ statically detected as ghost must be semantically ghost.
 
 The qualifier \lstinline|\ghost| can be used, in ghost code only, in declaration
 of a variable to state precisely in which memory (normal or ghost) its type
-belongs.
+belongs. Since it is a syntactic element, it is statically decidable.
 
-As \lstinline|\ghost| is a qualifier, it obeys to the same typing rules except
+Since \lstinline|\ghost| is a qualifier, it obeys to the same typing rules except
 on two aspects. First, a variable declared in a ghost annotation (including
 ghost parameters) receives implicitly the \lstinline|\ghost| qualifier. Second,
 compared to the \lstinline|const| qualifier, the \lstinline|\ghost| qualifier
-follows the rules associated to the creation of a non-\lstinline|const| element.
-It is allowed to create a reference on \lstinline|\ghost| (non-\lstinline|const|)
-object only if this object is itself \lstinline|\ghost| (non-\lstinline|const|).
-On the opposite, creating a reference to a non-\lstinline|\ghost|
-(\lstinline|const|) object is allowed no matter if it is non-\lstinline|\ghost|
-(\lstinline|const|) or \lstinline|\ghost| (non-\lstinline|const|).
+follows a stricter rule. When assigning a reference, the ghost qualification of
+the lvalue must exactly match the ghost qualification of the reference, meaning
+that a (non-)\lstinline|\ghost| memory location can only be reference by a pointer
+to a (non-)\lstinline|\ghost| memory location.
 
 \begin{example}
-  The following example shows simple uses of the \lstinline|\ghost| qualifier
-  and compares it to the use of the \lstinline|const| keyword.
+  The following example shows simple uses of the \lstinline|\ghost| qualifier.
   \listinginput{1}{ghost_qualifier.c}
 \end{example}
 
