@@ -1,5 +1,8 @@
 \begin{syntax}
 
+  qualifier ::= C-qualifier ;
+  | "\ghost" ; only in ghost
+  \
   ghost-type-specifier ::= C-type-specifier ;
   | {logic-type} \
   logic-def ::= "ghost" ghost-declaration \
