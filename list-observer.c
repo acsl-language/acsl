@@ -4,10 +4,12 @@
   @ }
   @*/
 
-/*@ assigns ghost_trace;
-  @ ensures register: observed_trace == (\old(observed_trace) ^ [| a |]);
-  @*/
-void track(int a);
+/*@ ghost
+  /@ assigns ghost_trace;
+   @ ensures register: observed_trace == (\old(observed_trace) ^ [| a |]);
+   @/
+  void track(int a);
+*/
 
 /*@ requires empty_trace: observed_trace == \Nil;
   @ assigns ghost_trace;

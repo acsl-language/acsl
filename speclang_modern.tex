@@ -3451,7 +3451,7 @@ grammar are the following:
 \begin{figure}[t]
   \begin{cadre}
       \input{ghost.bnf}
-    \end{cadre}
+  \end{cadre}
   \caption{Grammar for ghost statements}
 \label{fig:gram:ghost}
 \end{figure}
@@ -3471,9 +3471,9 @@ program execution. This implies several conditions, including e.g.:
   non-ghost variables or fields.
 \item If a non-ghost C function is called in ghost code, it must not
   modify non-ghost variables or fields.
-\item If a structure has ghost fields, the \lstinline|sizeof| of the
+\item \notimplemented{If a structure has ghost fields, the \lstinline|sizeof| of the
   structure is the same as the structure without ghost fields. Also,
-  alignment of fields remains unchanged.
+  alignment of fields remains unchanged.}
 \item The control-flow graph of a function must not be altered by
   ghost statements. In particular, no ghost \lstinline|return| can appear
   in the body of a non-ghost function. Similarly, ghost
@@ -3503,6 +3503,24 @@ statically detected as ghost must be semantically ghost.
 \begin{example}
   The following example shows some invalid ghost statements:
   \listinginput{1}{ghostcfg.c}
+\end{example}
+
+The qualifier \lstinline|\ghost| can be used, in ghost code only, in declaration
+of a variable to state precisely in which memory (normal or ghost) its type
+belongs. Since it is a syntactic element, it is statically decidable.
+
+Since \lstinline|\ghost| is a qualifier, it obeys to the same typing rules except
+on two aspects. First, a variable declared in a ghost annotation (including
+ghost parameters) receives implicitly the \lstinline|\ghost| qualifier. Second,
+compared to the \lstinline|const| qualifier, the \lstinline|\ghost| qualifier
+follows a stricter rule. When assigning a reference, the ghost qualification of
+the lvalue must exactly match the ghost qualification of the reference, meaning
+that a (non-)\lstinline|\ghost| memory location can only be reference by a pointer
+to a (non-)\lstinline|\ghost| memory location.
+
+\begin{example}
+  The following example shows simple uses of the \lstinline|\ghost| qualifier.
+  \listinginput{1}{ghost_qualifier.c}
 \end{example}
 
 \paragraph{Differences between model variables and ghost variables}

@@ -146,7 +146,7 @@ HAS_FCLANG=$(shell if $(FRAMAC) -plugins | grep -q "Frama_Clang"; \
 GOOD=abrupt_termination.c advancedloopinvariants.c assert-tut.c		\
 assigns_array.c assigns.c assigns_list.c bsearch.c bsearch2.c		\
 cond_assigns.c div_lemma.c dowhile.c euclide.c exit.c extremum-tut.c	\
-extremum2-tut.c fact.c flag.c footprint.c ghostpointer.c		\
+extremum2-tut.c fact.c flag.c footprint.c 				\
 glob_var_masked.c glob_var_masked_sol.c global_invariant-tut.c		\
 incrstar.c initialized.c intlists.c isgcd.c isqrt.c listdecl.c		\
 listdef.c loopvariantnegative.c loop-frees.c loop_current.c		\
@@ -165,7 +165,7 @@ welltyped.c list-observer.c
 BAD=acsl_allocator.c arrayslice.c gen_code.c gen_spec_with_ghost.c	\
 gen_spec_with_model.c ghostcfg.c import.c invariants.c			\
 lexico.c listlengthdef.c listmodule.c                                   \
-modifier.c out_char.c sum2.c
+modifier.c out_char.c sum2.c ghost_qualifier.c ghostpointer.c
 
 ifeq ("$(HAS_FCLANG)","yes")
 CHECK_FILES=*.c *.cpp
