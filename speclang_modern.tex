@@ -70,7 +70,7 @@ should be noted.
   \item \NAME uses some grammar elements from \lang, such as literals, type expressions, statements and declarations. Most of these are identified as 
   such by \lstinline|C-| prefixes in the figures laying out the grammar.
   They are described in more detail for reference in Appendix \ref{sec:cgrammar}.
- \end{itemize}
+\end{itemize}
 
 %A bit complicated with listings
 %In this document, we use UTF8 characters in the examples, to improve
@@ -101,6 +101,14 @@ that we will introduce progressively.
 \label{fig:gram:pred}
 \end{figure}
 
+\begin{figure}[t]
+  \begin{cadre}
+    \input{c-type-name.bnf}
+  \end{cadre}
+  \caption{The grammar of C type expressions, from the C standard}
+\label{fig:gram:ctype}
+\end{figure}
+
 Figures~\ref{fig:gram:term}~and~\ref{fig:gram:pred} present the
 grammar for the basic constructs of logic expressions. In that
 grammar, we distinguish between \emph{predicates}\index{predicate} and
@@ -111,7 +119,7 @@ For reference, Fig. \ref{fig:gram:ctype} gives the C grammar for a C type expres
  
  The grammar
 for binders and type expressions is given separately in
-Figure~\ref{fig:gram:binders}. 
+Figure~\ref{fig:gram:binders}.
 Although a \textit{type-name} in the C grammar is actually an abstract type expression, possibly including qualifiers and pointer and array decorators,
 here we need to distinguish between raw type names (\lstinline|C-type-name|) and type expressions (\lstinline|C-type-expr|); Fig. \ref{fig:gram:ctype} is adapted from the C grammar to show this distinction.
 A \lstinline|type-expr| as used in Fig. \ref{fig:gram:binders} and other grammar productions can be
@@ -194,7 +202,7 @@ Section~\ref{sec:logicspec} for detail.
   It is required that the \lstinline|$relop_i$| operators must be in
   the same ``direction'', \emph{i.e.} they must all belong either to
   $\{$\lstinline|<|, \lstinline|<=|, \lstinline|==|$\}$ or to
-  $\{$\lstinline|>|, \lstinline|>=|, \lstinline|==|$\}$. Expressions such as
+  $\{$\lstinline|>|,\lstinline|>=|,\lstinline|==|$\}$. Expressions such as
   \lstinline|x < y > z| or \lstinline|x != y != z| are not allowed.
   Furthermore the types of each of the terms being compared must be non-boolean.
   Note that consecutive comparison operators are allowed only 
@@ -207,7 +215,7 @@ Section~\ref{sec:logicspec} for detail.
   considered a predicate. As a term a consecutive comparison that includes less-than or greater-than operations
   \lstinline|x < y < z| would
   be parsed as \lstinline|(x < y) < z| which is incorrectly typed, 
-  because in logic expressions, comparisons result in boolean values. 
+  because in logic expressions, comparisons result in boolean values.
   However, when equalities are involved there could be some ambiguity.
   Consider \lstinline|a < b == c|. As a standard expression, this would be parsed as
   \lstinline|(a < b) == c|, which would require that \lstinline|c| be a boolean value.
@@ -384,7 +392,7 @@ like C, does permit implicit conversions from numeric and pointer types to \lsti
 \end{itemize}
 
 Formal typing rules for terms are given in appendix~\ref{sec:typingrules}.
-	
+
 \subsection{Integer arithmetic and machine integers}
 
 The following integer arithmetic operations apply to
@@ -3279,7 +3287,7 @@ which they are supposed to hold.
   function is of type $\tau$, that result must also satisfy its
   weak invariant at function exit. 
 
-\item A strong type invariant on type $\tau$ must hold at any step 
+\item A strong type invariant on type $\tau$ must hold at any step
 (more precisely, ay sequence point as defined in C)
   during execution, and applies to any global variable, local
   variable, or formal parameter\index{formal parameter}
@@ -3396,7 +3404,7 @@ is a logic type, not a C type. Also, the semantics above is closer to
 the one of B machines~\cite{abrial96:_b_book}. It should be noticed
 that program verification with model variables does not have a
 well-established theoretical background~\cite{marche07,leavens07}, so
-we deliberately do not provide a precise semantics in this document.
+we deliberately do not provide a precise semantics in this document .
 
 \section{Ghost variables and statements}
 \label{sec:ghost}
@@ -3451,7 +3459,7 @@ grammar are the following:
 \begin{figure}[t]
   \begin{cadre}
       \input{ghost.bnf}
-  \end{cadre}
+    \end{cadre}
   \caption{Grammar for ghost statements}
 \label{fig:gram:ghost}
 \end{figure}

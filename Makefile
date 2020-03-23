@@ -6,8 +6,8 @@ PDF_OUTPUTS_CPP=acslpp-implementation.pdf acslpp.pdf
 PDF_OUTPUTS_C=acsl-implementation.pdf acsl.pdf
 PDF_OUTPUTS=$(PDF_OUTPUTS_C) $(PDF_OUTPUTS_CPP)
 
-BNF_FILES=term.tex predicate.tex binders.tex fn_behavior.tex		\
-          oldandresult.tex at.tex loc.tex assertions.tex loops.tex	\
+BNF_FILES=term.tex predicate.tex binders.tex fn_behavior.tex \
+          oldandresult.tex at.tex loc.tex assertions.tex loops.tex  \
           assertions.tex loops.tex allocation.tex			\
           generalinvariants.tex st_contracts.tex ghost.tex model.tex	\
           logic.tex inductive.tex logicdecl.tex logictypedecl.tex	\
@@ -149,7 +149,7 @@ cond_assigns.c div_lemma.c dowhile.c euclide.c exit.c extremum-tut.c	\
 extremum2-tut.c fact.c flag.c footprint.c 				\
 glob_var_masked.c glob_var_masked_sol.c global_invariant-tut.c		\
 incrstar.c initialized.c intlists.c isgcd.c isqrt.c listdecl.c		\
-listdef.c loopvariantnegative.c loop-frees.c loop_current.c		\
+listdef.c loopvariantnegative.c loop-frees.c loop_current.c             \
 malloc_free_fn.c malloc-free2-fn.c max-tut.c max.c max_index.c		\
 max_list-tut.c max_ptr-tut.c max_ptr2-tut.c max_ptr_bhv-tut.c		\
 max_ptr_false-tut.c max_seq-tut.c max_seq2-tut.c			\
