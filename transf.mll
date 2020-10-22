@@ -14,6 +14,8 @@
 
   let current_line = ref 1
 
+  let escape_to_tex = ref false
+
   let set_file f = current_file := f; current_line:=1
 
   let non_terminal s =
@@ -208,11 +210,16 @@ and syntax = parse
   | "::=" { add_defined (); print_string "\\is{}"; syntax lexbuf }
   | "|" { add_used (); print_string "\\orelse{}"; syntax lexbuf }
   | "\\" { add_used (); print_string "\\sep{}"; syntax lexbuf }
-  | "{" { add_used (); 
+  | "{" { add_used ();
           print_string "\\begin{notimplementedenv}";
           check_implementation_note lexbuf }
   | "}" { print_string "\\end{notimplementedenv}"; syntax lexbuf }
   | "[" { print_string "\\footnote{"; footnote lexbuf }
+  | "#" {
+     let c = if !escape_to_tex then '}' else '{' in
+     escape_to_tex := not (!escape_to_tex);
+     print_char c;
+     syntax lexbuf }
   | "\n" { incr current_line; print_char '\n'; syntax lexbuf }
   | _ {
       print_char (lexeme_char lexbuf 0);
@@ -283,7 +290,7 @@ and footnote = parse
        let lb = from_channel cin in
        main lb;
        close_in cin)
-    "transf [-modern|-check] file";
+    "transf [-check] file";
     if !check then result ();
     exit 0
 
