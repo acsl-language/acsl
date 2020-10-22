@@ -84,7 +84,7 @@ annotations. These are called \emph{logic expressions} in the following. They
 correspond to pure C expressions, with additional constructs
 that we will introduce progressively.
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
     \input{term.bnf}
   \end{cadre}
@@ -93,7 +93,7 @@ that we will introduce progressively.
 \label{fig:gram:term}
 \end{figure}
 
-\begin{figure}[hb]
+\begin{figure}[htp]
   \begin{cadre}
     \input{predicate.bnf}
   \end{cadre}
@@ -101,7 +101,7 @@ that we will introduce progressively.
 \label{fig:gram:pred}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
     \input{c-type-name.bnf}
   \end{cadre}
@@ -152,7 +152,7 @@ With respect to C pure expressions, the additional constructs are as follows:
   \lstinline|\forall $\tau$ $x_1$,$\ldots$,$x_n$; e| and existential
   quantification by \lstinline|\exists $\tau$ $x_1$,$\ldots$,$x_n$; e|.
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre} \input{binders.bnf}
     \end{cadre}
   \caption{Grammar of binders and type expressions}
@@ -251,7 +251,7 @@ table, operators are sorted from highest to lowest priority. Operators
 of same priority are presented on the same line.
 
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{center}
     \begin{tabular}{|l|l|l|}
       \hline
@@ -936,7 +936,7 @@ Unlike in C, conversion of an aggregate of C type \lstinline|struct| $\tau$  to 
 \label{sec:fn-behavior}
 \index{function contract}\index{contract}
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{fn_behavior.bnf}
    \end{cadre}
@@ -944,7 +944,7 @@ Unlike in C, conversion of an aggregate of C type \lstinline|struct| $\tau$  to 
   \label{fig:gram:contracts}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{oldandresult.bnf}
     \end{cadre}
@@ -1302,7 +1302,7 @@ More generally, we introduce syntactic constructs to denote \emph{sets of
   values} (tsets) that are also useful for the \separated predicate (see Section~\ref{sec:separated}). The terms in a tset may have any type, though the operations described below are only well-typed for certain types of tsets. For example, \lstinline|s$_1$[s$_2$]| as defined below is only well-typed if one of 
 \lstinline|s$_1$| and \lstinline|s$_2$| is a set of arrays and the other a set of integers.
 
-\begin{figure}
+\begin{figure}[htp]
   \begin{cadre}
       \input{loc.bnf}
     \end{cadre}
@@ -1452,7 +1452,7 @@ Annotations on C statements are of three kinds:
 \subsection{Assertions}
 \indextt{assert}
 \label{sec:assertions}
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
     \input{assertions.bnf}
   \end{cadre}
@@ -1482,7 +1482,7 @@ as an extension of the grammar of C statements.
 \subsection{Loop annotations}
 \label{sec:loop_annot}
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
     \input{loops.bnf}
   \end{cadre}
@@ -1618,7 +1618,7 @@ For example, it makes sense for a
 \lstinline|s|. Such an invariant is a kind of assertion, as
 shown in Figure~\ref{fig:advancedinvariants}.
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
     \input{generalinvariants.bnf}
   \end{cadre}
@@ -1833,7 +1833,7 @@ functions. When such an annotation needs to refer to a given memory
 state, it has to be given a label binder: this is described in
 Section~\ref{sec:logicalstates}.
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
     \input{at.bnf}
   \end{cadre}
@@ -1879,7 +1879,7 @@ Here is an example illustrating the use of \lstinline|LoopEntry| and
 \subsection{Statement contracts}
 \label{sec:statement_contract}
 \index{statement contract}\index{contract}
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
     \input{st_contracts.bnf}
   \end{cadre}
@@ -2109,7 +2109,7 @@ void f() { while(1); }
 \section{Logic specifications}
 \label{sec:logicspec}
 \index{logic specification}\index{specification}
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
 %%  \vfill \input{logic.bnf}
     \vfill\end{cadre}
@@ -2163,7 +2163,7 @@ A predicate may also be defined by an inductive definition. The
 grammar for this style of definition is given in
 Figure~\ref{fig:gram:inductive}.
 \index{inductive definitions}
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{inductive.bnf}
     \end{cadre}
@@ -2218,7 +2218,7 @@ axioms. The grammar for those constructions is given in
 Figure~\ref{fig:gram:logicdecl}.
 
 \indextt{axiomatic}
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre} 
     \input{logicdecl.bnf}
     \end{cadre}
@@ -2306,7 +2306,7 @@ a way to check consistency.
 
 \experimental
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{higherorder.bnf}
     \end{cadre}
@@ -2400,7 +2400,7 @@ Finally, ranges can also be used in designated initializers
 \label{sec:concretetypes}
 \experimental
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \index{type!record}\index{type!sum}
       \input{logictypedecl.bnf}
@@ -2456,7 +2456,7 @@ given label. However, to ease reading of such logic expressions, it
 is allowed to omit a label whenever there is only one label in the
 context.
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{logiclabels.bnf}
     \end{cadre}
@@ -2489,7 +2489,7 @@ context.
 
 \subsection{Memory footprint specification: \texorpdfstring{\lstinline|reads|}{reads} clause}
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{logicreads.bnf}
     \end{cadre}
@@ -2570,7 +2570,7 @@ a pointer to \lstinline|void| as an argument. On the
 other hand, a pointer referencing an incomplete type (hence having an
 abstract size) is possible.
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{memory.bnf}
     \end{cadre}
@@ -2715,7 +2715,7 @@ The grammar for those constructions is given in Figure~\ref{fig:gram:allocation}
 equivalent to \lstinline|allocates \empty| and \lstinline|frees \empty|; 
 it is left for convenience like for \assigns clauses.
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{allocation.bnf}
     \end{cadre}
@@ -3048,7 +3048,7 @@ is the same as function \lstinline|\concat| (resp. \lstinline|\repeat|).
 These infix operators have the same precedence as the conventional bit-wise exclusive-or operator
 and are left-associative.
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{list-gram.bnf}
     \end{cadre}
@@ -3071,7 +3071,7 @@ and are left-associative.
 \label{sec:abrupt-clause}
 \index{abrupt clause}
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
      \input{exitbehavior.bnf}
     \end{cadre}
@@ -3181,7 +3181,7 @@ Figure~\ref{fig:gram:dep}, allows specifying data
 dependencies\index{dependency} and
 \notimplemented{\emph{functional expressions}}\index{functional expression}.
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{dependencies.bnf}
     \end{cadre}
@@ -3240,7 +3240,7 @@ between
   between.
 \end{itemize}
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{data_invariants.bnf}
     \end{cadre}
@@ -3323,7 +3323,7 @@ types may have \emph{model fields}.  These are
 used to provide abstract specifications for functions whose concrete
 implementation must remain private.
 
-\begin{figure}[b]
+\begin{figure}[htp]
   \begin{cadre}
       \input{model.bnf}
     \end{cadre}
@@ -3456,7 +3456,7 @@ grammar are the following:
   ghost labelled statements in a switch, see next paragraph for details).
 \end{itemize}
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{ghost.bnf}
     \end{cadre}
@@ -3557,7 +3557,7 @@ Volatile variables can not be used in logic terms, since reading such
 a variable may have a side effect, in particular two successive reads
 may return different values.
 
-\begin{figure}[ht]
+\begin{figure}[htp]
   \begin{cadre}
       \input{volatile-gram.bnf}
     \end{cadre}
@@ -3596,7 +3596,7 @@ or only written to, the unused accessor function can be omitted from the
 
 
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{initialized.bnf}
     \end{cadre}
@@ -3656,7 +3656,7 @@ of the locations in $s$ is not dangling. \lstinline|!\dangling(s)| does \emph{no
 \experimental
 \indextt{valid\_function}
 
-\begin{figure}[h]
+\begin{figure}[htp]
   \begin{cadre}
       \input{welltyped.bnf}
     \end{cadre}
