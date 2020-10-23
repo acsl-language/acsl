@@ -106,13 +106,13 @@
 % --------------------------------------------------------------------------
 % ---  Sectionning                                                       ---
 % --------------------------------------------------------------------------
+\setcounter{secnumdepth}{4}
 \titleformat{\chapter}[display]{\Huge\raggedleft}%
 {\huge\chaptertitlename\,\thechapter}{0.5em}{}
 \titleformat{\section}[hang]{\Large\bfseries}{\thesection}{1em}{}%
 [\vspace{-14pt}\rule{\textwidth}{0.1pt}\vspace{-8pt}]
-\titleformat{\subsubsection}[hang]{\bfseries}{}{}{}%
+\titleformat{\subsubsection}[hang]{\bfseries}{\thesubsubsection}{1em}{}%
 [\vspace{-8pt}]
-
 % --------------------------------------------------------------------------
 % ---  Main Text Style                                                   ---
 % --------------------------------------------------------------------------
