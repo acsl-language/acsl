@@ -8,7 +8,8 @@
   loop-clause ::= loop-invariant | loop-assigns ;
                 | loop-allocation
   \
-  loop-invariant ::= "loop" "invariant" pred ";" 
+  loop-invariant ::= clause-kind?;
+                     "loop" "invariant" pred ";" 
   \
   loop-assigns ::= "loop" "assigns" locations ";" ;
   \

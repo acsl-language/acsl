@@ -430,7 +430,7 @@ remainder of $n$ divided by $d$ then:
   \end{itemize}
 \end{example}
 
-\subsubsection{Hexadecimal octal and binary constants}
+\subsubsection{Hexadecimal, octal, and binary constants}
 
 Hexadecimal, octal and binary constants are always non-negative. Suffixes
 \texttt{u} and \texttt{l} for C constants are allowed but meaningless.
@@ -961,7 +961,7 @@ are dynamically allocated or deallocated by the function from the \textsl{heap};
 they are defined later in Section~\ref{sec:allocation-clause}.
 % END proposition
 
-This section is organized as follows.  First, the grammar for terms is
+This section is organized as follows. First, the grammar for terms is
 extended with two new constructs.  Then
 Section~\ref{sec:simplecontracts} introduces \emph{simple contracts}.
 Finally, Section~\ref{subsec:behaviors} defines more general contracts
@@ -979,7 +979,7 @@ The grammar in Fig. \ref{fig:gram:contracts} requires clauses to be written
 in a particular order. This order is helpful for readability, though tools may 
 be lenient towards out-of-order clauses.
 
-\subsection{Built-in constructs %
+ \subsection{Built-in constructs %
   \texorpdfstring{\old}{\textbackslash{}old} %
  and \texorpdfstring{\result}{\textbackslash{}result}}
 
@@ -1015,7 +1015,7 @@ function contracts only).
 
 \subsection{Simple function contracts}
 \label{sec:simplecontracts}
-
+\subsubsection{Semantics}\label{sec:simple-contracts-definition}
 A simple function contract, having only simple clauses and no named behaviors, takes the following
 form:\indextt{requires}\indextt{assigns}\indextt{ensures}
 \begin{listing}{1}
@@ -1060,6 +1060,30 @@ the caller has no information at all on this function's side
 effects. See Section~\ref{sec:multiplecontracts} for more details on
 default status of clauses.
 
+\subsubsection{Semantics of frame conditions}
+\label{sec:writesSemantics}
+It is worth pointing out that there are different treatments of
+frame conditions (\lstinline|assigns| statements) in various specification languages.
+The frame condition can follow either \emph{writes} semantics or \emph{modifies} semantics.
+\begin{itemize}
+	\item Under \lstinline|writes| (or assigns) semantics, only those memory locations listed in a frame condition may be \emph{written to}, that is, only those locations may be the target of an assignment statement or listed in the frame condition of a called function. This is true whether or not the value of the memory location changes.
+	\item Under \lstinline|modifies| semantics, a memory location may be written to, as long as the value is restored (that is, not modified) by the end of the scope of the function contract. Under this semantics, a frame condition is a requirement on the relationship between two states --- any memory location not a member of the frame condition must have the same value in its pre-state and its post-state.
+\end{itemize}
+Confusion can arise because the words \emph{assigns} and \emph{modifies} are sometimes used interchangeably. In particular, \textbf{ACSL \ifCPP{and \NAME} \iftoggle{isCPP}{use}{uses}
+	\emph{modifies} semantics, even though the frame condition is introduced by the \emph{assigns} keyword}.\footnote{For comparison, JML and the OpenJML tool define frame conditions to have write semantics but use the keywords assigns and modifies interchangeably; however, the KeY tool for JML implements modifies semantics. Ada/SPARK's data flow contracts effectively encode write semantics.}
+
+\subsubsection{\texorpdfstring{\lstinline|check|}{check} and \texorpdfstring{\lstinline|admit|}{admit} clauses}\label{sec:check-admit-clauses}
+
+As presented above, in their basic acceptions, \lstinline|requires|
+and \lstinline|ensures| clauses both must be checked when control reaches the
+corresponding point, and can be assumed to hold to continue the analysis. However
+if only one of these actions, a {\it clause-kind} modifier can be used.
+\lstinline|check| will indicate that the corresponding clause must be verified,
+but with a \emph{non-blocking} semantics. In other words, even if the clause is found
+invalid, the execution should continue unhindered. Conversely, \lstinline|admit|
+indicates that the corresponding clause can be readily assumed to hold, without
+trying to verify it.
+
 \begin{example}
   The following function is given a simple contract for computing
   the integer square root.
@@ -1092,18 +1116,6 @@ default status of clauses.
   pointed to by \lstinline|p|. Finally, the \ensures clause specifies that
   the value \lstinline!*p! is incremented by one.
 \end{example}
-
-\subsection{Semantics of frame conditions}
-\label{sec:writesSemantics}
-It is worth pointing out that there are different treatments of
-frame conditions (assigns statements) in various specification languages.
-The frame condition can follow either \emph{writes} semantics or \emph{modifies} semantics.
-\begin{itemize}
-	\item Under \lstinline|writes| (or assigns) semantics, only those memory locations listed in a frame condition may be \emph{written to}, that is, only those locations may be the target of an assignment statement or listed in the frame condition of a called function. This is true whether or not the value of the memory location changes.
-	\item Under \lstinline|modifies| semantics, a memory location may be written to, as long as the value is restored (that is, not modified) by the end of the scope of the function contract. Under this semantics, a frame condition is a requirement on the relationship between two states --- any memory location not a member of the frame condition must have the same value in its pre-state and its post-state.
-\end{itemize}
-Confusion can arise because the words \emph{assigns} and \emph{modifies} are sometimes used interchangeably. In particular, \textbf{ACSL \ifCPP{and \NAME} \iftoggle{isCPP}{use}{uses}
-	\emph{modifies} semantics, even though the frame condition is introduced by the \emph{assigns} keyword}.\footnote{For comparison, JML and the OpenJML tool define frame conditions to have write semantics but use the keywords assigns and modifies interchangeably; however, the KeY tool for JML implements modifies semantics. Ada/SPARK's data flow contracts effectively encode write semantics.}
 
 \subsection{Contracts with named behaviors}
 \label{subsec:behaviors}
@@ -1467,16 +1479,16 @@ as an extension of the grammar of C statements.
 \item
   \lstinline|assert P|  means that \lstinline|P| must hold in the current state
   (the sequence point where the assertion occurs).
-
+\item \lstinline|check P| and \lstinline|admit P| indicate respectively that
+\lstinline|P| should be checked but not block the execution, and that \lstinline|P|
+can be assumed to hold without verification. See section~\ref{sec:check-admit-clauses}
+for more information.
 \item The variant \lstinline|for id$_1$,$\ldots$,id$_k$: assert P|
   associates the assertion to the named behaviors \lstinline|id$_i$|, each
   of them being a behavior identifier for the current function (or a
   behavior of an enclosing block as defined later in
   Section~\ref{sec:statement_contract}).  It means that this assertion
   is only required to hold for the listed behaviors.
-\item Introducing the assertion with the \lstinline|check| keyword rather than \lstinline|assert| indicates a
-  \emph{non-blocking} semantics. In other words, even if the property to be \lstinline|check|ed is found invalid,
-  the execution of the program should continue unhindered.
 \end{itemize}
 
 \subsection{Loop annotations}
@@ -1609,7 +1621,7 @@ It is also possible to specify termination orderings other than the
 usual order on integers, using the additional \lstinline|for|
 modifier. This is explained in Section~\ref{sec:termination}.
 
-\subsubsection{General inductive invariants}
+\subsubsection{General inductive invariants}\label{sec:generalized-invariants}
 \index{invariant}
 It is actually allowed to pose an inductive invariant
 anywhere inside a loop body.
@@ -2142,7 +2154,7 @@ overloaded operators. For example, the \lstinline|==| operation applied to two c
 is applying the built-in \NAME operation of equality between two structures, 
 not a user-defined \lang equality operation on that class.}
 
-\subsection{Lemmas}
+\subsection{Lemmas}\label{sec:lemmas}
 Lemmas are user-given propositions, a facility that might help theorem
 provers establish validity of ACSL specifications.
 
@@ -2153,7 +2165,13 @@ provers establish validity of ACSL specifications.
 \end{example}
 
 Of course, a complete verification of an ACSL specification has to
-provide a proof for each lemma.
+provide a proof for each lemma. Again, \lstinline|check lemma| can be used to indicate that the
+property should only be verified, but not used in other verification
+activities, and conversely \lstinline|admit lemma| indicates that
+the property can be assumed without trying to verify it
+(see section~\ref{sec:check-admit-clauses}). Note that an \lstinline|admit lemma|
+is in practice equivalent to an \lstinline|axiom|, as introduced
+in section~\ref{sec:axiomatic}.
 
 \subsection{Inductive predicates}
 \label{sec:inductivepredicates}
@@ -2209,7 +2227,7 @@ Example~\ref{ex:locations-list} already introduced an inductive definition of
 reachability in linked-lists, and was also based on definite Horn
 clauses, and is thus consistent.
 
-\subsection{Axiomatic definitions}
+\subsection{Axiomatic definitions}\label{sec:axiomatic}
 
 Instead of an explicit definition, one may introduce an
 \emph{axiomatic} definition for a set of types, predicates and logic
