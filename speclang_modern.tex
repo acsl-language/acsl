@@ -1077,7 +1077,7 @@ Confusion can arise because the words \emph{assigns} and \emph{modifies} are som
 As presented above, in their basic acceptions, \lstinline|requires|
 and \lstinline|ensures| clauses both must be checked when control reaches the
 corresponding point, and can be assumed to hold to continue the analysis. However
-if only one of these actions, a {\it clause-kind} modifier can be used.
+if only one of these actions is needed, a {\it clause-kind} modifier can be used.
 \lstinline|check| will indicate that the corresponding clause must be verified,
 but with a \emph{non-blocking} semantics. In other words, even if the clause is found
 invalid, the execution should continue unhindered. Conversely, \lstinline|admit|
