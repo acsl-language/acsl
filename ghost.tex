@@ -1,40 +1,51 @@
 \begin{syntax}
 
-  C-type-qualifier ::= C-type-qualifier ;
-  | "\ghost" ; only in ghost
+  C-type-qualifier ::= ; extended C standard
+    | "\ghost" ; only in ghost code
   \
-  ghost-type-specifier ::= C-type-specifier ;
-  | {logic-type} \
-  logic-def ::= "ghost" ghost-declaration \
-  direct-declarator ::= C-direct-declarator ;
-    | direct-declarator ;
-    "(" C-parameter-type-list? ")";
-        "/*@" "ghost";
-          "(" ghost-parameter-type-list")";
-          "*/"; ghost args
-        \
-  postfix-expression ::= C-postfix-expression ;
-    | postfix-expression ;
-     "(" C-argument-expression-list? ")";
-     "/*@" "ghost" ;
-       "(" ghost-argument-expression-list ")";
-       "*/" ; call
-              ; with ghosts
-    \
-  statement ::= C-statement ;
-             | statements-ghost \
-  statements-ghost ::= "/*@" "ghost";
-                       ghost-statement+ "*/" \
-  ghost-selection-statement ::= C-selection-statement ;
-    | "if" "(" C-expression ")";
+  C-type-specifier ::= ; extended C standard
+    | {logic-type}  ; only in ghost code
+  \
+  logic-def ::= "ghost" C-declaration ;
+  \
+  ghost-direct-declarator ::= C-direct-declarator ;
+  \
+  C-direct-declarator ::= ; extended C standard
+    | ghost-direct-declarator ; except in ghost code
+      "(" C-parameter-type-list? ;
+      ")" "/*@" "ghost" "(" ;
+          ghost-parameter-type-list; ghost params
+      ")" "*/";
+  \
+  ghost-postfix-expression ::= C-postfix-expression ;
+  \
+  C-postfix-expression ::= ; extended C standard
+    | ghost-postfix-expression ; except in ghost code
+      "(" C-argument-expression-list? ;
+       ")" "/*@" "ghost" "(" ;
+           ghost-argument-expression-list; ghost args
+       ")";
+      "*/" ;
+   \
+  ghost-statement ::= C-statement ;
+  \
+  C-statement ::= ; extended C standard
+    | "/*@" "ghost"; except in ghost code
+            ghost-statement+ ; ghost code
+      "*/" ;
+    | "if" "(" C-expression ")"; except in ghost code
        statement;
-      "/*@" "ghost" "else";
-        ghost-statement+ ;
-        "*/" \
-
-  struct-declaration ::= C-struct-declaration ;
-  | {"/*@" "ghost" };
-    { struct-declaration "*/"} ; ghost field
+       "/*@" "ghost" ;
+             "else" ghost-statement ; ghost alternative
+        ghost-statement* ; unconditional code
+      "*/"
+  \
+  ghost-struct-declaration ::= C-struct-declaration ;
+  \
+  C-struct-declaration ::= ; extended C standard
+  | {"/*@" "ghost" }; except in ghost code
+          {ghost-struct-declaration} ; ghost field
+    {"*/"} ;
 
 \end{syntax}
 
