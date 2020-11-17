@@ -84,7 +84,7 @@ annotations. These are called \emph{logic expressions} in the following. They
 correspond to pure C expressions, with additional constructs
 that we will introduce progressively.
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
     \input{term.bnf}
   \end{cadre}
@@ -93,7 +93,7 @@ that we will introduce progressively.
 \label{fig:gram:term}
 \end{figure}
 
-\begin{figure}[hb]
+\begin{figure}[htp]
   \begin{cadre}
     \input{predicate.bnf}
   \end{cadre}
@@ -101,7 +101,7 @@ that we will introduce progressively.
 \label{fig:gram:pred}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
     \input{c-type-name.bnf}
   \end{cadre}
@@ -152,7 +152,7 @@ With respect to C pure expressions, the additional constructs are as follows:
   \lstinline|\forall $\tau$ $x_1$,$\ldots$,$x_n$; e| and existential
   quantification by \lstinline|\exists $\tau$ $x_1$,$\ldots$,$x_n$; e|.
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre} \input{binders.bnf}
     \end{cadre}
   \caption{Grammar of binders and type expressions}
@@ -251,7 +251,7 @@ table, operators are sorted from highest to lowest priority. Operators
 of same priority are presented on the same line.
 
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{center}
     \begin{tabular}{|l|l|l|}
       \hline
@@ -430,7 +430,7 @@ remainder of $n$ divided by $d$ then:
   \end{itemize}
 \end{example}
 
-\subsubsection{Hexadecimal octal and binary constants}
+\subsubsection{Hexadecimal, octal, and binary constants}
 
 Hexadecimal, octal and binary constants are always non-negative. Suffixes
 \texttt{u} and \texttt{l} for C constants are allowed but meaningless.
@@ -936,7 +936,7 @@ Unlike in C, conversion of an aggregate of C type \lstinline|struct| $\tau$  to 
 \label{sec:fn-behavior}
 \index{function contract}\index{contract}
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{fn_behavior.bnf}
    \end{cadre}
@@ -944,7 +944,7 @@ Unlike in C, conversion of an aggregate of C type \lstinline|struct| $\tau$  to 
   \label{fig:gram:contracts}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{oldandresult.bnf}
     \end{cadre}
@@ -961,7 +961,7 @@ are dynamically allocated or deallocated by the function from the \textsl{heap};
 they are defined later in Section~\ref{sec:allocation-clause}.
 % END proposition
 
-This section is organized as follows.  First, the grammar for terms is
+This section is organized as follows. First, the grammar for terms is
 extended with two new constructs.  Then
 Section~\ref{sec:simplecontracts} introduces \emph{simple contracts}.
 Finally, Section~\ref{subsec:behaviors} defines more general contracts
@@ -979,7 +979,7 @@ The grammar in Fig. \ref{fig:gram:contracts} requires clauses to be written
 in a particular order. This order is helpful for readability, though tools may 
 be lenient towards out-of-order clauses.
 
-\subsection{Built-in constructs %
+ \subsection{Built-in constructs %
   \texorpdfstring{\old}{\textbackslash{}old} %
  and \texorpdfstring{\result}{\textbackslash{}result}}
 
@@ -1015,7 +1015,7 @@ function contracts only).
 
 \subsection{Simple function contracts}
 \label{sec:simplecontracts}
-
+\subsubsection{Semantics}\label{sec:simple-contracts-definition}
 A simple function contract, having only simple clauses and no named behaviors, takes the following
 form:\indextt{requires}\indextt{assigns}\indextt{ensures}
 \begin{listing}{1}
@@ -1060,6 +1060,30 @@ the caller has no information at all on this function's side
 effects. See Section~\ref{sec:multiplecontracts} for more details on
 default status of clauses.
 
+\subsubsection{Semantics of frame conditions}
+\label{sec:writesSemantics}
+It is worth pointing out that there are different treatments of
+frame conditions (\lstinline|assigns| statements) in various specification languages.
+The frame condition can follow either \emph{writes} semantics or \emph{modifies} semantics.
+\begin{itemize}
+	\item Under \lstinline|writes| (or assigns) semantics, only those memory locations listed in a frame condition may be \emph{written to}, that is, only those locations may be the target of an assignment statement or listed in the frame condition of a called function. This is true whether or not the value of the memory location changes.
+	\item Under \lstinline|modifies| semantics, a memory location may be written to, as long as the value is restored (that is, not modified) by the end of the scope of the function contract. Under this semantics, a frame condition is a requirement on the relationship between two states --- any memory location not a member of the frame condition must have the same value in its pre-state and its post-state.
+\end{itemize}
+Confusion can arise because the words \emph{assigns} and \emph{modifies} are sometimes used interchangeably. In particular, \textbf{ACSL \ifCPP{and \NAME} \iftoggle{isCPP}{use}{uses}
+	\emph{modifies} semantics, even though the frame condition is introduced by the \emph{assigns} keyword}.\footnote{For comparison, JML and the OpenJML tool define frame conditions to have write semantics but use the keywords assigns and modifies interchangeably; however, the KeY tool for JML implements modifies semantics. Ada/SPARK's data flow contracts effectively encode write semantics.}
+
+\subsubsection{\texorpdfstring{\lstinline|check|}{check} and \texorpdfstring{\lstinline|admit|}{admit} clauses}\label{sec:check-admit-clauses}
+
+As presented above, in their basic acceptions, \lstinline|requires|
+and \lstinline|ensures| clauses both must be checked when control reaches the
+corresponding point, and can be assumed to hold to continue the analysis. However
+if only one of these actions is needed, a {\it clause-kind} modifier can be used.
+\lstinline|check| will indicate that the corresponding clause must be verified,
+but with a \emph{non-blocking} semantics. In other words, even if the clause is found
+invalid, the execution should continue unhindered. Conversely, \lstinline|admit|
+indicates that the corresponding clause can be readily assumed to hold, without
+trying to verify it.
+
 \begin{example}
   The following function is given a simple contract for computing
   the integer square root.
@@ -1092,18 +1116,6 @@ default status of clauses.
   pointed to by \lstinline|p|. Finally, the \ensures clause specifies that
   the value \lstinline!*p! is incremented by one.
 \end{example}
-
-\subsection{Semantics of frame conditions}
-\label{sec:writesSemantics}
-It is worth pointing out that there are different treatments of
-frame conditions (assigns statements) in various specification languages.
-The frame condition can follow either \emph{writes} semantics or \emph{modifies} semantics.
-\begin{itemize}
-	\item Under \lstinline|writes| (or assigns) semantics, only those memory locations listed in a frame condition may be \emph{written to}, that is, only those locations may be the target of an assignment statement or listed in the frame condition of a called function. This is true whether or not the value of the memory location changes.
-	\item Under \lstinline|modifies| semantics, a memory location may be written to, as long as the value is restored (that is, not modified) by the end of the scope of the function contract. Under this semantics, a frame condition is a requirement on the relationship between two states --- any memory location not a member of the frame condition must have the same value in its pre-state and its post-state.
-\end{itemize}
-Confusion can arise because the words \emph{assigns} and \emph{modifies} are sometimes used interchangeably. In particular, \textbf{ACSL \ifCPP{and \NAME} \iftoggle{isCPP}{use}{uses}
-	\emph{modifies} semantics, even though the frame condition is introduced by the \emph{assigns} keyword}.\footnote{For comparison, JML and the OpenJML tool define frame conditions to have write semantics but use the keywords assigns and modifies interchangeably; however, the KeY tool for JML implements modifies semantics. Ada/SPARK's data flow contracts effectively encode write semantics.}
 
 \subsection{Contracts with named behaviors}
 \label{subsec:behaviors}
@@ -1302,7 +1314,7 @@ More generally, we introduce syntactic constructs to denote \emph{sets of
   values} (tsets) that are also useful for the \separated predicate (see Section~\ref{sec:separated}). The terms in a tset may have any type, though the operations described below are only well-typed for certain types of tsets. For example, \lstinline|s$_1$[s$_2$]| as defined below is only well-typed if one of 
 \lstinline|s$_1$| and \lstinline|s$_2$| is a set of arrays and the other a set of integers.
 
-\begin{figure}
+\begin{figure}[htp]
   \begin{cadre}
       \input{loc.bnf}
     \end{cadre}
@@ -1452,7 +1464,7 @@ Annotations on C statements are of three kinds:
 \subsection{Assertions}
 \indextt{assert}
 \label{sec:assertions}
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
     \input{assertions.bnf}
   \end{cadre}
@@ -1467,22 +1479,22 @@ as an extension of the grammar of C statements.
 \item
   \lstinline|assert P|  means that \lstinline|P| must hold in the current state
   (the sequence point where the assertion occurs).
-
+\item \lstinline|check P| and \lstinline|admit P| indicate respectively that
+\lstinline|P| should be checked but not block the execution, and that \lstinline|P|
+can be assumed to hold without verification. See section~\ref{sec:check-admit-clauses}
+for more information.
 \item The variant \lstinline|for id$_1$,$\ldots$,id$_k$: assert P|
   associates the assertion to the named behaviors \lstinline|id$_i$|, each
   of them being a behavior identifier for the current function (or a
   behavior of an enclosing block as defined later in
   Section~\ref{sec:statement_contract}).  It means that this assertion
   is only required to hold for the listed behaviors.
-\item Introducing the assertion with the \lstinline|check| keyword rather than \lstinline|assert| indicates a
-  \emph{non-blocking} semantics. In other words, even if the property to be \lstinline|check|ed is found invalid,
-  the execution of the program should continue unhindered.
 \end{itemize}
 
 \subsection{Loop annotations}
 \label{sec:loop_annot}
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
     \input{loops.bnf}
   \end{cadre}
@@ -1609,7 +1621,7 @@ It is also possible to specify termination orderings other than the
 usual order on integers, using the additional \lstinline|for|
 modifier. This is explained in Section~\ref{sec:termination}.
 
-\subsubsection{General inductive invariants}
+\subsubsection{General inductive invariants}\label{sec:generalized-invariants}
 \index{invariant}
 It is actually allowed to pose an inductive invariant
 anywhere inside a loop body.
@@ -1618,7 +1630,7 @@ For example, it makes sense for a
 \lstinline|s|. Such an invariant is a kind of assertion, as
 shown in Figure~\ref{fig:advancedinvariants}.
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
     \input{generalinvariants.bnf}
   \end{cadre}
@@ -1833,7 +1845,7 @@ functions. When such an annotation needs to refer to a given memory
 state, it has to be given a label binder: this is described in
 Section~\ref{sec:logicalstates}.
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
     \input{at.bnf}
   \end{cadre}
@@ -1879,7 +1891,7 @@ Here is an example illustrating the use of \lstinline|LoopEntry| and
 \subsection{Statement contracts}
 \label{sec:statement_contract}
 \index{statement contract}\index{contract}
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
     \input{st_contracts.bnf}
   \end{cadre}
@@ -2109,10 +2121,10 @@ void f() { while(1); }
 \section{Logic specifications}
 \label{sec:logicspec}
 \index{logic specification}\index{specification}
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
-%%  \vfill \input{logic.bnf}
-    \vfill\end{cadre}
+  \vfill \input{logic.bnf}
+  \vfill\end{cadre}
   \caption{Grammar for global logic definitions}
 \label{fig:gram:logic}
 \end{figure}
@@ -2142,7 +2154,7 @@ overloaded operators. For example, the \lstinline|==| operation applied to two c
 is applying the built-in \NAME operation of equality between two structures, 
 not a user-defined \lang equality operation on that class.}
 
-\subsection{Lemmas}
+\subsection{Lemmas}\label{sec:lemmas}
 Lemmas are user-given propositions, a facility that might help theorem
 provers establish validity of ACSL specifications.
 
@@ -2153,7 +2165,13 @@ provers establish validity of ACSL specifications.
 \end{example}
 
 Of course, a complete verification of an ACSL specification has to
-provide a proof for each lemma.
+provide a proof for each lemma. Again, \lstinline|check lemma| can be used to indicate that the
+property should only be verified, but not used in other verification
+activities, and conversely \lstinline|admit lemma| indicates that
+the property can be assumed without trying to verify it
+(see section~\ref{sec:check-admit-clauses}). Note that an \lstinline|admit lemma|
+is in practice equivalent to an \lstinline|axiom|, as introduced
+in section~\ref{sec:axiomatic}.
 
 \subsection{Inductive predicates}
 \label{sec:inductivepredicates}
@@ -2163,7 +2181,7 @@ A predicate may also be defined by an inductive definition. The
 grammar for this style of definition is given in
 Figure~\ref{fig:gram:inductive}.
 \index{inductive definitions}
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{inductive.bnf}
     \end{cadre}
@@ -2209,7 +2227,7 @@ Example~\ref{ex:locations-list} already introduced an inductive definition of
 reachability in linked-lists, and was also based on definite Horn
 clauses, and is thus consistent.
 
-\subsection{Axiomatic definitions}
+\subsection{Axiomatic definitions}\label{sec:axiomatic}
 
 Instead of an explicit definition, one may introduce an
 \emph{axiomatic} definition for a set of types, predicates and logic
@@ -2218,7 +2236,7 @@ axioms. The grammar for those constructions is given in
 Figure~\ref{fig:gram:logicdecl}.
 
 \indextt{axiomatic}
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre} 
     \input{logicdecl.bnf}
     \end{cadre}
@@ -2306,7 +2324,7 @@ a way to check consistency.
 
 \experimental
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{higherorder.bnf}
     \end{cadre}
@@ -2400,7 +2418,7 @@ Finally, ranges can also be used in designated initializers
 \label{sec:concretetypes}
 \experimental
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \index{type!record}\index{type!sum}
       \input{logictypedecl.bnf}
@@ -2456,7 +2474,7 @@ given label. However, to ease reading of such logic expressions, it
 is allowed to omit a label whenever there is only one label in the
 context.
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{logiclabels.bnf}
     \end{cadre}
@@ -2489,7 +2507,7 @@ context.
 
 \subsection{Memory footprint specification: \texorpdfstring{\lstinline|reads|}{reads} clause}
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{logicreads.bnf}
     \end{cadre}
@@ -2570,7 +2588,7 @@ a pointer to \lstinline|void| as an argument. On the
 other hand, a pointer referencing an incomplete type (hence having an
 abstract size) is possible.
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{memory.bnf}
     \end{cadre}
@@ -2715,7 +2733,7 @@ The grammar for those constructions is given in Figure~\ref{fig:gram:allocation}
 equivalent to \lstinline|allocates \empty| and \lstinline|frees \empty|; 
 it is left for convenience like for \assigns clauses.
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{allocation.bnf}
     \end{cadre}
@@ -3048,7 +3066,7 @@ is the same as function \lstinline|\concat| (resp. \lstinline|\repeat|).
 These infix operators have the same precedence as the conventional bit-wise exclusive-or operator
 and are left-associative.
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{list-gram.bnf}
     \end{cadre}
@@ -3071,7 +3089,7 @@ and are left-associative.
 \label{sec:abrupt-clause}
 \index{abrupt clause}
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
      \input{exitbehavior.bnf}
     \end{cadre}
@@ -3181,7 +3199,7 @@ Figure~\ref{fig:gram:dep}, allows specifying data
 dependencies\index{dependency} and
 \notimplemented{\emph{functional expressions}}\index{functional expression}.
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{dependencies.bnf}
     \end{cadre}
@@ -3240,7 +3258,7 @@ between
   between.
 \end{itemize}
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{data_invariants.bnf}
     \end{cadre}
@@ -3323,7 +3341,7 @@ types may have \emph{model fields}.  These are
 used to provide abstract specifications for functions whose concrete
 implementation must remain private.
 
-\begin{figure}[b]
+\begin{figure}[htp]
   \begin{cadre}
       \input{model.bnf}
     \end{cadre}
@@ -3456,7 +3474,7 @@ grammar are the following:
   ghost labelled statements in a switch, see next paragraph for details).
 \end{itemize}
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{ghost.bnf}
     \end{cadre}
@@ -3557,7 +3575,7 @@ Volatile variables can not be used in logic terms, since reading such
 a variable may have a side effect, in particular two successive reads
 may return different values.
 
-\begin{figure}[ht]
+\begin{figure}[htp]
   \begin{cadre}
       \input{volatile-gram.bnf}
     \end{cadre}
@@ -3596,7 +3614,7 @@ or only written to, the unused accessor function can be omitted from the
 
 
 
-\begin{figure}[t]
+\begin{figure}[htp]
   \begin{cadre}
       \input{initialized.bnf}
     \end{cadre}
@@ -3656,7 +3674,7 @@ of the locations in $s$ is not dangling. \lstinline|!\dangling(s)| does \emph{no
 \experimental
 \indextt{valid\_function}
 
-\begin{figure}[h]
+\begin{figure}[htp]
   \begin{cadre}
       \input{welltyped.bnf}
     \end{cadre}

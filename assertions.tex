@@ -2,7 +2,7 @@
   C-compound-statement ::= "{" C-declaration* C-statement* assertion+ "}"
         \
   C-statement ::= assertion C-statement \
-  assertion-kind ::= "assert" | "check" \
+  assertion-kind ::= "assert" | clause-kind \
   assertion ::= "/*@" assertion-kind pred ";" "*/" ;
   | "/*@" "for" id ("," id)* ":" ;
       assertion-kind pred ";" "*/" ;
