@@ -3436,7 +3436,8 @@ ghost code, as mentioned in section~\ref{sec:gener-about-annot}).
 The grammar is given in Figure~\ref{fig:gram:ghost}, in which only the
 first form of annotation is used. In this figure, the \textit{C-*}
 non-terminals refer to the corresponding grammar rules of the ISO standard.
-The definition of some of them is extended in order to accept ACSL entensions with sometimes restrictions (only/except in ghost code).
+The definition of some of them is extended in order to accept ACSL entensions.
+Such extensions are sometimes only available in ghost code (e.g. use of logic types), or only in the C code (e.g. you can't use \lstinline|/*@ ghost| when already in ghost code). This is mentioned in the definition as well.
 
 The variations with respect to the C
 grammar are the following:
