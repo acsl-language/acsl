@@ -1,52 +1,42 @@
 \begin{syntax}
 
-  C-type-qualifier ::= ; extended C standard
-    | "\ghost" ; only in ghost code
+  C-type-qualifier [Extension to the C \ifCPPnc{and C++} standard grammar for type qualifiers in ghost code only] ::= "\ghost" ; ghost qualifier
   \
-  C-type-specifier ::= ; extended C standard
-    | {logic-type}  ; only in ghost code
+  C-type-specifier [extension to the C \ifCPPnc{and C++} standard grammar for type specifiers in ghost code only] ::=
+    {logic-type}
   \
   logic-def ::= "ghost" C-declaration ;
   \
-  ghost-direct-declarator ::= C-direct-declarator ;
-  \
-  C-direct-declarator ::= ; extended C standard
-    | ghost-direct-declarator ; except in ghost code
+  C-direct-declarator [Extension to the C \ifCPPnc{and C++} standard grammar for direct declarators, except in ghost code]::=
+      C-direct-declarator ; function declarator
       "(" C-parameter-type-list? ;
       ")" "/*@" "ghost" "(" ;
-          ghost-parameter-type-list; ghost params
+          C-parameter-type-list; with ghost params
       ")" "*/";
   \
-  ghost-postfix-expression ::= C-postfix-expression ;
-  \
-  C-postfix-expression ::= ; extended C standard
-    | ghost-postfix-expression ; except in ghost code
+  C-postfix-expression [Extension to the C \ifCPPnc{and C++} standard grammar for postfix expressions, except in ghost code]::=
+      C-postfix-expression ; function call
       "(" C-argument-expression-list? ;
        ")" "/*@" "ghost" "(" ;
-           ghost-argument-expression-list; ghost args
+           C-argument-expression-list; with ghost args
        ")";
       "*/" ;
    \
-  ghost-statement ::= C-statement ;
-  \
-  C-statement ::= ; extended C standard
-    | "/*@" "ghost"; except in ghost code
-            ghost-statement+ ; ghost code
+  C-statement [Extension to the C \ifCPPnc{and C++} standard grammar for statements, except in ghost code] ::=
+      "/*@" "ghost";
+            C-statement+ ; ghost code
       "*/" ;
-    | "if" "(" C-expression ")"; except in ghost code
+    | "if" "(" C-expression ")";
        statement;
        "/*@" "ghost" ;
-             "else" ghost-statement ; ghost alternative
-        ghost-statement* ; unconditional code
+             "else" C-statement ; ghost alternative
+        C-statement* ; unconditional ghost code
       "*/"
   \
-  ghost-struct-declaration ::= C-struct-declaration ;
-  \
-  C-struct-declaration ::= ; extended C standard
-  | {"/*@" "ghost" }; except in ghost code
-          {ghost-struct-declaration} ; ghost field
-    {"*/"} ;
-
+  C-struct-declaration [Extension to the C \ifCPPnc{and C++} standard grammar for struct declarations, except in ghost code] ::=
+    {"/*@" "ghost" };
+          {C-struct-declaration} ; ghost field
+    {"*/"}
 \end{syntax}
 
 %%% Local Variables:
