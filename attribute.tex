@@ -1,5 +1,5 @@
 \begin{syntax}
-C-type-qualifier ::= C-type-qualifier | acsl-attribute
+C-type-qualifier [Extension to the C \ifCPPnc{and C++} standard grammar for type qualifiers]::= acsl-attribute
 \
-acsl-attribute ::= "/*@" id "*/"
+acsl-attribute ::= "/*@"[The identifier must be enclosed between /@ and @/ in ghost code] id "*/" ; implementation dependent attribute
 \end{syntax}
