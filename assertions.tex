@@ -1,9 +1,18 @@
 \begin{syntax}
-  C-compound-statement ::= "{" C-declaration* C-statement* assertion+ "}"
-        \
-  C-statement ::= assertion C-statement \
-  assertion-kind ::= "assert" | clause-kind \
-  assertion ::= "/*@" assertion-kind pred ";" "*/" ;
-  | "/*@" "for" id ("," id)* ":" ;
-      assertion-kind pred ";" "*/" ;
+  C-compound-statement [Extension to the C \ifCPPnc{and C++} standard grammar for compound statements] ::=
+    "{" C-declaration* ;
+    C-statement* assertion+"}"
+  \
+  C-statement  [Extension to the C \ifCPPnc{and C++} standard grammar for statements] ::=
+  assertion ;
+  C-statement
+  \
+  assertion-kind ::= "assert" ; assertion
+  | clause-kind ; non-blocking assertion
+  \
+  assertion ::= "/*@" assertion-kind pred";" ;
+    "*/" ;
+  | "/*@" "for" id ("," id)*":" ;
+    assertion-kind pred";" ;
+    "*/"
 \end{syntax}
