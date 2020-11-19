@@ -1,5 +1,5 @@
 \begin{syntax}
-  statement ::= "/*@" statement-contract "*/" statement
+  C-statement [Extension to the C \ifCPPnc{and C++} standard grammar for statements] ::= "/*@" statement-contract "*/" C-statement
   \
   statement-contract [empty contracts are forbidden] ::= ("for" id ("," id)* ":")? requires-clause* ;
     simple-clause-stmt* named-behavior-stmt* ;

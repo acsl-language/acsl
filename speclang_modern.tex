@@ -3435,11 +3435,9 @@ for one-line
 ghost code, as mentioned in section~\ref{sec:gener-about-annot}).
 The grammar is given in Figure~\ref{fig:gram:ghost}, in which only the
 first form of annotation is used. In this figure, the \textit{C-*}
-non-terminals refer to the corresponding grammar rules of the ISO standard,
-without any ACSL extension. Any non-terminal of the form
-\textit{ghost-non-term} for which no definition is given in the figure
-represents the corresponding \textit{C-non-term} entry, in which any
-\textit{entry} is substituted by \textit{ghost-entry}.
+non-terminals refer to the corresponding grammar rules of the ISO standard.
+The definition of some of them is extended in order to accept ACSL entensions.
+Such extensions are sometimes only available in ghost code (e.g. use of logic types), or only in the C code (e.g. you can't use \lstinline|/*@ ghost| when already in ghost code). This is mentioned in the definition as well.
 
 The variations with respect to the C
 grammar are the following:
@@ -3706,19 +3704,24 @@ and \lstinline|\valid_function(p)| holds if and only if
   \listinginput{1}{welltyped.c}
 \end{example}
 
-
-\section{Module constructions}
-
-\experimental
-
-how to encapsulate several functions...
-
 \section{Logic attribute annotations}
 \label{sec:attribute_annot}
 
 \experimental
 
-These are annotations allowing to add attributes on variables, like regular C attributes (const, volatile, restrict).
+These are annotations allowing to add attributes on variables,
+like regular C qualifiers (\texttt{const}, \texttt{volatile}, \texttt{restrict}),
+or GNU \texttt{\_\_attribute\_\_}. They are defined in figure~\ref{fig:gram:attr}.
+
+\begin{figure}[htb]
+\begin{cadre}
+\input{attribute.bnf}
+\end{cadre}
+\caption{Grammar for \NAME attributes}
+\label{fig:gram:attr}
+\end{figure}
+
+Supported attributes are implementation dependent.
 
 \section{Preprocessing for \NAME}
 \label{sec:ppimpl}

@@ -1,5 +1,5 @@
 \begin{syntax}
-  statement ::= "/*@" loop-annot "*/" ;
+  C-statement [Extension of the C \ifCPPnc{and C++} standard for statements]::= "/*@" loop-annot "*/" ;
   C-iteration-statement ;
   \
   loop-annot [empty loop annotations are forbidden] ::= loop-clause* loop-behavior* ;

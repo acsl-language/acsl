@@ -1,5 +1,5 @@
 \begin{syntax}
-  C-external-declaration ::= "/*@" logic-def+ "*/"[These may appear as global \ifCPPnc{or class} declarations] ;
+  C-external-declaration [Extension to the C \ifCPPnc{and C++} standard grammar for external declarations as global \ifCPPnc{or class} declarations] ::= "/*@" logic-def+"*/"
   \
   logic-def ::= logic-const-def ;
           | logic-function-def ;
@@ -25,13 +25,13 @@
   \
   logic-function-def ::= "logic" \ifCPPnc#( "static" | "virtual" )?#;
   type-expr;
-  poly-id parameters "=";
-  term ";"
+  poly-id parameters;
+  "=" term ";"
   \
   logic-predicate-def ::=
   "predicate" \ifCPPnc#( "static" | "virtual" )?#;
-  poly-id parameters? "=";
-  pred ";"
+  poly-id parameters?;
+  "=" pred ";"
   \
   parameters ::= "(" parameter;
                  (, parameter)* ")"
