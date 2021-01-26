@@ -3003,7 +3003,7 @@ Thus, the \separated predicate satisfies the following property (with
 \separated(s$_1$,s$_2$) <==>
   (\forall $\tau_1$* p; \forall $\tau_2$* q;
      \subset(p,s$_1$) && \subset(q,s$_2$) ==>
-       (\forall \integer i,j;
+       (\forall integer i,j;
          0 <= i < \sizeof($\tau_1$) && 0 <= j < \sizeof($\tau_2$) ==>
            (char*)p + i != (char*)q + j))
 \end{listing}
