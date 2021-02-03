@@ -15,5 +15,13 @@ jobs:
         run: make acsl.pdf
       - name: compile acsl++ manual
         run: make acslpp.pdf
+      - name: archive log and pdf
+        uses: actions/upload-artifact@v2
+        with:
+          path: |
+            acsl.log
+            acslpp.log
+            acsl.pdf
+            acslpp.pdf
       - name: check grammar coherence
         run: make grammar-check
