@@ -147,8 +147,8 @@
 \definecolor{lstspecial}{rgb}{0.2,0.6,0.0}
 \definecolor{lstfile}{gray}{0.85}
 \newcommand{\lstbrk}{\mbox{$\color{blue}\scriptstyle\cdots$}}
-\def\lp@basic{\ifmmode\normalfont\mathtt\mdseries\small\else\normalfont\ttfamily\mdseries\small\fi}
-\def\lp@inline{\ifmmode\normalfont\mathtt\scriptstyle\else\normalfont\ttfamily\mdseries\small\fi}
+\def\lp@basic{\TextOrMath{\normalfont\ttfamily\mdseries\small}{\normalfont\mathtt\mdseries\small}}
+\def\lp@inline{\TextOrMath{\normalfont\ttfamily\mdseries\small}{\normalfont\mathtt\scriptstyle}}
 \def\lp@keyword{}
 \def\lp@special{\color{lstfg}}
 \def\lp@comment{\normalfont\ttfamily\mdseries}
@@ -159,7 +159,7 @@
   basicstyle=\lp@inline,%
   identifierstyle=\lp@ident,%
   commentstyle=\lp@comment,%
-  keywordstyle={\ifmmode\mathsf\else\sffamily\fi},%
+  keywordstyle={\TextOrMath{\sffamily}{\mathsf}},%
   keywordstyle=[2]\lp@special,%
   stringstyle=\lp@string,%
   emphstyle=\lp@ident\underbar,%

@@ -248,13 +248,9 @@ tutorial-check: acsl-mini-tutorial.tex
 	   exit 1; \
         else echo "All examples from the tutorial are accepted. Good!"; \
         fi
-
-BUILTINS=real integer string character id \
-         function-contract global-invariant type-invariant logic-specification \
-         assertion loop-annotation statement-contract \
-         ghost-code
-
 endif
+
+BUILTINS=real integer string character id
 
 grammar-check: transf
 	./transf -check $(addprefix -builtin ,$(BUILTINS)) $(BNF_FILES)

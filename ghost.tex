@@ -27,7 +27,7 @@
             C-statement+ ; ghost code
       "*/" ;
     | "if" "(" C-expression ")";
-       statement;
+       C-statement;
        "/*@" "ghost" ;
              "else" C-statement ; ghost alternative
         C-statement* ; unconditional ghost code
