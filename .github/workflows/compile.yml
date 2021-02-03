@@ -1,0 +1,19 @@
+name: compile
+
+on: [push]
+
+jobs:
+  compile:
+    name: compile the manuals
+    runs-on: ubuntu-latest
+    steps:
+      - name: install needed packages
+        run: sudo apt update &&  DEBIAN_FRONTEND=noninteractive sudo --preserve-env=DEBIAN_FRONTEND apt install -y make texlive-full latexmk ocaml-nox
+      - name: retrieve sources
+        uses: actions/checkout@v2
+      - name: compile acsl manual
+        run: make acsl.pdf
+      - name: compile acsl++ manual
+        run: make acslpp.pdf
+      - name: check grammar coherence
+        run: make grammar-check
