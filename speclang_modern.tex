@@ -1254,16 +1254,25 @@ If such a condition is desired, it is possible to add the following clause
 to a contract:
 \index{complete behaviors}
 \begin{listing-nonumber}
-/*@ `\dots`
-  @ complete behaviors b$_1$,`\dots`,b$_n$;
+/*@ requires R;
+    admit requires AR;
+    check requires CR;
+    behavior b$_i$: `\dots`
+    `\dots`
+    complete behaviors b$_1$,`\dots`,b$_n$;
   @*/
 \end{listing-nonumber}
 It specifies that the set of behaviors \lstinline|b$_1$,$\ldots$,b$_n$| 
 is complete \emph{i.e.} that
 \begin{listing-nonumber}
-R ==> (A$_1$ || A$_2$ || ... || A$_n$)
+R && AR ==> (A$_1$ || A$_2$ || ... || A$_n$)
 \end{listing-nonumber}
-holds, where \lstinline|R| is the precondition of the contract.
+holds. Note in particular that the completeness is established under the assumption
+that the main \lstinline|requires| and \lstinline|admit requires| clauses of the contract
+hold, but \emph{not} the \lstinline|check requires| clause, since the latter is
+only used to verify that a property holds at a given point, and never as hypothesis
+(see section~\ref{sec:check-admit-clauses}).
+
 The simplified version of that clause
 \begin{listing-nonumber}
 /*@ `\dots`
@@ -1285,7 +1294,7 @@ If desired, this can be specified with the following clause:
 It means that the given behaviors are pairwise disjoint \emph{i.e.}
 that, for all distinct $i$ and $j$,
 \begin{listing-nonumber}
-R ==> ! (A$_i$ && A$_j$)
+R && AR ==> ! (A$_i$ && A$_j$)
 \end{listing-nonumber}
 holds.
 The simplified version of that clause
