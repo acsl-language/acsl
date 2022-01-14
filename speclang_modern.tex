@@ -1966,19 +1966,26 @@ unnamed behavior are the same as for function contracts (cf. Section \ref{sec:mu
 \label{sec:termination}
 \index{termination}
 The property of termination concerns both loops and recursive function
-calls.
-% For that purpose, loops can be annotated with a \texttt{loop
-%  variant}\index{loop variant} clause, and functions can be annotated
-%with a \decreases{} clause.
-Termination is guaranteed by attaching a measure function to each loop
-(an aspect already addressed in Section~\ref{sec:loop-variant})
-and each recursive function.
-By default, a measure is an
-integer expression, and measures are compared using the usual ordering
-over integers (Section~\ref{sec:integermeasures}). It is also possible
-to define
-measures using other domains and/or using a different ordering relation
-(Section~\ref{sec:generalmeasures}).
+calls. Termination is guaranteed by attaching a measure function to each loop
+(an aspect already addressed in Section~\ref{sec:loop-variant}) and each
+recursive function.
+
+\subsection{Measure}
+\label{sec:measure}
+
+A measure is an expression that must be strictly decreasing according to a
+given well-founded relation \lstinline{R}, at each loop iteration for
+\lstinline{loop variant}, and each recursive call for \lstinline{decreases}.
+More precisely, when \lstinline{v_cur} is the value of the measure for the
+current loop iteration or recursive call, and \lstinline{v_next} is the value
+of the measure for the next iteration or recursive call,
+\lstinline{R(v_cur, v_next)} must hold. \lstinline{R(a, b)} expresses that
+\lstinline{a} is greater than \lstinline{b}.
+
+By default, a measure is an integer expression, and measures are compared using
+the usual ordering over integers (Section~\ref{sec:integermeasures}). It is also
+possible to define measures using other domains and/or using a different
+ordering relation (Section~\ref{sec:generalmeasures}).
 
 \subsection{Integer measures}
 \label{sec:integermeasures}
@@ -2069,25 +2076,9 @@ applies when \lstinline|g| is \lstinline|f| itself.
   \listinginput{1}{mutualrec.c}
 \end{example}
 
-% \subsection{Function termination}
-
-%% TODO: a mettre plutot dans les contrats
-%% clause 'terminates P' specifie que si P est vrai dans le pre-state,
-%% alors la fonction ou le statement objet du contrat se termine en temps
-%% fini.
-%%
-%% pas de valeur par defaut
-%%
-%% Patrick propose plutot la negation: 'diverges P' car ce que l'on veut
-%% specifier c'est que la fonction ne boucle indefiniment.
-%%
-%% en faveur de prendre 'diverges' : c'est comme ca en JML.
-
-
 \subsection{Non-terminating functions}
 \label{sec:non-term-funct}
 \indextt{terminates}
-\experimental
 
 There are cases where a function is not supposed to terminate. For
 instance, the \lstinline|main| function of a reactive program might be a
