@@ -2118,6 +2118,25 @@ void f() { while(1); }
 \listinginput{1}{terminates_list.c}
 \end{example}
 
+\subsection{Measures and non-terminating functions}
+
+As mentioned at the beginning of Section~\ref{sec:termination}, termination is
+guaranteed by attaching a measure function to each loop and each recursive
+function. Thus, when a function contract specifies that the function terminates
+only when some property \lstinline{p} is verified, the measures have to be
+verified only when \lstinline{p} is verified.
+
+For example, that means that for a function that does not terminate, any variant
+is verified:
+
+\begin{listing}{1}
+/*@ terminates \false; */
+void f() {
+  //@ loop variant -1 ;
+  while(1);
+}
+\end{listing}
+
 \section{Logic specifications}
 \label{sec:logicspec}
 \index{logic specification}\index{specification}
