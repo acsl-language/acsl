@@ -2122,8 +2122,8 @@ void f() { while(1); }
 
 As mentioned at the beginning of Section~\ref{sec:termination}, termination is
 guaranteed by attaching a measure function to each loop and each recursive
-function. Thus, when a function contract specifies that the function terminates
-only when some property \lstinline{p} is verified, the measures have to be
+function. Thus, when a contract specifies a \lstinline+terminates+ clause
+\lstinline{p}, the measures in the corresponding code section  have to be
 verified only when \lstinline{p} is verified.
 
 For example, that means that for a function that does not terminate, any variant
@@ -2136,6 +2136,27 @@ void f() {
   while(1);
 }
 \end{listing}
+
+More precisely, loop variants and decreases clauses are conditioned by the
+\lstinline+terminates+ clause of the innermost block containing it. For example,
+in:
+
+\begin{listing}{1}
+/*@ terminates \false; */
+void f() {
+  /*@ terminates \true ; */
+  {
+    //@ loop variant -1 ;
+    while(1);
+  }
+  //@ loop variant -1 ;
+  while(1);
+}
+\end{listing}
+
+The loop variant on line 5 is not verified since it is in a block that must
+terminate, while the one on line 8 is verified (it belongs to the body of
+\lstinline{f} that might not terminate).
 
 \section{Logic specifications}
 \label{sec:logicspec}
