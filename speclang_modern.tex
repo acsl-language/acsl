@@ -2099,6 +2099,40 @@ defaults to \lstinline|terminates \true;| that is, the function is supposed
 to always terminate, which is the expected behavior of most
 functions.
 
+The \lstinline|terminates| clause can also be specified in a statement contract
+with the same meaning. When such a clause is not specified, it inherits the
+one associated to the innermost block containing it (recursively, until a
+block with a \lstinline|terminates| clause is found or the body of the function
+is reached, and then the \lstinline|terminates| clause of the function applies).
+When a statement \lstinline|S| is specified with a \lstinline|terminates| clause
+\lstinline|ST|:
+
+\begin{itemize}
+  \item the termination clause \lstinline|ET| of the innermost block containing
+        it must imply \lstinline|ST|,
+  \item statements of \lstinline|S| must terminate if \lstinline|ST| holds, but
+        the termination clause \lstinline|ET| of any block containing
+        \lstinline|S| is ignored.
+\end{itemize}
+
+\begin{lstlisting}{1}
+/*@ terminates ET ;
+void f(void){
+  {
+    // code
+
+    // Here, ET ==> ST must hold
+    /*@ terminates ST ; */
+    {
+      /* code terminates if ST is verified, no matter whether ET is verified */
+    }
+  }
+}
+\end{lstlisting}
+
+Section~\ref{subsec:measure-vs-terminates} presents a usage of this last
+behavior.
+
 Note that nothing is specified for the case where \lstinline|p| does not hold:
 the function may terminate or not. In particular,
 \lstinline|terminates \false;| does not imply that the function loops
@@ -2108,7 +2142,7 @@ is the following:\ifCPP{\footnote{in \lang, this specification would also includ
 /*@ ensures \false;
     terminates \false;
 */
-void f() { while(1); }
+void f(void) { while(1); }
 \end{listing}
 
 \begin{example}
@@ -2119,6 +2153,7 @@ void f() { while(1); }
 \end{example}
 
 \subsection{Measures and non-terminating functions}
+\label{subsec:measure-vs-terminates}
 
 As mentioned at the beginning of Section~\ref{sec:termination}, termination is
 guaranteed by attaching a measure function to each loop and each recursive
@@ -2131,7 +2166,7 @@ is verified:
 
 \begin{listing}{1}
 /*@ terminates \false; */
-void f() {
+void f(void) {
   //@ loop variant -1 ;
   while(1);
 }
@@ -2143,7 +2178,7 @@ in:
 
 \begin{listing}{1}
 /*@ terminates \false; */
-void f() {
+void f(void) {
   /*@ terminates \true ; */
   {
     //@ loop variant -1 ;
@@ -2157,6 +2192,9 @@ void f() {
 The loop variant on line 5 is not verified since it is in a block that must
 terminate, while the one on line 8 is verified (it belongs to the body of
 \lstinline{f} that might not terminate).
+
+Here, statement \lstinline|terminates| allows to verify that some code section
+still terminates in a function that is allowed to loop forever.
 
 \section{Logic specifications}
 \label{sec:logicspec}
