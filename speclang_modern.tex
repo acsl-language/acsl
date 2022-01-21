@@ -2091,47 +2091,59 @@ be added to the contract of the function, using the following form:
 //@ terminates p;
 \end{listing-nonumber}
 
-The semantics of such a clause is as follows: if \lstinline|p| holds, then the
-function is guaranteed to terminate (more precisely, its
-termination must be proved). If such a clause is not present (and in
-particular if there is no function contract at all), it
+The semantics of such a clause is as follows: if \lstinline|p| holds in the
+pre-state of the function, then the function is guaranteed to terminate (more
+precisely, its termination must be proved). If such a clause is not present (and
+in particular if there is no function contract at all), it
 defaults to \lstinline|terminates \true;| that is, the function is supposed
 to always terminate, which is the expected behavior of most
 functions.
 
-The \lstinline|terminates| clause can also be specified in a statement contract
-with the same meaning. When such a clause is not specified, it inherits the
-one associated to the innermost block containing it (recursively, until a
-block with a \lstinline|terminates| clause is found or the body of the function
-is reached, and then the \lstinline|terminates| clause of the function applies).
-When a statement \lstinline|S| is specified with a \lstinline|terminates| clause
-\lstinline|ST|:
-
+The termination of statements can also be specified in statement contracts by
+the same clause. When such a clause \lstinline|terminates p| is provided, it
+means that:
 \begin{itemize}
-  \item the termination clause \lstinline|ET| of the innermost block containing
-        it must imply \lstinline|ST|,
-  \item statements of \lstinline|S| must terminate if \lstinline|ST| holds, but
-        the termination clause \lstinline|ET| of any block containing
-        \lstinline|S| is ignored.
+\item \lstinline|p| must hold in the pre-state of the statement when it belongs
+      to a statement or a function that must terminate (assuming that this
+      enclosing statement or function terminates when some property
+      \lstinline|q| holds in its own pre-state, \lstinline|q ==> p| must hold),
+\item the statement must terminate when \lstinline|p| holds in the pre-state of
+      the statement, regardless of any other \lstinline|terminates| clause
+      provided for a block (or a function) that contains it.
 \end{itemize}
 
+\begin{example}
+\label{ex:main_loop:terminates}
+In the following source code, the function must terminate when
+\lstinline|max_run| is different from 0 in pre-state. However, when it equals to
+0, while it is not expected that the loop terminates, the block on lines 5--10
+still must terminate and the call to the function \lstinline{handle_events}
+must also terminate.
 \begin{lstlisting}{1}
-/*@ terminates ET ;
-void f(void){
-  {
-    // code
+unsigned max_runs = 0 ;
 
-    // Here, ET ==> ST must hold
-    /*@ terminates ST ; */
-    {
-      /* code terminates if ST is verified, no matter whether ET is verified */
-    }
+//@ terminates max_runs > 0 ;
+void main_loop(void){
+  /*@ terminates \true ; */ {
+    initialize_memory();
+    //@ loop variant n ;
+    for(unsigned n = 10 ; n > 0 ; n--)
+      initialize_device(n - 1);
+  }
+
+  unsigned runs = 0 ;
+  //@ loop variant max_runs - runs ;
+  while(1){
+    if(max_runs != 0 && runs >= max_runs)
+      break ;
+    run ++ ;
+
+    //@ terminates \true ;
+    handle_events();
   }
 }
 \end{lstlisting}
-
-Section~\ref{subsec:measure-vs-terminates} presents a usage of this last
-behavior.
+\end{example}
 
 Note that nothing is specified for the case where \lstinline|p| does not hold:
 the function may terminate or not. In particular,
@@ -2139,8 +2151,10 @@ the function may terminate or not. In particular,
 forever. A possible specification for a function that never terminates
 is the following:\ifCPP{\footnote{in \lang, this specification would also include \lstinline|throws \\false;|}}
 \begin{listing}{1}
-/*@ ensures \false;
-    terminates \false;
+/*@
+  terminates \false;
+  exits \false;
+  ensures \false;
 */
 void f(void) { while(1); }
 \end{listing}
@@ -2153,7 +2167,6 @@ void f(void) { while(1); }
 \end{example}
 
 \subsection{Measures and non-terminating functions}
-\label{subsec:measure-vs-terminates}
 
 As mentioned at the beginning of Section~\ref{sec:termination}, termination is
 guaranteed by attaching a measure function to each loop and each recursive
@@ -2173,28 +2186,11 @@ void f(void) {
 \end{listing}
 
 More precisely, loop variants and decreases clauses are conditioned by the
-\lstinline+terminates+ clause of the innermost block containing it. For example,
-in:
-
-\begin{listing}{1}
-/*@ terminates \false; */
-void f(void) {
-  /*@ terminates \true ; */
-  {
-    //@ loop variant -1 ;
-    while(1);
-  }
-  //@ loop variant -1 ;
-  while(1);
-}
-\end{listing}
-
-The loop variant on line 5 is not verified since it is in a block that must
-terminate, while the one on line 8 is verified (it belongs to the body of
-\lstinline{f} that might not terminate).
-
-Here, statement \lstinline|terminates| allows to verify that some code section
-still terminates in a function that is allowed to loop forever.
+\lstinline+terminates+ clause of the innermost block containing it. Thus, in
+example~\ref{ex:main_loop:terminates}, the loop variant on line 7 must always
+be verified since it belongs to a block that must always terminate, while the
+loop variant on line 13 only needs to be verified when \lstinline{max_runs} is
+different from 0 in the pre-state of the function.
 
 \section{Logic specifications}
 \label{sec:logicspec}
