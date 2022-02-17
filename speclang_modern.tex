@@ -2127,18 +2127,31 @@ the same clause.
 When such a clause is omitted the statement contract does not add any more constraints
 to the termination of the related statement (and, by the way, to the statements that it contains).
 
-The semantics of a clause \lstinline|terminates| \lstinline|T| of a contract of a statement \lstinline|S| is defined inductively in considering the
-statement \lstinline|Sb| that is the innermost block (or compound statement such as \lstinline|if|, ...) that has a contract with a clause \lstinline|terminates| \lstinline|Tb| and encloses \lstinline|S|.
-This search is performed recursively, until a statement \lstinline|Sb| is found (the body of the function can be considered for that and in such a case, the \lstinline|terminates| clause of the function contract gives \lstinline|Tb|).
+The semantics of a clause \lstinline|terminates| \lstinline|T| of a contract of
+a statement \lstinline|S| is defined inductively in considering the
+statement \lstinline|Sb| that is the innermost block (or compound statement such
+as \lstinline|if|, ...) that has a contract with a clause \lstinline|terminates|
+\lstinline|Tb| and encloses \lstinline|S|.
+This search is performed recursively, until a statement \lstinline|Sb| is found
+(the body of the function can be considered for that and in such a case, the
+\lstinline|terminates| clause of the function contract gives \lstinline|Tb|).
 
 \begin{itemize}
-  \item If \lstinline|Tb| holds in the pre-state of \lstinline|Sb|\footnote{In this definition \lstinline|Sb| denotes a statement as much as a function body.} then \lstinline|T| must holds in the pre-state of \lstinline|S| (at the beginning of each execution of \lstinline|S|).
-  \item The statement \lstinline|S| must terminate when \lstinline|T| holds in its pre-state\footnote{It must terminate regardless of any other \lstinline|terminates| clause
-  provided for a block (or a function) that contains it.}.
+  \item If \lstinline|Tb| holds in the pre-state of \lstinline|Sb|\footnote{In
+        this definition \lstinline|Sb| denotes a statement as much as a function
+        body.} then \lstinline|T| must holds in the pre-state of \lstinline|S|
+        (at the beginning of each execution of \lstinline|S|).
+  \item The statement \lstinline|S| must terminate when \lstinline|T| holds in
+        its pre-state\footnote{It must terminate regardless of any other
+        \lstinline|terminates| clause provided for a block (or a function) that
+        contains it.}.
 \end{itemize}
 
-By transitivity and induction, this definition implies all statements of \lstinline|S| must terminate when \lstinline|T| holds in the pre-state of \lstinline|S|.
-Similarly, all statements of the function must terminate when the termination condition of the function holds in its pre-state.
+By transitivity and induction, this definition implies all statements of
+\lstinline|S| must terminate when \lstinline|T| holds in the pre-state of
+\lstinline|S|.
+Similarly, all statements of the function must terminate when the termination
+condition of the function holds in its pre-state.
 
 \begin{example}
 \label{ex:main_loop:terminates}
