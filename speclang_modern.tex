@@ -1966,19 +1966,26 @@ unnamed behavior are the same as for function contracts (cf. Section \ref{sec:mu
 \label{sec:termination}
 \index{termination}
 The property of termination concerns both loops and recursive function
-calls.
-% For that purpose, loops can be annotated with a \texttt{loop
-%  variant}\index{loop variant} clause, and functions can be annotated
-%with a \decreases{} clause.
-Termination is guaranteed by attaching a measure function to each loop
-(an aspect already addressed in Section~\ref{sec:loop-variant})
-and each recursive function.
-By default, a measure is an
-integer expression, and measures are compared using the usual ordering
-over integers (Section~\ref{sec:integermeasures}). It is also possible
-to define
-measures using other domains and/or using a different ordering relation
-(Section~\ref{sec:generalmeasures}).
+calls. Termination is guaranteed by attaching a measure function to each loop
+(an aspect already addressed in Section~\ref{sec:loop-variant}) and each
+recursive function.
+
+\subsection{Measure}
+\label{sec:measure}
+
+A measure is an expression that must be strictly decreasing according to a
+given well-founded relation \lstinline{R}, at each loop iteration for
+\lstinline{loop variant}, and each recursive call for \lstinline{decreases}.
+More precisely, when \lstinline{v_cur} is the value of the measure for the
+current loop iteration or recursive call, and \lstinline{v_next} is the value
+of the measure for the next iteration or recursive call,
+\lstinline{R(v_cur, v_next)} must hold. \lstinline{R(a, b)} expresses that
+\lstinline{a} is greater than \lstinline{b}.
+
+By default, a measure is an integer expression, and measures are compared using
+the usual ordering over integers (Section~\ref{sec:integermeasures}). It is also
+possible to define measures using other domains and/or using a different
+ordering relation (Section~\ref{sec:generalmeasures}).
 
 \subsection{Integer measures}
 \label{sec:integermeasures}
@@ -2069,25 +2076,9 @@ applies when \lstinline|g| is \lstinline|f| itself.
   \listinginput{1}{mutualrec.c}
 \end{example}
 
-% \subsection{Function termination}
-
-%% TODO: a mettre plutot dans les contrats
-%% clause 'terminates P' specifie que si P est vrai dans le pre-state,
-%% alors la fonction ou le statement objet du contrat se termine en temps
-%% fini.
-%%
-%% pas de valeur par defaut
-%%
-%% Patrick propose plutot la negation: 'diverges P' car ce que l'on veut
-%% specifier c'est que la fonction ne boucle indefiniment.
-%%
-%% en faveur de prendre 'diverges' : c'est comme ca en JML.
-
-
 \subsection{Non-terminating functions}
 \label{sec:non-term-funct}
 \indextt{terminates}
-\experimental
 
 There are cases where a function is not supposed to terminate. For
 instance, the \lstinline|main| function of a reactive program might be a
@@ -2100,10 +2091,11 @@ be added to the contract of the function, using the following form:
 //@ terminates p;
 \end{listing-nonumber}
 
-The semantics of such a clause is as follows: if \lstinline|p| holds, then the
-function is guaranteed to terminate (more precisely, its
-termination must be proved). If such a clause is not present (and in
-particular if there is no function contract at all), it
+\paragraph{Semantics in function contract}
+The semantics of such a clause is as follows: if \lstinline|p| holds in the
+pre-state of the function, then the function is guaranteed to terminate (more
+precisely, its termination must be proved). If such a clause is not present (and
+in particular if there is no function contract at all), it
 defaults to \lstinline|terminates \true;| that is, the function is supposed
 to always terminate, which is the expected behavior of most
 functions.
@@ -2114,10 +2106,12 @@ the function may terminate or not. In particular,
 forever. A possible specification for a function that never terminates
 is the following:\ifCPP{\footnote{in \lang, this specification would also include \lstinline|throws \\false;|}}
 \begin{listing}{1}
-/*@ ensures \false;
-    terminates \false;
+/*@
+  terminates \false;
+  exits \false;
+  ensures \false;
 */
-void f() { while(1); }
+void f(void) { while(1); }
 \end{listing}
 
 \begin{example}
@@ -2126,6 +2120,97 @@ void f() { while(1); }
   fact, the following contract is also acceptable for this function:
 \listinginput{1}{terminates_list.c}
 \end{example}
+
+\paragraph{Semantics in statement contract}
+The termination of statements can also be specified in statement contracts in using
+the same clause.
+When such a clause is omitted the statement contract does not add any more constraints
+to the termination of the related statement (and, by the way, to the statements that it contains).
+
+The semantics of a clause \lstinline|terminates| \lstinline|T| of a contract of
+a statement \lstinline|S| is defined inductively in considering the
+statement \lstinline|Sb| that is the innermost block (or compound statement such
+as \lstinline|if|, ...) that has a contract with a clause \lstinline|terminates|
+\lstinline|Tb| and encloses \lstinline|S|.
+This search is performed recursively, until a statement \lstinline|Sb| is found
+(the body of the function can be considered for that and in such a case, the
+\lstinline|terminates| clause of the function contract gives \lstinline|Tb|).
+
+\begin{itemize}
+  \item If \lstinline|Tb| holds in the pre-state of \lstinline|Sb|\footnote{In
+        this definition \lstinline|Sb| denotes a statement as much as a function
+        body.} then \lstinline|T| must holds in the pre-state of \lstinline|S|
+        (at the beginning of each execution of \lstinline|S|).
+  \item The statement \lstinline|S| must terminate when \lstinline|T| holds in
+        its pre-state\footnote{It must terminate regardless of any other
+        \lstinline|terminates| clause provided for a block (or a function) that
+        contains it.}.
+\end{itemize}
+
+By transitivity and induction, this definition implies that all statements of
+\lstinline|S| must terminate when \lstinline|T| holds in the pre-state of
+\lstinline|S|.
+Similarly, all statements of the function must terminate when the termination
+condition of the function holds in its pre-state.
+
+\begin{example}
+\label{ex:main_loop:terminates}
+In the following source code, the function must terminate when
+\lstinline|max_run| is different from 0 in pre-state. However, when it equals to
+0, while it is not expected that the loop terminates, the block on lines 5--10
+still must terminate and the call to the function \lstinline{handle_events}
+must also terminate.
+\begin{lstlisting}{1}
+unsigned max_runs = 0 ;
+
+//@ terminates max_runs > 0 ;
+void main_loop(void){
+  /*@ terminates \true ; */ {
+    initialize_memory();
+    //@ loop variant n ;
+    for(unsigned n = 10 ; n > 0 ; n--)
+      initialize_device(n - 1);
+  }
+
+  unsigned runs = 0 ;
+  //@ loop variant max_runs - runs ;
+  while(1){
+    if(max_runs != 0 && runs >= max_runs)
+      break ;
+    run ++ ;
+
+    //@ terminates \true ;
+    handle_events();
+  }
+}
+\end{lstlisting}
+\end{example}
+
+\subsection{Measures and non-terminating functions}
+
+As mentioned at the beginning of Section~\ref{sec:termination}, termination is
+guaranteed by attaching a measure function to each loop and each recursive
+function. Thus, when a contract specifies a \lstinline+terminates+ clause
+\lstinline{p}, the measures in the corresponding code section  have to be
+verified only when \lstinline{p} is verified.
+
+For example, that means that for a function that may not terminate, any variant
+is verified:
+
+\begin{listing}{1}
+/*@ terminates \false; */
+void f(void) {
+  //@ loop variant -1 ;
+  while(1);
+}
+\end{listing}
+
+More precisely, loop variants and decreases clauses are conditioned by the
+\lstinline+terminates+ clause of the innermost block containing it. Thus, in
+example~\ref{ex:main_loop:terminates}, the loop variant on line 7 must always
+be verified since it belongs to a block that must always terminate, while the
+loop variant on line 13 only needs to be verified when \lstinline{max_runs} is
+different from 0 in the pre-state of the function.
 
 \section{Logic specifications}
 \label{sec:logicspec}
