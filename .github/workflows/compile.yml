@@ -16,14 +16,17 @@ jobs:
           compiler: make
           args: acsl.pdf
           extra_system_packages: make ocaml-nox
+      - name: archive ACSL log
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          path: acsl.log
       - name: compile acsl++ manual
         run: make acslpp.pdf
-      - name: archive log and pdf
+      - name: archive pdf
         uses: actions/upload-artifact@v2
         with:
           path: |
-            acsl.log
-            acslpp.log
             acsl.pdf
             acslpp.pdf
       - name: check grammar coherence
