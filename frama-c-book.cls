@@ -15,6 +15,7 @@
 \usepackage{lmodern}
 \RequirePackage[T1]{fontenc}
 \RequirePackage[utf8]{inputenc}
+\RequirePackage[english]{babel}
 \RequirePackage[pdftex,pdfstartview=FitH]{hyperref}
 \RequirePackage{amssymb}
 \RequirePackage{xcolor}
@@ -22,7 +23,6 @@
 \RequirePackage{xspace}
 \RequirePackage{makeidx}
 \RequirePackage[leftbars]{changebar}
-\RequirePackage[english]{babel}
 \RequirePackage{fancyhdr}
 \RequirePackage{titlesec}
 \RequirePackage{upquote}
