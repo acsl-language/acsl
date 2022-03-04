@@ -101,8 +101,28 @@ $(PDF_OUTPUTS): %.pdf: main.tex $(DEPS) $(BNF_DEPS)
 
 $(PDF_OUTPUTS_CPP): $(DEPS_CPP)
 
+acsl-implementation.pdf: fc_version.tex
 %.pdf: %.tex $(DEPS) $(BNF_DEPS)
 	latexmk -silent -pdf $<
+
+SHORT_VERSION ?= ../../VERSION
+HAS_SHORT_VERSION:=$(shell if test -f $(SHORT_VERSION); then echo yes; else echo no; fi)
+
+ifneq ("$(HAS_SHORT_VERSION)","yes")
+
+fc_version.tex:
+	@echo "Cannot get the Frama-C version out of frama-c doc directory"
+	@echo "Generating a joker version number for implementation"
+	@rm -f $@
+	@printf '\\newcommand{\\fcversion}{XX.X}\n' > $@
+
+else
+
+fc_version.tex: $(SHORT_VERSION)
+	@rm -f $@
+	@printf '\\newcommand{\\fcversion}{$(shell cat $(SHORT_VERSION))}\n' > $@
+
+endif
 
 pp: pp.ml
 	ocamlopt -o $@ str.cmxa $^

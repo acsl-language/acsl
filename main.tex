@@ -6,6 +6,8 @@
 
 \input{common}
 \input{version}
+\iftoggle{PrintImplementationRq}{\input{fc_version.tex}}{}
+
 \newcommand{\version}{\iftoggle{isCPP}{\acslppversion}{\acslversion}}
 
 \begin{document}
@@ -64,7 +66,7 @@ $^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405
   which received funding from the European Union's 2020
   Research and Innovation Program under grant agreement
   No. 731453.
-  
+
   It builds on prior work supported by the ANR project CAT
   (ANR-05-RNTL-0030x), by the ANR CIFRE contract 2005/973,
   by the ANR project U3CAT (08-SEGI-0210xx), and the ANR PICF
@@ -141,16 +143,16 @@ $^4$ LRI, Univ Paris-Sud, CNRS, Orsay, F-91405
     program state at the beginning of the call, including the
     current values for the function parameters. The \emph{post-state}
     denotes the program state at the return of the call.
-    
+
     For a statement annotation, the \emph{pre-state} denotes the
     program state just prior to the annotation statement; the
     \emph{post-state}
-    denotes the program state immediately after execution of the annotated statement (which may be a block statement).  
-    
+    denotes the program state immediately after execution of the annotated statement (which may be a block statement).
+
     For a statement annotation, the \emph{pre-state} denotes the
     program state just prior to the annotation statement; the
     \emph{post-state}
-    denotes the program state immediately after execution of the annotated statement (which may be a block statement).  
+    denotes the program state immediately after execution of the annotated statement (which may be a block statement).
 
 \item[function behavior] \index{function behavior} \indextt{behavior}
 
