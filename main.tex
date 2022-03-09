@@ -6,7 +6,14 @@
 
 \input{common}
 \input{version}
-\iftoggle{PrintImplementationRq}{\input{fc_version.tex}}{}
+\iftoggle{PrintImplementationRq}{
+  \input{fc_version.tex}
+  \iftoggle{isCPP}{
+    \input{fclang_version.tex}
+  }
+  {}
+}
+{}
 
 \newcommand{\version}{\iftoggle{isCPP}{\acslppversion}{\acslversion}}
 

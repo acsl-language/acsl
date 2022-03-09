@@ -102,15 +102,21 @@ $(PDF_OUTPUTS): %.pdf: main.tex $(DEPS) $(BNF_DEPS)
 $(PDF_OUTPUTS_CPP): $(DEPS_CPP)
 
 acsl-implementation.pdf: fc_version.tex
+
+acslpp-implementation.pdf: fc_version.tex fclang_version.tex
+
 %.pdf: %.tex $(DEPS) $(BNF_DEPS)
 	latexmk -silent -pdf $<
 
 SHORT_VERSION ?= ../../VERSION
 HAS_SHORT_VERSION:=$(shell if test -f $(SHORT_VERSION); then echo yes; else echo no; fi)
 
+FCLANG_VERSION_FILE?=../../src/plugins/frama-clang/MAKEFILE
+HAS_FCLANG:=$(shell if test -f $(FCLANG_VERSION_FILE); then echo yes; else echo no; fi)
+
 ifneq ("$(HAS_SHORT_VERSION)","yes")
 
-fc_version.tex:
+fc_version.tex: Makefile
 	@echo "Cannot get the Frama-C version out of frama-c doc directory"
 	@echo "Generating a joker version number for implementation"
 	@rm -f $@
@@ -118,10 +124,25 @@ fc_version.tex:
 
 else
 
-fc_version.tex: $(SHORT_VERSION)
+fc_version.tex: Makefile $(SHORT_VERSION)
 	@rm -f $@
 	@printf '\\newcommand{\\fcversion}{$(shell cat $(SHORT_VERSION))}\n' > $@
 
+endif
+
+ifneq ("$(HAS_FCLANG)","yes")
+fclang_version.tex: Makefile
+	@echo "Cannot find $(FCLANG_VERSION_FILE)."
+	@echo "Consider setting FCLANG_VERSION_FILE to an appropriate file"
+	@rm -f $@
+	@printf '\\newcommand{\\fclangversion}{YY.Y}\n' > $@
+else
+FCLANG_VERSION:=$(shell grep -e FCLANG_VERSION= $(FCLANG_VERSION_FILE) | \
+                         sed -e 's/[^=]*=\(.*\)/\1/')
+
+fclang_version.tex: Makefile $(FCLANG_VERSION_FILE)
+	@rm -f $@
+	@printf '\\newcommand{\\fclangversion}{$(FCLANG_VERSION)}' > $@
 endif
 
 pp: pp.ml
