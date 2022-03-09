@@ -108,32 +108,34 @@ acslpp-implementation.pdf: fc_version.tex fclang_version.tex
 %.pdf: %.tex $(DEPS) $(BNF_DEPS)
 	latexmk -silent -pdf $<
 
-SHORT_VERSION ?= ../../VERSION
-HAS_SHORT_VERSION:=$(shell if test -f $(SHORT_VERSION); then echo yes; else echo no; fi)
+FC_VERSION_FILE ?= ../../VERSION
+HAS_FC_VERSION:=$(shell if test -f $(FC_VERSION); then echo yes; else echo no; fi)
 
 FCLANG_VERSION_FILE?=../../src/plugins/frama-clang/MAKEFILE
-HAS_FCLANG:=$(shell if test -f $(FCLANG_VERSION_FILE); then echo yes; else echo no; fi)
+HAS_FCLANG_VERSION:=$(shell if test -f $(FCLANG_VERSION_FILE); then echo yes; else echo no; fi)
 
-ifneq ("$(HAS_SHORT_VERSION)","yes")
+ifneq ("$(HAS_FC_VERSION)","yes")
 
 fc_version.tex: Makefile
-	@echo "Cannot get the Frama-C version out of frama-c doc directory"
-	@echo "Generating a joker version number for implementation"
+	@echo "WARNING: Cannot find $(FC_VERSION_FILE)"
+	@echo "         Generating a joker version number for implementation"
+	@echo "         Consider setting environment variable FC_VERSION_FILE"
 	@rm -f $@
 	@printf '\\newcommand{\\fcversion}{XX.X}\n' > $@
 
 else
 
-fc_version.tex: Makefile $(SHORT_VERSION)
+fc_version.tex: Makefile $(FC_VERSION_FILE)
 	@rm -f $@
-	@printf '\\newcommand{\\fcversion}{$(shell cat $(SHORT_VERSION))}\n' > $@
+	@printf '\\newcommand{\\fcversion}{$(shell cat $(FC_VERSION_FILE))}\n' > $@
 
 endif
 
-ifneq ("$(HAS_FCLANG)","yes")
+ifneq ("$(HAS_FCLANG_VERSION)","yes")
 fclang_version.tex: Makefile
-	@echo "Cannot find $(FCLANG_VERSION_FILE)."
-	@echo "Consider setting FCLANG_VERSION_FILE to an appropriate file"
+	@echo "WARNING: Cannot find $(FCLANG_VERSION_FILE)."
+	@echo "         Generating a joker version number for implementation"
+	@echo "         Consider setting environment variable FCLANG_VERSION_FILE"
 	@rm -f $@
 	@printf '\\newcommand{\\fclangversion}{YY.Y}\n' > $@
 else
