@@ -114,9 +114,16 @@ HAS_FC_VERSION:=$(shell if test -f $(FC_VERSION); then echo yes; else echo no; f
 FCLANG_VERSION_FILE?=../../src/plugins/frama-clang/MAKEFILE
 HAS_FCLANG_VERSION:=$(shell if test -f $(FCLANG_VERSION_FILE); then echo yes; else echo no; fi)
 
+# always regenerate the version files, as their content depends on the
+# value of Make variables, which we can't really take into account for
+# dependencies (at least not easily)
+# if the content is unchanged, latexmk will detect it anyway.
+
+.PHONY: fc_version.tex fclang_version.tex
+
 ifneq ("$(HAS_FC_VERSION)","yes")
 
-fc_version.tex: Makefile
+fc_version.tex:
 	@echo "WARNING: Cannot find $(FC_VERSION_FILE)"
 	@echo "         Generating a joker version number for implementation"
 	@echo "         Consider setting environment variable FC_VERSION_FILE"
@@ -125,14 +132,14 @@ fc_version.tex: Makefile
 
 else
 
-fc_version.tex: Makefile $(FC_VERSION_FILE)
+fc_version.tex:
 	@rm -f $@
 	@printf '\\newcommand{\\fcversion}{$(shell cat $(FC_VERSION_FILE))}\n' > $@
 
 endif
 
 ifneq ("$(HAS_FCLANG_VERSION)","yes")
-fclang_version.tex: Makefile
+fclang_version.tex:
 	@echo "WARNING: Cannot find $(FCLANG_VERSION_FILE)."
 	@echo "         Generating a joker version number for implementation"
 	@echo "         Consider setting environment variable FCLANG_VERSION_FILE"
@@ -142,7 +149,7 @@ else
 FCLANG_VERSION:=$(shell grep -e FCLANG_VERSION= $(FCLANG_VERSION_FILE) | \
                          sed -e 's/[^=]*=\(.*\)/\1/')
 
-fclang_version.tex: Makefile $(FCLANG_VERSION_FILE)
+fclang_version.tex:
 	@rm -f $@
 	@printf '\\newcommand{\\fclangversion}{$(FCLANG_VERSION)}' > $@
 endif
