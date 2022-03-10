@@ -101,8 +101,58 @@ $(PDF_OUTPUTS): %.pdf: main.tex $(DEPS) $(BNF_DEPS)
 
 $(PDF_OUTPUTS_CPP): $(DEPS_CPP)
 
+acsl-implementation.pdf: fc_version.tex
+
+acslpp-implementation.pdf: fc_version.tex fclang_version.tex
+
 %.pdf: %.tex $(DEPS) $(BNF_DEPS)
 	latexmk -silent -pdf $<
+
+FC_VERSION_FILE ?= ../../VERSION
+HAS_FC_VERSION:=$(shell if test -f $(FC_VERSION); then echo yes; else echo no; fi)
+
+FCLANG_VERSION_FILE?=../../src/plugins/frama-clang/MAKEFILE
+HAS_FCLANG_VERSION:=$(shell if test -f $(FCLANG_VERSION_FILE); then echo yes; else echo no; fi)
+
+# always regenerate the version files, as their content depends on the
+# value of Make variables, which we can't really take into account for
+# dependencies (at least not easily)
+# if the content is unchanged, latexmk will detect it anyway.
+
+.PHONY: fc_version.tex fclang_version.tex
+
+ifneq ("$(HAS_FC_VERSION)","yes")
+
+fc_version.tex:
+	@echo "WARNING: Cannot find $(FC_VERSION_FILE)"
+	@echo "         Generating a joker version number for implementation"
+	@echo "         Consider setting environment variable FC_VERSION_FILE"
+	@rm -f $@
+	@printf '\\newcommand{\\fcversion}{XX.X}\n' > $@
+
+else
+
+fc_version.tex:
+	@rm -f $@
+	@printf '\\newcommand{\\fcversion}{$(shell cat $(FC_VERSION_FILE))}\n' > $@
+
+endif
+
+ifneq ("$(HAS_FCLANG_VERSION)","yes")
+fclang_version.tex:
+	@echo "WARNING: Cannot find $(FCLANG_VERSION_FILE)."
+	@echo "         Generating a joker version number for implementation"
+	@echo "         Consider setting environment variable FCLANG_VERSION_FILE"
+	@rm -f $@
+	@printf '\\newcommand{\\fclangversion}{YY.Y}\n' > $@
+else
+FCLANG_VERSION:=$(shell grep -e FCLANG_VERSION= $(FCLANG_VERSION_FILE) | \
+                         sed -e 's/[^=]*=\(.*\)/\1/')
+
+fclang_version.tex:
+	@rm -f $@
+	@printf '\\newcommand{\\fclangversion}{$(FCLANG_VERSION)}' > $@
+endif
 
 pp: pp.ml
 	ocamlopt -o $@ str.cmxa $^
