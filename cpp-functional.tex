@@ -5,7 +5,7 @@
 
 \subsection{C function pointers}
 
-In C (and C++) function pointers can be formal arguments to other functions and can be invoked without knowing which functional literal the pointer refers to. 
+In C (and C++) function pointers can be formal arguments to other functions and can be invoked without knowing which functional literal the pointer refers to.
 In order to reason about such constructs, \NAME needs means to describe and reason about the properties of function pointers. The feastures and design presented here are
 described more fully in \S\ref{sec:functional}.
 
@@ -38,12 +38,12 @@ where each of the clauses is an expression over the formal arguments and perhaps
 In the case of \lstinline|\ensures|, the extra parameter, here labeled \lstinline|result| corresponds to the \lstinline|\result| identifier in the \lstinline|Ei| expressions.
 There is a backslash-keyword for each kind of function contract clause (as shown in Fig. \ref{fig:gram:functional}).
 
-As an example, if we have a function such as 
+As an example, if we have a function such as
 \begin{listing-nonumber}
 /*@ requires i < 100;
-       assigns \empty;
-       ensures \result == i+1;
-       */
+    assigns \empty;
+    ensures \result == i+1;
+*/
 int inc(int i) { return i + 1; }
 \end{listing-nonumber}
 Then, for this function, for all \lstinline|int k|
@@ -56,11 +56,11 @@ The other functions with one formal int parameter and an int result would have a
 
 An example function that takes such functions as arguments is this.
 
-\lstinputlisting[linerange={10-12}]{func_args.cpp}
+\lstinputlisting[linerange={10-12},style=c]{func_args.cpp}
 
 It could have this specification.
 
-\lstinputlisting[linerange={1-9}]{func_args.cpp}
+\lstinputlisting[linerange={1-9},style=c]{func_args.cpp}
 
 Then the effect of, say the call \lstinline|m(a,4,7,inc)|, can be determined by logical reasoning.
 

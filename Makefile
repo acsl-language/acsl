@@ -128,13 +128,13 @@ fc_version.tex:
 	@echo "         Generating a joker version number for implementation"
 	@echo "         Consider setting environment variable FC_VERSION_FILE"
 	@rm -f $@
-	@printf '\\newcommand{\\fcversion}{XX.X}\n' > $@
+	@printf '\\newcommand{\\framacversion}{XX.X}\n' > $@
 
 else
 
 fc_version.tex:
 	@rm -f $@
-	@printf '\\newcommand{\\fcversion}{$(shell cat $(FC_VERSION_FILE))}\n' > $@
+	@printf '\\newcommand{\\framacversion}{$(shell cat $(FC_VERSION_FILE))}\n' > $@
 
 endif
 

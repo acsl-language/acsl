@@ -1,15 +1,15 @@
 \begin{example}
   The declaration
   \begin{listing-nonumber}
-    //@ logic int f(int x) = x+1 ;
-  \end{listing-nonumber}
+//@ logic int f(int x) = x+1 ;
+\end{listing-nonumber}
   is not allowed because \lstinline!x+1!, which is a mathematical
   integer, must be cast to \lstinline|int|.  One should write either
   \begin{listing-nonumber}
-    //@ logic integer f(int x) = x+1 ;
-  \end{listing-nonumber}
+//@ logic integer f(int x) = x+1 ;
+\end{listing-nonumber}
   or
   \begin{listing-nonumber}
-    //@ logic int f(int x) = (int)(x+1) ;
-  \end{listing-nonumber}
+//@ logic int f(int x) = (int)(x+1) ;
+\end{listing-nonumber}
 \end{example}
