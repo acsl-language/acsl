@@ -41,7 +41,7 @@ DEPS= main.tex version.tex changes.tex common.tex speclang_modern.tex	\
 	terminates_list.c glob_var_masked.c glob_var_masked_sol.c	\
 	intlists.c sign.c signdef.c oldat.c mean.c isgcd.c exit.c	\
 	mayexit.c loop_current.c welltyped.c list-observer.c		\
-	c-grammar.tex Makefile
+	c-grammar.tex Makefile frama-c-book.cls
 
 DEPS_CPP=cpp-abstraction.tex cpp-attributes.tex cpp-auto.tex		\
     cpp-class-contracts.tex cpp-class-invariants.tex			\
@@ -111,7 +111,7 @@ acslpp-implementation.pdf: fc_version.tex fclang_version.tex
 FC_VERSION_FILE ?= ../../VERSION
 HAS_FC_VERSION:=$(shell if test -f $(FC_VERSION); then echo yes; else echo no; fi)
 
-FCLANG_VERSION_FILE?=../../src/plugins/frama-clang/MAKEFILE
+FCLANG_VERSION_FILE?=../../src/plugins/frama-clang/frama-clang.opam
 HAS_FCLANG_VERSION:=$(shell if test -f $(FCLANG_VERSION_FILE); then echo yes; else echo no; fi)
 
 # always regenerate the version files, as their content depends on the
@@ -146,12 +146,12 @@ fclang_version.tex:
 	@rm -f $@
 	@printf '\\newcommand{\\fclangversion}{YY.Y}\n' > $@
 else
-FCLANG_VERSION:=$(shell grep -e FCLANG_VERSION= $(FCLANG_VERSION_FILE) | \
-                         sed -e 's/[^=]*=\(.*\)/\1/')
+FCLANG_VERSION:=$(shell grep -e ^version $(FCLANG_VERSION_FILE) | \
+                        sed -e 's/.*\"\(.*\)\"/\1/')
 
 fclang_version.tex:
 	@rm -f $@
-	@printf '\\newcommand{\\fclangversion}{$(FCLANG_VERSION)}' > $@
+	@printf '\\newcommand{\\fclangversion}{$(FCLANG_VERSION)}\n' > $@
 endif
 
 pp: pp.ml
