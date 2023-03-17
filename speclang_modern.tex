@@ -589,8 +589,8 @@ a logic type (see section~\ref{sec:concrete-logic-types}):
 \end{listing-nonumber}
 Then rounding a real number can be done explicitly using functions
 \begin{listing-nonumber}
-  logic float \round_float`\indexttbs{round\_float}`(rounding_mode m, real x);
-  logic double \round_double`\indexttbs{round\_double}`(rounding_mode m, real x);
+logic float \round_float$\indexttbs{round\_float}$(rounding_mode m, real x);
+logic double \round_double$\indexttbs{round\_double}$(rounding_mode m, real x);
 \end{listing-nonumber}
 Cast operators \lstinline|(float)| and \lstinline|(double)| applied to a
 mathematical integer or real number $x$ are equivalent to applying the
@@ -603,7 +603,7 @@ of the special values +infinity and -infinity.
 \begin{example}
   We have
   \lstinline|(float)0.1| $\equiv 13421773 \times 2 ^{-27}$ which is equal to
-  $0.100000001490116119384765625$
+  $0.100000001490116119384765625$.
 \end{example}
 Notice also that unlike for integers, suffixes \lstinline|f| and
 \lstinline|l| are
@@ -623,11 +623,11 @@ expression \lstinline|(float)(-0.0 + -0.0)|.
 Finally, additional predicates are provided that check that their argument
 is a finite number, an infinite one, or a NaN:
 \begin{listing}{1}
-predicate \is_finite`\indexttbs{is\_finite}`(double x); // is a finite double
-predicate \is_plus_infinity`\indexttbs{is\_plus\_infinity}`(double x); // is equal to +infinity
-predicate \is_minus_infinity`\indexttbs{is\_minus\_infinity}`(double x); // is equal to -infinity
-predicate \is_infinite`\indexttbs{is\_infinite}`(double x); // is equal to +infinity or -infinity
-predicate \is_NaN`\indexttbs{is\_NaN}`(double x); // is a NaN double
+predicate \is_finite$\indexttbs{is\_finite}$(double x); // is a finite double
+predicate \is_plus_infinity$\indexttbs{is\_plus\_infinity}$(double x); // is equal to +infinity
+predicate \is_minus_infinity$\indexttbs{is\_minus\_infinity}$(double x); // is equal to -infinity
+predicate \is_infinite$\indexttbs{is\_infinite}$(double x); // is equal to +infinity or -infinity
+predicate \is_NaN$\indexttbs{is\_NaN}$(double x); // is a NaN double
 \end{listing}
 \lstinline|\is_finite|, \lstinline|\is_plus_infinity|,
 \lstinline|\is_minus_infinity| and \lstinline|\is_NaN| are mutually
@@ -1019,9 +1019,9 @@ function contracts only).
 A simple function contract, having only simple clauses and no named behaviors, takes the following
 form:\indextt{requires}\indextt{assigns}\indextt{ensures}
 \begin{listing}{1}
-/*@ requires P$_1$; requires P$_2$; `\dots`
-  @ assigns L$_1$;  assigns L$_2$;  `\dots`
-  @ ensures E$_1$;  ensures E$_2$;  `\dots`
+/*@ requires P$_1$; requires P$_2$; $\dots$
+  @ assigns L$_1$;  assigns L$_2$;  $\dots$
+  @ ensures E$_1$;  ensures E$_2$;  $\dots$
   @*/
 \end{listing}
 The semantics of such a contract is as follows:
@@ -1047,9 +1047,9 @@ Having multiple \lstinline|requires|, \lstinline|assigns|, or
 readability since the contract above is equivalent to the following
 simplified one:
 \begin{listing}{1}
-/*@ requires P$_1$ && P$_2$ && `\dots`;
-  @ assigns L$_1$, L$_2$,`\dots`;
-  @ ensures E$_1$ && E$_2$ && `\dots`;
+/*@ requires P$_1$ && P$_2$ && $\dots$;
+  @ assigns L$_1$, L$_2$,$\dots$;
+  @ ensures E$_1$ && E$_2$ && $\dots$;
   @*/
 \end{listing}
 If no \requires\ clause is given, it defaults to
@@ -1066,8 +1066,8 @@ It is worth pointing out that there are different treatments of
 frame conditions (\lstinline|assigns| statements) in various specification languages.
 The frame condition can follow either \emph{writes} semantics or \emph{modifies} semantics.
 \begin{itemize}
-	\item Under \lstinline|writes| (or assigns) semantics, only those memory locations listed in a frame condition may be \emph{written to}, that is, only those locations may be the target of an assignment statement or listed in the frame condition of a called function. This is true whether or not the value of the memory location changes.
-	\item Under \lstinline|modifies| semantics, a memory location may be written to, as long as the value is restored (that is, not modified) by the end of the scope of the function contract. Under this semantics, a frame condition is a requirement on the relationship between two states --- any memory location not a member of the frame condition must have the same value in its pre-state and its post-state.
+	\item Under \emph{writes} (or assigns) semantics, only those memory locations listed in a frame condition may be \emph{written to}, that is, only those locations may be the target of an assignment statement or listed in the frame condition of a called function. This is true whether or not the value of the memory location changes.
+	\item Under \emph{modifies} semantics, a memory location may be written to, as long as the value is restored (that is, not modified) by the end of the scope of the function contract. Under this semantics, a frame condition is a requirement on the relationship between two states --- any memory location not a member of the frame condition must have the same value in its pre-state and its post-state.
 \end{itemize}
 Confusion can arise because the words \emph{assigns} and \emph{modifies} are sometimes used interchangeably. In particular, \textbf{ACSL \ifCPP{and \NAME} \iftoggle{isCPP}{use}{uses}
 	\emph{modifies} semantics, even though the frame condition is introduced by the \emph{assigns} keyword}.\footnote{For comparison, JML and the OpenJML tool define frame conditions to have write semantics but use the keywords assigns and modifies interchangeably; however, the KeY tool for JML implements modifies semantics. Ada/SPARK's data flow contracts effectively encode write semantics.}
@@ -1194,9 +1194,9 @@ single named behavior. More precisely, the following contract
 /*@ requires P;
   @ assigns L;
   @ ensures E;
-  @ behavior b$_1$: `\dots`
-  @ behavior b$_2$: `\dots`
-  @ `\dots`
+  @ behavior b$_1$: $\dots$
+  @ behavior b$_2$: $\dots$
+  @ $\dots$
   @*/
 \end{listing}
 is equivalent to (if b$_1$ and b$_2$ do not have requires clauses)
@@ -1206,9 +1206,9 @@ is equivalent to (if b$_1$ and b$_2$ do not have requires clauses)
   @   assumes \true;
   @   assigns L;
   @   ensures E;
-  @ behavior b$_1$: `\dots`
-  @ behavior b$_2$: `\dots`
-  @ `\dots`
+  @ behavior b$_1$: $\dots$
+  @ behavior b$_2$: $\dots$
+  @ $\dots$
   @*/
 \end{listing}
 
@@ -1257,9 +1257,9 @@ to a contract:
 /*@ requires R;
     admit requires AR;
     check requires CR;
-    behavior b$_i$: `\dots`
-    `\dots`
-    complete behaviors b$_1$,`\dots`,b$_n$;
+    behavior b$_i$: $\dots$
+    $\dots$
+    complete behaviors b$_1$,$\dots$,b$_n$;
   @*/
 \end{listing-nonumber}
 It specifies that the set of behaviors \lstinline|b$_1$,$\ldots$,b$_n$|
@@ -1275,7 +1275,7 @@ only used to verify that a property holds at a given point, and never as hypothe
 
 The simplified version of that clause
 \begin{listing-nonumber}
-/*@ `\dots`
+/*@ $\dots$
   @ complete behaviors;
   @*/
 \end{listing-nonumber}
@@ -1288,7 +1288,7 @@ If desired, this can be specified with the following clause:
 \index{disjoint behaviors}
 \begin{listing-nonumber}
 /*@ ...
-  @ disjoint behaviors b$_1$,`\dots`,b$_n$;
+  @ disjoint behaviors b$_1$,$\dots$,b$_n$;
   @*/
 \end{listing-nonumber}
 It means that the given behaviors are pairwise disjoint \emph{i.e.}
@@ -2160,7 +2160,7 @@ In the following source code, the function must terminate when
 0, while it is not expected that the loop terminates, the block on lines 5--10
 still must terminate and the call to the function \lstinline{handle_events}
 must also terminate.
-\begin{lstlisting}{1}
+\begin{listing}{1}
 unsigned max_runs = 0 ;
 
 //@ terminates max_runs > 0 ;
@@ -2183,7 +2183,7 @@ void main_loop(void){
     handle_events();
   }
 }
-\end{lstlisting}
+\end{listing}
 \end{example}
 
 \subsection{Measures and non-terminating functions}
@@ -2303,7 +2303,7 @@ guaranteed, so tools might enforce syntactic conditions on the form of
 inductive definitions. A standard syntactic restriction could be to
 allow only propositions \lstinline|p$_i$| of the form
 \begin{listing-nonumber}
-\forall y$_1$,`\dots`,y$_m$, h$_1$ ==> $\cdots$ ==> h$_l$ ==> P(t$_1$,`\dots`,t$_n$)
+\forall y$_1$,$\dots$,y$_m$, h$_1$ ==> $\cdots$ ==> h$_l$ ==> P(t$_1$,$\dots$,t$_n$)
 \end{listing-nonumber}
 where \lstinline|P| occurs only positively in hypotheses \lstinline|h$_1,\ldots,$h$_l$|
 (definite Horn clauses,
@@ -2796,8 +2796,8 @@ other than \lstinline|void*|.
 holds for any set of pointers \lstinline|s$_1$| and \lstinline|s$_2$|
 if and only if for all \lstinline|p$\in$s$_1$| and \lstinline|q$\in$s$_2$|:
 \begin{listing-nonumber}
-  forall integer i,j; 0 <= i < sizeof(*p), 0 <= j < sizeof(*q)
-     ==>  (char*)p + i != (char*)q + j
+\forall integer i,j; 0 <= i < sizeof(*p), 0 <= j < sizeof(*q) ==>
+  (char*)p + i != (char*)q + j
 \end{listing-nonumber}
 
 In fact, \lstinline|\separated| is an $n$-ary predicate.\\
@@ -2840,8 +2840,8 @@ it is left for convenience like for \assigns clauses.
 
 Clauses \allocates and \frees are tied together. The simple contract
 \begin{listing-nonumber}
-/*@ frees P$_1$,P$_2$,`\dots`;
-  @ allocates Q$_1$,Q$_2$,`\dots`;
+/*@ frees P$_1$,P$_2$,$\dots$;
+  @ allocates Q$_1$,Q$_2$,$\dots$;
   @*/
 \end{listing-nonumber}
 means that any memory address that does not belong to the union of the sets \lstinline|P$_i$| and \lstinline|Q$_j$| of
@@ -3002,8 +3002,8 @@ The grammar for those constructions is given in
 The clauses \Loop \allocates and \Loop \frees are tied together.
 The simple loop annotation
 \begin{listing-nonumber}
-/*@ loop frees P$_1$,P$_2$,`\dots`;
-  @ loop allocates Q$_1$,Q$_2$,`\dots`; */
+/*@ loop frees P$_1$,P$_2$,$\dots$;
+  @ loop allocates Q$_1$,Q$_2$,$\dots$; */
 \end{listing-nonumber}
 means that any memory address that does not belong to the union of sets of
 terms
@@ -3021,7 +3021,7 @@ Just as for \lstinline|loop assigns|, the loop annotations
 
 More precisely, this loop annotation
 \begin{listing-nonumber}
-//@ loop allocates Q$_1$,`\dots`,Q$_n$; */
+//@ loop allocates Q$_1$,$\dots$,Q$_n$; */
 \end{listing-nonumber}
 is equivalent to the loop invariant
 \begin{listing-nonumber}
