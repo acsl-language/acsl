@@ -1,26 +1,32 @@
 name: compile
 
-on: [push]
+on: [push,pull_request]
 
 jobs:
   compile:
     name: compile the manuals
     runs-on: ubuntu-latest
     steps:
-      - name: install needed packages
-        run: sudo apt update &&  DEBIAN_FRONTEND=noninteractive sudo --preserve-env=DEBIAN_FRONTEND apt install -y make texlive-full latexmk ocaml-nox
       - name: retrieve sources
         uses: actions/checkout@v2
       - name: compile acsl manual
-        run: make acsl.pdf
+        uses: dante-ev/latex-action@latest
+        with: 
+          root_file: main.tex
+          compiler: make
+          args: acsl.pdf
+          extra_system_packages: make ocaml-nox
+      - name: archive ACSL log
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          path: acsl.log
       - name: compile acsl++ manual
         run: make acslpp.pdf
-      - name: archive log and pdf
+      - name: archive pdf
         uses: actions/upload-artifact@v2
         with:
           path: |
-            acsl.log
-            acslpp.log
             acsl.pdf
             acslpp.pdf
       - name: check grammar coherence
