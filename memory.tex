@@ -3,7 +3,7 @@
         | "\base_addr" one-label? "(" term ")" ;
         | "\block_length" one-label? "(" term ")" ;
         | "\offset" one-label?  "(" term ")" ;
-        | { "\allocation" } one-label?   "(" term ")" ;
+        | {"\allocation"} one-label? "(" term ")" ;
        \
   pred ::=  "\allocable" one-label? "(" term ")" ;
        |  "\freeable" one-label? "(" term ")" ;
@@ -11,6 +11,8 @@
        | "\valid"  one-label?  "(" locations-list ")" ;
        | "\valid_read"  one-label? "(" locations-list ")";
        | "\separated" "(" location "," locations-list ")" ;
+       | "\object_pointer" one-label? "(" locations-list ")";
+       | "\pointer_comparable" one-label? "(" term "," term ")" ;
        \
   one-label ::= "{" label-id "}" ;
        \
