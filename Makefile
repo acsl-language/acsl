@@ -96,8 +96,12 @@ else
   DRAFT_OPT=
 endif
 
+ifneq ("$(VERBOSE)","yes")
+	SILENT="-silent"
+endif
+
 $(PDF_OUTPUTS): %.pdf: main.tex $(DEPS) $(BNF_DEPS)
-	latexmk -silent -pdf -jobname=$* $(DRAFT_OPT) $<
+	latexmk $(SILENT) -pdf -jobname=$* $(DRAFT_OPT) $<
 
 $(PDF_OUTPUTS_CPP): $(DEPS_CPP)
 
@@ -106,7 +110,7 @@ acsl-implementation.pdf: fc_version.tex
 acslpp-implementation.pdf: fc_version.tex fclang_version.tex
 
 %.pdf: %.tex $(DEPS) $(BNF_DEPS)
-	latexmk -silent -pdf $<
+	latexmk $(SILENT) -pdf $<
 
 FC_VERSION_FILE ?= ../../VERSION
 HAS_FC_VERSION:=$(shell if test -f $(FC_VERSION); then echo yes; else echo no; fi)

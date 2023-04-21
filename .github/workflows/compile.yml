@@ -12,9 +12,9 @@ jobs:
       - name: retrieve sources
         uses: actions/checkout@v2
       - name: compile acsl manual
-        run: make acsl.pdf
+        run: make VERBOSE=yes acsl.pdf
       - name: compile acsl++ manual
-        run: make acslpp.pdf
+        run: make VERBOSE=yes acslpp.pdf
       - name: archive log and pdf
         uses: actions/upload-artifact@v2
         with:
