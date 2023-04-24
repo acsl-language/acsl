@@ -2719,7 +2719,7 @@ containing, at the label \lstinline|L|, the pointer \lstinline|p|
 \end{itemize}
 
 
-In addition, some operations involving pointers may lead to run-time errors.
+Moreover, some operations involving pointers may lead to run-time errors.
 A pointer \lstinline|p| is said to be \emph{valid} if \lstinline|*p| is guaranteed to
 produce a definite value according to the C standard~\cite{standardc99}. The
 following built-in predicates deal with this notion:
@@ -2756,7 +2756,7 @@ and similarly for \lstinline|\valid_read|
 \end{listing-nonumber}
 
 In addition to this notion of validity, it should be noted that
-adding or subtractiong an offset to a pointer, or comparing two pointers
+adding or subtracting an offset to a pointer, or comparing two pointers
 may also lead to undefined behaviors (see \cite[6.5.6 and 6.5.8]{standardc99}).
 Predicates \lstinline|\object_pointer| and \lstinline|\pointer_comparable|
 deal with these notions.
@@ -2770,7 +2770,7 @@ the last element of such an array object.
 \item \lstinline|\pointer_comparable|\indexttbs{pointer\_comparable} takes two pointers
 to object or function type as arguments.
 \lstinline|\pointer_comparable{L}(p1,p2)| holds if and only if \lstinline|p1|
-and \lstinline|p2| points to the same function or to an element (or one past
+and \lstinline|p2| point to the same function or to an element (or one past
 the last element) of the same array object.
 \\ \makebox[5mm]{} \lstinline|\pointer_comparable{id} : $\alpha$ * $\ra$ $\beta$ * $\ra$ boolean|
 \end{itemize}
