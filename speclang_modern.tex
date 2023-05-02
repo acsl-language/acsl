@@ -2719,13 +2719,14 @@ containing, at the label \lstinline|L|, the pointer \lstinline|p|
 \end{itemize}
 
 
-In addition, dereferencing a pointer may lead to run-time errors. A pointer
-\lstinline|p| is said to be \emph{valid} if \lstinline|*p| is guaranteed to
+Moreover, some operations involving pointers may lead to runtime errors.
+A pointer \lstinline|p| is said to be \emph{valid} if \lstinline|*p| is guaranteed to
 produce a definite value according to the C standard~\cite{standardc99}. The
 following built-in predicates deal with this notion:
 \begin{itemize}
 \item \valid\indexttbs{valid} applies to a tset
-(see Section~\ref{sec:locations}) each of whose elements has some common pointer type (other than \lstinline|void*|).
+(see Section~\ref{sec:locations}) whose elements have type pointer
+to some common object type.
 \lstinline|\valid{L}(s)| holds if and only if
  dereferencing any $p\in \lstinline|s|$ is safe  at label \lstinline|L|, both for reading from
 \lstinline|*p| and writing to it. In particular,
@@ -2733,7 +2734,7 @@ following built-in predicates deal with this notion:
 \\ \makebox[5mm]{} \lstinline|\valid{id} : set<$\alpha$ *> $\ra$ boolean|
 \item
 \lstinline|\valid_read|\indexttbs{valid\_read}
-applies to a tset of some pointer type (other than \lstinline|void*|)
+applies to a tset of some pointer to an object type
 and holds if and only if it is safe to read from all the pointers in the set
 \\ \makebox[5mm]{} \lstinline|\valid_read{id} : set<$\alpha$ *> $\ra$ boolean|
 \end{itemize}
@@ -2753,6 +2754,26 @@ and similarly for \lstinline|\valid_read|
 \begin{listing-nonumber}
 \valid_read{L}(p) <==> \valid_read{L}(((char *)p)+(0 .. sizeof(*p)-1))
 \end{listing-nonumber}
+
+In addition to this notion of validity, it should be noted that
+adding or subtracting an offset to a pointer, or comparing two pointers
+may also lead to undefined behaviors (see \cite[6.5.6 and 6.5.8]{standardc99}).
+Predicates \lstinline|\object_pointer| and \lstinline|\pointer_comparable|
+deal with these notions.
+\begin{itemize}
+\item \lstinline|\object_pointer|\indexttbs{object\_pointer} applies to a tset of
+some pointer to an object type. \lstinline|\object_pointer{L}(s)| indicates that
+each element of \lstinline|s| either points to an element of an array object
+whose lifetime includes the program point denoted by \lstinline|L| or one past
+the last element of such an array object.
+\\ \makebox[5mm]{} \lstinline|\object_pointer{id} : set<$\alpha$ *> $\ra$ boolean|
+\item \lstinline|\pointer_comparable|\indexttbs{pointer\_comparable} takes two pointers
+to object or function type as arguments.
+\lstinline|\pointer_comparable{L}(p1,p2)| holds if and only if \lstinline|p1|
+and \lstinline|p2| point to the same function or to an element (or one past
+the last element) of the same array object.
+\\ \makebox[5mm]{} \lstinline|\pointer_comparable{id} : $\alpha$ * $\ra$ $\beta$ * $\ra$ boolean|
+\end{itemize}
 
 Some shortcuts are provided:
 \begin{itemize}
@@ -2790,8 +2811,8 @@ ACSL provides a built-in function to deal with separation of locations:
 \begin{itemize}
 % [Patrick B.] START proposition:
 \item \lstinline|\separated|\indexttbs{separated}
-applies to tsets (see Section~\ref{sec:locations}) of some common pointer type
-other than \lstinline|void*|.
+applies to tsets (see Section~\ref{sec:locations}) of pointers 
+to some common object type.
 \lstinline|\separated(s$_1$,s$_2$)|
 holds for any set of pointers \lstinline|s$_1$| and \lstinline|s$_2$|
 if and only if for all \lstinline|p$\in$s$_1$| and \lstinline|q$\in$s$_2$|:
@@ -2844,8 +2865,9 @@ Clauses \allocates and \frees are tied together. The simple contract
   @ allocates Q$_1$,Q$_2$,$\dots$;
   @*/
 \end{listing-nonumber}
-means that any memory address that does not belong to the union of the sets \lstinline|P$_i$| and \lstinline|Q$_j$| of
-some common pointer type other than \lstinline|void*|
+where \lstinline|P$_i$| and \lstinline|Q$_j$| are sets of pointers to
+a common object type,
+means that any memory address that does not belong to the union of the sets
 has the same {\sl allocation status}
 (see below) in the post-state as in the pre-state. The only difference
 between \lstinline|allocates| and \lstinline|frees| is that sets
@@ -3718,7 +3740,7 @@ or only written to, the unused accessor function can be omitted from the
 \label{sec:initialized}
 \indexttbs{initialized}
 \lstinline|\initialized{L}(p)| is a predicate taking a set of pointers
-(having a type other than \lstinline|void*|) to l-values as
+(to some object type) to l-values as
 argument (cf. Fig.~\ref{fig:gram:initialized}) and means that each l-value in this set is initialized at label \lstinline|L|.
 \\ \makebox[5mm]{} \lstinline|\initialized{id} : set<$\alpha$*> $\ra$ boolean|
 
@@ -3733,8 +3755,7 @@ argument (cf. Fig.~\ref{fig:gram:initialized}) and means that each l-value in th
 \label{sec:dangling_pointers}
 \indexttbs{dangling}
 \lstinline|\dangling{L}(p)|
-is a predicate taking a set of pointers
-(having a type other than \lstinline|void*|) to l-values as
+is a predicate taking a set of pointers (to some object type) to l-values as
 argument (cf. Fig.~\ref{fig:gram:initialized}) and means that each l-value in this set has a \emph{dangling
   content} at label \lstinline|L|. That is, its value is (or contains bits
 of) a dangling address: either the address of a local
