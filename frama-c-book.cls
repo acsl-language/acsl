@@ -105,7 +105,7 @@
 \newcommand{\addcopyrightowner}[1]{
   \listadd{\@copyrightowner}{#1}
 }
-\addcopyrightowner{CEA LIST} % add it by default
+\addcopyrightowner{\cealist} % add it by default
 
 \newcommand{\insertcopyrightowners}{{
   \def\listsep{\def\listsep{, }}%
@@ -262,16 +262,6 @@
   \listadd{\@people}{#1}
 }
 
-\def\@anrprojects{}
-\newcommand{\acknowledgeANRproject}[1]{
-  \listadd{\@anrprojects}{#1}
-}
-
-\def\@euprojects{}
-\newcommand{\acknowledgeEUproject}[1]{
-  \listadd{\@euprojects}{#1}
-}
-
 \newcommand{\commaorandlist}[1]{%
   \count255=0
   \def\do##1{\advance\count255 1 \chardef\finalitem=\count255 }%
@@ -290,7 +280,6 @@
   {We gratefully thank all the people who contributed to this document: \commaorandlist\@people.}
   \fi
 }}
-
 
 % \acknowledgeprogram{<flag image file>}{<text inside box>}
 \newcommand{\acknowledgeprogram}[2]{
