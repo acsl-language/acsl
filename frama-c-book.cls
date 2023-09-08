@@ -432,6 +432,7 @@
 \definecolor{lstmodule}{rgb}{0.3,0.6,0.2}
 \definecolor{lstspecial}{rgb}{0.2,0.6,0.0}
 \definecolor{lstfile}{gray}{0.85}
+\definecolor{lstcomments}{rgb}{0.35,0.35,0.35}
 
 \newcommand{\lstbrk}{\mbox{$\color{blue}\scriptstyle\cdots$}}
 
@@ -439,7 +440,7 @@
 \def\lp@inline{\ifmmode\normalfont\mathtt\scriptstyle\else\normalfont\ttfamily\mdseries\normalsize\fi}
 \def\lp@keyword{}
 \def\lp@special{\color{frama-c-dark-orange}}
-\def\lp@comment{\normalfont\ttfamily\mdseries}
+\def\lp@comment{\normalfont\ttfamily\mdseries\color{lstcomments}}
 \def\lp@string{\color{frama-c-dark-green}}
 \def\lp@ident{}
 \def\lp@number{\rmfamily\tiny\color{lstnum}\noncopynumber}
@@ -614,17 +615,18 @@
     {é}{{\'e}}1%
   ,
   style=frama-c-style,%
-  morekeywords={
-    action, alias, as, deps, dune, executable, files, flags, from,
-    generate_opam_files, install, lang, libraries, library, name, optional,
-    package, plugin, progn, public_name, rule, section, select, site,
-    targets, using
+  alsoletter=:-,%
+  keywords={%
+    action,alias,as,backend,context,default,deps,dune,executable,%
+    env,env-vars,files,flags,from,generate_opam_files,install,%
+    instrument_with,instrumentation,lang,libraries,library,name,optional,%
+    package,plugin,profile,progn,public_name,rule,section,select,site,%
+    targets,using%
   },%
-  alsoletter=:,
-  morekeywords=[2]{
-    :standard
-  },
-  morecomment=[l]{;},
+  morekeywords=[2]{%
+    :standard%
+  },%
+  morecomment=[l]{;},%
 }
 
 \lstdefinestyle{dune-basic}{%
