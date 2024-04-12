@@ -3902,6 +3902,31 @@ Supported attributes are implementation dependent.
 %   structures~\cite{filliatr07queens}.
 % \end{itemize}
 
+\section{Summary of clauses, their meaning and default values}
+
+  \begin{center}
+    \begin{tabular}{l|l|l}
+      Clause & In natural language & Default value if absent \\
+      \hline
+      \lstinline|exits P| & {\em if program exits, then P} & \lstinline|\false| \\
+      \hline
+      \lstinline|ensures P| & {\em P must hold after} & \lstinline|\true| \\
+      \hline
+      \lstinline|requires P| & {\em P must hold before} & \lstinline|\true| \\
+      \hline
+      \lstinline|terminates P| & {\em must terminate if P} & \lstinline|\true| \\
+      \hline
+      \lstinline|assigns D| & {\em may assign D} & \lstinline|\nothing| \\
+      \hline
+      \lstinline|assumes P| & {\em in this behavior, P holds before} & \lstinline|\true| \\
+      \hline
+      \lstinline|allocates M| & {\em may allocate M} & \lstinline|\nothing| \\
+      \hline
+      \lstinline|frees M| & {\em may free M} & \lstinline|\nothing| \\
+      \hline
+    \end{tabular}
+  \end{center}
+
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-PDF-mode: t
