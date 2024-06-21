@@ -2641,24 +2641,52 @@ locations that hold constants that do not change in the course of a program may 
 
 \experimental
 
-\ifCPP{\review{Namespaces provide this capability. Do we need modules as well?}}
+\ifCPP{\review{Namespaces provide also this capability.}}
 
-\notimplemented{Specification modules can be provided} to encapsulate
+Specification modules can be provided to encapsulate
 several logic definitions, for example
 \listinginput{1}{listmodule.c}
 Module components are then accessible using a qualified notation like
-\begin{notimplementedenv}\lstinline|List::length|\end{notimplementedenv}.
+\lstinline|List::length|.
+
+Modules can be nested and it is also possible to use qualified names
+for defining modules. Consider for instance:
+\begin{lstlisting}
+/*@
+  module A {
+    module B::C { ... }
+  }
+  module A::B::D { ... }
+ */
+\end{lstlisting}
+This will define three modules named \verb+A+, \verb+A::B::C+ and
+\verb+A::B::D+.
+
+It is not possible to define two modules with the same fully qualified name.
+When using long qualified names, it is possible to use import directives. An
+import directive has the following format:
+
+\begin{lstlisting}
+//@ import <qualified-name> [ \as <identifier> ] ;
+\end{lstlisting}
+
+When importing a module, its qualified name can be shortened to its last
+element. For instance, when importing module \verb+A::B::C+, it can be shortened
+as \verb+C+. When the import clause uses the \verb+\as X+ form, the full module
+name can be shortened with \verb+X+ instead. Notice that imported symbols can
+sill be accessed using their fully qualified names.
+
+It is possible to import a given module several times, under any name. Priority
+comes to the last module imported. To avoid misleading references, when
+importing several modules under the \emph{same} name \verb+X+, only the last
+module becomes visible: all symbols from previously imported modules under the
+same short name are hidden by the newly imported module, even for symbols that
+are not re-declared.
+
+Import clauses can be used inside module definitions, with a scope limited to
+subsequent declarations and sub-modules of the current module.
 
 \ifCPP{In \NAME, \lang namespaces can be used for this purpose.}
-
-Predefined algebraic specifications can be provided as
-libraries\index{library} (see
-section~\ref{chap:lib}), and imported using a construct like
-\begin{notimplementedenv}
-\listinginput{1}{import.c}
-\end{notimplementedenv}
-where the file \lstinline|List.acsl| contains logic
-definitions, like the \lstinline|List| module above.
 
 \ifCPPinput{cpp-class-contracts}
 \ifCPPinput{cpp-enum}
@@ -2667,8 +2695,6 @@ definitions, like the \lstinline|List| module above.
 \ifCPPinput{cpp-visibility}
 \ifCPPinput{cpp-auto}
 \ifCPPinput{cpp-namespaces}
-
-
 
 \section{Pointers and physical addressing}
 \label{sec:pointers}
@@ -2812,7 +2838,7 @@ ACSL provides a built-in function to deal with separation of locations:
 \begin{itemize}
 % [Patrick B.] START proposition:
 \item \lstinline|\separated|\indexttbs{separated}
-applies to tsets (see Section~\ref{sec:locations}) of pointers 
+applies to tsets (see Section~\ref{sec:locations}) of pointers
 to some common object type.
 \lstinline|\separated(s$_1$,s$_2$)|
 holds for any set of pointers \lstinline|s$_1$| and \lstinline|s$_2$|
