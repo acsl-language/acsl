@@ -2674,7 +2674,8 @@ When importing a module, its qualified name can be shortened to its last
 element. For instance, when importing module \verb+A::B::C+, it can be shortened
 as \verb+C+. When the import clause uses the \verb+\as X+ form, the full module
 name can be shortened with \verb+X+ instead. Notice that imported symbols can
-sill be accessed using their fully qualified names.
+sill be accessed using their fully qualified names. Only complete modules or
+sub-modules can be imported, not individual logic declarations.
 
 It is possible to import a given module several times, under any name. Priority
 is given to the last module imported. To avoid misleading references, when
