@@ -29,7 +29,7 @@ DEPS= main.tex version.tex changes.tex common.tex speclang_modern.tex	\
 	parsing_annot_modern.tex integer-cast-modern.tex max.c		\
 	max_index.c cond_assigns.c bsearch.c bsearch2.c			\
 	assigns_array.c assigns_list.c sum.c listdecl.c listdef.c	\
-	listlengthdef.c import.c listmodule.c strcpyspec.c dowhile.c	\
+	listlengthdef.c listmodule.c strcpyspec.c dowhile.c	\
 	num_of_pos.c nb_occ.c nb_occ_reads.c builtins.tex permut.c	\
 	permut_reads.c acsl_allocator.c preprocessing.tex		\
 	gen_spec_with_model.c gen_code.c out_char.c ghostpointer.c	\
