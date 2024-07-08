@@ -7,8 +7,8 @@ This document is a reference manual for
              \mbox{\textsc{Frama-C}} %no cesure
             framework~\cite{frama-c}.}%
            {\NAME{}.}
-\NAME{} is an acronym for ``ANSI/ISO \lang{} 
-Specification Language''. 
+\NAME{} is an acronym for ``ANSI/ISO \lang{}
+Specification Language''.
 This is a Behavioral Interface Specification Language (BISL)~\cite{hatcliff2012behavioral}
 \iftoggle{PrintImplementationRq}%
            {for}%
@@ -30,7 +30,6 @@ Frama-C include in particular:
 \begin{itemize}
 \item some built-in predicates and logical functions;
 \item definition of logical types (section~\ref{sec:logicspec});
-\item specification modules (section~\ref{sec:specmodules});
 \item model variables (section~\ref{ex:model});
 \item only basic support for ghost code is provided (section~\ref{sec:ghost});
 \item verification of non interference of ghost code
@@ -65,7 +64,7 @@ postconditions on a routine, going back at least to Dijkstra, Floyd and
 Hoare in the late 60's and early 70's.
 
 In this document, we assume that the reader has a good knowledge of
-the ISO C programming language~\cite{KR88,standardc99} 
+the ISO C programming language~\cite{KR88,standardc99}
 \ifCPP{and the ISO C++ programming language~\cite{C++-2011}}.
 
 \section{Organization of this document}
@@ -75,7 +74,7 @@ vocabulary, and discuss generalities about this specification
 language.  Chapter~\ref{chap:base} presents the specification language
 itself.  Chapter~\ref{chap:lib} presents additional information about
 \emph{libraries} of specifications. The appendices provide
-specific formal type-checking rules for \NAME annotations, 
+specific formal type-checking rules for \NAME annotations,
 the relation between \NAME and JML, and specification templates.
 A detailed table of
 contents is given on page~\pageref{chap:contents}.
@@ -112,7 +111,7 @@ Section~\ref{sec:multiplecontracts}).
     global declarations. See section~\ref{sec:invariants}.
 
   \item \emph{type invariant}\,: this allows declaring  structure invariants,
-     union invariants, 
+     union invariants,
      \ifCPP{class invariants, }
      and invariants on type names introduced by
     \typedef.  See section~\ref{sec:invariants}.
@@ -120,7 +119,7 @@ Section~\ref{sec:multiplecontracts}).
   \item \emph{logic specifications}\,: definitions of logic functions
     or predicates, lemmas, axiomatizations by declaration of new logic
     types, logic functions, predicates with axioms they satisfy. Such an
-    annotation is placed at the level of global declarations. 
+    annotation is placed at the level of global declarations.
     See section~\ref{sec:logicspec}
 
   \end{itemize}
@@ -153,8 +152,8 @@ Section~\ref{sec:multiplecontracts}).
 
 \subsection{About preprocessing}
 
-This document considers \lang source \emph{after} preprocessing, except that, whereas normal preprocessing replaces all comments by white space, 
-for the purpose of 
+This document considers \lang source \emph{after} preprocessing, except that, whereas normal preprocessing replaces all comments by white space,
+for the purpose of
 \NAME, comments specific to \NAME (cf. \ref{sec:lexicalrules}) are retained.
 
 Tools must decide how they handle preprocessing (what to do with
