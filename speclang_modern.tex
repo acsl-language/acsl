@@ -2096,10 +2096,12 @@ be added to the contract of the function, using the following form:
 The semantics of such a clause is as follows: if \lstinline|p| holds in the
 pre-state of the function, then the function is guaranteed to terminate (more
 precisely, its termination must be proved). If such a clause is not present (and
-in particular if there is no function contract at all), it
-defaults to \lstinline|terminates \true;| that is, the function is supposed
-to always terminate, which is the expected behavior of most
-functions.
+in particular if there is no function contract at all), it defaults to
+\lstinline|terminates \true;| that is, the function is supposed to always
+terminate, which is the expected behavior of most functions. If the function has
+the C attribute \lstinline|_Noreturn|
+(or \lstinline|__attribute__((noreturn))|, etc.) it defaults to
+\lstinline|terminates \false;| instead.
 
 Note that nothing is specified for the case where \lstinline|p| does not hold:
 the function may terminate or not. In particular,
