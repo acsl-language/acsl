@@ -979,9 +979,13 @@ The grammar in Fig. \ref{fig:gram:contracts} requires clauses to be written
 in a particular order. This order is helpful for readability, though tools may
 be lenient towards out-of-order clauses.
 
- \subsection{Built-in constructs %
-  \texorpdfstring{\old}{\textbackslash{}old} %
- and \texorpdfstring{\result}{\textbackslash{}result}}
+\subsection{Pre- and Post- state}
+\label{sec:pre-post-state}
+A function call involves two particular program states: the
+\emph{pre-state}, when entering the function, and the \emph{post-state},
+when returning back to the caller (see Sect.~\ref{sec:termination}
+for functions that may not terminate and Sect.~\ref{sec:abrupt-clause}
+for functions that may exit the program).
 
 Post-conditions usually require referring to both the function result and
 values in the pre-state. Thus terms are extended with the following new
@@ -991,27 +995,15 @@ constructs (shown in Figure~\ref{fig:gram:oldandresult}).
   predicate or term \lstinline|e| in the pre-state of the function.
 \item \result\indexttbs{result} denotes the returned value of the function.
 \end{itemize}
-\lstinline|\old(e)| can be used only in \ensures{}, \assigns{},
+\lstinline|\result| and \lstinline|\old(e)| can be used only in \ensures{}, \assigns{},
 \allocates{} and \frees{} clauses, since
 the other clauses already refer to only one state, the pre-state.
-In addition, \result{} may not be used in the contract of a function that returns
-\void{}.
 
-%[Andre M.] START proposition:
-%\item in \assigns{} and \frees{} clauses, a \result{} not directly inside an
-%  \lstinline|\at(...,Post)| (either explicitly or implicitly) is forbidden.
-% Note: we must still be able to write assigns \result \from \nothing, so
-% the above must be refined.
-% END proposition
-
-
-C function parameters\index{formal parameter} are obtained by
-value from actual parameters that mostly remain unaltered by the
-function calls. For that reason, formal parameters in function
-contracts are defined such that they always refer implicitly to their
-values interpreted in the pre-state.
-Thus, the \old construct is not needed (but permitted) for formal parameters (in
-function contracts only).
+Moreover, the formal parameters of the function are \emph{not} allocated in the post-state.
+Hence, in the post-state, any formal parameter \lstinline|x| can
+only be evaluated if it is enclosed in a term of the form \lstinline|\old(e)|.
+In order to keep formulas simpler, though, \lstinline|x| can be used instead of
+\lstinline|\old(x)|.
 
 \subsection{Simple function contracts}
 \label{sec:simplecontracts}
