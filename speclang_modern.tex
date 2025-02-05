@@ -3841,29 +3841,9 @@ and \lstinline|\valid_function(p)| holds if and only if
   \listinginput{1}{welltyped.c}
 \end{example}
 
-\section{Logic attribute annotations}
-\label{sec:attribute_annot}
-
-\experimental
-
-These are annotations allowing to add attributes on variables,
-like regular C qualifiers (\texttt{const}, \texttt{volatile}, \texttt{restrict}),
-or GNU \texttt{\_\_attribute\_\_}. They are defined in figure~\ref{fig:gram:attr}.
-
-\begin{figure}[htb]
-\begin{cadre}
-\input{attribute.bnf}
-\end{cadre}
-\caption{Grammar for \NAME attributes}
-\label{fig:gram:attr}
-\end{figure}
-
-Supported attributes are implementation dependent.
-
 \section{Preprocessing for \NAME}
 \label{sec:ppimpl}
 \input{preprocessing.tex}
-
 
 \ifCPP{
 \section{Questions and items to consider adding}
