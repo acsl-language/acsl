@@ -1,3 +1,8 @@
+\subsection{Version \version}
+\begin{itemize}
+\item Remove experimental and barely used Logic attribute annotations.
+Use directly C attributes (C23, GNU, or both, depending on the tool used) instead.
+\end{itemize}
 \subsection{Version 1.21}
 \begin{itemize}
 \item More precise definition of pre- and post-state of a function contract
@@ -31,7 +36,8 @@ clause with respect to \lstinline|complete| and \lstinline|disjoint| clauses
 \end{itemize}
 \subsection{Version 1.16}
 \begin{itemize}
-\item Slightly improve section~\ref{sec:attribute_annot}, that was a bit rushed into
+\item Slightly improve section on logic attribute annotations
+(removed in Version \version), that was a bit rushed into
 the last version
 \item Introduce \lstinline|check| and \lstinline|admit| clause kinds
 (sections~\ref{sec:check-admit-clauses}, \ref{sec:assertions},
