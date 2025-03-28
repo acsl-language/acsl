@@ -5,6 +5,6 @@ int a ;                       // a non-ghost location
 */
 /*@ ghost
   int g ;                     // a ghost location
-  int \ghost* good1 = &a ;    // can be referenced by a pointer to ghost
-  int * bad1 = &a ;           // cannot be referenced by a pointer to non-ghost
+  int \ghost* good1 = &g ;    // can be referenced by a pointer to ghost
+  int * bad1 = &g ;           // cannot be referenced by a pointer to non-ghost
 */
