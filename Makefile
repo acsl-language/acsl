@@ -200,10 +200,10 @@ HAS_FCLANG=$(shell if $(FRAMAC) -plugins | grep -q "Frama_Clang"; \
 GOOD=abrupt_termination.c advancedloopinvariants.c assert-tut.c		\
 assigns_array.c assigns.c assigns_list.c bsearch.c bsearch2.c		\
 cond_assigns.c div_lemma.c dowhile.c euclide.c exit.c extremum-tut.c	\
-extremum2-tut.c fact.c flag.c footprint.c 				\
+extremum2-tut.c fact.c flag.c footprint.c ghost_qualifier_good.c        \
 glob_var_masked.c glob_var_masked_sol.c global_invariant-tut.c		\
-incrstar.c initialized.c intlists.c isgcd.c isqrt.c listdecl.c		\
-listdef.c loopvariantnegative.c loop-frees.c loop_current.c             \
+incrstar.c initialized.c intlists.c isgcd.c isqrt.c  list-observer.c    \
+listdecl.c listdef.c loopvariantnegative.c loop-frees.c loop_current.c  \
 malloc_free_fn.c malloc-free2-fn.c max-tut.c max.c max_index.c		\
 max_list-tut.c max_ptr-tut.c max_ptr2-tut.c max_ptr_bhv-tut.c		\
 max_ptr_false-tut.c max_seq-tut.c max_seq2-tut.c			\
@@ -214,12 +214,12 @@ non_terminating2-tut.c num_of_pos.c oldat.c permut.c permut_reads.c	\
 redeclaredat.c sizeof.c sign.c signdef.c sort.c specified.c		\
 sqsum-tut.c sqsum2-tut.c strcpyspec.c sum.c swap-tut.c			\
 terminates_list.c type_invariant-tut.c volatile.c dangling.c		\
-welltyped.c list-observer.c
+welltyped.c
 
 BAD=acsl_allocator.c arrayslice.c gen_code.c gen_spec_with_ghost.c	\
-gen_spec_with_model.c ghostcfg.c import.c invariants.c			\
-lexico.c listlengthdef.c listmodule.c                                   \
-modifier.c out_char.c sum2.c ghost_qualifier.c ghostpointer.c
+gen_spec_with_model.c ghost_qualifier.c ghostcfg.c ghostpointer.c       \
+import.c invariants.c lexico.c listlengthdef.c listmodule.c             \
+modifier.c out_char.c sum2.c
 
 ifeq ("$(HAS_FCLANG)","yes")
 CHECK_FILES=*.c *.cpp
