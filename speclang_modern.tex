@@ -1729,7 +1729,7 @@ Consider the example below:
 \begin{itemize}
 \item The assert annotation on line 8 refers to the value of \lstinline|x| declared on line 1 and set on line 6; it is proved without difficulty.
 \item The assert annotation on line 14 refers to the current state of \lstinline|*x|, where \lstinline|x| is declared on line 9, that is the assignment to \lstinline|y| on line 12; it is also proved without difficulty.
-\item The assert annotation on line 156 refers to the state of \lstinline|*x| at label \lstinline|c|, that is the assignment to \lstinline|y| on line 5; it is also proved without difficulty.
+\item The assert annotation on line 15 refers to the state of \lstinline|*x| at label \lstinline|c|, that is the assignment to \lstinline|y| on line 5; it is also proved without difficulty.
 \end{itemize}
 But consider the assert annotation on line 13. It references the state at label b. At that label, \lstinline|x| refers to the declaration on line 1, not the declaration current at line 13, namely the declaration on line 9.
 
