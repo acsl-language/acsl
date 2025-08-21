@@ -478,16 +478,16 @@ in \verb|limits.h|
 \end{example}
 
 
-\subsubsection{Size of C integer types}
+\subsubsection{Size and alignment of C types}
 
-The size of C types is architecture-dependent. ACSL does
-not enforce these sizes either, hence the semantics of terms involving
+The size and alignment of C types is architecture-dependent. ACSL does
+not enforce these either, hence the semantics of terms involving
 such types is also architecture-dependent. The
-\lstinline|sizeof|\indextt{sizeof} operator may be used in annotations and is
-consistent with its C counterpart (including that its return type
-is a value of type \lstinline|size_t|, and in most cases a constant).
-For instance, it should be
-possible to verify the following code:
+\lstinline|sizeof|\indextt{sizeof} and \lstinline|alignof|\indextt{alignof}
+operators may be used in annotations and are consistent with their C counterpart
+(including that their return type is a value of type \lstinline|size_t|, and in
+most cases a constant). For instance, it should be possible to verify the
+following code:
 
 \listinginput{1}{sizeof.c}
 
@@ -2742,33 +2742,34 @@ containing, at the label \lstinline|L|, the pointer \lstinline|p|
 
 
 Moreover, some operations involving pointers may lead to runtime errors.
-A pointer \lstinline|p| is said to be \emph{valid} if \lstinline|*p| is guaranteed to
-produce a definite value according to the C standard~\cite{standardc99}. The
-following built-in predicates deal with this notion:
+According to the C standard~\cite{standardc99}, several properties must hold
+when reading, creating or dereferencing a pointer. The following built-in
+predicates deal with these notions.
+
+
 \begin{itemize}
-\item \valid\indexttbs{valid} applies to a tset
-(see Section~\ref{sec:locations}) whose elements have type pointer
-to some common object type.
-\lstinline|\valid{L}(s)| holds if and only if
- dereferencing any $p\in \lstinline|s|$ is safe  at label \lstinline|L|, both for reading from
-\lstinline|*p| and writing to it. In particular,
-\lstinline|\valid{L}(\empty)| holds for any label \lstinline|L|.
-\\ \makebox[5mm]{} \lstinline|\valid{id} : set<$\alpha$ *> $\ra$ boolean|
-\item
-\lstinline|\valid_read|\indexttbs{valid\_read}
-applies to a tset of some pointer to an object type
-and holds if and only if it is safe to read from all the pointers in the set
+\item \lstinline|\valid_read{L}(s)|\indexttbs{valid\_read} applies to a tset
+(see Section~\ref{sec:locations}) of some pointer to an object type and holds if
+and only if at label \lstinline|L|, for any $p\in \lstinline|s|$
+\begin{listing-nonumber}
+\base_addr(p) <= p && p + sizeof(*p) <= \block_length(p)
+\end{listing-nonumber}
+In particular, \lstinline|\valid_read{L}(\empty)| holds for any label \lstinline|L|.
 \\ \makebox[5mm]{} \lstinline|\valid_read{id} : set<$\alpha$ *> $\ra$ boolean|
+\item \lstinline|\valid{L}(s)|\indexttbs{valid} is \lstinline|\valid_read{S}(l)|,
+plus all memory locations are writable.
+\\ \makebox[5mm]{} \lstinline|\valid{id} : set<$\alpha$ *> $\ra$ boolean|
 \end{itemize}
 
-\lstinline|\valid{L}(s)| implies \lstinline|\valid_read{L}(s)| but the reverse is
-not true. In particular, it is allowed to read from a string literal, but not
+\lstinline|\valid{L}(s)| implies \lstinline|\valid_read{L}(s)| but the reverse
+is not true. In particular, it is allowed to read from a string literal, but not
 to write in it (see \cite{standardc99}, 6.4.5\S6).
 
 The status of \valid and \lstinline|\valid_read| constructs depends on the
 type of their argument. Namely, \lstinline|\valid{L}((int *) p)| and
 \lstinline|\valid{L}((char *)p)| are not equivalent. On the other hand, if we
-ignore potential alignment constraints, the following equivalence is true for any pointer \lstinline|p|:
+ignore potential alignment constraints, the following equivalence is true for
+any pointer \lstinline|p|:
 \begin{listing-nonumber}
 \valid{L}(p) <==> \valid{L}(((char *)p)+(0 .. sizeof(*p)-1))
 \end{listing-nonumber}
@@ -2778,11 +2779,15 @@ and similarly for \lstinline|\valid_read|
 \end{listing-nonumber}
 
 In addition to this notion of validity, it should be noted that
-adding or subtracting an offset to a pointer, or comparing two pointers
-may also lead to undefined behaviors (see \cite[6.5.6 and 6.5.8]{standardc99}).
+adding or subtracting an offset to a pointer, casting a pointer to another type
+(or building it from an integer), or comparing two pointers may also lead to
+undefined behaviors (see \cite[6.3.2, 6.5.6 and 6.5.8]{standardc99}).
 Predicates \lstinline|\object_pointer| and \lstinline|\pointer_comparable|
 deal with these notions.
 \begin{itemize}
+\item \lstinline|\aligned|\indexttbs{aligned} applies to a pointer and a value
+which is the expected alignment. \lstinline{\aligned(p, n)} indicates that
+\lstinline|p| is aligned modulo \lstinline{n}.
 \item \lstinline|\object_pointer|\indexttbs{object\_pointer} applies to a tset of
 some pointer to an object type. \lstinline|\object_pointer{L}(s)| indicates that
 each element of \lstinline|s| either points to an element of an array object

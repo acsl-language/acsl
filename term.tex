@@ -35,6 +35,7 @@
        | "\let" id "=" term ";" term ; local binding
        | "sizeof" "(" term ")" ;
        | "sizeof" "(" C-type-expr ")" ;
+       | "alignof" "(" C-type-expr ")" ;
        | id ":" term ; syntactic naming
        | string ":" term ; syntactic naming
        \
