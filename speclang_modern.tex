@@ -3189,6 +3189,11 @@ argument (cf. Fig.~\ref{fig:gram:initialized}) and means that each l-value in th
   such that logic label \lstinline|{Here}| can be omitted.
 \end{example}
 
+\paragraph{Remark:} The validity (according to \lstinline|\valid|) of the pointer
+does not interfere with initialization in the sense of this predicate, these are
+two separated notions that can be treated in isolation from each other. For
+example, \lstinline|\initialized(p) ==> \valid_read(p)| is not an axiom.
+
 \section{Sets and lists}
 
 \review{Should set be instead \textbackslash set, so that it begins with a backslash, like all other built-in names and to avoid conflict with C++ names?}
