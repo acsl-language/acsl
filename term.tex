@@ -36,6 +36,7 @@
        | "sizeof" "(" term ")" ;
        | "sizeof" "(" C-type-expr ")" ;
        | "alignof" "(" C-type-expr ")" ;
+       | "_Alignof" "(" C-type-expr ")" ; discouraged, equivalent to \texttt{alignof}
        | id ":" term ; syntactic naming
        | string ":" term ; syntactic naming
        \
