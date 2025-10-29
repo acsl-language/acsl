@@ -13,6 +13,7 @@
        | "\separated" "(" location "," locations-list ")" ;
        | "\object_pointer" one-label? "(" locations-list ")";
        | "\pointer_comparable" one-label? "(" term "," term ")" ;
+       | "\aligned" "(" term "," term ")" ;
        \
   one-label ::= "{" label-id "}" ;
        \

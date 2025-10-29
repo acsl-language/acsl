@@ -1,3 +1,14 @@
+\subsection{Version \version}
+\begin{itemize}
+  \item Clarify semantics of \lstinline|\valid(_read)| (Section~\ref{subsec:memory}).
+  \item Add \lstinline|\aligned| builtin (Section~\ref{subsec:memory}).
+  \item Add \lstinline|alignof| keyword (Section~\ref{sec:sizeof-alignof}).
+  \item Move sections on dangling pointers (\ref{sec:dangling_pointers}) and
+        well-typed pointers (\ref{sec:welltyped}) in Section~\ref{sec:pointers}.
+  \item Move section on initialization (\ref{sec:initialized}) closer to the
+        section on pointers (\ref{sec:pointers}).
+\end{itemize}
+
 \subsection{Version 1.22}
 \begin{itemize}
 \item Remove experimental and barely used Logic attribute annotations.
@@ -7,9 +18,9 @@ Use directly C attributes (C23, GNU, or both, depending on the tool used) instea
 \subsection{Version 1.21}
 \begin{itemize}
 \item More precise definition of pre- and post-state of a function contract
-  (section~\ref{sec:pre-post-state})
+  (section~\ref{sec:pre-post-state}).
 \item Extend grammar for module definitions and allow importing external symbols
-  (section~\ref{sec:specmodules})
+  (section~\ref{sec:specmodules}).
 \item Set the default value for missing \lstinline|terminates| to
   \lstinline|\false| if the attribute \lstinline|_NoReturn| is present
   (section~\ref{sec:non-term-funct}).
