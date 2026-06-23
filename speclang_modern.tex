@@ -165,12 +165,10 @@ With respect to C pure expressions, the additional constructs are as follows:
     expression \lstinline|$e_1$|; \lstinline|$x$| can then be used in expression
     \lstinline|$e_2$|.
 
-\item[Conditional] \lstinline|$c$ ? $e_1$ : $e_2$|. There is a subtlety
-  here: the condition may be either a boolean term or a predicate.  In
-  case of a predicate, the two branches must be also predicates, so
-  that this construct acts as a connective with the following
-  semantics: \lstinline|$c$ ? $e_1$ : $e_2$| is equivalent to
-  \lstinline|($c$ ==> $e_1$) && (! $c$ ==> $e_2$)|.
+\item[Conditional] \lstinline|$c$ ? $e_1$ : $e_2$|. The condition $c$ may be
+	either a boolean term or a predicate. If $e_1$ and $e_2$ are predicates,
+	then this construct is equivalent to
+	\lstinline|($c$ ==> $e_1$) && (! $c$ ==> $e_2$)|.
 
 \item[Syntactic naming] \lstinline|id : e| is a term or a predicate
   equivalent to $e$. It is different from local naming with \lstinline|\let|:
