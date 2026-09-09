@@ -1,18 +1,20 @@
 \begin{syntax}
-  function-contract [empty contracts are forbidden] ::= requires-clause* terminates-clause?;
-                        decreases-clause? simple-clause*;
+  function-contract [Empty contracts are forbidden.] ::= requires-clause* post-clause*;
                         named-behavior* completeness-clause*
   \
   clause-kind ::= "check" | "admit"
   \
   requires-clause ::= clause-kind? "requires" pred ";"
   \
+  post-clause [A contract can contain at most one terminates-clause and one decreases-clause.]::=
+                terminates-clause | decreases-clause | simple-clause
+  \
   terminates-clause ::= "terminates" pred ";"
   \
   decreases-clause ::= "decreases" term ("for" ident)? ";"
   \
   simple-clause ::= assigns-clause | ensures-clause ;
-                | allocation-clause | abrupt-clause 
+                | allocation-clause | abrupt-clause
   \
   assigns-clause ::= "assigns" locations ";"
   \
@@ -20,13 +22,13 @@
   \
   locations-list ::= location ("," location) *
   \
-  location ::= tset [A 'location' may hold a set of many memory locations] ;
+  location ::= tset [A 'location' may hold a set of many memory locations.] ;
   \
   ensures-clause ::= clause-kind? "ensures" pred ";"
   \
   named-behavior ::= "behavior" id ":" behavior-body
   \
-  behavior-body ::= assumes-clause* requires-clause* simple-clause* 
+  behavior-body [Empty behavior bodies are forbidden.] ::= assumes-clause* requires-clause* simple-clause*
   \
   assumes-clause ::= "assumes" pred ";"
   \
