@@ -244,12 +244,12 @@ used in term position, resulting in further subtleties.
 \subsection{Operators precedence}
 
 The precedence of C operators is conservatively extended with
-additional operators, as shown in Figure~\ref{fig:precedence}. In this
+additional operators, as shown in Table~\ref{fig:precedence}. In this
 table, operators are sorted from highest to lowest priority. Operators
 of same priority are presented on the same line.
 
-
-\begin{figure}[htp]
+\begin{table}
+  \caption{Operators and their associativity, sorted from highest to lowest precedence}
   \begin{center}
     \begin{tabular}{|l|l|l|}
       \hline
@@ -262,6 +262,7 @@ of same priority are presented on the same line.
       multiplicative & left & \lstinline|*| \lstinline|/|  \lstinline|%| \\
       additive & left & \lstinline|+| \lstinline|-| \\
       shift 	& left & \lstinline|<<| \lstinline|>>| \\
+      inclusion & non-assoc & \lstinline|\in| \\
       comparison & - & \lstinline|<| \lstinline|<=| \lstinline|>| \lstinline|>=| \\
       comparison & - & \lstinline|==| \lstinline|!=| \\
       bitwise and & left & \lstinline|&| \\
@@ -276,14 +277,13 @@ of same priority are presented on the same line.
       connective implies & right & \lstinline|==>| \\
       connective equiv & left & \lstinline|<==>| \\
       ternary connective & right & \lstinline|$\cdots$?$\cdots$:$\cdots$| \\
-      binding & left & \Forall{} \Exists{} \Let{} \\
+      binding & non-assoc & \Forall{} \Exists{} \Let{} \\
       naming & right & \lstinline|:| \\
       \hline
     \end{tabular}
   \end{center}
-  \caption{Operator precedence}
 \label{fig:precedence}
-\end{figure}
+\end{table}
 
 \paragraph{Conditional expressions and labels}
 There is a remaining ambiguity between the connective
@@ -1748,7 +1748,7 @@ in fact syntactic sugar for \lstinline|\at(e,Old)|.
 
 \begin{table}
 \caption{Meaning and permitted locations of built-in labels}
-\label{tab:lables}
+\label{tab:labels}
 \begin{tabular}[t]{|c|p{2.3in}|p{2.3in}|}
 \hline
 Label & Permitted locations & Meaning \\
