@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: install needed packages
-        run: sudo apt update &&  DEBIAN_FRONTEND=noninteractive sudo --preserve-env=DEBIAN_FRONTEND apt install -y make texlive-full latexmk ocaml-nox
+        run: sudo apt update &&  DEBIAN_FRONTEND=noninteractive sudo --preserve-env=DEBIAN_FRONTEND apt install -y make texlive-full latexmk ocaml
       - name: retrieve sources
         uses: actions/checkout@v4
       - name: compile acsl manual
